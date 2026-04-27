@@ -4,7 +4,8 @@ require('dotenv').config();
 
 const db = require('./database');
 const authRoutes = require('./routes/auth');
-const logementRoutes = require('./routes/logements'); // 👈 AJOUTER
+const logementRoutes = require('./routes/logements');
+const reservationRoutes = require('./routes/reservations'); // 👈 AJOUTER
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,7 +15,8 @@ app.use(express.json());
 
 // Routes
 app.use('/auth', authRoutes);
-app.use('/logements', logementRoutes); // 👈 AJOUTER
+app.use('/logements', logementRoutes);
+app.use('/reservations', reservationRoutes); // 👈 AJOUTER
 
 app.get('/', (req, res) => {
   res.json({ message: '🚀 Werdhe API fonctionne !' });
