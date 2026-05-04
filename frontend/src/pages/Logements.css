@@ -1,0 +1,69 @@
+.logements-page {
+  min-height: calc(100vh - 60px);
+  background: var(--gray-light);
+}
+
+.recherche-bar {
+  background: var(--white);
+  padding: 24px 0;
+  box-shadow: var(--shadow);
+  margin-bottom: 30px;
+}
+
+.recherche-bar h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--primary-dark);
+}
+
+.recherche-form {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.recherche-form input,
+.recherche-form select {
+  flex: 1;
+  min-width: 160px;
+  margin-bottom: 0;
+}
+
+.logements-header {
+  margin-bottom: 20px;
+}
+
+.logements-header h3 {
+  font-size: 16px;
+  color: var(--gray);
+}
+
+.logements-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  padding-bottom: 40px;
+}
+
+.loading, .empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gray);
+  font-size: 18px;
+}
+
+.empty p {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  .logements-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .logements-grid { grid-template-columns: 1fr; }
+  .recherche-form input,
+  .recherche-form select { min-width: 100%; }
+}

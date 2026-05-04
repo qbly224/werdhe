@@ -1,0 +1,96 @@
+.carte-logement {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.carte-logement:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.carte-image {
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+  position: relative;
+}
+
+.carte-statut {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.carte-statut.disponible {
+  background: #e8f5e9;
+  color: var(--primary);
+}
+
+.carte-statut.loue {
+  background: #ffebee;
+  color: var(--danger);
+}
+
+.carte-body {
+  padding: 16px;
+}
+
+.carte-titre {
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.carte-adresse {
+  font-size: 13px;
+  color: var(--gray);
+  margin-bottom: 12px;
+}
+
+.carte-details {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.carte-details span {
+  font-size: 12px;
+  color: #555;
+  background: var(--gray-light);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.carte-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.carte-prix {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.carte-prix small {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--gray);
+  margin-left: 2px;
+}

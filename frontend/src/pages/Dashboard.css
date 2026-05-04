@@ -1,0 +1,169 @@
+.dashboard {
+  min-height: calc(100vh - 60px);
+  background: var(--gray-light);
+  padding: 30px 0;
+}
+
+.dashboard-loading {
+  text-align: center;
+  padding: 100px;
+  font-size: 20px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.dashboard-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.dashboard-header p {
+  color: var(--gray);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card-dash {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat-icon { font-size: 28px; }
+.stat-val {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--primary);
+}
+.stat-lbl { font-size: 13px; color: var(--gray); }
+
+.onglets {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.onglet {
+  padding: 10px 20px;
+  border: 2px solid #ddd;
+  background: var(--white);
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.onglet.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--white);
+}
+
+.onglet-content h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--primary-dark);
+}
+
+.reservation-card, .logement-card-dash, .paiement-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reservation-info h4,
+.logement-card-dash h4,
+.paiement-card h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.reservation-info p,
+.logement-card-dash p,
+.paiement-card p {
+  font-size: 13px;
+  color: var(--gray);
+  margin-bottom: 4px;
+}
+
+.reservation-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-en_attente { background: #fff3e0; color: #e65100; }
+.badge-confirmee  { background: #e8f5e9; color: var(--primary); }
+.badge-annulee    { background: #ffebee; color: var(--danger); }
+.badge-terminee   { background: #e3f2fd; color: #1565c0; }
+.badge-disponible { background: #e8f5e9; color: var(--primary); }
+.badge-loue       { background: #ffebee; color: var(--danger); }
+.badge-complete   { background: #e8f5e9; color: var(--primary); }
+.badge-echoue     { background: #ffebee; color: var(--danger); }
+
+.paiement-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.paiement-montant {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.empty-msg {
+  text-align: center;
+  padding: 40px;
+  color: var(--gray);
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .stats-cards { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-header { flex-direction: column; gap: 16px; }
+  .reservation-card,
+  .logement-card-dash,
+  .paiement-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
