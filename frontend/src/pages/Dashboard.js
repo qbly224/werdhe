@@ -16,8 +16,9 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [onglet, setOnglet] = useState('overview');
 
-  useEffect(() => {
+ useEffect(() => {
     chargerDonnees();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const chargerDonnees = async () => {
