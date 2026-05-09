@@ -8,8 +8,8 @@ import Register from './pages/Register';
 import Logements from './pages/Logements';
 import LogementDetail from './pages/LogementDetail';
 import Dashboard from './pages/Dashboard';
-import AjouterLogement from './pages/AjouterLogement';           // 👈
-import MotDePasseOublie from './pages/MotDePasseOublie';         // 👈
+import AjouterLogement from './pages/AjouterLogement';
+import MotDePasseOublie from './pages/MotDePasseOublie';
 
 const RoutePrivee = ({ children }) => {
   const { user, loading } = useAuth();
@@ -23,17 +23,22 @@ function App() {
       <BrowserRouter>
         <Toaster position="top-right" />
         <Routes>
+          {/* Routes publiques */}
           <Route path="/" element={<Accueil />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/mot-de-passe-oublie" element={<MotDePasseOublie />} />
           <Route path="/logements" element={<Logements />} />
+
+          {/* IMPORTANT : /ajouter AVANT /:id pour éviter le conflit */}
+          <Route path="/logements/ajouter" element={
+            <RoutePrivee><AjouterLogement /></RoutePrivee>
+          } />
           <Route path="/logements/:id" element={<LogementDetail />} />
-          <Route path="/mot-de-passe-oublie" element={<MotDePasseOublie />} />  {/* 👈 */}
+
+          {/* Routes privées */}
           <Route path="/dashboard" element={
             <RoutePrivee><Dashboard /></RoutePrivee>
-          } />
-          <Route path="/logements/ajouter" element={                            {/* 👈 */}
-            <RoutePrivee><AjouterLogement /></RoutePrivee>
           } />
         </Routes>
       </BrowserRouter>
