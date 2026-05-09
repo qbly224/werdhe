@@ -135,5 +135,56 @@ const login = async (req, res) => {
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 };
+// ================================
+// MOT DE PASSE OUBLIÉ
+// ================================
+// Génère un nouveau mot de passe temporaire
+const motDePasseOublie = async (req, res) => {
+  try {
+    const { email } = req.body;
 
-module.exports = { register, login };
+    if (!email) {
+      return res.status(400).json({ erreur: 'Email requis' });
+    }
+
+    // Vérifier que l'email existe
+    const result = await db.query(
+      'SELECT * FROM users WHERE email = $1',
+      [email]
+    );
+
+    if (result.rows.length === 0) {
+      // On répond toujours "succès" pour ne pas révéler
+      // si l'email existe ou non — bonne pratique sécurité
+      return res.json({
+        message: 'Si cet email existe, un nouveau mot de passe a été envoyé.'
+      });
+    }
+
+    // Générer un mot de passe temporaire
+    const nouveauMotDePasse = Math.random()
+      .toString(36).slice(-8).toUpperCase();
+
+    // Chiffrer le nouveau mot de passe
+    const hash = await bcrypt.hash(nouveauMotDePasse, 10);
+
+    // Mettre à jour en base
+    await db.query(
+      'UPDATE users SET mot_de_passe = $1 WHERE email = $2',
+      [hash, email]
+    );
+
+    // En production on enverrait un email
+    // Pour l'instant on retourne le mot de passe temporaire
+    res.json({
+      message: '✅ Nouveau mot de passe généré !',
+      mot_de_passe_temporaire: nouveauMotDePasse,
+      instruction: 'Connectez-vous avec ce mot de passe puis changez-le.'
+    });
+
+  } catch (err) {
+    console.error('Erreur mot de passe oublié:', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+};
+module.exports = { register, login, motDePasseOublie };
