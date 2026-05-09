@@ -1,0 +1,145 @@
+.detail-page {
+  min-height: calc(100vh - 60px);
+  background: var(--gray-light);
+  padding: 30px 0;
+}
+
+.detail-loading {
+  text-align: center;
+  padding: 100px;
+  font-size: 20px;
+}
+
+.btn-retour {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 20px;
+  padding: 0;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+.detail-image {
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  height: 280px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 100px;
+  margin-bottom: 20px;
+}
+
+.detail-content { padding: 24px; }
+
+.detail-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.detail-top h1 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.detail-adresse {
+  color: var(--gray);
+  font-size: 14px;
+}
+
+.detail-specs {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 16px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.spec {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #444;
+}
+
+.spec-icon { font-size: 20px; }
+
+.detail-description {
+  margin-bottom: 20px;
+}
+
+.detail-description h3,
+.detail-proprietaire h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--primary-dark);
+}
+
+.detail-description p {
+  color: #555;
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.detail-proprietaire p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+/* Sidebar */
+.reservation-panel { padding: 24px; }
+
+.prix-header {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.prix-grand {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.prix-periode {
+  font-size: 14px;
+  color: var(--gray);
+  margin-left: 4px;
+}
+
+.login-hint {
+  text-align: center;
+  font-size: 12px;
+  color: var(--gray);
+  margin-top: 10px;
+}
+
+.indisponible {
+  text-align: center;
+  padding: 20px;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .detail-grid { grid-template-columns: 1fr; }
+}
