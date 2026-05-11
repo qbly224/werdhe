@@ -11,6 +11,9 @@ import Dashboard from './pages/Dashboard';
 import AjouterLogement from './pages/AjouterLogement';
 import MotDePasseOublie from './pages/MotDePasseOublie';
 
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+
 const RoutePrivee = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <div>Chargement...</div>;
@@ -40,6 +43,9 @@ function App() {
           <Route path="/dashboard" element={
             <RoutePrivee><Dashboard /></RoutePrivee>
           } />
+
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -81,6 +81,11 @@ const Login = () => {
             >
               {loading ? 'Connexion...' : 'Se connecter'}
             </button>
+            <div style={{textAlign: 'center', marginTop: '12px'}}>
+  <Link to="/forgot-password" style={{color: 'var(--gray)', fontSize: '13px'}}>
+    Mot de passe oublié ?
+  </Link>
+</div>
           </form>
 
           <div className="test-accounts">
