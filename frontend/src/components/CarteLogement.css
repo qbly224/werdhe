@@ -17,9 +17,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 64px;
   position: relative;
 }
+
+.carte-cat-icon { font-size: 64px; }
 
 .carte-statut {
   position: absolute;
@@ -41,9 +42,19 @@
   color: var(--danger);
 }
 
-.carte-body {
-  padding: 16px;
+.carte-categorie-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
 }
+
+.carte-body { padding: 16px; }
 
 .carte-titre {
   font-size: 16px;
@@ -63,7 +74,7 @@
 
 .carte-details {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
   margin-bottom: 16px;
 }
@@ -80,10 +91,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .carte-prix {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 800;
   color: var(--primary-dark);
 }

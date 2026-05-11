@@ -3,18 +3,57 @@
   background: var(--gray-light);
 }
 
-.recherche-bar {
+/* Barre catégories */
+.categories-bar {
   background: var(--white);
-  padding: 24px 0;
-  box-shadow: var(--shadow);
-  margin-bottom: 30px;
+  padding: 16px 0;
+  border-bottom: 1px solid #eee;
+  overflow-x: auto;
 }
 
-.recherche-bar h2 {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 16px;
+.categories-list {
+  display: flex;
+  gap: 10px;
+  padding-bottom: 4px;
+}
+
+.cat-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 18px;
+  border: 2px solid #eee;
+  background: var(--white);
+  border-radius: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  transition: all 0.2s;
+  min-width: 80px;
+}
+
+.cat-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.cat-btn.active {
+  border-color: var(--primary);
+  background: #e8f5e9;
   color: var(--primary-dark);
+}
+
+.cat-icon { font-size: 22px; }
+
+/* Barre de recherche */
+.recherche-bar {
+  background: var(--white);
+  padding: 20px 0;
+  box-shadow: var(--shadow);
+  margin-bottom: 30px;
 }
 
 .recherche-form {
@@ -27,17 +66,33 @@
 .recherche-form input,
 .recherche-form select {
   flex: 1;
-  min-width: 160px;
+  min-width: 150px;
   margin-bottom: 0;
 }
 
+/* Résultats */
 .logements-header {
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .logements-header h3 {
   font-size: 16px;
   color: var(--gray);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filtre-actif {
+  background: #e8f5e9;
+  color: var(--primary);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .logements-grid {
@@ -54,9 +109,7 @@
   font-size: 18px;
 }
 
-.empty p {
-  margin-bottom: 20px;
-}
+.empty p { margin-bottom: 20px; }
 
 @media (max-width: 900px) {
   .logements-grid { grid-template-columns: repeat(2, 1fr); }
@@ -66,4 +119,5 @@
   .logements-grid { grid-template-columns: 1fr; }
   .recherche-form input,
   .recherche-form select { min-width: 100%; }
+  .categories-list { flex-wrap: nowrap; overflow-x: scroll; }
 }

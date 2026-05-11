@@ -4,19 +4,29 @@ import Navbar from '../components/Navbar';
 import CarteLogement from '../components/CarteLogement';
 import './Logements.css';
 
+// Catégories avec icônes et labels
+const CATEGORIES = [
+  { value: '', label: 'Tous', icon: '🏘️' },
+  { value: 'appartement', label: 'Appartement', icon: '🏢' },
+  { value: 'studio', label: 'Studio', icon: '🏨' },
+  { value: 'maison', label: 'Maison', icon: '🏠' },
+  { value: 'villa', label: 'Villa', icon: '👑' },
+  { value: 'terrain', label: 'Terrain', icon: '🏗️' },
+  { value: 'local_commercial', label: 'Local commercial', icon: '🏪' }
+];
+
 const Logements = () => {
   const [logements, setLogements] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Filtres de recherche
   const [filtres, setFiltres] = useState({
     ville: '',
     prix_min: '',
     prix_max: '',
-    nb_chambres: ''
+    nb_chambres: '',
+    categorie: ''
   });
 
-  // Charger les logements au démarrage
   useEffect(() => {
     chargerLogements();
   }, []);
@@ -33,32 +43,61 @@ const Logements = () => {
     }
   };
 
-  // Appliquer les filtres
   const handleRecherche = (e) => {
     e.preventDefault();
-    // Supprimer les filtres vides
     const params = Object.fromEntries(
       Object.entries(filtres).filter(([_, v]) => v !== '')
     );
     chargerLogements(params);
   };
 
-  // Réinitialiser les filtres
   const handleReset = () => {
-    setFiltres({ ville: '', prix_min: '', prix_max: '', nb_chambres: '' });
+    setFiltres({
+      ville: '',
+      prix_min: '',
+      prix_max: '',
+      nb_chambres: '',
+      categorie: ''
+    });
     chargerLogements();
+  };
+
+  // Filtrer par catégorie directement
+  const handleCategorie = (cat) => {
+    const nouveauxFiltres = { ...filtres, categorie: cat };
+    setFiltres(nouveauxFiltres);
+    const params = Object.fromEntries(
+      Object.entries(nouveauxFiltres).filter(([_, v]) => v !== '')
+    );
+    chargerLogements(params);
   };
 
   return (
     <div>
       <Navbar />
-
       <div className="logements-page">
+
+        {/* Filtres par catégorie */}
+        <div className="categories-bar">
+          <div className="container">
+            <div className="categories-list">
+              {CATEGORIES.map(cat => (
+                <button
+                  key={cat.value}
+                  className={`cat-btn ${filtres.categorie === cat.value ? 'active' : ''}`}
+                  onClick={() => handleCategorie(cat.value)}
+                >
+                  <span className="cat-icon">{cat.icon}</span>
+                  <span>{cat.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
 
         {/* Barre de recherche */}
         <div className="recherche-bar">
           <div className="container">
-            <h2>🔍 Rechercher un logement</h2>
             <form onSubmit={handleRecherche} className="recherche-form">
 
               <input
@@ -116,6 +155,12 @@ const Logements = () => {
                 ? 'Chargement...'
                 : `${logements.length} logement(s) trouvé(s)`
               }
+              {filtres.categorie && (
+                <span className="filtre-actif">
+                  {CATEGORIES.find(c => c.value === filtres.categorie)?.icon}{' '}
+                  {CATEGORIES.find(c => c.value === filtres.categorie)?.label}
+                </span>
+              )}
             </h3>
           </div>
 
@@ -124,20 +169,14 @@ const Logements = () => {
           ) : logements.length === 0 ? (
             <div className="empty">
               <p>😔 Aucun logement trouvé</p>
-              <button
-                className="btn btn-primary"
-                onClick={handleReset}
-              >
+              <button className="btn btn-primary" onClick={handleReset}>
                 Voir tous les logements
               </button>
             </div>
           ) : (
             <div className="logements-grid">
               {logements.map(logement => (
-                <CarteLogement
-                  key={logement.id}
-                  logement={logement}
-                />
+                <CarteLogement key={logement.id} logement={logement} />
               ))}
             </div>
           )}
