@@ -187,4 +187,133 @@ const motDePasseOublie = async (req, res) => {
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 };
-module.exports = { register, login, motDePasseOublie };
+const crypto = require('crypto');
+const { envoyerEmailReset } = require('../services/emailService');
+
+// ================================
+// DEMANDE RESET MOT DE PASSE
+// ================================
+const demanderReset = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ erreur: 'Email requis' });
+    }
+
+    // Chercher l'utilisateur
+    const result = await db.query(
+      'SELECT id, nom, prenom, email FROM users WHERE email = $1',
+      [email]
+    );
+
+    // Sécurité : ne pas révéler si l'email existe ou non
+    if (result.rows.length === 0) {
+      return res.json({
+        message: 'Si cet email existe, vous recevrez un lien de réinitialisation.'
+      });
+    }
+
+    const user = result.rows[0];
+
+    // Générer un token unique et sécurisé
+    const token = crypto.randomBytes(32).toString('hex');
+
+    // Expiration dans 1 heure
+    const expireAt = new Date(Date.now() + 60 * 60 * 1000);
+
+    // Supprimer les anciens tokens de cet utilisateur
+    await db.query(
+      'DELETE FROM reset_tokens WHERE user_id = $1',
+      [user.id]
+    );
+
+    // Sauvegarder le nouveau token
+    await db.query(
+      `INSERT INTO reset_tokens (user_id, token, expire_at)
+       VALUES ($1, $2, $3)`,
+      [user.id, token, expireAt]
+    );
+
+    // Construire le lien de reset
+    const lienReset = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+
+    // Envoyer l'email
+    await envoyerEmailReset(user.email, user.prenom, lienReset);
+
+    res.json({
+      message: 'Si cet email existe, vous recevrez un lien de réinitialisation.'
+    });
+
+  } catch (err) {
+    console.error('Erreur demande reset:', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+};
+
+// ================================
+// RÉINITIALISER LE MOT DE PASSE
+// ================================
+const resetMotDePasse = async (req, res) => {
+  try {
+    const { token, nouveau_mot_de_passe } = req.body;
+
+    if (!token || !nouveau_mot_de_passe) {
+      return res.status(400).json({
+        erreur: 'Token et nouveau mot de passe requis'
+      });
+    }
+
+    if (nouveau_mot_de_passe.length < 6) {
+      return res.status(400).json({
+        erreur: 'Le mot de passe doit faire au moins 6 caractères'
+      });
+    }
+
+    // Vérifier le token
+    const result = await db.query(
+      `SELECT * FROM reset_tokens
+       WHERE token = $1
+       AND expire_at > NOW()
+       AND utilise = FALSE`,
+      [token]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({
+        erreur: 'Lien invalide ou expiré. Veuillez faire une nouvelle demande.'
+      });
+    }
+
+    const resetToken = result.rows[0];
+
+    // Chiffrer le nouveau mot de passe
+    const motDePasseChiffre = await bcrypt.hash(nouveau_mot_de_passe, 10);
+
+    // Mettre à jour le mot de passe
+    await db.query(
+      'UPDATE users SET mot_de_passe = $1 WHERE id = $2',
+      [motDePasseChiffre, resetToken.user_id]
+    );
+
+    // Marquer le token comme utilisé
+    await db.query(
+      'UPDATE reset_tokens SET utilise = TRUE WHERE id = $1',
+      [resetToken.id]
+    );
+
+    res.json({
+      message: '✅ Mot de passe réinitialisé avec succès ! Vous pouvez vous connecter.'
+    });
+
+  } catch (err) {
+    console.error('Erreur reset mot de passe:', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+};
+module.exports = {
+  register,
+  login,
+  demanderReset,
+  resetMotDePasse
+};
