@@ -3,7 +3,6 @@ const db = require('../database');
 // ================================
 // AJOUTER UN LOGEMENT
 // ================================
-// Accessible uniquement aux propriétaires
 const ajouterLogement = async (req, res) => {
   try {
     const {
@@ -15,33 +14,41 @@ const ajouterLogement = async (req, res) => {
       prix_mensuel,
       nb_chambres,
       nb_salles_bain,
-      superficie
+      superficie,
+      categorie
     } = req.body;
 
-    // Vérifier que l'utilisateur est bien un propriétaire
-    // req.user est injecté par le middleware JWT
     if (req.user.role !== 'proprietaire' && req.user.role !== 'les_deux') {
       return res.status(403).json({
         erreur: 'Seuls les propriétaires peuvent ajouter un logement'
       });
     }
 
-    // Vérifier les champs obligatoires
     if (!titre || !adresse || !ville || !prix_mensuel) {
       return res.status(400).json({
         erreur: 'Titre, adresse, ville et prix sont obligatoires'
       });
     }
 
-    // Insérer en base de données
+    const categoriesValides = [
+      'appartement', 'studio', 'maison',
+      'villa', 'terrain', 'local_commercial'
+    ];
+
+    if (categorie && !categoriesValides.includes(categorie)) {
+      return res.status(400).json({
+        erreur: 'Catégorie invalide'
+      });
+    }
+
     const result = await db.query(
-      `INSERT INTO logements 
-        (proprietaire_id, titre, description, adresse, ville, pays, 
-         prix_mensuel, nb_chambres, nb_salles_bain, superficie)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      `INSERT INTO logements
+        (proprietaire_id, titre, description, adresse, ville, pays,
+         prix_mensuel, nb_chambres, nb_salles_bain, superficie, categorie)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
        RETURNING *`,
       [
-        req.user.id,  // ID du propriétaire récupéré depuis le token JWT
+        req.user.id,
         titre,
         description,
         adresse,
@@ -50,7 +57,8 @@ const ajouterLogement = async (req, res) => {
         prix_mensuel,
         nb_chambres || 1,
         nb_salles_bain || 1,
-        superficie
+        superficie,
+        categorie || 'appartement'
       ]
     );
 
@@ -68,16 +76,12 @@ const ajouterLogement = async (req, res) => {
 // ================================
 // VOIR TOUS LES LOGEMENTS DISPONIBLES
 // ================================
-// Accessible à tous (même sans compte)
 const getLogements = async (req, res) => {
   try {
-    // Récupérer les filtres de recherche depuis l'URL
-    // Ex: /logements?ville=Conakry&prix_max=500000
-    const { ville, prix_max, prix_min, nb_chambres } = req.query;
+    const { ville, prix_max, prix_min, nb_chambres, categorie } = req.query;
 
-    // Construction dynamique de la requête SQL selon les filtres
     let query = `
-      SELECT 
+      SELECT
         l.*,
         u.nom as proprietaire_nom,
         u.prenom as proprietaire_prenom,
@@ -90,7 +94,6 @@ const getLogements = async (req, res) => {
     const params = [];
     let paramIndex = 1;
 
-    // Ajouter les filtres dynamiquement
     if (ville) {
       query += ` AND LOWER(l.ville) = LOWER($${paramIndex})`;
       params.push(ville);
@@ -112,6 +115,12 @@ const getLogements = async (req, res) => {
     if (nb_chambres) {
       query += ` AND l.nb_chambres >= $${paramIndex}`;
       params.push(nb_chambres);
+      paramIndex++;
+    }
+
+    if (categorie) {
+      query += ` AND l.categorie = $${paramIndex}`;
+      params.push(categorie);
       paramIndex++;
     }
 
@@ -138,7 +147,7 @@ const getLogement = async (req, res) => {
     const { id } = req.params;
 
     const result = await db.query(
-      `SELECT 
+      `SELECT
         l.*,
         u.nom as proprietaire_nom,
         u.prenom as proprietaire_prenom,
@@ -150,9 +159,7 @@ const getLogement = async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({
-        erreur: 'Logement non trouvé'
-      });
+      return res.status(404).json({ erreur: 'Logement non trouvé' });
     }
 
     res.json({ logement: result.rows[0] });
@@ -166,12 +173,11 @@ const getLogement = async (req, res) => {
 // ================================
 // VOIR SES PROPRES LOGEMENTS
 // ================================
-// Un propriétaire voit uniquement ses logements
 const getMesLogements = async (req, res) => {
   try {
     const result = await db.query(
-      `SELECT * FROM logements 
-       WHERE proprietaire_id = $1 
+      `SELECT * FROM logements
+       WHERE proprietaire_id = $1
        ORDER BY created_at DESC`,
       [req.user.id]
     );
@@ -194,18 +200,11 @@ const modifierLogement = async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      titre,
-      description,
-      adresse,
-      ville,
-      prix_mensuel,
-      nb_chambres,
-      nb_salles_bain,
-      superficie,
-      statut
+      titre, description, adresse, ville,
+      prix_mensuel, nb_chambres, nb_salles_bain,
+      superficie, statut, categorie
     } = req.body;
 
-    // Vérifier que le logement appartient bien à ce propriétaire
     const logement = await db.query(
       'SELECT * FROM logements WHERE id = $1 AND proprietaire_id = $2',
       [id, req.user.id]
@@ -227,11 +226,15 @@ const modifierLogement = async (req, res) => {
         nb_chambres = COALESCE($6, nb_chambres),
         nb_salles_bain = COALESCE($7, nb_salles_bain),
         superficie = COALESCE($8, superficie),
-        statut = COALESCE($9, statut)
-       WHERE id = $10
+        statut = COALESCE($9, statut),
+        categorie = COALESCE($10, categorie)
+       WHERE id = $11
        RETURNING *`,
-      [titre, description, adresse, ville, prix_mensuel,
-       nb_chambres, nb_salles_bain, superficie, statut, id]
+      [
+        titre, description, adresse, ville,
+        prix_mensuel, nb_chambres, nb_salles_bain,
+        superficie, statut, categorie, id
+      ]
     );
 
     res.json({
@@ -252,7 +255,6 @@ const supprimerLogement = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Vérifier que le logement appartient bien à ce propriétaire
     const result = await db.query(
       'DELETE FROM logements WHERE id = $1 AND proprietaire_id = $2 RETURNING *',
       [id, req.user.id]
