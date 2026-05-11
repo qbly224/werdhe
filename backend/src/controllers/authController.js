@@ -311,9 +311,117 @@ const resetMotDePasse = async (req, res) => {
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 };
+// ================================
+// VOIR MON PROFIL
+// ================================
+const getProfil = async (req, res) => {
+  try {
+    const result = await db.query(
+      `SELECT id, nom, prenom, email, telephone, role, created_at
+       FROM users WHERE id = $1`,
+      [req.user.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ erreur: 'Utilisateur non trouvé' });
+    }
+
+    res.json({ user: result.rows[0] });
+
+  } catch (err) {
+    console.error('Erreur profil:', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+};
+
+// ================================
+// MODIFIER MON PROFIL
+// ================================
+const modifierProfil = async (req, res) => {
+  try {
+    const { nom, prenom, telephone } = req.body;
+
+    const result = await db.query(
+      `UPDATE users SET
+        nom = COALESCE($1, nom),
+        prenom = COALESCE($2, prenom),
+        telephone = COALESCE($3, telephone)
+       WHERE id = $4
+       RETURNING id, nom, prenom, email, telephone, role`,
+      [nom, prenom, telephone, req.user.id]
+    );
+
+    res.json({
+      message: '✅ Profil mis à jour !',
+      user: result.rows[0]
+    });
+
+  } catch (err) {
+    console.error('Erreur modification profil:', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+};
+
+// ================================
+// CHANGER MON MOT DE PASSE
+// ================================
+const changerMotDePasse = async (req, res) => {
+  try {
+    const { ancien_mot_de_passe, nouveau_mot_de_passe } = req.body;
+
+    if (!ancien_mot_de_passe || !nouveau_mot_de_passe) {
+      return res.status(400).json({
+        erreur: 'Ancien et nouveau mot de passe requis'
+      });
+    }
+
+    if (nouveau_mot_de_passe.length < 6) {
+      return res.status(400).json({
+        erreur: 'Le nouveau mot de passe doit faire au moins 6 caractères'
+      });
+    }
+
+    // Récupérer l'utilisateur
+    const result = await db.query(
+      'SELECT * FROM users WHERE id = $1',
+      [req.user.id]
+    );
+
+    const user = result.rows[0];
+
+    // Vérifier l'ancien mot de passe
+    const valide = await bcrypt.compare(
+      ancien_mot_de_passe,
+      user.mot_de_passe
+    );
+
+    if (!valide) {
+      return res.status(400).json({
+        erreur: 'Ancien mot de passe incorrect'
+      });
+    }
+
+    // Chiffrer et sauvegarder le nouveau
+    const nouveauHash = await bcrypt.hash(nouveau_mot_de_passe, 10);
+
+    await db.query(
+      'UPDATE users SET mot_de_passe = $1 WHERE id = $2',
+      [nouveauHash, req.user.id]
+    );
+
+    res.json({ message: '✅ Mot de passe mis à jour avec succès !' });
+
+  } catch (err) {
+    console.error('Erreur changement mot de passe:', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+};
 module.exports = {
   register,
   login,
   demanderReset,
-  resetMotDePasse
+  resetMotDePasse,
+  getProfil,
+  modifierProfil,
+  changerMotDePasse
 };
