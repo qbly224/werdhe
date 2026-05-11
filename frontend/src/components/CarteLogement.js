@@ -5,7 +5,6 @@ const CarteLogement = ({ logement }) => {
   return (
     <div className="carte-logement">
 
-      {/* Image placeholder */}
       <div className="carte-image">
         🏠
         <span className={`carte-statut ${logement.statut}`}>
@@ -13,7 +12,6 @@ const CarteLogement = ({ logement }) => {
         </span>
       </div>
 
-      {/* Infos */}
       <div className="carte-body">
         <h3 className="carte-titre">{logement.titre}</h3>
 
@@ -34,13 +32,18 @@ const CarteLogement = ({ logement }) => {
             {Number(logement.prix_mensuel).toLocaleString()} GNF
             <small>/mois</small>
           </span>
-          <Link
-            to={`/logements/${logement.id}`}
-            className="btn btn-primary"
-          >
-            Voir détails
-          </Link>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Link to={`/logements/${logement.id}`} className="btn btn-primary">
+              Détails
+            </Link>
+            {logement.statut === 'disponible' && (
+              <Link to={`/logements/${logement.id}/reserver`} className="btn btn-secondary">
+                Réserver
+              </Link>
+            )}
+          </div>
         </div>
+
       </div>
 
     </div>

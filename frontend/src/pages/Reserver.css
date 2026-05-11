@@ -1,0 +1,151 @@
+.reserver-page {
+  min-height: calc(100vh - 60px);
+  background: var(--gray-light);
+  padding: 30px 0;
+}
+
+.reserver-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
+}
+
+.reserver-form-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px;
+}
+
+.reserver-form-card h1 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary-dark);
+  margin-bottom: 24px;
+}
+
+.type-duree {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.type-btn {
+  border: 2px solid #ddd;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.type-btn small {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--gray);
+}
+
+.type-btn.active {
+  border-color: var(--primary);
+  background: #e8f5e9;
+  color: var(--primary-dark);
+}
+
+.montant-estime {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #e8f5e9;
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-top: 16px;
+}
+
+.montant-estime span {
+  font-size: 14px;
+  color: var(--primary-dark);
+}
+
+.montant-estime strong {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.recap-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  position: sticky;
+  top: 80px;
+}
+
+.recap-image {
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+}
+
+.recap-body {
+  padding: 20px;
+}
+
+.recap-body h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.recap-body p {
+  font-size: 13px;
+  color: var(--gray);
+  margin-bottom: 6px;
+}
+
+.recap-prix {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary-dark);
+  margin: 14px 0;
+}
+
+.recap-prix small {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--gray);
+}
+
+.recap-proprio {
+  border-top: 1px solid #eee;
+  padding-top: 14px;
+  margin-top: 14px;
+}
+
+.recap-proprio p {
+  font-size: 12px;
+  color: var(--gray);
+  margin-bottom: 4px;
+}
+
+.recap-proprio strong {
+  font-size: 15px;
+  color: #222;
+}
+
+@media (max-width: 768px) {
+  .reserver-grid {
+    grid-template-columns: 1fr;
+  }
+}
