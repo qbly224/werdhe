@@ -6,7 +6,13 @@ const db = require('../database');
 // Accessible uniquement aux locataires
 const creerReservation = async (req, res) => {
   try {
-    const { logement_id, date_debut, date_fin } = req.body;
+    const {
+      logement_id,
+      date_debut,
+      date_fin,
+      duree_mois,
+      type_location
+    } = req.body;
 
     // 1. Vérifier le rôle
     if (req.user.role !== 'locataire' && req.user.role !== 'les_deux') {
@@ -15,7 +21,7 @@ const creerReservation = async (req, res) => {
       });
     }
 
-    // 2. Vérifier les champs obligatoires
+    // 2. Seule la date de début est obligatoire
     if (!logement_id || !date_debut) {
       return res.status(400).json({
         erreur: 'Le logement et la date de début sont obligatoires'
@@ -44,30 +50,51 @@ const creerReservation = async (req, res) => {
     }
 
     // 5. Calculer le montant total
-    // Si pas de date_fin → on prend 1 mois par défaut
+    // Priorité : date_fin > duree_mois > 1 mois par défaut
     let montant_total = l.prix_mensuel;
+    let duree_calculee = duree_mois || 1;
 
     if (date_fin) {
+      // Si date de fin fournie → calculer la durée exacte
       const debut = new Date(date_debut);
       const fin = new Date(date_fin);
-      // Calculer le nombre de mois entre les deux dates
-      const diffMois = Math.ceil(
+      duree_calculee = Math.ceil(
         (fin - debut) / (1000 * 60 * 60 * 24 * 30)
       );
-      montant_total = l.prix_mensuel * (diffMois > 0 ? diffMois : 1);
+      montant_total = l.prix_mensuel * (duree_calculee > 0
+        ? duree_calculee : 1);
+    } else if (duree_mois) {
+      // Si durée en mois fournie → calculer sur cette base
+      montant_total = l.prix_mensuel * duree_mois;
     }
+    // Sinon → 1 mois par défaut (longue durée indéterminée)
 
-    // 6. Créer la réservation
+    // 6. Déterminer le type de location
+    const typeLocation = type_location ||
+      (date_fin ? 'courte_duree' : 'longue_duree');
+
+    // 7. Créer la réservation
     const result = await db.query(
-      `INSERT INTO reservations 
-        (logement_id, locataire_id, date_debut, date_fin, montant_total)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO reservations
+        (logement_id, locataire_id, date_debut, date_fin,
+         montant_total, duree_mois, type_location)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
-      [logement_id, req.user.id, date_debut, date_fin, montant_total]
+      [
+        logement_id,
+        req.user.id,
+        date_debut,
+        date_fin || null,
+        montant_total,
+        duree_calculee,
+        typeLocation
+      ]
     );
 
     res.status(201).json({
-      message: '✅ Réservation créée avec succès ! En attente de confirmation.',
+      message: typeLocation === 'longue_duree'
+        ? '✅ Réservation longue durée créée ! En attente de confirmation.'
+        : '✅ Réservation créée ! En attente de confirmation.',
       reservation: result.rows[0]
     });
 
@@ -76,7 +103,6 @@ const creerReservation = async (req, res) => {
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 };
-
 // ================================
 // VOIR MES RÉSERVATIONS (locataire)
 // ================================
