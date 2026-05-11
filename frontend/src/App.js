@@ -14,6 +14,8 @@ import MotDePasseOublie from './pages/MotDePasseOublie';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 
+import Profil from './pages/Profil';
+
 const RoutePrivee = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <div>Chargement...</div>;
@@ -42,6 +44,10 @@ function App() {
           {/* Routes privées */}
           <Route path="/dashboard" element={
             <RoutePrivee><Dashboard /></RoutePrivee>
+          } />
+
+          <Route path="/profil" element={
+            <RoutePrivee><Profil /></RoutePrivee>
           } />
 
           <Route path="/forgot-password" element={<ForgotPassword />} />

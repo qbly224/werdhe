@@ -32,9 +32,9 @@ const Navbar = () => {
               <Link to="/dashboard">
                 Mon espace
               </Link>
-              <span className="navbar-user">
+              <Link to="/profil" className="navbar-user">
                 👤 {user.prenom}
-              </span>
+              </Link>
               <button
                 className="btn btn-danger"
                 onClick={handleLogout}
