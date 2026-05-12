@@ -1,14 +1,90 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import toast from 'react-hot-toast';
 import './AjouterLogement.css';
 
+// Configuration des catégories
+// Chaque catégorie a ses propres champs et contraintes
+const CATEGORIES = [
+  {
+    value: 'appartement',
+    label: 'Appartement',
+    icon: '🏢',
+    description: 'Logement dans un immeuble',
+    hasChambres: true,
+    hasSallesBain: true,
+    hasSuperficie: true,
+    chambresMin: 1,
+    chambresMax: 10
+  },
+  {
+    value: 'studio',
+    label: 'Studio',
+    icon: '🏨',
+    description: 'Pièce unique avec kitchenette',
+    hasChambres: false,   // Studio = 1 chambre fixe
+    hasSallesBain: true,
+    hasSuperficie: true,
+    chambresFixed: 1
+  },
+  {
+    value: 'maison',
+    label: 'Maison',
+    icon: '🏠',
+    description: 'Maison individuelle',
+    hasChambres: true,
+    hasSallesBain: true,
+    hasSuperficie: true,
+    chambresMin: 1,
+    chambresMax: 20
+  },
+  {
+    value: 'villa',
+    label: 'Villa',
+    icon: '👑',
+    description: 'Villa de standing',
+    hasChambres: true,
+    hasSallesBain: true,
+    hasSuperficie: true,
+    chambresMin: 2,
+    chambresMax: 20
+  },
+  {
+    value: 'terrain',
+    label: 'Terrain',
+    icon: '🏗️',
+    description: 'Terrain nu ou à bâtir',
+    hasChambres: false,
+    hasSallesBain: false,
+    hasSuperficie: true,
+    chambresFixed: 0,
+    sallesBainFixed: 0
+  },
+  {
+    value: 'local_commercial',
+    label: 'Local commercial',
+    icon: '🏪',
+    description: 'Boutique, bureau, entrepôt...',
+    hasChambres: false,
+    hasSallesBain: false,
+    hasSuperficie: true,
+    chambresFixed: 0,
+    sallesBainFixed: 0
+  }
+];
+
 const AjouterLogement = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const [etape, setEtape] = useState(1); // 1 = choix catégorie, 2 = formulaire
   const [loading, setLoading] = useState(false);
   const [erreur, setErreur] = useState('');
+
+  const [categorieSelectionnee, setCategorieSelectionnee] = useState(null);
 
   const [formData, setFormData] = useState({
     titre: '',
@@ -17,10 +93,28 @@ const AjouterLogement = () => {
     ville: '',
     pays: 'Guinée',
     prix_mensuel: '',
-    nb_chambres: '1',
-    nb_salles_bain: '1',
-    superficie: ''
+    nb_chambres: 1,
+    nb_salles_bain: 1,
+    superficie: '',
+    categorie: ''
   });
+
+  // Quand une catégorie est sélectionnée
+  const handleSelectCategorie = (cat) => {
+    setCategorieSelectionnee(cat);
+    setFormData(prev => ({
+      ...prev,
+      categorie: cat.value,
+      // Forcer les valeurs fixes selon la catégorie
+      nb_chambres: cat.chambresFixed !== undefined
+        ? cat.chambresFixed
+        : cat.chambresMin || 1,
+      nb_salles_bain: cat.sallesBainFixed !== undefined
+        ? cat.sallesBainFixed
+        : 1
+    }));
+    setEtape(2);
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,8 +122,8 @@ const AjouterLogement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setErreur('');
+    setLoading(true);
 
     try {
       await api.post('/logements', formData);
@@ -42,138 +136,293 @@ const AjouterLogement = () => {
     }
   };
 
+  // Villes de Guinée
+  const VILLES = [
+    'Conakry', 'Kindia', 'Kankan', 'Labé',
+    'Mamou', 'Boké', 'Faranah', 'N\'Zérékoré',
+    'Siguiri', 'Guékédou', 'Macenta', 'Kissidougou'
+  ];
+
   return (
     <div>
       <Navbar />
-      <div className="ajouter-container">
-        <div className="ajouter-card">
+      <div className="ajouter-page">
+        <div className="container">
 
+          {/* Header */}
           <div className="ajouter-header">
-            <h1>🏠 Ajouter un logement</h1>
-            <p>Remplissez les informations de votre bien</p>
+            <h1>🏠 Publier un logement</h1>
+            <p>Mettez votre bien en location sur Werdhè</p>
           </div>
 
-          {erreur && <div className="error">{erreur}</div>}
+          {/* Indicateur d'étapes */}
+          <div className="etapes-indicator">
+            <div className={`etape-dot ${etape >= 1 ? 'active' : ''}`}>
+              <span>1</span>
+              <small>Catégorie</small>
+            </div>
+            <div className="etape-ligne" />
+            <div className={`etape-dot ${etape >= 2 ? 'active' : ''}`}>
+              <span>2</span>
+              <small>Détails</small>
+            </div>
+          </div>
 
-          <form onSubmit={handleSubmit}>
+          {/* ÉTAPE 1 — Choix de la catégorie */}
+          {etape === 1 && (
+            <div className="etape-card">
+              <h2>Quel type de bien voulez-vous louer ?</h2>
+              <p className="etape-subtitle">
+                Le formulaire s'adaptera selon votre choix
+              </p>
 
-            <label>Titre de l'annonce *</label>
-            <input
-              type="text"
-              name="titre"
-              value={formData.titre}
-              onChange={handleChange}
-              placeholder="Ex: Appartement moderne à Kaloum"
-              required
-            />
-
-            <label>Description</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Décrivez votre logement..."
-              rows="4"
-            />
-
-            <div className="form-row">
-              <div>
-                <label>Adresse *</label>
-                <input
-                  type="text"
-                  name="adresse"
-                  value={formData.adresse}
-                  onChange={handleChange}
-                  placeholder="Rue, quartier..."
-                  required
-                />
-              </div>
-              <div>
-                <label>Ville *</label>
-                <input
-                  type="text"
-                  name="ville"
-                  value={formData.ville}
-                  onChange={handleChange}
-                  placeholder="Conakry"
-                  required
-                />
+              <div className="categories-grid">
+                {CATEGORIES.map(cat => (
+                  <button
+                    key={cat.value}
+                    className="categorie-card"
+                    onClick={() => handleSelectCategorie(cat)}
+                  >
+                    <span className="categorie-icon">{cat.icon}</span>
+                    <strong>{cat.label}</strong>
+                    <small>{cat.description}</small>
+                  </button>
+                ))}
               </div>
             </div>
+          )}
 
-            <label>Pays</label>
-            <input
-              type="text"
-              name="pays"
-              value={formData.pays}
-              onChange={handleChange}
-              placeholder="Guinée"
-            />
+          {/* ÉTAPE 2 — Formulaire adapté */}
+          {etape === 2 && categorieSelectionnee && (
+            <div className="etape-card">
 
-            <label>Prix mensuel (GNF) *</label>
-            <input
-              type="number"
-              name="prix_mensuel"
-              value={formData.prix_mensuel}
-              onChange={handleChange}
-              placeholder="Ex: 500000"
-              required
-            />
-
-            <div className="form-row">
-              <div>
-                <label>Nombre de chambres</label>
-                <select
-                  name="nb_chambres"
-                  value={formData.nb_chambres}
-                  onChange={handleChange}
+              {/* Récap catégorie + bouton retour */}
+              <div className="categorie-recap">
+                <span className="categorie-recap-icon">
+                  {categorieSelectionnee.icon}
+                </span>
+                <div>
+                  <strong>{categorieSelectionnee.label}</strong>
+                  <small>{categorieSelectionnee.description}</small>
+                </div>
+                <button
+                  className="btn-changer"
+                  onClick={() => setEtape(1)}
                 >
-                  {[1,2,3,4,5,6].map(n => (
-                    <option key={n} value={n}>{n} chambre(s)</option>
-                  ))}
-                </select>
+                  Changer
+                </button>
               </div>
-              <div>
-                <label>Salles de bain</label>
-                <select
-                  name="nb_salles_bain"
-                  value={formData.nb_salles_bain}
-                  onChange={handleChange}
-                >
-                  {[1,2,3,4].map(n => (
-                    <option key={n} value={n}>{n} salle(s)</option>
-                  ))}
-                </select>
-              </div>
+
+              {erreur && <div className="error">{erreur}</div>}
+
+              <form onSubmit={handleSubmit}>
+
+                {/* Titre */}
+                <div className="form-group">
+                  <label>Titre de l'annonce *</label>
+                  <input
+                    type="text"
+                    name="titre"
+                    value={formData.titre}
+                    onChange={handleChange}
+                    placeholder={
+                      categorieSelectionnee.value === 'villa'
+                        ? 'Ex: Belle villa avec piscine à Kipé'
+                        : categorieSelectionnee.value === 'terrain'
+                        ? 'Ex: Terrain clôturé de 500m² à Ratoma'
+                        : 'Ex: Appartement moderne au centre-ville'
+                    }
+                    required
+                  />
+                </div>
+
+                {/* Ville */}
+                <div className="form-group">
+                  <label>Ville *</label>
+                  <select
+                    name="ville"
+                    value={formData.ville}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Sélectionnez une ville</option>
+                    {VILLES.map(v => (
+                      <option key={v} value={v}>{v}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Adresse */}
+                <div className="form-group">
+                  <label>Adresse précise *</label>
+                  <input
+                    type="text"
+                    name="adresse"
+                    value={formData.adresse}
+                    onChange={handleChange}
+                    placeholder="Ex: Kipé, Ratoma, près du rond-point"
+                    required
+                  />
+                </div>
+
+                {/* Chambres et salles de bain — selon catégorie */}
+                <div className="form-row-3">
+
+                  {/* Chambres */}
+                  {categorieSelectionnee.hasChambres ? (
+                    <div className="form-group">
+                      <label>Nombre de chambres *</label>
+                      <div className="counter">
+                        <button
+                          type="button"
+                          className="counter-btn"
+                          onClick={() => setFormData(prev => ({
+                            ...prev,
+                            nb_chambres: Math.max(
+                              categorieSelectionnee.chambresMin || 1,
+                              prev.nb_chambres - 1
+                            )
+                          }))}
+                        >−</button>
+                        <span className="counter-val">
+                          {formData.nb_chambres}
+                        </span>
+                        <button
+                          type="button"
+                          className="counter-btn"
+                          onClick={() => setFormData(prev => ({
+                            ...prev,
+                            nb_chambres: Math.min(
+                              categorieSelectionnee.chambresMax || 20,
+                              prev.nb_chambres + 1
+                            )
+                          }))}
+                        >+</button>
+                      </div>
+                    </div>
+                  ) : categorieSelectionnee.chambresFixed === 1 ? (
+                    <div className="form-group">
+                      <label>Chambres</label>
+                      <div className="fixed-val">
+                        🏨 Studio (1 pièce)
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {/* Salles de bain */}
+                  {categorieSelectionnee.hasSallesBain && (
+                    <div className="form-group">
+                      <label>Salles de bain *</label>
+                      <div className="counter">
+                        <button
+                          type="button"
+                          className="counter-btn"
+                          onClick={() => setFormData(prev => ({
+                            ...prev,
+                            nb_salles_bain: Math.max(1, prev.nb_salles_bain - 1)
+                          }))}
+                        >−</button>
+                        <span className="counter-val">
+                          {formData.nb_salles_bain}
+                        </span>
+                        <button
+                          type="button"
+                          className="counter-btn"
+                          onClick={() => setFormData(prev => ({
+                            ...prev,
+                            nb_salles_bain: prev.nb_salles_bain + 1
+                          }))}
+                        >+</button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Superficie */}
+                  {categorieSelectionnee.hasSuperficie && (
+                    <div className="form-group">
+                      <label>
+                        Superficie (m²)
+                        {categorieSelectionnee.value === 'terrain'
+                          ? ' *' : ''}
+                      </label>
+                      <input
+                        type="number"
+                        name="superficie"
+                        value={formData.superficie}
+                        onChange={handleChange}
+                        placeholder="Ex: 75"
+                        required={categorieSelectionnee.value === 'terrain'}
+                        min="1"
+                      />
+                    </div>
+                  )}
+
+                </div>
+
+                {/* Prix */}
+                <div className="form-group">
+                  <label>Prix mensuel (GNF) *</label>
+                  <div className="prix-input">
+                    <input
+                      type="number"
+                      name="prix_mensuel"
+                      value={formData.prix_mensuel}
+                      onChange={handleChange}
+                      placeholder="Ex: 500000"
+                      required
+                      min="1"
+                    />
+                    <span className="prix-devise">GNF / mois</span>
+                  </div>
+                  {formData.prix_mensuel && (
+                    <small className="prix-affiche">
+                      💰 {Number(formData.prix_mensuel).toLocaleString()} GNF par mois
+                    </small>
+                  )}
+                </div>
+
+                {/* Description */}
+                <div className="form-group">
+                  <label>Description</label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    placeholder={
+                      categorieSelectionnee.value === 'terrain'
+                        ? 'Ex: Terrain clôturé, titre foncier disponible, accès route goudronnée...'
+                        : categorieSelectionnee.value === 'local_commercial'
+                        ? 'Ex: Local au rez-de-chaussée, idéal pour boutique ou bureau...'
+                        : 'Ex: Appartement lumineux, bien ventilé, eau et électricité disponibles...'
+                    }
+                    rows={4}
+                  />
+                </div>
+
+                {/* Boutons */}
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setEtape(1)}
+                  >
+                    ← Retour
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={loading}
+                  >
+                    {loading
+                      ? 'Publication en cours...'
+                      : '🚀 Publier le logement'}
+                  </button>
+                </div>
+
+              </form>
             </div>
+          )}
 
-            <label>Superficie (m²)</label>
-            <input
-              type="number"
-              name="superficie"
-              value={formData.superficie}
-              onChange={handleChange}
-              placeholder="Ex: 65"
-            />
-
-            <div className="ajouter-buttons">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => navigate('/dashboard')}
-              >
-                Annuler
-              </button>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
-                {loading ? 'Ajout en cours...' : '✅ Publier le logement'}
-              </button>
-            </div>
-
-          </form>
         </div>
       </div>
     </div>
