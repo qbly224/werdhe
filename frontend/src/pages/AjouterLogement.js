@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import toast from 'react-hot-toast';
 import './AjouterLogement.css';
 
-// Configuration des catégories
-// Chaque catégorie a ses propres champs et contraintes
 const CATEGORIES = [
   {
     value: 'appartement',
@@ -25,7 +22,7 @@ const CATEGORIES = [
     label: 'Studio',
     icon: '🏨',
     description: 'Pièce unique avec kitchenette',
-    hasChambres: false,   // Studio = 1 chambre fixe
+    hasChambres: false,
     hasSallesBain: true,
     hasSuperficie: true,
     chambresFixed: 1
@@ -76,14 +73,18 @@ const CATEGORIES = [
   }
 ];
 
+const VILLES = [
+  'Conakry', 'Kindia', 'Kankan', 'Labé',
+  'Mamou', 'Boké', 'Faranah', 'N\'Zérékoré',
+  'Siguiri', 'Guékédou', 'Macenta', 'Kissidougou'
+];
+
 const AjouterLogement = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
 
-  const [etape, setEtape] = useState(1); // 1 = choix catégorie, 2 = formulaire
+  const [etape, setEtape] = useState(1);
   const [loading, setLoading] = useState(false);
   const [erreur, setErreur] = useState('');
-
   const [categorieSelectionnee, setCategorieSelectionnee] = useState(null);
 
   const [formData, setFormData] = useState({
@@ -99,13 +100,11 @@ const AjouterLogement = () => {
     categorie: ''
   });
 
-  // Quand une catégorie est sélectionnée
   const handleSelectCategorie = (cat) => {
     setCategorieSelectionnee(cat);
     setFormData(prev => ({
       ...prev,
       categorie: cat.value,
-      // Forcer les valeurs fixes selon la catégorie
       nb_chambres: cat.chambresFixed !== undefined
         ? cat.chambresFixed
         : cat.chambresMin || 1,
@@ -136,26 +135,17 @@ const AjouterLogement = () => {
     }
   };
 
-  // Villes de Guinée
-  const VILLES = [
-    'Conakry', 'Kindia', 'Kankan', 'Labé',
-    'Mamou', 'Boké', 'Faranah', 'N\'Zérékoré',
-    'Siguiri', 'Guékédou', 'Macenta', 'Kissidougou'
-  ];
-
   return (
     <div>
       <Navbar />
       <div className="ajouter-page">
         <div className="container">
 
-          {/* Header */}
           <div className="ajouter-header">
             <h1>🏠 Publier un logement</h1>
             <p>Mettez votre bien en location sur Werdhè</p>
           </div>
 
-          {/* Indicateur d'étapes */}
           <div className="etapes-indicator">
             <div className={`etape-dot ${etape >= 1 ? 'active' : ''}`}>
               <span>1</span>
@@ -168,14 +158,13 @@ const AjouterLogement = () => {
             </div>
           </div>
 
-          {/* ÉTAPE 1 — Choix de la catégorie */}
+          {/* ÉTAPE 1 — Choix catégorie */}
           {etape === 1 && (
             <div className="etape-card">
               <h2>Quel type de bien voulez-vous louer ?</h2>
               <p className="etape-subtitle">
                 Le formulaire s'adaptera selon votre choix
               </p>
-
               <div className="categories-grid">
                 {CATEGORIES.map(cat => (
                   <button
@@ -196,7 +185,6 @@ const AjouterLogement = () => {
           {etape === 2 && categorieSelectionnee && (
             <div className="etape-card">
 
-              {/* Récap catégorie + bouton retour */}
               <div className="categorie-recap">
                 <span className="categorie-recap-icon">
                   {categorieSelectionnee.icon}
@@ -217,7 +205,6 @@ const AjouterLogement = () => {
 
               <form onSubmit={handleSubmit}>
 
-                {/* Titre */}
                 <div className="form-group">
                   <label>Titre de l'annonce *</label>
                   <input
@@ -230,13 +217,14 @@ const AjouterLogement = () => {
                         ? 'Ex: Belle villa avec piscine à Kipé'
                         : categorieSelectionnee.value === 'terrain'
                         ? 'Ex: Terrain clôturé de 500m² à Ratoma'
+                        : categorieSelectionnee.value === 'local_commercial'
+                        ? 'Ex: Local commercial au centre ville'
                         : 'Ex: Appartement moderne au centre-ville'
                     }
                     required
                   />
                 </div>
 
-                {/* Ville */}
                 <div className="form-group">
                   <label>Ville *</label>
                   <select
@@ -252,7 +240,6 @@ const AjouterLogement = () => {
                   </select>
                 </div>
 
-                {/* Adresse */}
                 <div className="form-group">
                   <label>Adresse précise *</label>
                   <input
@@ -265,10 +252,8 @@ const AjouterLogement = () => {
                   />
                 </div>
 
-                {/* Chambres et salles de bain — selon catégorie */}
                 <div className="form-row-3">
 
-                  {/* Chambres */}
                   {categorieSelectionnee.hasChambres ? (
                     <div className="form-group">
                       <label>Nombre de chambres *</label>
@@ -303,13 +288,10 @@ const AjouterLogement = () => {
                   ) : categorieSelectionnee.chambresFixed === 1 ? (
                     <div className="form-group">
                       <label>Chambres</label>
-                      <div className="fixed-val">
-                        🏨 Studio (1 pièce)
-                      </div>
+                      <div className="fixed-val">🏨 Studio (1 pièce)</div>
                     </div>
                   ) : null}
 
-                  {/* Salles de bain */}
                   {categorieSelectionnee.hasSallesBain && (
                     <div className="form-group">
                       <label>Salles de bain *</label>
@@ -337,13 +319,11 @@ const AjouterLogement = () => {
                     </div>
                   )}
 
-                  {/* Superficie */}
                   {categorieSelectionnee.hasSuperficie && (
                     <div className="form-group">
                       <label>
                         Superficie (m²)
-                        {categorieSelectionnee.value === 'terrain'
-                          ? ' *' : ''}
+                        {categorieSelectionnee.value === 'terrain' ? ' *' : ''}
                       </label>
                       <input
                         type="number"
@@ -359,7 +339,6 @@ const AjouterLogement = () => {
 
                 </div>
 
-                {/* Prix */}
                 <div className="form-group">
                   <label>Prix mensuel (GNF) *</label>
                   <div className="prix-input">
@@ -381,7 +360,6 @@ const AjouterLogement = () => {
                   )}
                 </div>
 
-                {/* Description */}
                 <div className="form-group">
                   <label>Description</label>
                   <textarea
@@ -390,16 +368,15 @@ const AjouterLogement = () => {
                     onChange={handleChange}
                     placeholder={
                       categorieSelectionnee.value === 'terrain'
-                        ? 'Ex: Terrain clôturé, titre foncier disponible, accès route goudronnée...'
+                        ? 'Ex: Terrain clôturé, titre foncier disponible...'
                         : categorieSelectionnee.value === 'local_commercial'
-                        ? 'Ex: Local au rez-de-chaussée, idéal pour boutique ou bureau...'
-                        : 'Ex: Appartement lumineux, bien ventilé, eau et électricité disponibles...'
+                        ? 'Ex: Local au rez-de-chaussée, idéal pour boutique...'
+                        : 'Ex: Appartement lumineux, bien ventilé, eau et électricité...'
                     }
                     rows={4}
                   />
                 </div>
 
-                {/* Boutons */}
                 <div className="form-actions">
                   <button
                     type="button"
@@ -413,9 +390,7 @@ const AjouterLogement = () => {
                     className="btn btn-primary"
                     disabled={loading}
                   >
-                    {loading
-                      ? 'Publication en cours...'
-                      : '🚀 Publier le logement'}
+                    {loading ? 'Publication...' : '🚀 Publier le logement'}
                   </button>
                 </div>
 
