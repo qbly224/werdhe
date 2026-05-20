@@ -109,7 +109,7 @@ const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
               key={photo.public_id}
               className={`photo-item ${index === 0 ? 'principale' : ''}`}
             >
-              <img src={photo.url} alt={`Photo ${index + 1}`} />
+              <img src={photo.url} alt={`Logement ${index + 1}`} />
 
               {/* Badge photo principale */}
               {index === 0 && (
