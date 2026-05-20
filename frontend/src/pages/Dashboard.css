@@ -496,3 +496,108 @@
   background: #f5f5f5;
   color: #333;
 }
+
+/* Documents */
+.doc-form-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border-left: 4px solid #2E7D32;
+}
+
+.doc-form-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #1B5E20;
+}
+
+.doc-filtres {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.filtre-btn {
+  padding: 7px 16px;
+  border: 2px solid #eee;
+  background: white;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #666;
+}
+
+.filtre-btn:hover { border-color: #2E7D32; color: #2E7D32; }
+.filtre-btn.active { border-color: #2E7D32; background: #e8f5e9; color: #1B5E20; }
+
+.documents-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.document-item {
+  background: white;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: box-shadow 0.2s;
+}
+
+.document-item:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+
+.doc-icone { font-size: 36px; flex-shrink: 0; }
+
+.doc-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.doc-info strong { font-size: 15px; color: #222; }
+.doc-info span { font-size: 12px; color: #888; }
+
+.doc-statut { flex-shrink: 0; }
+
+.doc-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-doc {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-telecharger { background: #e3f2fd; color: #1565c0; }
+.btn-telecharger:hover { background: #bbdefb; }
+.btn-email { background: #e8f5e9; color: #2E7D32; }
+.btn-email:hover { background: #c8e6c9; }
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .document-item { flex-wrap: wrap; }
+  .doc-actions { width: 100%; justify-content: flex-end; }
+  .form-row-2 { grid-template-columns: 1fr; }
+}

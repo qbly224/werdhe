@@ -9,6 +9,7 @@ const MENU_PROPRIETAIRE = [
   { path: '/dashboard/reservations', label: 'Réservations', icon: '📅' },
   { path: '/dashboard/paiements', label: 'Paiements', icon: '💰' },
   { path: '/dashboard/factures', label: 'Factures', icon: '📄' },
+  { path: '/dashboard/documents', label: 'Documents', icon: '📄' },
   { path: '/dashboard/parametres', label: 'Paramètres', icon: '⚙️' }
 ];
 
@@ -18,6 +19,7 @@ const MENU_LOCATAIRE = [
   { path: '/dashboard/reservations', label: 'Réservations', icon: '📅' },
   { path: '/dashboard/paiements', label: 'Mes paiements', icon: '💰' },
   { path: '/dashboard/factures', label: 'Mes factures', icon: '📄' },
+  { path: '/dashboard/documents', label: 'Documents', icon: '📄' },
   { path: '/dashboard/parametres', label: 'Paramètres', icon: '⚙️' }
 ];
 

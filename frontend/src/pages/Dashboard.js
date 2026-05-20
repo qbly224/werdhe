@@ -631,6 +631,8 @@ const Dashboard = () => {
         return <OngletFactures stats={stats} />;
       case '/dashboard/mes-locations':
         return <OngletMesLocations stats={stats} />;
+      case '/dashboard/documents':
+        return <OngletDocuments user={user} />;  
       case '/dashboard/parametres':
         return <OngletParametres user={user} />;
       default:
@@ -647,5 +649,292 @@ const Dashboard = () => {
     </div>
   );
 };
+// ================================
+// ONGLET : DOCUMENTS
+// ================================
+const OngletDocuments = ({ user }) => {
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filtreType, setFiltreType] = useState('');
+  const [reservations, setReservations] = useState([]);
+  const [showGenerer, setShowGenerer] = useState(false);
+  const [showUpload, setShowUpload] = useState(false);
+  const [genForm, setGenForm] = useState({ reservation_id: '', type: 'contrat_bail' });
+  const [uploadForm, setUploadForm] = useState({ titre: '', type: 'autre' });
+  const [fichierManuel, setFichierManuel] = useState(null);
 
+  useEffect(() => {
+    chargerDocuments();
+    chargerReservations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtreType]);
+
+  const chargerDocuments = async () => {
+    setLoading(true);
+    try {
+      const params = filtreType ? { type: filtreType } : {};
+      const res = await api.get('/documents', { params });
+      setDocuments(res.data.documents);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const chargerReservations = async () => {
+    try {
+      const endpoint = user?.role === 'locataire'
+        ? '/reservations/mes-reservations'
+        : '/reservations/proprietaire';
+      const res = await api.get(endpoint);
+      setReservations(res.data.reservations.filter(r => r.statut === 'confirmee'));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleGenerer = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post('/documents/generer', genForm);
+      toast.success('✅ Document généré et envoyé par email !');
+      setShowGenerer(false);
+      chargerDocuments();
+    } catch (err) {
+      toast.error(err.response?.data?.erreur || 'Erreur');
+    }
+  };
+
+  const handleUploadManuel = async (e) => {
+    e.preventDefault();
+    if (!fichierManuel) { toast.error('Sélectionnez un fichier'); return; }
+    const formData = new FormData();
+    formData.append('fichier', fichierManuel);
+    formData.append('titre', uploadForm.titre);
+    formData.append('type', uploadForm.type);
+    try {
+      await api.post('/documents/upload-manuel', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      toast.success('✅ Document uploadé !');
+      setShowUpload(false);
+      chargerDocuments();
+    } catch (err) {
+      toast.error('Erreur upload');
+    }
+  };
+
+  const handleTelecharger = async (doc) => {
+    try {
+      const res = await api.get(`/documents/${doc.id}/telecharger`, {
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${doc.titre.replace(/\s+/g, '_')}.html`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('✅ Téléchargement lancé !');
+    } catch (err) {
+      toast.error('Erreur téléchargement');
+    }
+  };
+
+  const handleRenvoyerEmail = async (id) => {
+    try {
+      await api.post(`/documents/${id}/renvoyer-email`);
+      toast.success('✅ Document renvoyé par email !');
+    } catch (err) {
+      toast.error('Erreur envoi email');
+    }
+  };
+
+  const icones = {
+    facture: '🧾',
+    quittance: '📋',
+    contrat_bail: '📜',
+    etat_lieux: '🏠',
+    autre: '📄'
+  };
+
+  const labels = {
+    facture: 'Facture',
+    quittance: 'Quittance',
+    contrat_bail: 'Contrat de bail',
+    etat_lieux: 'État des lieux',
+    autre: 'Autre document'
+  };
+
+  return (
+    <div className="dash-content">
+      <div className="dash-page-header">
+        <div>
+          <h1>📄 Documents</h1>
+          <p>{documents.length} document(s)</p>
+        </div>
+        <div style={{display:'flex', gap:'10px'}}>
+          <button className="btn btn-secondary"
+            onClick={() => { setShowUpload(!showUpload); setShowGenerer(false); }}>
+            📎 Ajouter manuellement
+          </button>
+          <button className="btn btn-primary"
+            onClick={() => { setShowGenerer(!showGenerer); setShowUpload(false); }}>
+            ✨ Générer un document
+          </button>
+        </div>
+      </div>
+
+      {/* Formulaire génération */}
+      {showGenerer && (
+        <div className="doc-form-card">
+          <h3>✨ Générer un document</h3>
+          <form onSubmit={handleGenerer}>
+            <div className="form-row-2" style={{gap:'16px'}}>
+              <div>
+                <label>Type de document *</label>
+                <select value={genForm.type}
+                  onChange={e => setGenForm({...genForm, type: e.target.value})}>
+                  <option value="facture">🧾 Facture de loyer</option>
+                  <option value="quittance">📋 Quittance de loyer</option>
+                  <option value="contrat_bail">📜 Contrat de bail</option>
+                </select>
+              </div>
+              <div>
+                <label>Réservation concernée *</label>
+                <select value={genForm.reservation_id}
+                  onChange={e => setGenForm({...genForm, reservation_id: e.target.value})}
+                  required>
+                  <option value="">Sélectionnez une réservation</option>
+                  {reservations.map(r => (
+                    <option key={r.id} value={r.id}>
+                      {r.logement_titre} — {new Date(r.date_debut).toLocaleDateString('fr-FR')}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div style={{display:'flex', gap:'10px', marginTop:'12px'}}>
+              <button type="submit" className="btn btn-primary">
+                ✨ Générer et envoyer par email
+              </button>
+              <button type="button" className="btn btn-secondary"
+                onClick={() => setShowGenerer(false)}>Annuler</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Formulaire upload manuel */}
+      {showUpload && (
+        <div className="doc-form-card">
+          <h3>📎 Ajouter un document manuellement</h3>
+          <form onSubmit={handleUploadManuel}>
+            <div className="form-row-2" style={{gap:'16px'}}>
+              <div>
+                <label>Titre du document *</label>
+                <input type="text" placeholder="Ex: Contrat signé"
+                  value={uploadForm.titre}
+                  onChange={e => setUploadForm({...uploadForm, titre: e.target.value})}
+                  required />
+              </div>
+              <div>
+                <label>Catégorie</label>
+                <select value={uploadForm.type}
+                  onChange={e => setUploadForm({...uploadForm, type: e.target.value})}>
+                  <option value="facture">🧾 Facture</option>
+                  <option value="quittance">📋 Quittance</option>
+                  <option value="contrat_bail">📜 Contrat de bail</option>
+                  <option value="etat_lieux">🏠 État des lieux</option>
+                  <option value="autre">📄 Autre</option>
+                </select>
+              </div>
+            </div>
+            <div style={{marginTop:'12px'}}>
+              <label>Fichier (PDF, Word, Image) *</label>
+              <input type="file"
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                onChange={e => setFichierManuel(e.target.files[0])}
+                required />
+            </div>
+            <div style={{display:'flex', gap:'10px', marginTop:'12px'}}>
+              <button type="submit" className="btn btn-primary">
+                📎 Uploader
+              </button>
+              <button type="button" className="btn btn-secondary"
+                onClick={() => setShowUpload(false)}>Annuler</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Filtres */}
+      <div className="doc-filtres">
+        {['', 'facture', 'quittance', 'contrat_bail', 'etat_lieux', 'autre'].map(t => (
+          <button key={t}
+            className={`filtre-btn ${filtreType === t ? 'active' : ''}`}
+            onClick={() => setFiltreType(t)}>
+            {t === '' ? '📁 Tous' : `${icones[t]} ${labels[t]}s`}
+          </button>
+        ))}
+      </div>
+
+      {/* Liste documents */}
+      {loading ? (
+        <div className="dash-empty">⏳ Chargement...</div>
+      ) : documents.length === 0 ? (
+        <div className="dash-empty-state">
+          <span>📄</span>
+          <h3>Aucun document</h3>
+          <p>Vos documents apparaîtront ici automatiquement après chaque paiement</p>
+        </div>
+      ) : (
+        <div className="documents-liste">
+          {documents.map(doc => (
+            <div key={doc.id} className="document-item">
+              <div className="doc-icone">{icones[doc.type] || '📄'}</div>
+              <div className="doc-info">
+                <strong>{doc.titre}</strong>
+                <span>
+                  {labels[doc.type]} •
+                  {doc.logement_titre ? ` 🏠 ${doc.logement_titre}` : ''}
+                  {doc.logement_ville ? `, ${doc.logement_ville}` : ''}
+                </span>
+                <span>
+                  📅 {new Date(doc.created_at).toLocaleDateString('fr-FR')}
+                  {doc.est_manuel && ' • 📎 Ajouté manuellement'}
+                  {doc.email_envoye && ' • 📧 Email envoyé'}
+                </span>
+              </div>
+              <div className="doc-statut">
+                <span className={`badge badge-${doc.statut === 'envoye' ? 'confirmee' : 'en_attente'}`}>
+                  {doc.statut === 'genere' ? '📄 Généré'
+                    : doc.statut === 'envoye' ? '📧 Envoyé'
+                    : doc.statut === 'signe' ? '✅ Signé'
+                    : '❌ Annulé'}
+                </span>
+              </div>
+              <div className="doc-actions">
+                {!doc.est_manuel && (
+                  <button className="btn-doc btn-telecharger"
+                    onClick={() => handleTelecharger(doc)}
+                    title="Télécharger">
+                    ⬇️ Télécharger
+                  </button>
+                )}
+                <button className="btn-doc btn-email"
+                  onClick={() => handleRenvoyerEmail(doc.id)}
+                  title="Renvoyer par email">
+                  📧 Email
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 export default Dashboard;
