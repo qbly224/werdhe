@@ -1,9 +1,9 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
 
 const MENU_PROPRIETAIRE = [
-  { path: '/dashboard', label: 'Tableau de bord', icon: '📊', exact: true },
+  { path: '/dashboard', label: 'Tableau de bord', icon: '📊' },
   { path: '/dashboard/biens', label: 'Mes biens', icon: '🏠' },
   { path: '/dashboard/locataires', label: 'Locataires', icon: '👥' },
   { path: '/dashboard/reservations', label: 'Réservations', icon: '📅' },
@@ -13,7 +13,7 @@ const MENU_PROPRIETAIRE = [
 ];
 
 const MENU_LOCATAIRE = [
-  { path: '/dashboard', label: 'Tableau de bord', icon: '📊', exact: true },
+  { path: '/dashboard', label: 'Tableau de bord', icon: '📊' },
   { path: '/dashboard/mes-locations', label: 'Mes locations', icon: '🏠' },
   { path: '/dashboard/reservations', label: 'Réservations', icon: '📅' },
   { path: '/dashboard/paiements', label: 'Mes paiements', icon: '💰' },
@@ -23,7 +23,6 @@ const MENU_LOCATAIRE = [
 
 const Sidebar = ({ ongletActif, setOnglet }) => {
   const { user, logout } = useAuth();
-  const location = useLocation();
 
   const menu = user?.role === 'locataire'
     ? MENU_LOCATAIRE
