@@ -1,4 +1,6 @@
 const db = require('../database');
+const { genererDocument } = require('../services/documentService');
+const db = require('../database');
 
 // ================================
 // GÉNÉRER UN NUMÉRO DE FACTURE UNIQUE
@@ -153,6 +155,62 @@ const effectuerPaiement = async (req, res) => {
 
   } catch (err) {
     console.error('Erreur paiement:', err.message);
+    // Générer automatiquement facture + quittance après paiement
+if (statut === 'complete') {
+  // Récupérer les infos complètes
+  const infos = await db.query(
+    `SELECT
+      u_prop.id as prop_id, u_prop.nom as prop_nom,
+      u_prop.prenom as prop_prenom, u_prop.email as prop_email,
+      u_prop.telephone as prop_tel,
+      u_loc.id as loc_id, u_loc.nom as loc_nom,
+      u_loc.prenom as loc_prenom, u_loc.email as loc_email,
+      u_loc.telephone as loc_tel,
+      l.id as log_id, l.titre as log_titre,
+      l.adresse, l.ville, l.superficie,
+      l.nb_chambres, l.nb_salles_bain
+     FROM reservations r
+     JOIN logements l ON r.logement_id = l.id
+     JOIN users u_prop ON l.proprietaire_id = u_prop.id
+     JOIN users u_loc ON r.locataire_id = u_loc.id
+     WHERE r.id = $1`,
+    [reservation_id]
+  );
+
+  if (infos.rows.length > 0) {
+    const i = infos.rows[0];
+    const docData = {
+      reservation_id,
+      paiement_id: paiement.rows[0].id,
+      logement: {
+        id: i.log_id, titre: i.log_titre,
+        adresse: i.adresse, ville: i.ville,
+        superficie: i.superficie,
+        nb_chambres: i.nb_chambres,
+        nb_salles_bain: i.nb_salles_bain
+      },
+      proprietaire: {
+        id: i.prop_id, nom: i.prop_nom, prenom: i.prop_prenom,
+        email: i.prop_email, telephone: i.prop_tel
+      },
+      locataire: {
+        id: i.loc_id, nom: i.loc_nom, prenom: i.loc_prenom,
+        email: i.loc_email, telephone: i.loc_tel
+      },
+      periode: { debut: resa.date_debut, fin: resa.date_fin },
+      montant: resa.montant_total,
+      mode_paiement,
+      duree_mois: resa.duree_mois,
+      type_location: resa.type_location,
+      envoyer_email: true
+    };
+
+    // Générer facture
+    await genererDocument({ ...docData, type: 'facture' });
+    // Générer quittance
+    await genererDocument({ ...docData, type: 'quittance' });
+  }
+}
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 };

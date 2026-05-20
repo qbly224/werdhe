@@ -9,14 +9,14 @@ const reservationRoutes = require('./routes/reservations');
 const paiementRoutes = require('./routes/paiements');
 const localisationRoutes = require('./routes/localisation');
 const photoRoutes = require('./routes/photos');
+const documentRoutes = require('./routes/documents');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
-    ? process.env.FRONTEND_URL
-    : '*',
+    ? process.env.FRONTEND_URL : '*',
   credentials: true
 }));
 
@@ -24,10 +24,11 @@ app.use(express.json());
 
 app.use('/auth', authRoutes);
 app.use('/logements', logementRoutes);
+app.use('/logements', photoRoutes);
 app.use('/reservations', reservationRoutes);
 app.use('/paiements', paiementRoutes);
 app.use('/localisation', localisationRoutes);
-app.use('/logements', photoRoutes);
+app.use('/documents', documentRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: '🚀 Werdhe API fonctionne !' });
