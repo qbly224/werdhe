@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import Sidebar from '../components/dashboard/Sidebar';
+import PhotoUpload from '../components/PhotoUpload';
 import toast from 'react-hot-toast';
 import './Dashboard.css';
 
@@ -127,64 +128,103 @@ const OngletOverview = ({ stats, user }) => (
 // ================================
 // ONGLET : MES BIENS
 // ================================
-const OngletBiens = ({ stats, recharger }) => (
-  <div className="dash-content">
-    <div className="dash-page-header">
-      <div>
-        <h1>🏠 Mes biens</h1>
-        <p>{stats.logements.length} bien(s) enregistré(s)</p>
-      </div>
-      <Link to="/logements/ajouter" className="btn btn-primary">
-        + Ajouter un bien
-      </Link>
-    </div>
+const OngletBiens = ({ stats, recharger }) => {
+  const [logementSelectionne, setLogementSelectionne] = useState(null);
 
-    {stats.logements.length === 0 ? (
-      <div className="dash-empty-state">
-        <span>🏠</span>
-        <h3>Vous n'avez pas encore de bien</h3>
-        <p>Publiez votre premier logement pour commencer à recevoir des locataires</p>
+  return (
+    <div className="dash-content">
+      <div className="dash-page-header">
+        <div>
+          <h1>🏠 Mes biens</h1>
+          <p>{stats.logements.length} bien(s) enregistré(s)</p>
+        </div>
         <Link to="/logements/ajouter" className="btn btn-primary">
-          + Ajouter mon premier bien
+          + Ajouter un bien
         </Link>
       </div>
-    ) : (
-      <div className="biens-table">
-        <div className="table-header">
-          <span>Bien</span>
-          <span>Localisation</span>
-          <span>Catégorie</span>
-          <span>Prix/mois</span>
-          <span>Statut</span>
-          <span>Actions</span>
+
+      {stats.logements.length === 0 ? (
+        <div className="dash-empty-state">
+          <span>🏠</span>
+          <h3>Vous n'avez pas encore de bien</h3>
+          <p>Publiez votre premier logement</p>
+          <Link to="/logements/ajouter" className="btn btn-primary">
+            + Ajouter mon premier bien
+          </Link>
         </div>
-        {stats.logements.map(l => (
-          <div key={l.id} className="table-row">
-            <span className="table-titre">{l.titre}</span>
-            <span>{l.ville}</span>
-            <span>{l.categorie || 'N/A'}</span>
-            <span>{Number(l.prix_mensuel).toLocaleString()} GNF</span>
-            <span>
-              <span className={`badge badge-${l.statut}`}>
-                {l.statut === 'disponible' ? '✅ Disponible'
-                  : l.statut === 'loue' ? '🔴 Loué'
-                  : '⏸ Suspendu'}
-              </span>
-            </span>
-            <span className="table-actions">
-              <Link
-                to={`/logements/${l.id}`}
-                className="btn-action btn-voir"
-              >
-                👁 Voir
-              </Link>
-            </span>
+      ) : (
+        <div>
+          <div className="biens-table">
+            <div className="table-header">
+              <span>Bien</span>
+              <span>Localisation</span>
+              <span>Prix/mois</span>
+              <span>Statut</span>
+              <span>Photos</span>
+              <span>Actions</span>
+            </div>
+            {stats.logements.map(l => {
+              const photos = l.photos
+                ? (typeof l.photos === 'string'
+                    ? JSON.parse(l.photos) : l.photos)
+                : [];
+              return (
+                <div key={l.id} className="table-row">
+                  <span className="table-titre">{l.titre}</span>
+                  <span>{l.ville}</span>
+                  <span>{Number(l.prix_mensuel).toLocaleString()} GNF</span>
+                  <span>
+                    <span className={`badge badge-${l.statut}`}>
+                      {l.statut === 'disponible' ? '✅ Disponible'
+                        : l.statut === 'loue' ? '🔴 Loué' : '⏸ Suspendu'}
+                    </span>
+                  </span>
+                  <span>📸 {photos.length} photo(s)</span>
+                  <span className="table-actions">
+                    <Link
+                      to={`/logements/${l.id}`}
+                      className="btn-action btn-voir"
+                    >👁 Voir</Link>
+                    <button
+                      className="btn-action btn-photos"
+                      onClick={() => setLogementSelectionne(
+                        logementSelectionne?.id === l.id ? null : l
+                      )}
+                    >📸 Photos</button>
+                  </span>
+                </div>
+              );
+            })}
           </div>
-        ))}
-      </div>
-    )}
-  </div>
-);
+
+          {/* Section upload photos */}
+          {logementSelectionne && (
+            <div className="photos-section">
+              <h3>
+                📸 Photos de : {logementSelectionne.titre}
+                <button
+                  className="btn-fermer"
+                  onClick={() => setLogementSelectionne(null)}
+                >✕</button>
+              </h3>
+              <PhotoUpload
+                logementId={logementSelectionne.id}
+                photosInitiales={
+                  logementSelectionne.photos
+                    ? (typeof logementSelectionne.photos === 'string'
+                        ? JSON.parse(logementSelectionne.photos)
+                        : logementSelectionne.photos)
+                    : []
+                }
+                onUpdate={recharger}
+              />
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 // ================================
 // ONGLET : LOCATAIRES

@@ -11,56 +11,84 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
 
+/* Image */
 .carte-image {
   background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-  height: 160px;
+  height: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
+}
+
+.carte-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.carte-logement:hover .carte-photo {
+  transform: scale(1.05);
 }
 
 .carte-cat-icon { font-size: 64px; }
 
 .carte-statut {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 10px;
+  right: 10px;
   padding: 4px 10px;
   border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
+  backdrop-filter: blur(4px);
 }
 
 .carte-statut.disponible {
-  background: #e8f5e9;
+  background: rgba(232,245,233,0.95);
   color: var(--primary);
 }
 
 .carte-statut.loue {
-  background: #ffebee;
+  background: rgba(255,235,238,0.95);
   color: var(--danger);
 }
 
 .carte-categorie-badge {
   position: absolute;
-  bottom: 12px;
-  left: 12px;
-  background: rgba(0,0,0,0.5);
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0,0,0,0.55);
   color: white;
   padding: 3px 10px;
   border-radius: 20px;
   font-size: 11px;
   font-weight: 600;
+  backdrop-filter: blur(4px);
 }
 
+.carte-nb-photos {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.55);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Body */
 .carte-body { padding: 16px; }
 
 .carte-titre {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: #222;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -69,21 +97,21 @@
 .carte-adresse {
   font-size: 13px;
   color: var(--gray);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .carte-details {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .carte-details span {
   font-size: 12px;
   color: #555;
   background: var(--gray-light);
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: 20px;
 }
 
@@ -96,13 +124,13 @@
 }
 
 .carte-prix {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--primary-dark);
 }
 
 .carte-prix small {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 400;
   color: var(--gray);
   margin-left: 2px;
