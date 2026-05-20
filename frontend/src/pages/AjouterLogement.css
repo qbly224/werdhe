@@ -382,3 +382,26 @@ textarea:focus { border-color: var(--primary); }
   .form-actions { flex-direction: column; }
   .etat-grid { gap: 8px; }
 }
+
+/* Étape photos */
+.photos-etape-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e8f5e9;
+}
+
+.photos-etape-header span {
+  font-size: 48px;
+}
+
+.photos-etape-header h2 {
+  margin-bottom: 4px;
+}
+
+.photos-etape-header p {
+  color: var(--gray);
+  font-size: 14px;
+}
