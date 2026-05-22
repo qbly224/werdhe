@@ -8,7 +8,7 @@ const MENU_PROPRIETAIRE = [
   { path: '/dashboard/locataires', label: 'Locataires', icon: '👥' },
   { path: '/dashboard/reservations', label: 'Réservations', icon: '📅' },
   { path: '/dashboard/paiements', label: 'Paiements', icon: '💰' },
-  { path: '/dashboard/factures', label: 'Factures', icon: '📄' },
+  { path: '/dashboard/factures', label: 'Factures', icon: '🧾' },
   { path: '/dashboard/documents', label: 'Documents', icon: '📄' },
   { path: '/dashboard/parametres', label: 'Paramètres', icon: '⚙️' }
 ];
@@ -18,28 +18,22 @@ const MENU_LOCATAIRE = [
   { path: '/dashboard/mes-locations', label: 'Mes locations', icon: '🏠' },
   { path: '/dashboard/reservations', label: 'Réservations', icon: '📅' },
   { path: '/dashboard/paiements', label: 'Mes paiements', icon: '💰' },
-  { path: '/dashboard/factures', label: 'Mes factures', icon: '📄' },
-  { path: '/dashboard/documents', label: 'Documents', icon: '📄' },
+  { path: '/dashboard/factures', label: 'Mes factures', icon: '🧾' },
+  { path: '/dashboard/documents', label: 'Mes documents', icon: '📄' },
   { path: '/dashboard/parametres', label: 'Paramètres', icon: '⚙️' }
 ];
 
 const Sidebar = ({ ongletActif, setOnglet }) => {
   const { user, logout } = useAuth();
-
-  const menu = user?.role === 'locataire'
-    ? MENU_LOCATAIRE
-    : MENU_PROPRIETAIRE;
+  const menu = user?.role === 'locataire' ? MENU_LOCATAIRE : MENU_PROPRIETAIRE;
 
   return (
     <div className="sidebar">
-
-      {/* Logo */}
       <div className="sidebar-logo">
         <Link to="/">🏠 Werdhè</Link>
         <small>Gestion Immobilière</small>
       </div>
 
-      {/* Profil utilisateur */}
       <div className="sidebar-profil">
         <div className="sidebar-avatar">
           {user?.prenom?.charAt(0)}{user?.nom?.charAt(0)}
@@ -54,7 +48,6 @@ const Sidebar = ({ ongletActif, setOnglet }) => {
         </div>
       </div>
 
-      {/* Menu */}
       <nav className="sidebar-nav">
         {menu.map(item => (
           <button
@@ -68,12 +61,9 @@ const Sidebar = ({ ongletActif, setOnglet }) => {
         ))}
       </nav>
 
-      {/* Footer sidebar */}
       <div className="sidebar-footer">
-        <button
-          className="sidebar-item"
-          onClick={() => setOnglet('/dashboard/parametres')}
-        >
+        <button className="sidebar-item"
+          onClick={() => setOnglet('/dashboard/parametres')}>
           <span className="sidebar-icon">👤</span>
           <span>Mon profil</span>
         </button>
@@ -82,7 +72,6 @@ const Sidebar = ({ ongletActif, setOnglet }) => {
           <span>Déconnexion</span>
         </button>
       </div>
-
     </div>
   );
 };
