@@ -121,3 +121,42 @@
   .recherche-form select { min-width: 100%; }
   .categories-list { flex-wrap: nowrap; overflow-x: scroll; }
 }
+
+/* Toggle vue liste/carte */
+.logements-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.vue-toggle {
+  display: flex;
+  border: 2px solid #eee;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.vue-btn {
+  padding: 8px 18px;
+  border: none;
+  background: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.vue-btn.active {
+  background: #2E7D32;
+  color: white;
+}
+
+.vue-carte-container {
+  margin-bottom: 40px;
+  border-radius: 12px;
+  overflow: hidden;
+}
