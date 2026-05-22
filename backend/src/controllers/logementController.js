@@ -1,4 +1,6 @@
 const db = require('../database');
+const { geocoderAdresse } = require('../services/geocodingService');
+const db = require('../database');
 
 const CATEGORIES_VALIDES = [
   'villa_luxe', 'villa_standard',
@@ -67,7 +69,14 @@ const ajouterLogement = async (req, res) => {
         climatisation || false, gardien || false
       ]
     );
-
+// Géocoder l'adresse automatiquement
+const coords = await geocoderAdresse(adresse, ville);
+await db.query(
+  'UPDATE logements SET latitude = $1, longitude = $2 WHERE id = $3',
+  [coords.latitude, coords.longitude, result.rows[0].id]
+);
+result.rows[0].latitude = coords.latitude;
+result.rows[0].longitude = coords.longitude;
     res.status(201).json({
       message: '✅ Logement ajouté avec succès !',
       logement: result.rows[0]
