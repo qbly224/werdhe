@@ -1,6 +1,5 @@
 const db = require('../database');
 const { geocoderAdresse } = require('../services/geocodingService');
-const db = require('../database');
 
 const CATEGORIES_VALIDES = [
   'villa_luxe', 'villa_standard',
@@ -69,14 +68,20 @@ const ajouterLogement = async (req, res) => {
         climatisation || false, gardien || false
       ]
     );
-// Géocoder l'adresse automatiquement
-const coords = await geocoderAdresse(adresse, ville);
-await db.query(
-  'UPDATE logements SET latitude = $1, longitude = $2 WHERE id = $3',
-  [coords.latitude, coords.longitude, result.rows[0].id]
-);
-result.rows[0].latitude = coords.latitude;
-result.rows[0].longitude = coords.longitude;
+
+    // Géocoder l'adresse automatiquement
+    try {
+      const coords = await geocoderAdresse(adresse, ville);
+      await db.query(
+        'UPDATE logements SET latitude = $1, longitude = $2 WHERE id = $3',
+        [coords.latitude, coords.longitude, result.rows[0].id]
+      );
+      result.rows[0].latitude = coords.latitude;
+      result.rows[0].longitude = coords.longitude;
+    } catch (geoErr) {
+      console.error('Géocodage échoué (non bloquant):', geoErr.message);
+    }
+
     res.status(201).json({
       message: '✅ Logement ajouté avec succès !',
       logement: result.rows[0]
@@ -108,15 +113,31 @@ const getLogements = async (req, res) => {
     const params = [];
     let i = 1;
 
-    if (ville) { query += ` AND LOWER(l.ville) = LOWER($${i})`; params.push(ville); i++; }
-    if (prix_min) { query += ` AND l.prix_mensuel >= $${i}`; params.push(prix_min); i++; }
-    if (prix_max) { query += ` AND l.prix_mensuel <= $${i}`; params.push(prix_max); i++; }
-    if (nb_chambres) { query += ` AND l.nb_chambres >= $${i}`; params.push(nb_chambres); i++; }
-    if (categorie) { query += ` AND l.categorie = $${i}`; params.push(categorie); i++; }
+    if (ville) {
+      query += ` AND LOWER(l.ville) = LOWER($${i})`;
+      params.push(ville); i++;
+    }
+    if (prix_min) {
+      query += ` AND l.prix_mensuel >= $${i}`;
+      params.push(prix_min); i++;
+    }
+    if (prix_max) {
+      query += ` AND l.prix_mensuel <= $${i}`;
+      params.push(prix_max); i++;
+    }
+    if (nb_chambres) {
+      query += ` AND l.nb_chambres >= $${i}`;
+      params.push(nb_chambres); i++;
+    }
+    if (categorie) {
+      query += ` AND l.categorie = $${i}`;
+      params.push(categorie); i++;
+    }
 
     query += ' ORDER BY l.created_at DESC';
 
     const result = await db.query(query, params);
+
     res.json({
       message: `✅ ${result.rows.length} logement(s) trouvé(s)`,
       logements: result.rows
@@ -134,6 +155,7 @@ const getLogements = async (req, res) => {
 const getLogement = async (req, res) => {
   try {
     const { id } = req.params;
+
     const result = await db.query(
       `SELECT l.*,
         u.nom as proprietaire_nom,
@@ -150,13 +172,15 @@ const getLogement = async (req, res) => {
     }
 
     res.json({ logement: result.rows[0] });
+
   } catch (err) {
+    console.error('Erreur récupération logement:', err.message);
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 };
 
 // ================================
-// MES LOGEMENTS
+// VOIR SES PROPRES LOGEMENTS
 // ================================
 const getMesLogements = async (req, res) => {
   try {
@@ -166,11 +190,14 @@ const getMesLogements = async (req, res) => {
        ORDER BY created_at DESC`,
       [req.user.id]
     );
+
     res.json({
       message: `✅ ${result.rows.length} logement(s)`,
       logements: result.rows
     });
+
   } catch (err) {
+    console.error('Erreur mes logements:', err.message);
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 };
@@ -182,8 +209,9 @@ const modifierLogement = async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      titre, description, adresse, ville, prix_mensuel,
-      nb_chambres, nb_salles_bain, superficie, statut, categorie
+      titre, description, adresse, ville,
+      prix_mensuel, nb_chambres, nb_salles_bain,
+      superficie, statut, categorie
     } = req.body;
 
     const logement = await db.query(
@@ -192,7 +220,9 @@ const modifierLogement = async (req, res) => {
     );
 
     if (logement.rows.length === 0) {
-      return res.status(404).json({ erreur: 'Logement non trouvé ou non autorisé' });
+      return res.status(404).json({
+        erreur: 'Logement non trouvé ou non autorisé'
+      });
     }
 
     const result = await db.query(
@@ -208,12 +238,20 @@ const modifierLogement = async (req, res) => {
         statut = COALESCE($9, statut),
         categorie = COALESCE($10, categorie)
        WHERE id = $11 RETURNING *`,
-      [titre, description, adresse, ville, prix_mensuel,
-       nb_chambres, nb_salles_bain, superficie, statut, categorie, id]
+      [
+        titre, description, adresse, ville,
+        prix_mensuel, nb_chambres, nb_salles_bain,
+        superficie, statut, categorie, id
+      ]
     );
 
-    res.json({ message: '✅ Logement modifié !', logement: result.rows[0] });
+    res.json({
+      message: '✅ Logement modifié avec succès !',
+      logement: result.rows[0]
+    });
+
   } catch (err) {
+    console.error('Erreur modification logement:', err.message);
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 };
@@ -224,22 +262,31 @@ const modifierLogement = async (req, res) => {
 const supprimerLogement = async (req, res) => {
   try {
     const { id } = req.params;
+
     const result = await db.query(
       'DELETE FROM logements WHERE id = $1 AND proprietaire_id = $2 RETURNING *',
       [id, req.user.id]
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ erreur: 'Logement non trouvé ou non autorisé' });
+      return res.status(404).json({
+        erreur: 'Logement non trouvé ou non autorisé'
+      });
     }
 
-    res.json({ message: '✅ Logement supprimé !' });
+    res.json({ message: '✅ Logement supprimé avec succès !' });
+
   } catch (err) {
+    console.error('Erreur suppression logement:', err.message);
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 };
 
 module.exports = {
-  ajouterLogement, getLogements, getLogement,
-  getMesLogements, modifierLogement, supprimerLogement
+  ajouterLogement,
+  getLogements,
+  getLogement,
+  getMesLogements,
+  modifierLogement,
+  supprimerLogement
 };
