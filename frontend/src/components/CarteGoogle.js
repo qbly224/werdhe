@@ -1,6 +1,8 @@
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
 import { useState } from 'react';
 
+const styleConteneur = { height: '350px', width: '100%' };
+
 const CarteGoogle = ({ logement }) => {
   const [infoOuverte, setInfoOuverte] = useState(false);
 
@@ -8,15 +10,10 @@ const CarteGoogle = ({ logement }) => {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY || ''
   });
 
+  // Pas de coordonnées
   if (!logement?.latitude || !logement?.longitude) {
     return (
-      <div style={{
-        background: '#f5f5f5',
-        borderRadius: '12px',
-        padding: '40px',
-        textAlign: 'center',
-        color: '#888'
-      }}>
+      <div style={{background:'#f5f5f5',borderRadius:'12px',padding:'40px',textAlign:'center',color:'#888'}}>
         🗺️ Localisation non disponible pour ce bien
       </div>
     );
@@ -27,22 +24,16 @@ const CarteGoogle = ({ logement }) => {
     lng: parseFloat(logement.longitude)
   };
 
+  // Erreur Google Maps → fallback OSM
   if (loadError) {
     return (
-      <div style={{
-        background: '#fff3e0',
-        borderRadius: '12px',
-        padding: '20px',
-        textAlign: 'center',
-        color: '#e65100',
-        fontSize: '14px'
-      }}>
-        <span>⚠️ Google Maps non disponible. </span>
+      <div style={{background:'#fff3e0',borderRadius:'12px',padding:'20px',textAlign:'center',color:'#e65100',fontSize:'14px'}}>
+        ⚠️ Google Maps non disponible.{' '}
         
-          href={`https://www.openstreetmap.org/?mlat=${logement.latitude}&mlon=${logement.longitude}&zoom=16`}
+          href={`https://www.openstreetmap.org/?mlat=${centre.lat}&mlon=${centre.lng}&zoom=16`}
           target="_blank"
           rel="noreferrer"
-          style={{ color: '#2E7D32', fontWeight: 700, marginLeft: '8px' }}
+          style={{color:'#2E7D32',fontWeight:700}}
         >
           Voir sur OpenStreetMap →
         </a>
@@ -50,30 +41,20 @@ const CarteGoogle = ({ logement }) => {
     );
   }
 
+  // Chargement en cours
   if (!isLoaded) {
     return (
-      <div style={{
-        height: '350px',
-        background: '#f5f5f5',
-        borderRadius: '12px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#888'
-      }}>
+      <div style={{height:'350px',background:'#f5f5f5',borderRadius:'12px',display:'flex',alignItems:'center',justifyContent:'center',color:'#888'}}>
         ⏳ Chargement de la carte...
       </div>
     );
   }
 
+  // Carte chargée
   return (
-    <div style={{
-      borderRadius: '12px',
-      overflow: 'hidden',
-      boxShadow: '0 4px 16px rgba(0,0,0,0.12)'
-    }}>
+    <div style={{borderRadius:'12px',overflow:'hidden',boxShadow:'0 4px 16px rgba(0,0,0,0.12)'}}>
       <GoogleMap
-        mapContainerStyle={{ height: '350px', width: '100%' }}
+        mapContainerStyle={styleConteneur}
         center={centre}
         zoom={16}
         options={{
@@ -92,17 +73,14 @@ const CarteGoogle = ({ logement }) => {
               position={centre}
               onCloseClick={() => setInfoOuverte(false)}
             >
-              <div style={{
-                maxWidth: '200px',
-                fontFamily: 'Arial, sans-serif'
-              }}>
-                <strong style={{ color: '#1B5E20', fontSize: '14px' }}>
+              <div style={{maxWidth:'200px',fontFamily:'Arial,sans-serif'}}>
+                <strong style={{color:'#1B5E20',fontSize:'14px',display:'block',marginBottom:'4px'}}>
                   {logement.titre}
                 </strong>
-                <p style={{ fontSize: '12px', color: '#666', margin: '4px 0' }}>
+                <p style={{fontSize:'12px',color:'#666',margin:'0 0 4px'}}>
                   📍 {logement.adresse}, {logement.ville}
                 </p>
-                <p style={{ fontSize: '14px', fontWeight: 700, color: '#1B5E20' }}>
+                <p style={{fontSize:'14px',fontWeight:700,color:'#1B5E20',margin:0}}>
                   {Number(logement.prix_mensuel).toLocaleString()} GNF/mois
                 </p>
               </div>
@@ -111,21 +89,13 @@ const CarteGoogle = ({ logement }) => {
         </Marker>
       </GoogleMap>
 
-      <div style={{
-        background: '#f9f9f9',
-        padding: '10px 16px',
-        fontSize: '12px',
-        color: '#888',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
+      <div style={{background:'#f9f9f9',padding:'10px 16px',fontSize:'12px',color:'#888',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <span>📍 {logement.adresse}, {logement.ville}, Guinée</span>
         
-          href={`https://www.openstreetmap.org/?mlat=${logement.latitude}&mlon=${logement.longitude}&zoom=16`}
+          href={`https://www.openstreetmap.org/?mlat=${centre.lat}&mlon=${centre.lng}&zoom=16`}
           target="_blank"
           rel="noreferrer"
-          style={{ color: '#2E7D32', fontWeight: 600, textDecoration: 'none' }}
+          style={{color:'#2E7D32',fontWeight:600,textDecoration:'none'}}
         >
           Voir sur OSM →
         </a>
