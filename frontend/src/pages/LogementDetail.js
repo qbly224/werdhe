@@ -5,27 +5,6 @@ import api from '../services/api';
 import Navbar from '../components/Navbar';
 import './LogementDetail.css';
 
-const CATEGORIES = {
-  villa_luxe:        { icon: '👑', label: 'Villa de luxe' },
-  villa_standard:    { icon: '🏰', label: 'Villa standard' },
-  maison_moderne:    { icon: '🏠', label: 'Maison moderne' },
-  maison_banco:      { icon: '🛖', label: 'Maison traditionnelle' },
-  maison_chantier:   { icon: '🏗️', label: 'En construction' },
-  concession:        { icon: '🏘️', label: 'Concession' },
-  appartement:       { icon: '🏢', label: 'Appartement' },
-  duplex:            { icon: '🏬', label: 'Duplex' },
-  logement_social:   { icon: '🏛️', label: 'Logement social' },
-  studio_moderne:    { icon: '🏨', label: 'Studio' },
-  chambre_habitant:  { icon: '🛏️', label: 'Chambre' },
-  chambre_cour:      { icon: '🚪', label: 'Chambre cour' },
-  habitat_precaire:  { icon: '🏚️', label: 'Habitat précaire' },
-  boutique:          { icon: '🏪', label: 'Boutique' },
-  bureau:            { icon: '💼', label: 'Bureau' },
-  entrepot:          { icon: '🏭', label: 'Entrepôt' },
-  local_commercial:  { icon: '🏬', label: 'Local commercial' },
-  centre_commercial: { icon: '🛍️', label: 'Centre commercial' }
-};
-
 export default function LogementDetail() {
   const { id } = useParams();
   const { user } = useAuth();
@@ -35,9 +14,9 @@ export default function LogementDetail() {
 
   useEffect(() => {
     api.get('/logements/' + id)
-      .then(res => setLogement(res.data.logement))
-      .catch(console.error)
-      .finally(() => setLoading(false));
+      .then(function(res) { setLogement(res.data.logement); })
+      .catch(function(err) { console.error(err); })
+      .finally(function() { setLoading(false); });
   }, [id]);
 
   if (loading) {
@@ -58,188 +37,169 @@ export default function LogementDetail() {
     );
   }
 
-  const cat = CATEGORIES[logement.categorie] || { icon: '🏠', label: 'Logement' };
+  var photos = [];
+  if (logement.photos) {
+    photos = typeof logement.photos === 'string'
+      ? JSON.parse(logement.photos)
+      : logement.photos;
+  }
 
-  const photos = logement.photos
-    ? (typeof logement.photos === 'string' ? JSON.parse(logement.photos) : logement.photos)
-    : [];
-
-  const equipements = [];
-  if (logement.sanitaires_type === 'interne') equipements.push('🚿 Sanitaires internes');
-  if (logement.sanitaires_type === 'externe') equipements.push('🚿 Sanitaires externes');
-  if (logement.sanitaires_type === 'commun') equipements.push('🚿 Sanitaires communs');
-  if (logement.acces_eau === 'robinet_interieur') equipements.push('🚰 Robinet intérieur');
-  if (logement.acces_eau === 'robinet_exterieur') equipements.push('🚰 Robinet extérieur');
-  if (logement.acces_eau === 'puits') equipements.push('🚰 Puits');
-  if (logement.acces_eau === 'forage') equipements.push('🚰 Forage');
-  if (logement.electricite === 'secteur') equipements.push('⚡ Secteur EDG');
-  if (logement.electricite === 'solaire') equipements.push('☀️ Panneau solaire');
-  if (logement.electricite === 'groupe') equipements.push('🔋 Groupe électrogène');
-  if (logement.type_toit === 'dalle') equipements.push('🏢 Toit dalle béton');
-  if (logement.type_toit === 'tole') equipements.push('🏠 Toit en tôle');
-  if (logement.type_toit === 'chaume') equipements.push('🛖 Toit en chaume');
-  if (logement.type_sol === 'carreaux') equipements.push('✨ Sol carrelé');
-  if (logement.type_sol === 'ciment') equipements.push('🏗️ Sol cimenté');
-  if (logement.type_sol === 'terre') equipements.push('🌱 Sol en terre');
-  if (logement.parking) equipements.push('🚗 Parking');
-  if (logement.jardin) equipements.push('🌿 Jardin');
-  if (logement.climatisation) equipements.push('❄️ Climatisation');
-  if (logement.gardien) equipements.push('👮 Gardien');
-
-  const lat = logement.latitude;
-  const lng = logement.longitude;
-  const osmUrl = 'https://www.openstreetmap.org/export/embed.html?bbox='
-    + (lng - 0.01) + ',' + (lat - 0.01) + ',' + (lng + 0.01) + ',' + (lat + 0.01)
-    + '&layer=mapnik&marker=' + lat + ',' + lng;
-  const osmLink = 'https://www.openstreetmap.org/?mlat=' + lat + '&mlon=' + lng + '&zoom=17';
+  var prix = Number(logement.prix_mensuel).toLocaleString();
+  var propPrenom = logement.proprietaire_prenom || '';
+  var propNom = logement.proprietaire_nom || '';
+  var propTel = logement.proprietaire_telephone || 'N/A';
 
   return (
     <div>
       <Navbar />
       <div className="detail-page">
         <div className="container">
+
           <div className="breadcrumb">
-            <Link to="/logements">← Retour aux logements</Link>
+            <Link to="/logements">Retour aux logements</Link>
           </div>
+
           <div className="detail-grid">
 
             <div className="detail-gauche">
-
               <div className="galerie">
-                {photos.length > 0 && (
-                  <div>
-                    <div className="galerie-principale">
-                      <img src={photos[photoActive].url} alt="logement" />
-                      <span className={'detail-statut ' + logement.statut}>
-                        {logement.statut === 'disponible' ? '✅ Disponible' : '🔴 Loué'}
-                      </span>
-                    </div>
-                    {photos.length > 1 && (
-                      <div className="galerie-miniatures">
-                        {photos.map((p, i) => (
-                          <img
-                            key={i}
-                            src={p.url}
-                            alt={'vue ' + (i + 1)}
-                            className={photoActive === i ? 'active' : ''}
-                            onClick={() => setPhotoActive(i)}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
                 {photos.length === 0 && (
                   <div className="galerie-vide">
-                    <span>{cat.icon}</span>
+                    <span>🏠</span>
+                  </div>
+                )}
+                {photos.length >= 1 && (
+                  <div className="galerie-principale">
+                    <img src={photos[photoActive].url} alt="logement" />
                     <span className={'detail-statut ' + logement.statut}>
-                      {logement.statut === 'disponible' ? '✅ Disponible' : '🔴 Loué'}
+                      {logement.statut === 'disponible' ? 'Disponible' : 'Loue'}
                     </span>
+                  </div>
+                )}
+                {photos.length >= 2 && (
+                  <div className="galerie-miniatures">
+                    {photos.map(function(p, i) {
+                      return (
+                        <img
+                          key={i}
+                          src={p.url}
+                          alt={'photo' + i}
+                          className={photoActive === i ? 'active' : ''}
+                          onClick={function() { setPhotoActive(i); }}
+                        />
+                      );
+                    })}
                   </div>
                 )}
               </div>
 
               <div className="detail-card">
-                <div className="detail-categorie-badge">{cat.icon} {cat.label}</div>
                 <h1 className="detail-titre">{logement.titre}</h1>
-                <p className="detail-adresse">📍 {logement.adresse}, {logement.ville}, Guinée</p>
+                <p className="detail-adresse">
+                  {logement.adresse}, {logement.ville}, Guinee
+                </p>
 
                 <div className="detail-caract">
-                  {logement.nb_chambres > 0 && (
+                  {logement.nb_chambres >= 1 && (
                     <div className="caract-item">
-                      <span className="caract-icon">🛏</span>
+                      <span>🛏</span>
                       <span>{logement.nb_chambres}</span>
-                      <small>Chambre(s)</small>
+                      <small>Chambres</small>
                     </div>
                   )}
-                  {logement.nb_salles_bain > 0 && (
+                  {logement.nb_salles_bain >= 1 && (
                     <div className="caract-item">
-                      <span className="caract-icon">🚿</span>
+                      <span>🚿</span>
                       <span>{logement.nb_salles_bain}</span>
-                      <small>Salle(s) de bain</small>
+                      <small>Salles de bain</small>
                     </div>
                   )}
                   {logement.superficie && (
                     <div className="caract-item">
-                      <span className="caract-icon">📐</span>
+                      <span>📐</span>
                       <span>{logement.superficie}</span>
-                      <small>m²</small>
+                      <small>m2</small>
                     </div>
                   )}
                 </div>
 
                 {logement.description && (
                   <div className="detail-section">
-                    <h3>📝 Description</h3>
+                    <h3>Description</h3>
                     <p>{logement.description}</p>
                   </div>
                 )}
 
-                {equipements.length > 0 && (
-                  <div className="detail-section">
-                    <h3>⚡ Équipements</h3>
-                    <div className="equipements-liste">
-                      {equipements.map((eq, i) => (
-                        <span key={i}>{eq}</span>
-                      ))}
-                    </div>
+                <div className="detail-section">
+                  <h3>Equipements</h3>
+                  <div className="equipements-liste">
+                    {logement.parking && <span>Parking</span>}
+                    {logement.jardin && <span>Jardin</span>}
+                    {logement.climatisation && <span>Climatisation</span>}
+                    {logement.gardien && <span>Gardien</span>}
+                    {logement.electricite === 'secteur' && <span>Electricite secteur</span>}
+                    {logement.electricite === 'solaire' && <span>Panneau solaire</span>}
                   </div>
-                )}
-
-                {logement.statut_foncier && logement.statut_foncier !== 'non_precise' && (
-                  <div className="detail-section">
-                    <h3>📜 Statut foncier</h3>
-                    <span className="statut-foncier-badge">
-                      {logement.statut_foncier === 'titre_foncier' && '📜 Titre foncier'}
-                      {logement.statut_foncier === 'permis_habiter' && "🏛️ Permis d'habiter"}
-                      {logement.statut_foncier === 'accord_coutumier' && '🤝 Accord coutumier'}
-                      {logement.statut_foncier === 'sous_seing_prive' && '✍️ Sous-seing privé'}
-                    </span>
-                  </div>
-                )}
-
-                {lat && lng && (
-                  <div className="detail-section">
-                    <h3>🗺️ Localisation</h3>
-                    <div className="carte-iframe-container">
-                      <iframe
-                        title="carte"
-                        width="100%"
-                        height="300"
-                        frameBorder="0"
-                        scrolling="no"
-                        src={osmUrl}
-                        style={{ borderRadius: '10px', border: '1px solid #ddd' }}
-                      />
-                    </div>
-                    
-                      href={osmLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="osm-link"
-                    >
-                      🗺️ Agrandir sur OpenStreetMap
-                    </a>
-                  </div>
-                )}
-
+                </div>
               </div>
             </div>
 
             <div className="detail-droite">
               <div className="detail-sticky-card">
+
                 <div className="detail-prix">
-                  {Number(logement.prix_mensuel).toLocaleString()} GNF
+                  {prix} GNF
                   <small>/mois</small>
                 </div>
+
                 <div className="proprio-box">
                   <div className="proprio-avatar">
-                    {logement.proprietaire_prenom && logement.proprietaire_prenom.charAt(0)}
-                    {logement.proprietaire_nom && logement.proprietaire_nom.charAt(0)}
+                    {propPrenom.charAt(0)}{propNom.charAt(0)}
                   </div>
                   <div>
-                    <strong>{logement.proprietaire_prenom} {logement.proprietaire_nom}</strong>
-                    <p>📞 {logement.proprietaire_telephone || 'N/A'}</p>
+                    <strong>{propPrenom} {propNom}</strong>
+                    <p>{propTel}</p>
                   </div>
                 </div>
+
                 {logement.statut === 'disponible' && user && (
+                  <Link
+                    to={'/logements/' + logement.id + '/reserver'}
+                    className="btn btn-primary btn-full-detail"
+                  >
+                    Reserver
+                  </Link>
+                )}
+                {logement.statut === 'disponible' && !user && (
+                  <Link
+                    to="/login"
+                    className="btn btn-secondary btn-full-detail"
+                  >
+                    Connectez-vous pour reserver
+                  </Link>
+                )}
+                {logement.statut !== 'disponible' && (
+                  <div className="loue-badge">
+                    Logement actuellement loue
+                  </div>
+                )}
+
+                <button
+                  className="btn-partager"
+                  onClick={function() {
+                    navigator.clipboard.writeText(window.location.href);
+                    alert('Lien copie !');
+                  }}
+                >
+                  Copier le lien
+                </button>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
