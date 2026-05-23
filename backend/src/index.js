@@ -11,6 +11,7 @@ const localisationRoutes = require('./routes/localisation');
 const photoRoutes = require('./routes/photos');
 const documentRoutes = require('./routes/documents');
 const locataireRoutes = require('./routes/locataires');
+const alerteRoutes = require('./routes/alertes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,6 +32,7 @@ app.use('/paiements', paiementRoutes);
 app.use('/localisation', localisationRoutes);
 app.use('/documents', documentRoutes);
 app.use('/locataires-manuels', locataireRoutes);
+app.use('/alertes', alerteRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: '🚀 Werdhe API fonctionne !' });
