@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
-import CarteLeaflet from '../components/CarteLeaflet';
 import './LogementDetail.css';
 
 const CATEGORIES = {
@@ -27,140 +26,12 @@ const CATEGORIES = {
   centre_commercial: { icon: '🛍️', label: 'Centre commercial' }
 };
 
-function getLabel(map, key, defaut) {
-  return map[key] || defaut;
-}
-
-function GaleriePhotos({ photos, cat, statut }) {
-  const [active, setActive] = useState(0);
-  if (photos.length === 0) {
-    return (
-      <div className="galerie">
-        <div className="galerie-vide">
-          <span>{cat.icon}</span>
-          <span className={'detail-statut ' + statut}>
-            {statut === 'disponible' ? '✅ Disponible' : '🔴 Loué'}
-          </span>
-        </div>
-      </div>
-    );
-  }
-  return (
-    <div className="galerie">
-      <div className="galerie-principale">
-        <img src={photos[active].url} alt="logement" />
-        <span className={'detail-statut ' + statut}>
-          {statut === 'disponible' ? '✅ Disponible' : '🔴 Loué'}
-        </span>
-      </div>
-      {photos.length > 1 && (
-        <div className="galerie-miniatures">
-          {photos.map((p, i) => (
-            <img
-              key={i}
-              src={p.url}
-              alt={'vue ' + (i + 1)}
-              className={active === i ? 'active' : ''}
-              onClick={() => setActive(i)}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function BoutonReservation({ logement, user }) {
-  if (logement.statut !== 'disponible') {
-    return (
-      <div className="loue-badge">
-        🔴 Ce logement est actuellement loué
-      </div>
-    );
-  }
-  if (!user) {
-    return (
-      <Link to="/login" className="btn btn-secondary btn-full-detail">
-        🔐 Connectez-vous pour réserver
-      </Link>
-    );
-  }
-  return (
-    <Link
-      to={'/logements/' + logement.id + '/reserver'}
-      className="btn btn-primary btn-full-detail"
-    >
-      📅 Réserver ce logement
-    </Link>
-  );
-}
-
-function Equipements({ logement }) {
-  const items = [];
-
-  if (logement.sanitaires_type) {
-    const labels = {
-      interne: 'Sanitaires internes',
-      externe: 'Sanitaires externes',
-      commun: 'Sanitaires communs',
-      aucun: 'Sans sanitaires'
-    };
-    items.push('🚿 ' + (labels[logement.sanitaires_type] || ''));
-  }
-
-  if (logement.acces_eau) {
-    const labels = {
-      robinet_interieur: 'Robinet intérieur',
-      robinet_exterieur: 'Robinet extérieur',
-      puits: 'Puits',
-      forage: 'Forage',
-      public: 'Borne publique'
-    };
-    items.push('🚰 ' + (labels[logement.acces_eau] || ''));
-  }
-
-  if (logement.electricite) {
-    const labels = {
-      secteur: 'Secteur EDG',
-      solaire: 'Solaire',
-      groupe: 'Groupe électrogène',
-      sans: 'Sans électricité'
-    };
-    items.push('⚡ ' + (labels[logement.electricite] || ''));
-  }
-
-  if (logement.type_toit) {
-    const labels = { dalle: 'Dalle béton', tole: 'Tôle', chaume: 'Chaume', autre: 'Autre' };
-    items.push('🏠 Toit : ' + (labels[logement.type_toit] || ''));
-  }
-
-  if (logement.type_sol) {
-    const labels = { carreaux: 'Carreaux', ciment: 'Ciment', terre: 'Terre', autre: 'Autre' };
-    items.push('🏗️ Sol : ' + (labels[logement.type_sol] || ''));
-  }
-
-  if (logement.parking) items.push('🚗 Parking');
-  if (logement.jardin) items.push('🌿 Jardin / Cour');
-  if (logement.climatisation) items.push('❄️ Climatisation');
-  if (logement.gardien) items.push('👮 Gardien');
-
-  return (
-    <div className="detail-section">
-      <h3>⚡ Équipements</h3>
-      <div className="equipements-liste">
-        {items.map((item, i) => (
-          <span key={i}>{item}</span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function LogementDetail() {
+export default function LogementDetail() {
   const { id } = useParams();
   const { user } = useAuth();
   const [logement, setLogement] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [photoActive, setPhotoActive] = useState(0);
 
   useEffect(() => {
     api.get('/logements/' + id)
@@ -173,7 +44,7 @@ function LogementDetail() {
     return (
       <div>
         <Navbar />
-        <div style={{ textAlign: 'center', padding: '100px' }}>⏳ Chargement...</div>
+        <p style={{textAlign:'center',padding:'100px'}}>Chargement...</p>
       </div>
     );
   }
@@ -182,7 +53,7 @@ function LogementDetail() {
     return (
       <div>
         <Navbar />
-        <div style={{ textAlign: 'center', padding: '100px' }}>❌ Logement non trouvé</div>
+        <p style={{textAlign:'center',padding:'100px'}}>Logement non trouve</p>
       </div>
     );
   }
@@ -193,14 +64,34 @@ function LogementDetail() {
     ? (typeof logement.photos === 'string' ? JSON.parse(logement.photos) : logement.photos)
     : [];
 
-  const etatIcons = { neuf: '✨', bon_etat: '✅', a_renover: '🔧', en_construction: '🏗️', vetuste: '⚠️' };
-  const etatLabels = { neuf: 'Neuf', bon_etat: 'Bon état', a_renover: 'À rénover', en_construction: 'En construction', vetuste: 'Vétuste' };
-  const foncierLabels = {
-    titre_foncier: '📜 Titre foncier',
-    permis_habiter: "🏛️ Permis d'habiter",
-    accord_coutumier: '🤝 Accord coutumier',
-    sous_seing_prive: '✍️ Sous-seing privé'
-  };
+  const equipements = [];
+  if (logement.sanitaires_type === 'interne') equipements.push('🚿 Sanitaires internes');
+  if (logement.sanitaires_type === 'externe') equipements.push('🚿 Sanitaires externes');
+  if (logement.sanitaires_type === 'commun') equipements.push('🚿 Sanitaires communs');
+  if (logement.acces_eau === 'robinet_interieur') equipements.push('🚰 Robinet intérieur');
+  if (logement.acces_eau === 'robinet_exterieur') equipements.push('🚰 Robinet extérieur');
+  if (logement.acces_eau === 'puits') equipements.push('🚰 Puits');
+  if (logement.acces_eau === 'forage') equipements.push('🚰 Forage');
+  if (logement.electricite === 'secteur') equipements.push('⚡ Secteur EDG');
+  if (logement.electricite === 'solaire') equipements.push('☀️ Panneau solaire');
+  if (logement.electricite === 'groupe') equipements.push('🔋 Groupe électrogène');
+  if (logement.type_toit === 'dalle') equipements.push('🏢 Toit dalle béton');
+  if (logement.type_toit === 'tole') equipements.push('🏠 Toit en tôle');
+  if (logement.type_toit === 'chaume') equipements.push('🛖 Toit en chaume');
+  if (logement.type_sol === 'carreaux') equipements.push('✨ Sol carrelé');
+  if (logement.type_sol === 'ciment') equipements.push('🏗️ Sol cimenté');
+  if (logement.type_sol === 'terre') equipements.push('🌱 Sol en terre');
+  if (logement.parking) equipements.push('🚗 Parking');
+  if (logement.jardin) equipements.push('🌿 Jardin');
+  if (logement.climatisation) equipements.push('❄️ Climatisation');
+  if (logement.gardien) equipements.push('👮 Gardien');
+
+  const lat = logement.latitude;
+  const lng = logement.longitude;
+  const osmUrl = 'https://www.openstreetmap.org/export/embed.html?bbox='
+    + (lng - 0.01) + ',' + (lat - 0.01) + ',' + (lng + 0.01) + ',' + (lat + 0.01)
+    + '&layer=mapnik&marker=' + lat + ',' + lng;
+  const osmLink = 'https://www.openstreetmap.org/?mlat=' + lat + '&mlon=' + lng + '&zoom=17';
 
   return (
     <div>
@@ -211,12 +102,48 @@ function LogementDetail() {
             <Link to="/logements">← Retour aux logements</Link>
           </div>
           <div className="detail-grid">
+
             <div className="detail-gauche">
-              <GaleriePhotos photos={photos} cat={cat} statut={logement.statut} />
+
+              <div className="galerie">
+                {photos.length > 0 && (
+                  <div>
+                    <div className="galerie-principale">
+                      <img src={photos[photoActive].url} alt="logement" />
+                      <span className={'detail-statut ' + logement.statut}>
+                        {logement.statut === 'disponible' ? '✅ Disponible' : '🔴 Loué'}
+                      </span>
+                    </div>
+                    {photos.length > 1 && (
+                      <div className="galerie-miniatures">
+                        {photos.map((p, i) => (
+                          <img
+                            key={i}
+                            src={p.url}
+                            alt={'vue ' + (i + 1)}
+                            className={photoActive === i ? 'active' : ''}
+                            onClick={() => setPhotoActive(i)}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {photos.length === 0 && (
+                  <div className="galerie-vide">
+                    <span>{cat.icon}</span>
+                    <span className={'detail-statut ' + logement.statut}>
+                      {logement.statut === 'disponible' ? '✅ Disponible' : '🔴 Loué'}
+                    </span>
+                  </div>
+                )}
+              </div>
+
               <div className="detail-card">
                 <div className="detail-categorie-badge">{cat.icon} {cat.label}</div>
                 <h1 className="detail-titre">{logement.titre}</h1>
                 <p className="detail-adresse">📍 {logement.adresse}, {logement.ville}, Guinée</p>
+
                 <div className="detail-caract">
                   {logement.nb_chambres > 0 && (
                     <div className="caract-item">
@@ -239,46 +166,66 @@ function LogementDetail() {
                       <small>m²</small>
                     </div>
                   )}
-                  {logement.etat && (
-                    <div className="caract-item">
-                      <span className="caract-icon">
-                        {getLabel(etatIcons, logement.etat, '✅')}
-                      </span>
-                      <small>{getLabel(etatLabels, logement.etat, '')}</small>
-                    </div>
-                  )}
                 </div>
+
                 {logement.description && (
                   <div className="detail-section">
                     <h3>📝 Description</h3>
                     <p>{logement.description}</p>
                   </div>
                 )}
-                <Equipements logement={logement} />
+
+                {equipements.length > 0 && (
+                  <div className="detail-section">
+                    <h3>⚡ Équipements</h3>
+                    <div className="equipements-liste">
+                      {equipements.map((eq, i) => (
+                        <span key={i}>{eq}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {logement.statut_foncier && logement.statut_foncier !== 'non_precise' && (
                   <div className="detail-section">
                     <h3>📜 Statut foncier</h3>
                     <span className="statut-foncier-badge">
-                      {getLabel(foncierLabels, logement.statut_foncier, '❓ Non précisé')}
+                      {logement.statut_foncier === 'titre_foncier' && '📜 Titre foncier'}
+                      {logement.statut_foncier === 'permis_habiter' && "🏛️ Permis d'habiter"}
+                      {logement.statut_foncier === 'accord_coutumier' && '🤝 Accord coutumier'}
+                      {logement.statut_foncier === 'sous_seing_prive' && '✍️ Sous-seing privé'}
                     </span>
                   </div>
                 )}
-                {logement.latitude && logement.longitude && (
+
+                {lat && lng && (
                   <div className="detail-section">
                     <h3>🗺️ Localisation</h3>
-                    <CarteLeaflet logements={[logement]} hauteur="300px" />
+                    <div className="carte-iframe-container">
+                      <iframe
+                        title="carte"
+                        width="100%"
+                        height="300"
+                        frameBorder="0"
+                        scrolling="no"
+                        src={osmUrl}
+                        style={{ borderRadius: '10px', border: '1px solid #ddd' }}
+                      />
+                    </div>
                     
-                      href={'https://www.openstreetmap.org/?mlat=' + logement.latitude + '&mlon=' + logement.longitude + '&zoom=17'}
+                      href={osmLink}
                       target="_blank"
                       rel="noreferrer"
-                      style={{ display: 'block', textAlign: 'center', marginTop: '10px', color: '#2E7D32', fontWeight: 600, fontSize: '13px', textDecoration: 'none' }}
+                      className="osm-link"
                     >
-                      🗺️ Agrandir sur OpenStreetMap →
+                      🗺️ Agrandir sur OpenStreetMap
                     </a>
                   </div>
                 )}
+
               </div>
             </div>
+
             <div className="detail-droite">
               <div className="detail-sticky-card">
                 <div className="detail-prix">
@@ -287,31 +234,12 @@ function LogementDetail() {
                 </div>
                 <div className="proprio-box">
                   <div className="proprio-avatar">
-                    {logement.proprietaire_prenom?.charAt(0)}
-                    {logement.proprietaire_nom?.charAt(0)}
+                    {logement.proprietaire_prenom && logement.proprietaire_prenom.charAt(0)}
+                    {logement.proprietaire_nom && logement.proprietaire_nom.charAt(0)}
                   </div>
                   <div>
                     <strong>{logement.proprietaire_prenom} {logement.proprietaire_nom}</strong>
                     <p>📞 {logement.proprietaire_telephone || 'N/A'}</p>
                   </div>
                 </div>
-                <BoutonReservation logement={logement} user={user} />
-                <button
-                  className="btn-partager"
-                  onClick={() => {
-                    navigator.clipboard.writeText(window.location.href);
-                    alert('Lien copié !');
-                  }}
-                >
-                  🔗 Copier le lien
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default LogementDetail;
+                {logement.statut === 'disponible' && user && (

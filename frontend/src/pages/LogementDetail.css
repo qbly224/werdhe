@@ -292,3 +292,21 @@
   .detail-sticky-card { position: static; }
   .galerie-principale { height: 260px; }
 }
+
+.carte-iframe-container {
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.osm-link {
+  display: block;
+  text-align: center;
+  margin-top: 8px;
+  color: #2E7D32;
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.osm-link:hover { text-decoration: underline; }
