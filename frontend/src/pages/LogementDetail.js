@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
-import CarteGoogle from '../components/CarteGoogle';
+import CarteLeaflet from '../components/CarteLeaflet';
 import './LogementDetail.css';
 
 const CATEGORIE_INFO = {
@@ -48,18 +48,29 @@ const LogementDetail = () => {
     charger();
   }, [id]);
 
-  if (loading) return (
-    <div><Navbar /><div style={{textAlign:'center',padding:'100px'}}>⏳ Chargement...</div></div>
-  );
+  if (loading) {
+    return (
+      <div>
+        <Navbar />
+        <div style={{textAlign:'center', padding:'100px'}}>⏳ Chargement...</div>
+      </div>
+    );
+  }
 
-  if (!logement) return (
-    <div><Navbar /><div style={{textAlign:'center',padding:'100px'}}>❌ Logement non trouvé</div></div>
-  );
+  if (!logement) {
+    return (
+      <div>
+        <Navbar />
+        <div style={{textAlign:'center', padding:'100px'}}>❌ Logement non trouvé</div>
+      </div>
+    );
+  }
 
   const cat = CATEGORIE_INFO[logement.categorie] || { icon: '🏠', label: 'Logement' };
   const photos = logement.photos
     ? (typeof logement.photos === 'string'
-        ? JSON.parse(logement.photos) : logement.photos)
+        ? JSON.parse(logement.photos)
+        : logement.photos)
     : [];
 
   return (
@@ -68,7 +79,6 @@ const LogementDetail = () => {
       <div className="detail-page">
         <div className="container">
 
-          {/* Fil d'Ariane */}
           <div className="breadcrumb">
             <Link to="/logements">← Retour aux logements</Link>
           </div>
@@ -83,10 +93,7 @@ const LogementDetail = () => {
                 {photos.length > 0 ? (
                   <>
                     <div className="galerie-principale">
-                      <img
-                        src={photos[photoActive].url}
-                        alt="logement principal"
-                      />
+                      <img src={photos[photoActive].url} alt="logement" />
                       <span className={`detail-statut ${logement.statut}`}>
                         {logement.statut === 'disponible' ? '✅ Disponible' : '🔴 Loué'}
                       </span>
@@ -115,7 +122,7 @@ const LogementDetail = () => {
                 )}
               </div>
 
-              {/* Informations détaillées */}
+              {/* Détails */}
               <div className="detail-card">
                 <div className="detail-categorie-badge">
                   {cat.icon} {cat.label}
@@ -154,7 +161,8 @@ const LogementDetail = () => {
                         {logement.etat === 'neuf' ? '✨'
                           : logement.etat === 'bon_etat' ? '✅'
                           : logement.etat === 'a_renover' ? '🔧'
-                          : logement.etat === 'en_construction' ? '🏗️' : '⚠️'}
+                          : logement.etat === 'en_construction' ? '🏗️'
+                          : '⚠️'}
                       </span>
                       <small>
                         {logement.etat === 'neuf' ? 'Neuf'
@@ -180,15 +188,15 @@ const LogementDetail = () => {
                   <h3>⚡ Équipements</h3>
                   <div className="equipements-liste">
                     {logement.sanitaires_type && (
-                      <span>🚿 Sanitaires : {
-                        logement.sanitaires_type === 'interne' ? 'Internes'
-                          : logement.sanitaires_type === 'externe' ? 'Externes'
-                          : logement.sanitaires_type === 'commun' ? 'Communs'
-                          : 'Aucun'
+                      <span>🚿 {
+                        logement.sanitaires_type === 'interne' ? 'Sanitaires internes'
+                          : logement.sanitaires_type === 'externe' ? 'Sanitaires externes'
+                          : logement.sanitaires_type === 'commun' ? 'Sanitaires communs'
+                          : 'Sans sanitaires'
                       }</span>
                     )}
                     {logement.acces_eau && (
-                      <span>🚰 Eau : {
+                      <span>🚰 {
                         logement.acces_eau === 'robinet_interieur' ? 'Robinet intérieur'
                           : logement.acces_eau === 'robinet_exterieur' ? 'Robinet extérieur'
                           : logement.acces_eau === 'puits' ? 'Puits'
@@ -197,27 +205,27 @@ const LogementDetail = () => {
                       }</span>
                     )}
                     {logement.electricite && (
-                      <span>⚡ Électricité : {
-                        logement.electricite === 'secteur' ? 'Secteur (EDG)'
+                      <span>⚡ {
+                        logement.electricite === 'secteur' ? 'Secteur EDG'
                           : logement.electricite === 'solaire' ? 'Solaire'
                           : logement.electricite === 'groupe' ? 'Groupe électrogène'
                           : 'Sans électricité'
                       }</span>
                     )}
                     {logement.type_toit && (
-                      <span>🏠 Toit : {
-                        logement.type_toit === 'dalle' ? 'Dalle béton'
-                          : logement.type_toit === 'tole' ? 'Tôle'
-                          : logement.type_toit === 'chaume' ? 'Chaume'
-                          : 'Autre'
+                      <span>🏠 Toit {
+                        logement.type_toit === 'dalle' ? 'en dalle'
+                          : logement.type_toit === 'tole' ? 'en tôle'
+                          : logement.type_toit === 'chaume' ? 'en chaume'
+                          : 'autre'
                       }</span>
                     )}
                     {logement.type_sol && (
-                      <span>🏗️ Sol : {
-                        logement.type_sol === 'carreaux' ? 'Carreaux'
-                          : logement.type_sol === 'ciment' ? 'Ciment'
-                          : logement.type_sol === 'terre' ? 'Terre'
-                          : 'Autre'
+                      <span>🏗️ Sol {
+                        logement.type_sol === 'carreaux' ? 'carrelé'
+                          : logement.type_sol === 'ciment' ? 'cimenté'
+                          : logement.type_sol === 'terre' ? 'en terre'
+                          : 'autre'
                       }</span>
                     )}
                     {logement.parking && <span>🚗 Parking</span>}
@@ -240,16 +248,37 @@ const LogementDetail = () => {
                   </div>
                 )}
 
-                {/* Carte Google Maps */}
-                <div className="detail-section">
-                  <h3>🗺️ Localisation</h3>
-                  <CarteGoogle logement={logement} />
-                </div>
+                {/* Carte Leaflet */}
+                {logement.latitude && logement.longitude && (
+                  <div className="detail-section">
+                    <h3>🗺️ Localisation</h3>
+                    <CarteLeaflet
+                      logements={[logement]}
+                      hauteur="300px"
+                    />
+                    
+                      href={`https://www.openstreetmap.org/?mlat=${logement.latitude}&mlon=${logement.longitude}&zoom=17`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        display: 'block',
+                        textAlign: 'center',
+                        marginTop: '10px',
+                        color: '#2E7D32',
+                        fontWeight: 600,
+                        fontSize: '13px',
+                        textDecoration: 'none'
+                      }}
+                    >
+                      🗺️ Agrandir sur OpenStreetMap →
+                    </a>
+                  </div>
+                )}
 
               </div>
             </div>
 
-            {/* Colonne droite — Sticky */}
+            {/* Colonne droite sticky */}
             <div className="detail-droite">
               <div className="detail-sticky-card">
 
@@ -258,7 +287,6 @@ const LogementDetail = () => {
                   <small>/mois</small>
                 </div>
 
-                {/* Propriétaire */}
                 <div className="proprio-box">
                   <div className="proprio-avatar">
                     {logement.proprietaire_prenom?.charAt(0)}
@@ -289,10 +317,11 @@ const LogementDetail = () => {
                     </Link>
                   )
                 ) : (
-                  <div className="loue-badge">🔴 Ce logement est actuellement loué</div>
+                  <div className="loue-badge">
+                    🔴 Ce logement est actuellement loué
+                  </div>
                 )}
 
-                {/* Partager */}
                 <button
                   className="btn-partager"
                   onClick={() => {
