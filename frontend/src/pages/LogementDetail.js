@@ -27,6 +27,102 @@ const CATEGORIE_INFO = {
   centre_commercial: { icon: '🛍️', label: 'Centre commercial' }
 };
 
+// ================================
+// FONCTIONS HELPER (évite ternaires imbriqués)
+// ================================
+const getEtatIcon = (etat) => {
+  if (etat === 'neuf') return '✨';
+  if (etat === 'bon_etat') return '✅';
+  if (etat === 'a_renover') return '🔧';
+  if (etat === 'en_construction') return '🏗️';
+  return '⚠️';
+};
+
+const getEtatLabel = (etat) => {
+  if (etat === 'neuf') return 'Neuf';
+  if (etat === 'bon_etat') return 'Bon état';
+  if (etat === 'a_renover') return 'À rénover';
+  if (etat === 'en_construction') return 'En construction';
+  return 'Vétuste';
+};
+
+const getSanitairesLabel = (type) => {
+  if (type === 'interne') return 'Sanitaires internes';
+  if (type === 'externe') return 'Sanitaires externes';
+  if (type === 'commun') return 'Sanitaires communs';
+  return 'Sans sanitaires';
+};
+
+const getEauLabel = (acces) => {
+  if (acces === 'robinet_interieur') return 'Robinet intérieur';
+  if (acces === 'robinet_exterieur') return 'Robinet extérieur';
+  if (acces === 'puits') return 'Puits';
+  if (acces === 'forage') return 'Forage';
+  return 'Borne publique';
+};
+
+const getElectriciteLabel = (elec) => {
+  if (elec === 'secteur') return 'Secteur EDG';
+  if (elec === 'solaire') return 'Solaire';
+  if (elec === 'groupe') return 'Groupe électrogène';
+  return 'Sans électricité';
+};
+
+const getToitLabel = (toit) => {
+  if (toit === 'dalle') return 'Dalle béton';
+  if (toit === 'tole') return 'Tôle';
+  if (toit === 'chaume') return 'Chaume';
+  return 'Autre';
+};
+
+const getSolLabel = (sol) => {
+  if (sol === 'carreaux') return 'Carreaux';
+  if (sol === 'ciment') return 'Ciment';
+  if (sol === 'terre') return 'Terre';
+  return 'Autre';
+};
+
+const getStatutFoncierLabel = (statut) => {
+  if (statut === 'titre_foncier') return '📜 Titre foncier';
+  if (statut === 'permis_habiter') return "🏛️ Permis d'habiter";
+  if (statut === 'accord_coutumier') return '🤝 Accord coutumier';
+  return '✍️ Sous-seing privé';
+};
+
+// ================================
+// COMPOSANT BOUTON RÉSERVATION
+// ================================
+const BoutonReservation = ({ logement, user }) => {
+  if (logement.statut !== 'disponible') {
+    return (
+      <div className="loue-badge">
+        🔴 Ce logement est actuellement loué
+      </div>
+    );
+  }
+  if (user) {
+    return (
+      <Link
+        to={`/logements/${logement.id}/reserver`}
+        className="btn btn-primary btn-full-detail"
+      >
+        📅 Réserver ce logement
+      </Link>
+    );
+  }
+  return (
+    <Link
+      to="/login"
+      className="btn btn-secondary btn-full-detail"
+    >
+      🔐 Connectez-vous pour réserver
+    </Link>
+  );
+};
+
+// ================================
+// COMPOSANT PRINCIPAL
+// ================================
 const LogementDetail = () => {
   const { id } = useParams();
   const { user } = useAuth();
@@ -52,7 +148,9 @@ const LogementDetail = () => {
     return (
       <div>
         <Navbar />
-        <div style={{textAlign:'center', padding:'100px'}}>⏳ Chargement...</div>
+        <div style={{ textAlign: 'center', padding: '100px' }}>
+          ⏳ Chargement...
+        </div>
       </div>
     );
   }
@@ -61,12 +159,15 @@ const LogementDetail = () => {
     return (
       <div>
         <Navbar />
-        <div style={{textAlign:'center', padding:'100px'}}>❌ Logement non trouvé</div>
+        <div style={{ textAlign: 'center', padding: '100px' }}>
+          ❌ Logement non trouvé
+        </div>
       </div>
     );
   }
 
   const cat = CATEGORIE_INFO[logement.categorie] || { icon: '🏠', label: 'Logement' };
+
   const photos = logement.photos
     ? (typeof logement.photos === 'string'
         ? JSON.parse(logement.photos)
@@ -88,10 +189,10 @@ const LogementDetail = () => {
             {/* Colonne gauche */}
             <div className="detail-gauche">
 
-              {/* Galerie photos */}
+              {/* Galerie */}
               <div className="galerie">
                 {photos.length > 0 ? (
-                  <>
+                  <div>
                     <div className="galerie-principale">
                       <img src={photos[photoActive].url} alt="logement" />
                       <span className={`detail-statut ${logement.statut}`}>
@@ -104,14 +205,14 @@ const LogementDetail = () => {
                           <img
                             key={i}
                             src={photo.url}
-                            alt={`miniature ${i + 1}`}
+                            alt={`vue ${i + 1}`}
                             className={photoActive === i ? 'active' : ''}
                             onClick={() => setPhotoActive(i)}
                           />
                         ))}
                       </div>
                     )}
-                  </>
+                  </div>
                 ) : (
                   <div className="galerie-vide">
                     <span>{cat.icon}</span>
@@ -124,10 +225,13 @@ const LogementDetail = () => {
 
               {/* Détails */}
               <div className="detail-card">
+
                 <div className="detail-categorie-badge">
                   {cat.icon} {cat.label}
                 </div>
+
                 <h1 className="detail-titre">{logement.titre}</h1>
+
                 <p className="detail-adresse">
                   📍 {logement.adresse}, {logement.ville}, Guinée
                 </p>
@@ -157,20 +261,8 @@ const LogementDetail = () => {
                   )}
                   {logement.etat && (
                     <div className="caract-item">
-                      <span className="caract-icon">
-                        {logement.etat === 'neuf' ? '✨'
-                          : logement.etat === 'bon_etat' ? '✅'
-                          : logement.etat === 'a_renover' ? '🔧'
-                          : logement.etat === 'en_construction' ? '🏗️'
-                          : '⚠️'}
-                      </span>
-                      <small>
-                        {logement.etat === 'neuf' ? 'Neuf'
-                          : logement.etat === 'bon_etat' ? 'Bon état'
-                          : logement.etat === 'a_renover' ? 'À rénover'
-                          : logement.etat === 'en_construction' ? 'En construction'
-                          : 'Vétuste'}
-                      </small>
+                      <span className="caract-icon">{getEtatIcon(logement.etat)}</span>
+                      <small>{getEtatLabel(logement.etat)}</small>
                     </div>
                   )}
                 </div>
@@ -188,48 +280,22 @@ const LogementDetail = () => {
                   <h3>⚡ Équipements</h3>
                   <div className="equipements-liste">
                     {logement.sanitaires_type && (
-                      <span>🚿 {
-                        logement.sanitaires_type === 'interne' ? 'Sanitaires internes'
-                          : logement.sanitaires_type === 'externe' ? 'Sanitaires externes'
-                          : logement.sanitaires_type === 'commun' ? 'Sanitaires communs'
-                          : 'Sans sanitaires'
-                      }</span>
+                      <span>🚿 {getSanitairesLabel(logement.sanitaires_type)}</span>
                     )}
                     {logement.acces_eau && (
-                      <span>🚰 {
-                        logement.acces_eau === 'robinet_interieur' ? 'Robinet intérieur'
-                          : logement.acces_eau === 'robinet_exterieur' ? 'Robinet extérieur'
-                          : logement.acces_eau === 'puits' ? 'Puits'
-                          : logement.acces_eau === 'forage' ? 'Forage'
-                          : 'Borne publique'
-                      }</span>
+                      <span>🚰 {getEauLabel(logement.acces_eau)}</span>
                     )}
                     {logement.electricite && (
-                      <span>⚡ {
-                        logement.electricite === 'secteur' ? 'Secteur EDG'
-                          : logement.electricite === 'solaire' ? 'Solaire'
-                          : logement.electricite === 'groupe' ? 'Groupe électrogène'
-                          : 'Sans électricité'
-                      }</span>
+                      <span>⚡ {getElectriciteLabel(logement.electricite)}</span>
                     )}
                     {logement.type_toit && (
-                      <span>🏠 Toit {
-                        logement.type_toit === 'dalle' ? 'en dalle'
-                          : logement.type_toit === 'tole' ? 'en tôle'
-                          : logement.type_toit === 'chaume' ? 'en chaume'
-                          : 'autre'
-                      }</span>
+                      <span>🏠 Toit : {getToitLabel(logement.type_toit)}</span>
                     )}
                     {logement.type_sol && (
-                      <span>🏗️ Sol {
-                        logement.type_sol === 'carreaux' ? 'carrelé'
-                          : logement.type_sol === 'ciment' ? 'cimenté'
-                          : logement.type_sol === 'terre' ? 'en terre'
-                          : 'autre'
-                      }</span>
+                      <span>🏗️ Sol : {getSolLabel(logement.type_sol)}</span>
                     )}
                     {logement.parking && <span>🚗 Parking</span>}
-                    {logement.jardin && <span>🌿 Jardin/Cour</span>}
+                    {logement.jardin && <span>🌿 Jardin / Cour</span>}
                     {logement.climatisation && <span>❄️ Climatisation</span>}
                     {logement.gardien && <span>👮 Gardien</span>}
                   </div>
@@ -240,10 +306,7 @@ const LogementDetail = () => {
                   <div className="detail-section">
                     <h3>📜 Statut foncier</h3>
                     <span className="statut-foncier-badge">
-                      {logement.statut_foncier === 'titre_foncier' ? '📜 Titre foncier'
-                        : logement.statut_foncier === 'permis_habiter' ? '🏛️ Permis d\'habiter'
-                        : logement.statut_foncier === 'accord_coutumier' ? '🤝 Accord coutumier'
-                        : '✍️ Sous-seing privé'}
+                      {getStatutFoncierLabel(logement.statut_foncier)}
                     </span>
                   </div>
                 )}
@@ -252,10 +315,7 @@ const LogementDetail = () => {
                 {logement.latitude && logement.longitude && (
                   <div className="detail-section">
                     <h3>🗺️ Localisation</h3>
-                    <CarteLeaflet
-                      logements={[logement]}
-                      hauteur="300px"
-                    />
+                    <CarteLeaflet logements={[logement]} hauteur="300px" />
                     
                       href={`https://www.openstreetmap.org/?mlat=${logement.latitude}&mlon=${logement.longitude}&zoom=17`}
                       target="_blank"
@@ -278,7 +338,7 @@ const LogementDetail = () => {
               </div>
             </div>
 
-            {/* Colonne droite sticky */}
+            {/* Colonne droite */}
             <div className="detail-droite">
               <div className="detail-sticky-card">
 
@@ -300,27 +360,7 @@ const LogementDetail = () => {
                   </div>
                 </div>
 
-                {logement.statut === 'disponible' ? (
-                  user ? (
-                    <Link
-                      to={`/logements/${logement.id}/reserver`}
-                      className="btn btn-primary btn-full-detail"
-                    >
-                      📅 Réserver ce logement
-                    </Link>
-                  ) : (
-                    <Link
-                      to="/login"
-                      className="btn btn-secondary btn-full-detail"
-                    >
-                      🔐 Connectez-vous pour réserver
-                    </Link>
-                  )
-                ) : (
-                  <div className="loue-badge">
-                    🔴 Ce logement est actuellement loué
-                  </div>
-                )}
+                <BoutonReservation logement={logement} user={user} />
 
                 <button
                   className="btn-partager"
