@@ -10,6 +10,7 @@ const MENU_PROPRIETAIRE = [
   { path: '/dashboard/paiements', label: 'Paiements', icon: '💰' },
   { path: '/dashboard/factures', label: 'Factures', icon: '🧾' },
   { path: '/dashboard/documents', label: 'Documents', icon: '📄' },
+  { path: '/dashboard/alertes', label: 'Alertes', icon: '🔔' },
   { path: '/dashboard/parametres', label: 'Paramètres', icon: '⚙️' }
 ];
 

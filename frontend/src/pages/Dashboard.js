@@ -716,51 +716,139 @@ const OngletReservations = ({ stats, traiterReservation, user }) => (
 // ================================
 // ONGLET : PAIEMENTS
 // ================================
-const OngletPaiements = ({ stats }) => (
-  <div className="dash-content">
-    <div className="dash-page-header">
-      <div>
-        <h1>💰 Paiements</h1>
-        <p>{stats.paiements.length} paiement(s)</p>
+const OngletPaiements = ({ stats }) => {
+  var paiesCompletes = stats.paiements.filter(function(p) { return p.statut === 'complete'; });
+  var paiesAttente = stats.paiements.filter(function(p) { return p.statut === 'en_attente'; });
+
+  var totalEncaisse = paiesCompletes.reduce(function(sum, p) {
+    return sum + Number(p.montant);
+  }, 0);
+
+  var totalAttente = paiesAttente.reduce(function(sum, p) {
+    return sum + Number(p.montant);
+  }, 0);
+
+  var totalAttendu = totalEncaisse + totalAttente;
+
+  function handleExporter() {
+    var lignes = ['Locataire,Bien,Montant,Date,Mode,Statut'];
+    stats.paiements.forEach(function(p) {
+      lignes.push([
+        p.locataire_nom || '',
+        p.logement_titre || '',
+        p.montant,
+        new Date(p.created_at).toLocaleDateString('fr-FR'),
+        p.mode_paiement,
+        p.statut
+      ].join(','));
+    });
+    var csv = lignes.join('\n');
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'paiements_werdhe.csv';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    toast.success('Export CSV lance !');
+  }
+
+  return (
+    <div className="dash-content">
+      <div className="dash-page-header">
+        <div>
+          <h1>Paiements</h1>
+          <p>{stats.paiements.length} paiement(s)</p>
+        </div>
+        <button className="btn btn-primary" onClick={handleExporter}>
+          Exporter CSV
+        </button>
+      </div>
+
+      <div className="paiements-stats">
+        <div className="paie-stat-card" style={{ borderLeft: '4px solid #2E7D32' }}>
+          <div className="paie-stat-icon" style={{ background: '#e8f5e9' }}>✅</div>
+          <div>
+            <div className="paie-stat-val">{totalEncaisse.toLocaleString()} GNF</div>
+            <div className="paie-stat-lbl">Encaisse ce mois</div>
+          </div>
+        </div>
+        <div className="paie-stat-card" style={{ borderLeft: '4px solid #e65100' }}>
+          <div className="paie-stat-icon" style={{ background: '#fff3e0' }}>⏳</div>
+          <div>
+            <div className="paie-stat-val" style={{ color: '#e65100' }}>
+              {totalAttente.toLocaleString()} GNF
+            </div>
+            <div className="paie-stat-lbl">En attente</div>
+          </div>
+        </div>
+        <div className="paie-stat-card" style={{ borderLeft: '4px solid #1565c0' }}>
+          <div className="paie-stat-icon" style={{ background: '#e3f2fd' }}>📊</div>
+          <div>
+            <div className="paie-stat-val" style={{ color: '#1565c0' }}>
+              {totalAttendu.toLocaleString()} GNF
+            </div>
+            <div className="paie-stat-lbl">Total attendu</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ background: 'white', borderRadius: '12px', padding: '20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+        <h3 style={{ marginBottom: '16px', fontWeight: '700' }}>Historique des paiements</h3>
+
+        {stats.paiements.length === 0 && (
+          <div className="dash-empty-state">
+            <span>💰</span>
+            <h3>Aucun paiement</h3>
+            <p>Les paiements apparaitront ici</p>
+          </div>
+        )}
+
+        {stats.paiements.length >= 1 && (
+          <div>
+            <div className="paie-table-header">
+              <span>Locataire</span>
+              <span>Bien</span>
+              <span>Montant</span>
+              <span>Date</span>
+              <span>Mode</span>
+              <span>Statut</span>
+            </div>
+            {stats.paiements.map(function(p) {
+              return (
+                <div key={p.id} className="paie-table-row">
+                  <span style={{ fontWeight: '600' }}>
+                    {p.locataire_prenom} {p.locataire_nom}
+                  </span>
+                  <span>{p.logement_titre}</span>
+                  <span style={{ fontWeight: '700', color: '#1B5E20' }}>
+                    {Number(p.montant).toLocaleString()} GNF
+                  </span>
+                  <span>
+                    {p.date_paiement
+                      ? new Date(p.date_paiement).toLocaleDateString('fr-FR')
+                      : '—'}
+                  </span>
+                  <span>
+                    {p.mode_paiement === 'en_ligne' ? 'En ligne' : 'Especes'}
+                  </span>
+                  <span>
+                    <span className={'badge badge-' + p.statut}>
+                      {p.statut === 'complete' ? 'Paye'
+                        : p.statut === 'en_attente' ? 'En attente'
+                        : 'Echoue'}
+                    </span>
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
-
-    {stats.paiements.length === 0 ? (
-      <div className="dash-empty-state">
-        <span>💰</span>
-        <h3>Aucun paiement</h3>
-        <p>Les paiements apparaîtront ici</p>
-      </div>
-    ) : (
-      <div className="paiements-table">
-        <div className="table-header" style={{gridTemplateColumns:'1.5fr 1fr 1fr 1fr 1fr 1fr'}}>
-          <span>Facture</span>
-          <span>Logement</span>
-          <span>Mode</span>
-          <span>Montant</span>
-          <span>Date</span>
-          <span>Statut</span>
-        </div>
-        {stats.paiements.map(p => (
-          <div key={p.id} className="table-row" style={{gridTemplateColumns:'1.5fr 1fr 1fr 1fr 1fr 1fr'}}>
-            <span className="facture-num">{p.numero_facture}</span>
-            <span>{p.logement_titre}</span>
-            <span>{p.mode_paiement === 'en_ligne' ? '💳 En ligne' : '💵 Espèces'}</span>
-            <span className="montant-cell">{Number(p.montant).toLocaleString()} GNF</span>
-            <span>{new Date(p.created_at).toLocaleDateString('fr-FR')}</span>
-            <span>
-              <span className={`badge badge-${p.statut}`}>
-                {p.statut === 'complete' ? '✅ Payé'
-                  : p.statut === 'en_attente' ? '⏳ En attente'
-                  : '❌ Échoué'}
-              </span>
-            </span>
-          </div>
-        ))}
-      </div>
-    )}
-  </div>
-);
+  );
+};
 
 // ================================
 // ONGLET : FACTURES
@@ -806,255 +894,394 @@ const OngletFactures = ({ stats }) => (
 // ONGLET : DOCUMENTS
 // ================================
 const OngletDocuments = ({ user }) => {
+  const [reservations, setReservations] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filtreType, setFiltreType] = useState('');
-  const [reservations, setReservations] = useState([]);
   const [showGenerer, setShowGenerer] = useState(false);
-  const [showUpload, setShowUpload] = useState(false);
-  const [genForm, setGenForm] = useState({ reservation_id: '', type: 'contrat_bail' });
-  const [uploadForm, setUploadForm] = useState({ titre: '', type: 'autre' });
+  const [genForm, setGenForm] = useState({ reservation_id: '', type: '' });
   const [fichierManuel, setFichierManuel] = useState(null);
+  const [uploadForm, setUploadForm] = useState({ titre: '', type: 'autre' });
+  const [showUpload, setShowUpload] = useState(false);
 
-  useEffect(() => {
+  useEffect(function() {
     chargerDocuments();
     chargerReservations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filtreType]);
+  }, []);
 
-  const chargerDocuments = async () => {
+  function chargerDocuments() {
     setLoading(true);
-    try {
-      const params = filtreType ? { type: filtreType } : {};
-      const res = await api.get('/documents', { params });
-      setDocuments(res.data.documents);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    api.get('/documents')
+      .then(function(res) { setDocuments(res.data.documents); })
+      .catch(console.error)
+      .finally(function() { setLoading(false); });
+  }
 
-  const chargerReservations = async () => {
-    try {
-      const endpoint = user?.role === 'locataire'
-        ? '/reservations/mes-reservations'
-        : '/reservations/proprietaire';
-      const res = await api.get(endpoint);
-      setReservations(res.data.reservations.filter(r => r.statut === 'confirmee'));
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  function chargerReservations() {
+    var endpoint = user && user.role === 'locataire'
+      ? '/reservations/mes-reservations'
+      : '/reservations/proprietaire';
+    api.get(endpoint)
+      .then(function(res) {
+        setReservations(res.data.reservations.filter(function(r) {
+          return r.statut === 'confirmee';
+        }));
+      })
+      .catch(console.error);
+  }
 
-  const handleGenerer = async (e) => {
+  function handleGenerer(e) {
     e.preventDefault();
-    try {
-      await api.post('/documents/generer', genForm);
-      toast.success('✅ Document généré et envoyé par email !');
-      setShowGenerer(false);
-      chargerDocuments();
-    } catch (err) {
-      toast.error(err.response?.data?.erreur || 'Erreur');
-    }
-  };
+    api.post('/documents/generer', genForm)
+      .then(function() {
+        toast.success('Document genere et envoye !');
+        setShowGenerer(false);
+        setGenForm({ reservation_id: '', type: '' });
+        chargerDocuments();
+      })
+      .catch(function(err) {
+        toast.error(err.response && err.response.data
+          ? err.response.data.erreur : 'Erreur');
+      });
+  }
 
-  const handleUploadManuel = async (e) => {
+  function handleUploadManuel(e) {
     e.preventDefault();
-    if (!fichierManuel) { toast.error('Sélectionnez un fichier'); return; }
-    const formData = new FormData();
+    if (!fichierManuel) { toast.error('Selectionnez un fichier'); return; }
+    var formData = new FormData();
     formData.append('fichier', fichierManuel);
     formData.append('titre', uploadForm.titre);
     formData.append('type', uploadForm.type);
-    try {
-      await api.post('/documents/upload-manuel', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      toast.success('✅ Document uploadé !');
-      setShowUpload(false);
-      chargerDocuments();
-    } catch (err) {
-      toast.error('Erreur upload');
-    }
-  };
+    api.post('/documents/upload-manuel', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+      .then(function() {
+        toast.success('Document uploade !');
+        setShowUpload(false);
+        chargerDocuments();
+      })
+      .catch(function() { toast.error('Erreur upload'); });
+  }
 
-  const handleTelecharger = async (doc) => {
-    try {
-      const res = await api.get(`/documents/${doc.id}/telecharger`, { responseType: 'blob' });
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${doc.titre.replace(/\s+/g, '_')}.html`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      toast.success('✅ Téléchargement lancé !');
-    } catch (err) {
-      toast.error('Erreur téléchargement');
-    }
-  };
+  function handleTelecharger(doc) {
+    api.get('/documents/' + doc.id + '/telecharger', { responseType: 'blob' })
+      .then(function(res) {
+        var url = window.URL.createObjectURL(new Blob([res.data]));
+        var link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', doc.titre.replace(/\s+/g, '_') + '.html');
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        toast.success('Telechargement lance !');
+      })
+      .catch(function() { toast.error('Erreur telechargement'); });
+  }
 
-  const handleRenvoyerEmail = async (id) => {
-    try {
-      await api.post(`/documents/${id}/renvoyer-email`);
-      toast.success('✅ Document renvoyé par email !');
-    } catch (err) {
-      toast.error('Erreur envoi email');
-    }
-  };
-
-  const icones = { facture:'🧾', quittance:'📋', contrat_bail:'📜', etat_lieux:'🏠', autre:'📄' };
-  const labels = { facture:'Facture', quittance:'Quittance', contrat_bail:'Contrat de bail', etat_lieux:'État des lieux', autre:'Autre document' };
+  var typesDoc = [
+    { value: 'contrat_bail', label: 'Nouveau bail', desc: 'Contrat de location', icon: '📝', color: '#2E7D32' },
+    { value: 'quittance', label: 'Quittance de loyer', desc: 'Recu mensuel officiel', icon: '📋', color: '#1565c0' },
+    { value: 'etat_lieux', label: 'Etat des lieux', desc: 'Entree ou sortie du locataire', icon: '🏠', color: '#e65100' },
+    { value: 'mise_en_demeure', label: 'Mise en demeure', desc: 'Pour loyer impaye', icon: '⚠️', color: '#c62828' },
+    { value: 'rapport_financier', label: 'Rapport financier', desc: 'Revenus du mois ou annee', icon: '📊', color: '#6a1b9a' },
+    { value: 'facture', label: 'Facture', desc: 'Facture de loyer', icon: '🧾', color: '#00695c' }
+  ];
 
   return (
     <div className="dash-content">
       <div className="dash-page-header">
         <div>
-          <h1>📄 Documents</h1>
+          <h1>Documents</h1>
           <p>{documents.length} document(s)</p>
         </div>
-        <div style={{display:'flex', gap:'10px'}}>
-          <button className="btn btn-secondary"
-            onClick={() => { setShowUpload(!showUpload); setShowGenerer(false); }}>
-            📎 Ajouter manuellement
-          </button>
-          <button className="btn btn-primary"
-            onClick={() => { setShowGenerer(!showGenerer); setShowUpload(false); }}>
-            ✨ Générer un document
-          </button>
-        </div>
+        <button
+          className="btn btn-secondary"
+          onClick={function() { setShowUpload(!showUpload); setShowGenerer(false); }}
+        >
+          Ajouter manuellement
+        </button>
+      </div>
+
+      <div className="docs-types-grid">
+        {typesDoc.map(function(t) {
+          return (
+            <div key={t.value} className="doc-type-card">
+              <div className="doc-type-icon" style={{ background: t.color + '15' }}>
+                <span>{t.icon}</span>
+              </div>
+              <strong>{t.label}</strong>
+              <p>{t.desc}</p>
+              <button
+                className="btn-generer"
+                style={{ background: t.color }}
+                onClick={function() {
+                  setGenForm({ reservation_id: '', type: t.value });
+                  setShowGenerer(true);
+                  setShowUpload(false);
+                }}
+              >
+                Generer
+              </button>
+            </div>
+          );
+        })}
       </div>
 
       {showGenerer && (
-        <div className="doc-form-card" style={{marginBottom:'20px'}}>
-          <h3>✨ Générer un document</h3>
+        <div className="doc-form-card">
+          <h3>Generer un document</h3>
           <form onSubmit={handleGenerer}>
-            <div className="form-row-2" style={{gap:'16px'}}>
+            <div className="form-row-2">
               <div>
-                <label>Type de document *</label>
+                <label>Type</label>
                 <select value={genForm.type}
-                  onChange={e => setGenForm({...genForm, type: e.target.value})}>
-                  <option value="facture">🧾 Facture de loyer</option>
-                  <option value="quittance">📋 Quittance de loyer</option>
-                  <option value="contrat_bail">📜 Contrat de bail</option>
+                  onChange={function(e) { setGenForm({type: e.target.value, reservation_id: genForm.reservation_id}); }}>
+                  {typesDoc.map(function(t) {
+                    return <option key={t.value} value={t.value}>{t.label}</option>;
+                  })}
                 </select>
               </div>
               <div>
-                <label>Réservation concernée *</label>
+                <label>Reservation concernee</label>
                 <select value={genForm.reservation_id}
-                  onChange={e => setGenForm({...genForm, reservation_id: e.target.value})} required>
-                  <option value="">Sélectionnez une réservation</option>
-                  {reservations.map(r => (
-                    <option key={r.id} value={r.id}>
-                      {r.logement_titre} — {new Date(r.date_debut).toLocaleDateString('fr-FR')}
-                    </option>
-                  ))}
+                  onChange={function(e) { setGenForm({type: genForm.type, reservation_id: e.target.value}); }}
+                  required>
+                  <option value="">Selectionnez</option>
+                  {reservations.map(function(r) {
+                    return (
+                      <option key={r.id} value={r.id}>
+                        {r.logement_titre} - {new Date(r.date_debut).toLocaleDateString('fr-FR')}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
             </div>
-            <div style={{display:'flex', gap:'10px', marginTop:'12px'}}>
-              <button type="submit" className="btn btn-primary">✨ Générer et envoyer</button>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
+              <button type="submit" className="btn btn-primary">Generer et envoyer</button>
               <button type="button" className="btn btn-secondary"
-                onClick={() => setShowGenerer(false)}>Annuler</button>
+                onClick={function() { setShowGenerer(false); }}>Annuler</button>
             </div>
           </form>
         </div>
       )}
 
       {showUpload && (
-        <div className="doc-form-card" style={{marginBottom:'20px'}}>
-          <h3>📎 Ajouter un document manuellement</h3>
+        <div className="doc-form-card">
+          <h3>Ajouter un document</h3>
           <form onSubmit={handleUploadManuel}>
-            <div className="form-row-2" style={{gap:'16px'}}>
+            <div className="form-row-2">
               <div>
-                <label>Titre *</label>
-                <input type="text" placeholder="Ex: Contrat signé"
+                <label>Titre</label>
+                <input type="text"
                   value={uploadForm.titre}
-                  onChange={e => setUploadForm({...uploadForm, titre: e.target.value})} required />
+                  onChange={function(e) { setUploadForm({ titre: e.target.value, type: uploadForm.type }); }}
+                  required />
               </div>
               <div>
-                <label>Catégorie</label>
+                <label>Categorie</label>
                 <select value={uploadForm.type}
-                  onChange={e => setUploadForm({...uploadForm, type: e.target.value})}>
-                  <option value="facture">🧾 Facture</option>
-                  <option value="quittance">📋 Quittance</option>
-                  <option value="contrat_bail">📜 Contrat de bail</option>
-                  <option value="etat_lieux">🏠 État des lieux</option>
-                  <option value="autre">📄 Autre</option>
+                  onChange={function(e) { setUploadForm({ titre: uploadForm.titre, type: e.target.value }); }}>
+                  {typesDoc.map(function(t) {
+                    return <option key={t.value} value={t.value}>{t.label}</option>;
+                  })}
                 </select>
               </div>
             </div>
-            <div style={{marginTop:'12px'}}>
-              <label>Fichier (PDF, Word, Image) *</label>
+            <div style={{ marginTop: '12px' }}>
+              <label>Fichier (PDF, Word, Image)</label>
               <input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                onChange={e => setFichierManuel(e.target.files[0])} required />
+                onChange={function(e) { setFichierManuel(e.target.files[0]); }}
+                required />
             </div>
-            <div style={{display:'flex', gap:'10px', marginTop:'12px'}}>
-              <button type="submit" className="btn btn-primary">📎 Uploader</button>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
+              <button type="submit" className="btn btn-primary">Uploader</button>
               <button type="button" className="btn btn-secondary"
-                onClick={() => setShowUpload(false)}>Annuler</button>
+                onClick={function() { setShowUpload(false); }}>Annuler</button>
             </div>
           </form>
         </div>
       )}
 
-      <div className="doc-filtres">
-        {['', 'facture', 'quittance', 'contrat_bail', 'etat_lieux', 'autre'].map(t => (
-          <button key={t}
-            className={`filtre-btn ${filtreType === t ? 'active' : ''}`}
-            onClick={() => setFiltreType(t)}>
-            {t === '' ? '📁 Tous' : `${icones[t]} ${labels[t]}s`}
-          </button>
-        ))}
-      </div>
-
-      {loading ? (
-        <div className="dash-empty">⏳ Chargement...</div>
-      ) : documents.length === 0 ? (
-        <div className="dash-empty-state">
-          <span>📄</span>
-          <h3>Aucun document</h3>
-          <p>Vos documents apparaîtront ici automatiquement après chaque paiement</p>
-        </div>
-      ) : (
-        <div className="documents-liste">
-          {documents.map(doc => (
+      <div className="docs-historique">
+        <h3>Historique des documents</h3>
+        {loading && <p style={{ color: '#888' }}>Chargement...</p>}
+        {!loading && documents.length === 0 && (
+          <div className="dash-empty-state">
+            <span>📄</span>
+            <h3>Aucun document</h3>
+            <p>Generez votre premier document ci-dessus</p>
+          </div>
+        )}
+        {!loading && documents.map(function(doc) {
+          return (
             <div key={doc.id} className="document-item">
-              <div className="doc-icone">{icones[doc.type] || '📄'}</div>
+              <div className="doc-icone">
+                {doc.type === 'facture' ? '🧾'
+                  : doc.type === 'quittance' ? '📋'
+                  : doc.type === 'contrat_bail' ? '📜'
+                  : doc.type === 'etat_lieux' ? '🏠'
+                  : '📄'}
+              </div>
               <div className="doc-info">
                 <strong>{doc.titre}</strong>
-                <span>
-                  {labels[doc.type]}
-                  {doc.logement_titre ? ` • 🏠 ${doc.logement_titre}` : ''}
-                  {doc.logement_ville ? `, ${doc.logement_ville}` : ''}
-                </span>
-                <span>
-                  📅 {new Date(doc.created_at).toLocaleDateString('fr-FR')}
-                  {doc.est_manuel && ' • 📎 Manuel'}
-                  {doc.email_envoye && ' • 📧 Email envoyé'}
-                </span>
-              </div>
-              <div className="doc-statut">
-                <span className={`badge badge-${doc.statut === 'envoye' ? 'confirmee' : 'en_attente'}`}>
-                  {doc.statut === 'genere' ? '📄 Généré'
-                    : doc.statut === 'envoye' ? '📧 Envoyé'
-                    : doc.statut === 'signe' ? '✅ Signé' : '❌ Annulé'}
-                </span>
+                <span>{doc.logement_titre && ('Logement : ' + doc.logement_titre)}</span>
+                <span>{new Date(doc.created_at).toLocaleDateString('fr-FR')}</span>
               </div>
               <div className="doc-actions">
                 {!doc.est_manuel && (
                   <button className="btn-doc btn-telecharger"
-                    onClick={() => handleTelecharger(doc)}>
-                    ⬇️ Télécharger
+                    onClick={function() { handleTelecharger(doc); }}>
+                    Telecharger
                   </button>
                 )}
                 <button className="btn-doc btn-email"
-                  onClick={() => handleRenvoyerEmail(doc.id)}>
-                  📧 Email
+                  onClick={function() {
+                    api.post('/documents/' + doc.id + '/renvoyer-email')
+                      .then(function() { toast.success('Email envoye !'); })
+                      .catch(function() { toast.error('Erreur'); });
+                  }}>
+                  Email
                 </button>
               </div>
             </div>
-          ))}
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+// ================================
+// ONGLET : ALERTES
+// ================================
+const OngletAlertes = ({ nbAlertes }) => {
+  const [data, setData] = useState({ alertes: [], signalements: [] });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(function() {
+    api.get('/alertes')
+      .then(function(res) { setData(res.data); })
+      .catch(console.error)
+      .finally(function() { setLoading(false); });
+  }, []);
+
+  function traiterAlerte(id, statut) {
+    api.patch('/alertes/' + id, { statut: statut })
+      .then(function() {
+        toast.success('Alerte mise a jour !');
+        setData(function(prev) {
+          return {
+            alertes: prev.alertes.filter(function(a) { return a.id !== id; }),
+            signalements: prev.signalements
+          };
+        });
+      })
+      .catch(function() { toast.error('Erreur'); });
+  }
+
+  function traiterSignalement(id, statut) {
+    api.patch('/alertes/signalements/' + id, { statut: statut })
+      .then(function() {
+        toast.success('Signalement mis a jour !');
+        api.get('/alertes')
+          .then(function(res) { setData(res.data); })
+          .catch(console.error);
+      })
+      .catch(function() { toast.error('Erreur'); });
+  }
+
+  var total = data.alertes.length + data.signalements.length;
+
+  return (
+    <div className="dash-content">
+      <div className="dash-page-header">
+        <div>
+          <h1>Alertes</h1>
+          <p>{total} alerte(s) active(s)</p>
+        </div>
+      </div>
+
+      {loading && <p style={{ color: '#888' }}>Chargement...</p>}
+
+      {!loading && total === 0 && (
+        <div className="dash-empty-state">
+          <span>✅</span>
+          <h3>Aucune alerte</h3>
+          <p>Tout est en ordre !</p>
+        </div>
+      )}
+
+      {!loading && data.alertes.map(function(a) {
+        var couleur = a.priorite === 'haute' ? '#c62828' : '#e65100';
+        var icone = a.type === 'loyer_retard' ? '⚠️'
+          : a.type === 'bail_bientot' ? '📋'
+          : '🔔';
+        return (
+          <div key={a.id} className="alerte-card" style={{ borderLeft: '4px solid ' + couleur }}>
+            <div className="alerte-icone">{icone}</div>
+            <div className="alerte-info">
+              <strong>{a.titre}</strong>
+              <span>{a.description}</span>
+            </div>
+            <div className="alerte-actions">
+              {a.type === 'loyer_retard' && (
+                <button className="btn-alerte" style={{ background: '#c62828' }}
+                  onClick={function() { traiterAlerte(a.id, 'traitee'); }}>
+                  Relancer
+                </button>
+              )}
+              {a.type === 'bail_bientot' && (
+                <button className="btn-alerte" style={{ background: '#2E7D32' }}
+                  onClick={function() { traiterAlerte(a.id, 'traitee'); }}>
+                  Renouveler
+                </button>
+              )}
+              {a.type !== 'loyer_retard' && a.type !== 'bail_bientot' && (
+                <button className="btn-alerte" style={{ background: '#1565c0' }}
+                  onClick={function() { traiterAlerte(a.id, 'traitee'); }}>
+                  Traiter
+                </button>
+              )}
+              <button className="btn-alerte-ignore"
+                onClick={function() { traiterAlerte(a.id, 'ignoree'); }}>
+                Ignorer
+              </button>
+            </div>
+          </div>
+        );
+      })}
+
+      {!loading && data.signalements.length >= 1 && (
+        <div style={{ marginTop: '20px' }}>
+          <h3 style={{ marginBottom: '12px', fontWeight: '700', color: '#1B5E20' }}>
+            Signalements de pannes
+          </h3>
+          {data.signalements.map(function(s) {
+            return (
+              <div key={s.id} className="alerte-card" style={{ borderLeft: '4px solid #1565c0' }}>
+                <div className="alerte-icone">🔧</div>
+                <div className="alerte-info">
+                  <strong>{s.titre}</strong>
+                  <span>
+                    {s.logement_titre}
+                    {s.locataire_nom && (' — ' + s.locataire_prenom + ' ' + s.locataire_nom)}
+                  </span>
+                  {s.description && <span>{s.description}</span>}
+                </div>
+                <div className="alerte-actions">
+                  <button className="btn-alerte" style={{ background: '#1565c0' }}
+                    onClick={function() { traiterSignalement(s.id, 'en_cours'); }}>
+                    Suivre
+                  </button>
+                  <button className="btn-alerte" style={{ background: '#2E7D32' }}
+                    onClick={function() { traiterSignalement(s.id, 'resolu'); }}>
+                    Resolu
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -1209,6 +1436,7 @@ const Dashboard = () => {
       case '/dashboard/factures': return <OngletFactures stats={stats} />;
       case '/dashboard/documents': return <OngletDocuments user={user} />;
       case '/dashboard/mes-locations': return <OngletMesLocations stats={stats} />;
+      case '/dashboard/alertes': return <OngletAlertes />;
       case '/dashboard/parametres': return <OngletParametres user={user} />;
       default: return <OngletOverview stats={stats} user={user} />;
     }
