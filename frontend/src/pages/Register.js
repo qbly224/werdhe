@@ -7,6 +7,7 @@ import './auth.css';
 
 export default function Register() {
   const navigate = useNavigate();
+  // eslint-disable-next-line no-unused-vars
   const { login } = useAuth();
   const [searchParams] = useSearchParams();
   const roleInitial = searchParams.get('role') || 'proprietaire';
