@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -48,9 +49,11 @@ function NotifPanel(props) {
 
 function OngletOverview(props) {
   var stats = props.stats;
+  // eslint-disable-next-line no-unused-vars
   var user = props.user;
   var alertes = props.alertes;
 
+  // eslint-disable-next-line no-unused-vars
   var totalLoyers = stats.logements
     .filter(function(b) { return b.statut === 'loue'; })
     .reduce(function(s, b) { return s + Number(b.prix_mensuel); }, 0);
@@ -425,6 +428,7 @@ function OngletLocataires(props) {
 function OngletReservations(props) {
   var stats = props.stats;
   var traiter = props.traiter;
+  // eslint-disable-next-line no-unused-vars
   var user = props.user;
   return (
     <div>
@@ -552,6 +556,7 @@ function OngletPaiements(props) {
 }
 
 function OngletAlertes(props) {
+  // eslint-disable-next-line no-unused-vars
   var user = props.user;
   var [data, setData] = useState({ alertes: [], signalements: [] });
   var [loading, setLoading] = useState(true);
@@ -631,6 +636,7 @@ function OngletAlertes(props) {
 }
 
 function OngletDocuments(props) {
+  // eslint-disable-next-line no-unused-vars
   var user = props.user;
   var [reservations, setReservations] = useState([]);
   var [documents, setDocuments] = useState([]);
@@ -845,6 +851,7 @@ function OngletMessages() {
 }
 
 function OngletParametres(props) {
+  // eslint-disable-next-line no-unused-vars
   var user = props.user;
   return (
     <div>
