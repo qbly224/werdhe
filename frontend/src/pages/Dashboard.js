@@ -904,7 +904,7 @@ function OngletMessages() {
                 </div>
                 {convCourante.telephone && (
                   
-                    href={'tel:' + convCourante.telephone}
+<a href={'tel:' + convCourante.telephone}
                     style={{marginLeft:'auto', background:'#E8F5E9', color:'#1B6B3A', borderRadius:'20px', padding:'6px 14px', fontSize:12, fontWeight:600, textDecoration:'none', display:'flex', alignItems:'center', gap:4}}
                   >
                     📞 Appeler
