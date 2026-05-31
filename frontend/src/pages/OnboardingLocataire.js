@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './auth.css';
 
 var EQUIPEMENTS = ['Eau courante', 'Gardiennage', 'Parking', 'WiFi', 'Meuble', 'Climatisation'];
+var TYPES_LOGEMENT = ['Tous types', 'Appartement', 'Villa', 'Studio', 'Chambre', 'Maison', 'Duplex', 'Bureau', 'Boutique'];
 
 export default function OnboardingLocataire() {
   var navigate = useNavigate();
@@ -10,10 +11,12 @@ export default function OnboardingLocataire() {
   var [nomComplet, setNomComplet] = useState('');
   var [profession, setProfession] = useState('Fonctionnaire');
   var [budget, setBudget] = useState('2 000 000');
-  var [quartier, setQuartier] = useState('Ratoma, Conakry');
-  var [typeLogement, setTypeLogement] = useState('Appartement');
+  var [villeTexte, setVilleTexte] = useState('');
+  var [typeLogement, setTypeLogement] = useState('Tous types');
   var [dispo, setDispo] = useState('Immediate');
   var [equipements, setEquipements] = useState(['Eau courante', 'WiFi']);
+  var [docs, setDocs] = useState({ cni: null, revenus: null, garant: null });
+  var [uploading, setUploading] = useState(false);
 
   function toggleEquipement(eq) {
     var next = equipements.slice();
@@ -22,24 +25,31 @@ export default function OnboardingLocataire() {
     setEquipements(next);
   }
 
+  function handleDocUpload(key, file) {
+    if (!file) return;
+    setUploading(true);
+    setTimeout(function() {
+      setDocs(function(prev) {
+        var next = Object.assign({}, prev);
+        next[key] = file;
+        return next;
+      });
+      setUploading(false);
+    }, 500);
+  }
+
   function Stepper() {
     var steps = [1, 2, 3, 4];
     return (
       <div className="auth-stepper">
         {steps.map(function(s) {
-          var dotClass = s < step
-            ? 'auth-step-dot done-blue'
-            : s === step
-            ? 'auth-step-dot active-blue'
-            : 'auth-step-dot pending';
+          var dotClass = s < step ? 'auth-step-dot done-blue' : s === step ? 'auth-step-dot active-blue' : 'auth-step-dot pending';
           var lineClass = s < step ? 'auth-step-line done-blue' : 'auth-step-line';
           return (
             <div key={s} style={{display:'flex', alignItems:'center', flex: s < 4 ? '1' : 'none'}}>
               <div className={dotClass}>
                 {s < step ? (
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
                 ) : s}
               </div>
               {s < 4 && <div className={lineClass} style={{flex:1}} />}
@@ -73,6 +83,7 @@ export default function OnboardingLocataire() {
               <option>Commercant(e)</option>
               <option>Salarie(e) prive</option>
               <option>Etudiant(e)</option>
+              <option>Independant(e)</option>
               <option>Autre</option>
             </select>
           </div>
@@ -83,6 +94,7 @@ export default function OnboardingLocataire() {
               <option>500 000</option>
               <option>1 000 000</option>
               <option>2 000 000</option>
+              <option>3 000 000</option>
               <option>5 000 000</option>
               <option>Plus de 5 000 000</option>
             </select>
@@ -111,24 +123,51 @@ export default function OnboardingLocataire() {
 
           <div className="auth-field">
             <label>Quartier / Ville souhaite</label>
-            <select value={quartier} onChange={function(e) { setQuartier(e.target.value); }}>
-              <option>Ratoma, Conakry</option>
-              <option>Kaloum, Conakry</option>
-              <option>Matam, Conakry</option>
-              <option>Dixinn, Conakry</option>
-              <option>Labe</option>
-              <option>Kankan</option>
-            </select>
+            <input
+              type="text"
+              placeholder="Ex: Ratoma, Conakry ou Labe..."
+              value={villeTexte}
+              onChange={function(e) { setVilleTexte(e.target.value); }}
+              list="villes-list"
+            />
+            <datalist id="villes-list">
+              <option value="Ratoma, Conakry" />
+              <option value="Kaloum, Conakry" />
+              <option value="Matam, Conakry" />
+              <option value="Dixinn, Conakry" />
+              <option value="Matoto, Conakry" />
+              <option value="Lambanyi, Conakry" />
+              <option value="Hamdallaye, Conakry" />
+              <option value="Cosa, Conakry" />
+              <option value="Nongo, Conakry" />
+              <option value="Kobaya, Conakry" />
+              <option value="Bambeto, Conakry" />
+              <option value="Kaporo, Conakry" />
+              <option value="Sonfonia, Conakry" />
+              <option value="Labe" />
+              <option value="Kankan" />
+              <option value="Nzerekore" />
+              <option value="Kindia" />
+              <option value="Mamou" />
+              <option value="Boke" />
+              <option value="Faranah" />
+              <option value="Siguiri" />
+              <option value="Kissidougou" />
+              <option value="Gueckedou" />
+              <option value="Pita" />
+              <option value="Fria" />
+              <option value="Boffa" />
+              <option value="Coyah" />
+            </datalist>
+            <div style={{fontSize:'11px', color:'#aaa', marginTop:'4px'}}>
+              Ecrivez librement ou choisissez dans la liste
+            </div>
           </div>
 
           <div className="auth-field">
             <label>Type de logement</label>
             <select value={typeLogement} onChange={function(e) { setTypeLogement(e.target.value); }}>
-              <option>Tous types</option>
-              <option>Appartement</option>
-              <option>Villa</option>
-              <option>Studio / Chambre</option>
-              <option>Maison</option>
+              {TYPES_LOGEMENT.map(function(t) { return <option key={t}>{t}</option>; })}
             </select>
           </div>
 
@@ -138,6 +177,7 @@ export default function OnboardingLocataire() {
               <option>Immediate</option>
               <option>Dans 1 mois</option>
               <option>Dans 3 mois</option>
+              <option>Dans 6 mois</option>
             </select>
           </div>
 
@@ -162,9 +202,7 @@ export default function OnboardingLocataire() {
           </div>
 
           <div className="auth-btn-row">
-            <button className="auth-btn-outline" onClick={function() { setStep(1); }} type="button">
-              Retour
-            </button>
+            <button className="auth-btn-outline" onClick={function() { setStep(1); }} type="button">Retour</button>
             <button className="auth-btn-blue" onClick={function() { setStep(3); }} type="button">
               Continuer
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
@@ -179,10 +217,10 @@ export default function OnboardingLocataire() {
   }
 
   if (step === 3) {
-    var docs = [
-      { titre: "Piece d'identite (CNI)", desc: 'Photo recto-verso', badge: 'Recommande', iconColor: '#1A4FA0', iconBg: '#E3F2FD' },
-      { titre: 'Justificatif de revenus', desc: "Fiche de paie, attestation employeur", iconColor: '#1A4FA0', iconBg: '#E3F2FD' },
-      { titre: 'Contact de garant', desc: 'Optionnel mais recommande', iconColor: '#1A4FA0', iconBg: '#E3F2FD' }
+    var docsList = [
+      { key: 'cni', titre: "Piece d'identite (CNI)", desc: 'Photo recto-verso', badge: 'Recommande', accept: 'image/*,.pdf' },
+      { key: 'revenus', titre: 'Justificatif de revenus', desc: 'Fiche de paie, attestation employeur', badge: null, accept: '.pdf,.doc,.docx,image/*' },
+      { key: 'garant', titre: 'Contact de garant', desc: 'Optionnel mais recommande', badge: null, accept: 'image/*,.pdf' }
     ];
     return (
       <div className="auth-page">
@@ -193,31 +231,81 @@ export default function OnboardingLocataire() {
           <div className="auth-step-desc">Un dossier complet augmente vos chances d'obtenir un logement rapidement.</div>
 
           <div style={{marginBottom:'16px'}}>
-            {docs.map(function(doc) {
+            {docsList.map(function(doc) {
+              var uploaded = docs[doc.key];
               return (
-                <div key={doc.titre} className="auth-doc-item">
-                  <div className="auth-doc-icon" style={{background: doc.iconBg}}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={doc.iconColor} strokeWidth="2.5" aria-hidden="true">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                      <polyline points="14 2 14 8 20 8"/>
-                    </svg>
-                  </div>
-                  <div style={{flex:1}}>
-                    <div className="auth-doc-title">{doc.titre}</div>
-                    <div className="auth-doc-desc">{doc.desc}</div>
-                  </div>
-                  {doc.badge && (
-                    <span className="auth-doc-badge">{doc.badge}</span>
-                  )}
+                <div key={doc.key} style={{marginBottom:'10px'}}>
+                  <label style={{cursor:'pointer', display:'block'}}>
+                    <div
+                      className="auth-doc-item"
+                      style={{
+                        borderColor: uploaded ? '#1A4FA0' : '#e0e0e0',
+                        background: uploaded ? '#f0f4fb' : '#fff',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      <div className="auth-doc-icon" style={{background: uploaded ? '#E3F2FD' : '#f5f5f5'}}>
+                        {uploaded ? (
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A4FA0" strokeWidth="2.5" aria-hidden="true">
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                        ) : (
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2.5" aria-hidden="true">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="12" y1="18" x2="12" y2="12"/>
+                            <line x1="9" y1="15" x2="15" y2="15"/>
+                          </svg>
+                        )}
+                      </div>
+                      <div style={{flex:1}}>
+                        <div className="auth-doc-title" style={{color: uploaded ? '#1A4FA0' : '#111'}}>
+                          {doc.titre}
+                        </div>
+                        <div className="auth-doc-desc">
+                          {uploaded ? ('✓ ' + uploaded.name) : doc.desc}
+                        </div>
+                      </div>
+                      <div style={{display:'flex', flexDirection:'column', alignItems:'flex-end', gap:'4px'}}>
+                        {doc.badge && !uploaded && (
+                          <span className="auth-doc-badge">{doc.badge}</span>
+                        )}
+                        <span style={{
+                          fontSize:'11px',
+                          color: uploaded ? '#1A4FA0' : '#1B6B3A',
+                          fontWeight:'600',
+                          background: uploaded ? '#E3F2FD' : '#E8F5E9',
+                          borderRadius:'20px',
+                          padding:'2px 10px'
+                        }}>
+                          {uploaded ? 'Changer' : 'Cliquer pour ajouter'}
+                        </span>
+                      </div>
+                      <input
+                        type="file"
+                        accept={doc.accept}
+                        style={{display:'none'}}
+                        onChange={function(e) {
+                          if (e.target.files && e.target.files[0]) {
+                            handleDocUpload(doc.key, e.target.files[0]);
+                          }
+                        }}
+                      />
+                    </div>
+                  </label>
                 </div>
               );
             })}
           </div>
 
+          {uploading && (
+            <div style={{textAlign:'center', fontSize:'12px', color:'#1A4FA0', marginBottom:'10px'}}>
+              Chargement...
+            </div>
+          )}
+
           <div className="auth-btn-row">
-            <button className="auth-btn-outline" onClick={function() { setStep(2); }} type="button">
-              Retour
-            </button>
+            <button className="auth-btn-outline" onClick={function() { setStep(2); }} type="button">Retour</button>
             <button className="auth-btn-blue" onClick={function() { setStep(4); }} type="button">
               Terminer
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
@@ -226,11 +314,7 @@ export default function OnboardingLocataire() {
             </button>
           </div>
 
-          <p
-            className="auth-link-text"
-            style={{cursor:'pointer'}}
-            onClick={function() { setStep(4); }}
-          >
+          <p className="auth-link-text" style={{cursor:'pointer'}} onClick={function() { setStep(4); }}>
             Ignorer cette etape
           </p>
         </div>
@@ -252,9 +336,9 @@ export default function OnboardingLocataire() {
             Votre espace locataire est pret !
           </div>
           <div style={{fontSize:'12px', color:'#888', marginBottom:'20px', lineHeight:'1.6'}}>
-            Nous avons trouve des logements correspondant a vos criteres a {quartier}.
+            Nous avons configure votre profil.
+            {villeTexte && (' Logements disponibles a ' + villeTexte + '.')}
           </div>
-
           <div className="auth-quick-grid">
             <div className="auth-quick-action" onClick={function() { navigate('/logements'); }}>
               <div className="auth-quick-action-icon">
@@ -268,37 +352,14 @@ export default function OnboardingLocataire() {
             <div className="auth-quick-action" onClick={function() { navigate('/dashboard'); }}>
               <div className="auth-quick-action-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A4FA0" strokeWidth="2" aria-hidden="true">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  <rect x="3" y="3" width="18" height="18" rx="2"/>
+                  <path d="M3 9h18M9 21V9"/>
                 </svg>
               </div>
-              <div className="auth-quick-action-label">Mes messages</div>
-            </div>
-            <div className="auth-quick-action" onClick={function() { navigate('/dashboard/factures'); }}>
-              <div className="auth-quick-action-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A4FA0" strokeWidth="2" aria-hidden="true">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                </svg>
-              </div>
-              <div className="auth-quick-action-label">Mes factures</div>
-            </div>
-            <div className="auth-quick-action" onClick={function() { navigate('/dashboard'); }}>
-              <div className="auth-quick-action-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C2185B" strokeWidth="2" aria-hidden="true">
-                  <circle cx="12" cy="12" r="10"/>
-                  <line x1="12" y1="8" x2="12" y2="12"/>
-                  <line x1="12" y1="16" x2="12.01" y2="16"/>
-                </svg>
-              </div>
-              <div className="auth-quick-action-label">Faire une reclamation</div>
+              <div className="auth-quick-action-label">Mon tableau de bord</div>
             </div>
           </div>
-
-          <button
-            className="auth-btn-blue"
-            onClick={function() { navigate('/logements'); }}
-            type="button"
-          >
+          <button className="auth-btn-blue" onClick={function() { navigate('/logements'); }} type="button">
             Rechercher des logements
           </button>
         </div>
