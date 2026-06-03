@@ -10,6 +10,7 @@ var NAV_PROPRIETAIRE = [
   { id: 'documents', label: 'Documents', icon: '📄' },
   { id: 'alertes', label: 'Alertes', icon: '🔔', badge: true },
   { id: 'messages', label: 'Messages', icon: '💬' },
+  { id: 'reclamations', label: 'Reclamations', icon: '🔧' },
   { id: 'parametres', label: 'Parametres', icon: '⚙️' }
 ];
 
@@ -20,6 +21,7 @@ var NAV_LOCATAIRE = [
   { id: 'paiements', label: 'Paiements', icon: '💳' },
   { id: 'documents', label: 'Mes documents', icon: '📄' },
   { id: 'messages', label: 'Messages', icon: '💬' },
+  { id: 'reclamations', label: 'Reclamations', icon: '🔧' },
   { id: 'parametres', label: 'Parametres', icon: '⚙️' }
 ];
 
