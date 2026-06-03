@@ -3,6 +3,8 @@ const router = express.Router();
 const verifierToken = require('../middleware/auth');
 const {
   genererDocumentManuel,
+  genererQuittancesMensuelles,
+  signerBail,
   getMesDocuments,
   telechargerDocument,
   renvoyerEmail,
@@ -10,11 +12,19 @@ const {
   uploaderDocumentManuel
 } = require('../controllers/documentController');
 
-// Voir mes documents
+// Voir mes documents (proprio + locataire)
 router.get('/', verifierToken, getMesDocuments);
 
-// Générer un document
+// Générer un document (tous types)
 router.post('/generer', verifierToken, genererDocumentManuel);
+
+// Générer les quittances mensuelles automatiques
+// (à appeler par un CRON job ou manuellement)
+router.post('/quittances-mensuelles', verifierToken, genererQuittancesMensuelles);
+
+// Signer un bail (proprio uniquement)
+// Active officiellement la location
+router.post('/signer-bail', verifierToken, signerBail);
 
 // Télécharger un document
 router.get('/:id/telecharger', verifierToken, telechargerDocument);
@@ -22,7 +32,7 @@ router.get('/:id/telecharger', verifierToken, telechargerDocument);
 // Renvoyer par email
 router.post('/:id/renvoyer-email', verifierToken, renvoyerEmail);
 
-// Upload manuel
+// Upload manuel d'un fichier
 router.post(
   '/upload-manuel',
   verifierToken,
