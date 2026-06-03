@@ -12,6 +12,9 @@ const photoRoutes = require('./routes/photos');
 const documentRoutes = require('./routes/documents');
 const locataireRoutes = require('./routes/locataires');
 const alerteRoutes = require('./routes/alertes');
+const messagesRoutes = require('./routes/messages');
+const reclamationsRoutes = require('./routes/reclamations');
+const scoresRoutes = require('./routes/scores');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -33,6 +36,9 @@ app.use('/localisation', localisationRoutes);
 app.use('/documents', documentRoutes);
 app.use('/locataires-manuels', locataireRoutes);
 app.use('/alertes', alerteRoutes);
+app.use('/messages', messagesRoutes);
+app.use('/reclamations', reclamationsRoutes);
+app.use('/scores', scoresRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: '🚀 Werdhe API fonctionne !' });
@@ -53,3 +59,16 @@ app.get('/test-db', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`✅ Serveur démarré sur le port ${PORT}`);
 });
+
+// Enregistrement du Service Worker pour le mode hors-ligne
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(registration) {
+        console.log('[Werdhe] Service Worker enregistre');
+      })
+      .catch(function(err) {
+        console.warn('[Werdhe] Service Worker non enregistre:', err);
+      });
+  });
+}
