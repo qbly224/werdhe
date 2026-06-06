@@ -4,6 +4,7 @@ import './Sidebar.css';
 var NAV_PROPRIETAIRE = [
   { id: 'dashboard', label: 'Tableau de bord', icon: '📊' },
   { id: 'biens', label: 'Mes biens', icon: '🏠' },
+  { id: 'preavis', label: 'Preavis de depart', icon: '📤' },
   { id: 'locataires', label: 'Locataires', icon: '👥' },
   { id: 'reservations', label: 'Reservations', icon: '📅' },
   { id: 'paiements', label: 'Paiements', icon: '💳' },
@@ -17,6 +18,7 @@ var NAV_PROPRIETAIRE = [
 var NAV_LOCATAIRE = [
   { id: 'dashboard', label: 'Tableau de bord', icon: '📊' },
   { id: 'mes-locations', label: 'Mes locations', icon: '🏠' },
+  { id: 'preavis', label: 'Preavis de depart', icon: '📤' },
   { id: 'reservations', label: 'Reservations', icon: '📅' },
   { id: 'paiements', label: 'Paiements', icon: '💳' },
   { id: 'documents', label: 'Mes documents', icon: '📄' },

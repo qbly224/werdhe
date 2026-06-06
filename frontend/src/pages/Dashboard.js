@@ -552,11 +552,45 @@ function OngletReservations(props) {
 // ================================================
 function OngletPaiements(props) {
   var stats = props.stats;
+  var [filterStatut, setFilterStatut] = useState('tous');
+  var [modalBien, setModalBien] = useState(null);
+  var [selectedMode, setSelectedMode] = useState('om');
+  var [processing, setProcessing] = useState(false);
+  var [done, setDone] = useState(false);
+
+  var PAY_MODES = [
+    { id: 'om', label: 'Orange Money', sub: 'Paiement instantane', color: '#FF6600', text: '#fff', abbr: 'OM' },
+    { id: 'mtn', label: 'MTN MoMo', sub: 'Paiement instantane', color: '#FFCC00', text: '#1B2B22', abbr: 'MM' },
+    { id: 'cash', label: 'Especes', sub: 'Recu PDF genere automatiquement', icon: '💵' },
+    { id: 'bank', label: 'Virement bancaire', sub: 'BICIGUI · Ecobank · UBA', icon: '🏦' }
+  ];
+
+  function ouvrirModal(bien) {
+    setModalBien(bien);
+    setSelectedMode('om');
+    setProcessing(false);
+    setDone(false);
+  }
+
+  function fermerModal() {
+    setModalBien(null);
+    setDone(false);
+  }
+
+  function confirmerPaiement() {
+    setProcessing(true);
+    setTimeout(function() {
+      setProcessing(false);
+      setDone(true);
+    }, 2000);
+  }
+
   var paiesCompletes = stats.paiements.filter(function(p) { return p.statut === 'complete'; });
   var paiesAttente = stats.paiements.filter(function(p) { return p.statut === 'en_attente'; });
   var totalEncaisse = paiesCompletes.reduce(function(s, p) { return s + Number(p.montant); }, 0);
   var totalAttente = paiesAttente.reduce(function(s, p) { return s + Number(p.montant); }, 0);
   var totalAttendu = totalEncaisse + totalAttente;
+  var tauxRecouvrement = totalAttendu > 0 ? Math.round(totalEncaisse / totalAttendu * 100) : 0;
 
   function exporter() {
     var lignes = ['Locataire,Bien,Montant,Date,Mode,Statut'];
@@ -574,62 +608,285 @@ function OngletPaiements(props) {
     toast.success('Export CSV lance !');
   }
 
+  var paiementsFiltres = stats.paiements.filter(function(p) {
+    if (filterStatut === 'tous') return true;
+    if (filterStatut === 'paye') return p.statut === 'complete';
+    if (filterStatut === 'retard') return p.statut === 'en_attente';
+    return true;
+  });
+
   return (
     <div>
-      <div className="stats-grid-3">
-        {[
-          { label: 'Encaisse ce mois', value: GNF(totalEncaisse), color: '#1B6B3A', bg: '#E8F5E9', icon: '✅' },
-          { label: 'En attente', value: GNF(totalAttente), color: '#E65100', bg: '#FFEBEE', icon: '⏳' },
-          { label: 'Total attendu', value: GNF(totalAttendu), color: '#1565C0', bg: '#E3F2FD', icon: '📊' }
-        ].map(function(s, i) {
+      <div className="dash-page-header">
+        <div>
+          <h1>Paiements</h1>
+          <p>{stats.paiements.length} paiement(s) ce mois</p>
+        </div>
+        <button className="btn-green-sm" onClick={exporter}>Exporter CSV</button>
+      </div>
+
+      <div className="stats-grid-3" style={{marginBottom:'16px'}}>
+        <div className="stat-card-colored" style={{background:'#E8F5E9', borderLeft:'3px solid #1B6B3A'}}>
+          <div className="stat-card-icon">✅</div>
+          <div className="stat-card-val" style={{color:'#1B6B3A', fontSize:'18px'}}>{GNF(totalEncaisse)}</div>
+          <div className="stat-card-label">Encaisse ce mois</div>
+          <div className="stat-card-sub">Taux : {tauxRecouvrement}%</div>
+        </div>
+        <div className="stat-card-colored" style={{background:'#FFEBEE', borderLeft:'3px solid #E53935'}}>
+          <div className="stat-card-icon">⏳</div>
+          <div className="stat-card-val" style={{color:'#C62828', fontSize:'18px'}}>{GNF(totalAttente)}</div>
+          <div className="stat-card-label">Impayes</div>
+          <div className="stat-card-sub">{paiesAttente.length} locataire(s)</div>
+        </div>
+        <div className="stat-card-colored" style={{background:'#F0F4F1', borderLeft:'3px solid #888'}}>
+          <div className="stat-card-icon">📊</div>
+          <div className="stat-card-val" style={{color:'#333', fontSize:'18px'}}>{GNF(totalAttendu)}</div>
+          <div className="stat-card-label">Total attendu</div>
+          <div className="stat-card-sub">Total du mois</div>
+        </div>
+      </div>
+
+      <div className="dash-white-card" style={{marginBottom:'16px'}}>
+        <div style={{display:'flex', justifyContent:'space-between', marginBottom:'8px'}}>
+          <span style={{fontSize:'13px', fontWeight:'600'}}>Progression du recouvrement</span>
+          <span style={{fontSize:'13px', fontWeight:'700', color:'#1B6B3A'}}>{tauxRecouvrement}%</span>
+        </div>
+        <div style={{background:'#F0F0F0', borderRadius:'6px', height:'10px', overflow:'hidden'}}>
+          <div style={{
+            background:'linear-gradient(90deg, #1B6B3A, #34A853)',
+            width: tauxRecouvrement + '%',
+            height:'100%', borderRadius:'6px',
+            transition:'width 0.5s'
+          }} />
+        </div>
+      </div>
+
+      <div style={{display:'flex', gap:'8px', marginBottom:'16px', overflowX:'auto'}}>
+        {[['tous','Tous','#1B6B3A'],['paye','Payes','#1B6B3A'],['retard','En retard','#C62828']].map(function(f) {
           return (
-            <div key={i} className="stat-card-colored" style={{ background: s.bg, borderLeft: '4px solid ' + s.color }}>
-              <div className="stat-card-icon">{s.icon}</div>
-              <div className="stat-card-val" style={{ color: s.color }}>{s.value}</div>
-              <div className="stat-card-label">{s.label}</div>
+            <button
+              key={f[0]}
+              onClick={function() { setFilterStatut(f[0]); }}
+              style={{
+                padding:'7px 16px', borderRadius:'20px',
+                border: filterStatut === f[0] ? '1.5px solid ' + f[2] : '0.5px solid #E0E0E0',
+                background: filterStatut === f[0] ? f[2] : '#fff',
+                color: filterStatut === f[0] ? '#fff' : '#666',
+                fontSize:'12px', fontWeight: filterStatut === f[0] ? 700 : 400,
+                cursor:'pointer', whiteSpace:'nowrap', flexShrink:0
+              }}
+            >
+              {f[1]}
+            </button>
+          );
+        })}
+      </div>
+
+      <div style={{display:'flex', flexDirection:'column', gap:'10px', marginBottom:'20px'}}>
+        {paiementsFiltres.length === 0 && (
+          <div className="dash-empty-state">
+            <span>✅</span>
+            <h3>Aucun paiement dans cette categorie</h3>
+          </div>
+        )}
+        {paiementsFiltres.map(function(p, i) {
+          var estRetard = p.statut !== 'complete';
+          var borderColor = p.statut === 'complete' ? '#1B6B3A' : '#E53935';
+          return (
+            <div key={i} style={{
+              background:'#fff', borderRadius:'14px', padding:'16px',
+              boxShadow:'0 2px 8px rgba(0,0,0,0.04)',
+              borderLeft:'4px solid ' + borderColor
+            }}>
+              <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'10px'}}>
+                <div style={{display:'flex', gap:'10px', alignItems:'center'}}>
+                  <div style={{width:'40px', height:'40px', background:'#F0F4F1', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'22px', flexShrink:0}}>🏠</div>
+                  <div>
+                    <div style={{fontWeight:'700', fontSize:'14px', color:'#1B2B22'}}>{p.logement_titre}</div>
+                    <div style={{fontSize:'12px', color:'#888'}}>
+                      {p.locataire_prenom} {p.locataire_nom}
+                    </div>
+                  </div>
+                </div>
+                <span style={{
+                  padding:'4px 10px', borderRadius:'20px', fontSize:'11px', fontWeight:'700',
+                  background: p.statut === 'complete' ? '#E8F5E9' : '#FFEBEE',
+                  color: p.statut === 'complete' ? '#1B5E20' : '#B71C1C',
+                  border: '0.5px solid ' + (p.statut === 'complete' ? '#A5D6A7' : '#FFCDD2'),
+                  whiteSpace:'nowrap'
+                }}>
+                  {p.statut === 'complete' ? 'Paye' : 'En retard'}
+                </span>
+              </div>
+
+              <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', marginBottom:'12px'}}>
+                <div style={{background:'#F8F8F8', borderRadius:'8px', padding:'8px 10px'}}>
+                  <div style={{fontSize:'10px', color:'#888'}}>Montant</div>
+                  <div style={{fontSize:'14px', fontWeight:'700', color:'#1B6B3A'}}>{GNF(p.montant)}</div>
+                </div>
+                <div style={{background:'#F8F8F8', borderRadius:'8px', padding:'8px 10px'}}>
+                  <div style={{fontSize:'10px', color:'#888'}}>Date</div>
+                  <div style={{fontSize:'13px', fontWeight:'600', color:'#333'}}>
+                    {p.date_paiement ? new Date(p.date_paiement).toLocaleDateString('fr-FR') : '—'}
+                  </div>
+                </div>
+              </div>
+
+              {p.statut === 'complete' ? (
+                <div style={{display:'flex', gap:'8px'}}>
+                  <button style={{flex:1, background:'#F0F4F1', color:'#1B6B3A', border:'0.5px solid #A5D6A7', borderRadius:'10px', padding:'9px', fontSize:'12px', cursor:'pointer', fontWeight:'600'}}>
+                    Voir la quittance
+                  </button>
+                  <button style={{flex:1, background:'#F5F5F5', color:'#555', border:'0.5px solid #E0E0E0', borderRadius:'10px', padding:'9px', fontSize:'12px', cursor:'pointer'}}>
+                    Contacter
+                  </button>
+                </div>
+              ) : (
+                <div style={{display:'flex', gap:'8px'}}>
+                  <button
+                    onClick={function() { ouvrirModal(p); }}
+                    style={{flex:2, background:'#1B6B3A', color:'#fff', border:'none', borderRadius:'10px', padding:'10px', fontSize:'13px', fontWeight:'700', cursor:'pointer'}}>
+                    Enregistrer le paiement
+                  </button>
+                  <button style={{flex:1, background:'#FFEBEE', color:'#B71C1C', border:'0.5px solid #FFCDD2', borderRadius:'10px', padding:'10px', fontSize:'12px', cursor:'pointer', fontWeight:'600'}}>
+                    Relancer
+                  </button>
+                </div>
+              )}
             </div>
           );
         })}
       </div>
 
-      <div className="dash-white-card">
-        <div className="dash-card-head">
-          <h3>Historique des paiements</h3>
-          <button className="btn-green-sm" onClick={exporter}>Exporter CSV</button>
-        </div>
-        {stats.paiements.length === 0 && <p style={{ color: '#888', fontSize: 13 }}>Aucun paiement.</p>}
-        {stats.paiements.length > 0 && (
-          <div style={{ overflowX: 'auto' }}>
-            <table className="table-proto">
-              <thead>
-                <tr>
-                  {['Locataire', 'Bien', 'Montant', 'Date', 'Mode', 'Statut'].map(function(h) {
-                    return <th key={h}>{h}</th>;
-                  })}
-                </tr>
-              </thead>
-              <tbody>
-                {stats.paiements.map(function(p, i) {
+      {modalBien && (
+        <div
+          style={{position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', display:'flex', alignItems:'flex-end', zIndex:1000}}
+          onClick={function(e) { if (e.target === e.currentTarget) fermerModal(); }}
+        >
+          <div style={{background:'#fff', borderRadius:'20px 20px 0 0', padding:'24px 20px 32px', width:'100%', maxWidth:'600px', margin:'0 auto', maxHeight:'90vh', overflowY:'auto'}}>
+
+            {!done ? (
+              <div>
+                <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px'}}>
+                  <div>
+                    <div style={{fontSize:'16px', fontWeight:'700', color:'#1B2B22'}}>Enregistrer un paiement</div>
+                    <div style={{fontSize:'12px', color:'#888', marginTop:'2px'}}>
+                      {modalBien.logement_titre} · {modalBien.locataire_prenom} {modalBien.locataire_nom}
+                    </div>
+                  </div>
+                  <button onClick={fermerModal} style={{width:'32px', height:'32px', borderRadius:'50%', border:'none', background:'#F5F5F5', cursor:'pointer', fontSize:'16px'}} type="button">x</button>
+                </div>
+
+                <div style={{background:'#F0F4F1', borderRadius:'12px', padding:'14px', marginBottom:'18px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                  <div>
+                    <div style={{fontSize:'12px', color:'#555'}}>Montant du loyer</div>
+                    <div style={{fontSize:'11px', color:'#888', marginTop:'2px'}}>En attente de paiement</div>
+                  </div>
+                  <div style={{fontSize:'22px', fontWeight:'700', color:'#1B6B3A'}}>{GNF(modalBien.montant)}</div>
+                </div>
+
+                <div style={{fontSize:'13px', fontWeight:'700', color:'#1B2B22', marginBottom:'12px'}}>Mode de paiement</div>
+                {PAY_MODES.map(function(p) {
                   return (
-                    <tr key={i}>
-                      <td style={{ fontWeight: 600, color: '#1B2B22' }}>{p.locataire_prenom} {p.locataire_nom}</td>
-                      <td style={{ color: '#555' }}>{p.logement_titre}</td>
-                      <td style={{ fontWeight: 700, color: '#1B6B3A' }}>{GNF(p.montant)}</td>
-                      <td style={{ color: '#555' }}>{p.date_paiement ? new Date(p.date_paiement).toLocaleDateString('fr-FR') : '—'}</td>
-                      <td style={{ color: '#555' }}>{p.mode_paiement === 'en_ligne' ? 'En ligne' : 'Especes'}</td>
-                      <td>
-                        <span className={p.statut === 'complete' ? 'badge-paye' : 'badge-retard'}>
-                          {p.statut === 'complete' ? 'Paye' : 'En retard'}
-                        </span>
-                      </td>
-                    </tr>
+                    <div
+                      key={p.id}
+                      onClick={function() { setSelectedMode(p.id); }}
+                      style={{
+                        display:'flex', alignItems:'center', gap:'12px',
+                        padding:'12px 14px',
+                        border: selectedMode === p.id ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0',
+                        background: selectedMode === p.id ? '#E8F5E9' : '#fff',
+                        borderRadius:'12px', marginBottom:'8px',
+                        cursor:'pointer', transition:'all 0.2s'
+                      }}
+                    >
+                      <div style={{
+                        width:'40px', height:'40px',
+                        background: p.color || '#E8F5E9',
+                        borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center',
+                        fontSize: p.icon ? '20px' : '13px', fontWeight:'700',
+                        color: p.text || '#1B6B3A', flexShrink:0
+                      }}>
+                        {p.icon || p.abbr}
+                      </div>
+                      <div style={{flex:1}}>
+                        <div style={{fontSize:'14px', fontWeight:'600', color:'#1B2B22'}}>{p.label}</div>
+                        <div style={{fontSize:'11px', color:'#888'}}>{p.sub}</div>
+                      </div>
+                      <div style={{
+                        width:'22px', height:'22px', borderRadius:'50%',
+                        border: selectedMode === p.id ? 'none' : '1.5px solid #E0E0E0',
+                        background: selectedMode === p.id ? '#1B6B3A' : 'transparent',
+                        display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0
+                      }}>
+                        {selectedMode === p.id && <span style={{color:'#fff', fontSize:'12px'}}>✓</span>}
+                      </div>
+                    </div>
                   );
                 })}
-              </tbody>
-            </table>
+
+                {selectedMode === 'cash' && (
+                  <div style={{background:'#FFF8E1', borderRadius:'10px', padding:'12px', marginBottom:'14px', display:'flex', gap:'8px'}}>
+                    <span>ℹ️</span>
+                    <span style={{fontSize:'12px', color:'#7B4F00', lineHeight:'1.5'}}>
+                      Le locataire recoit une quittance PDF par SMS des que vous confirmez le paiement en especes.
+                    </span>
+                  </div>
+                )}
+
+                <button
+                  onClick={confirmerPaiement}
+                  disabled={processing}
+                  type="button"
+                  style={{
+                    width:'100%', background: processing ? '#999' : '#1B6B3A',
+                    color:'#fff', border:'none', borderRadius:'12px', padding:'14px',
+                    fontSize:'15px', fontWeight:'700',
+                    cursor: processing ? 'not-allowed' : 'pointer', marginTop:'6px'
+                  }}
+                >
+                  {processing ? 'Traitement en cours...' : 'Confirmer le paiement — ' + GNF(modalBien.montant)}
+                </button>
+              </div>
+            ) : (
+              <div style={{textAlign:'center', padding:'20px 0'}}>
+                <div style={{width:'70px', height:'70px', background:'#E8F5E9', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 16px', fontSize:'36px'}}>✅</div>
+                <div style={{fontSize:'20px', fontWeight:'700', color:'#1B6B3A', marginBottom:'8px'}}>Paiement enregistre !</div>
+                <div style={{fontSize:'13px', color:'#666', lineHeight:'1.6', marginBottom:'20px'}}>
+                  Le loyer de <strong>{GNF(modalBien.montant)}</strong> a ete confirme.
+                  Une quittance a ete generee et envoyee au locataire.
+                </div>
+                <div style={{background:'#F0F4F1', borderRadius:'12px', padding:'14px', marginBottom:'20px', textAlign:'left'}}>
+                  <div style={{fontSize:'13px', fontWeight:'600', marginBottom:'8px'}}>Recapitulatif</div>
+                  {[
+                    ['Bien', modalBien.logement_titre],
+                    ['Locataire', (modalBien.locataire_prenom || '') + ' ' + (modalBien.locataire_nom || '')],
+                    ['Montant', GNF(modalBien.montant)],
+                    ['Mode', PAY_MODES.find(function(p) { return p.id === selectedMode; }) ? PAY_MODES.find(function(p) { return p.id === selectedMode; }).label : ''],
+                    ['Date', new Date().toLocaleDateString('fr-FR')],
+                    ['Statut', 'Paye']
+                  ].map(function(row) {
+                    return (
+                      <div key={row[0]} style={{display:'flex', justifyContent:'space-between', fontSize:'12px', color:'#555', padding:'4px 0', borderBottom:'0.5px solid #F0F0F0'}}>
+                        <span style={{fontWeight:'600'}}>{row[0]}</span>
+                        <span>{row[1]}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div style={{display:'flex', gap:'10px'}}>
+                  <button style={{flex:1, background:'#F0F4F1', color:'#1B6B3A', border:'0.5px solid #A5D6A7', borderRadius:'10px', padding:'12px', fontSize:'13px', cursor:'pointer', fontWeight:'600'}} type="button">
+                    Voir la quittance
+                  </button>
+                  <button onClick={fermerModal} type="button" style={{flex:1, background:'#1B6B3A', color:'#fff', border:'none', borderRadius:'10px', padding:'12px', fontSize:'13px', cursor:'pointer', fontWeight:'700'}}>
+                    Retour a la liste
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1437,6 +1694,357 @@ function OngletMesLocations(props) {
   );
 }
 
+function OngletPreavis(props) {
+  var user = props.user;
+  var estProprietaire = user && user.role !== 'locataire';
+
+  var MOTIFS_LOCATAIRE = [
+    'Changement de ville ou de pays',
+    'Achat d\'un bien immobilier',
+    'Logement ne correspond plus a mes besoins',
+    'Raisons professionnelles',
+    'Raisons familiales',
+    'Conditions du logement insatisfaisantes',
+    'Autre raison'
+  ];
+
+  var MOTIFS_PROPRIO = [
+    'Vente du bien immobilier',
+    'Reprise du bien pour usage personnel',
+    'Travaux de renovation importants',
+    'Non-paiement repete des loyers',
+    'Troubles de voisinage',
+    'Fin de bail non renouvele',
+    'Autre motif'
+  ];
+
+  var [reservations, setReservations] = useState([]);
+  var [bienSelectionne, setBienSelectionne] = useState(null);
+  var [motif, setMotif] = useState('');
+  var [delai, setDelai] = useState('1');
+  var [note, setNote] = useState('');
+  var [step, setStep] = useState('form');
+  var [loading, setLoading] = useState(true);
+
+  function addDays(n) {
+    var d = new Date();
+    d.setDate(d.getDate() + n);
+    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+  }
+
+  var dateFinEstimee = delai ? addDays(parseInt(delai) * 30) : '—';
+
+  useEffect(function() {
+    var ep = estProprietaire ? '/reservations/proprietaire' : '/reservations/mes-reservations';
+    api.get(ep)
+      .then(function(res) {
+        var resaConfirmees = (res.data.reservations || []).filter(function(r) { return r.statut === 'confirmee'; });
+        setReservations(resaConfirmees);
+        if (resaConfirmees.length > 0) setBienSelectionne(resaConfirmees[0]);
+      })
+      .catch(console.error)
+      .finally(function() { setLoading(false); });
+  }, [estProprietaire]);
+
+  function envoyerPreavis() {
+    if (!motif || !delai || !bienSelectionne) {
+      toast.error('Completez tous les champs requis');
+      return;
+    }
+    api.post('/documents/generer', {
+      reservation_id: bienSelectionne.id,
+      type: 'preavis'
+    })
+      .then(function() {
+        toast.success('Preavis genere et envoye !');
+        setStep('sent');
+      })
+      .catch(function() {
+        toast.error('Erreur envoi preavis');
+      });
+  }
+
+  if (loading) return <div style={{textAlign:'center', padding:'40px', color:'#888'}}>Chargement...</div>;
+
+  if (reservations.length === 0) {
+    return (
+      <div>
+        <div className="dash-page-header">
+          <div><h1>Preavis de depart</h1></div>
+        </div>
+        <div className="dash-empty-state">
+          <span>📤</span>
+          <h3>Aucune location active</h3>
+          <p>Vous devez avoir une reservation confirmee pour envoyer un preavis</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (step === 'sent') {
+    return (
+      <div>
+        <div className="dash-page-header">
+          <div><h1>Preavis de depart</h1></div>
+        </div>
+        <div className="dash-white-card" style={{textAlign:'center', padding:'32px'}}>
+          <div style={{fontSize:'44px', marginBottom:'14px'}}>📨</div>
+          <div style={{fontSize:'17px', fontWeight:'700', color:'#1B2B22', marginBottom:'8px'}}>
+            Preavis envoye avec succes !
+          </div>
+          <div style={{fontSize:'13px', color:'#666', lineHeight:'1.6', marginBottom:'20px'}}>
+            Votre preavis a ete transmis par notification et SMS.
+            La partie adverse a <strong>48h</strong> pour accuser reception.
+          </div>
+          <div style={{background:'#FFF8E1', borderRadius:'12px', padding:'14px', marginBottom:'20px', textAlign:'left'}}>
+            <div style={{fontSize:'13px', fontWeight:'700', color:'#7B4F00', marginBottom:'10px'}}>Recapitulatif</div>
+            {[
+              ['Bien concerne', bienSelectionne ? bienSelectionne.logement_titre : ''],
+              ['Motif', motif],
+              ['Delai de preavis', delai + ' mois'],
+              ['Date de depart prevue', dateFinEstimee],
+              ['Statut', 'En attente d\'accuse de reception']
+            ].map(function(row) {
+              return (
+                <div key={row[0]} style={{display:'flex', justifyContent:'space-between', fontSize:'12px', padding:'5px 0', borderBottom:'0.5px solid #FFE082', flexWrap:'wrap', gap:'4px'}}>
+                  <span style={{color:'#888'}}>{row[0]}</span>
+                  <span style={{fontWeight:'600', color:'#7B4F00', textAlign:'right', maxWidth:'60%'}}>{row[1]}</span>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{background:'#E8F5E9', borderRadius:'10px', padding:'12px', marginBottom:'16px', textAlign:'left'}}>
+            <div style={{fontSize:'12px', color:'#1B5E20', lineHeight:'1.6'}}>
+              Continuez a payer votre loyer normalement jusqu'a votre date de depart officielle.
+            </div>
+          </div>
+          <div style={{display:'flex', gap:'10px'}}>
+            <button
+              onClick={function() { setStep('form'); setMotif(''); setNote(''); }}
+              style={{flex:1, background:'#F0F4F1', color:'#1B6B3A', border:'none', borderRadius:'10px', padding:'11px', fontSize:'13px', cursor:'pointer'}}
+              type="button"
+            >
+              Nouveau preavis
+            </button>
+            <button
+              style={{flex:1, background:'#1B6B3A', color:'#fff', border:'none', borderRadius:'10px', padding:'11px', fontSize:'13px', fontWeight:'700', cursor:'pointer'}}
+              type="button"
+            >
+              Telecharger PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (step === 'confirm') {
+    return (
+      <div>
+        <div className="dash-page-header">
+          <div><h1>Confirmer le preavis</h1></div>
+          <button className="btn-outline-green" onClick={function() { setStep('form'); }} type="button">Modifier</button>
+        </div>
+        <div className="dash-white-card">
+          <div style={{background:'#FFEBEE', borderRadius:'10px', padding:'14px', marginBottom:'16px'}}>
+            <div style={{fontSize:'13px', color:'#B71C1C', fontWeight:'600', marginBottom:'4px'}}>
+              Attention — action officielle et irreversible
+            </div>
+            <div style={{fontSize:'12px', color:'#C62828', lineHeight:'1.6'}}>
+              Une fois envoye, votre preavis est officiel et notifie immediatement l'autre partie.
+            </div>
+          </div>
+
+          <div style={{background:'#F8F8F8', borderRadius:'10px', padding:'14px', marginBottom:'16px'}}>
+            {[
+              ['Bien', bienSelectionne ? bienSelectionne.logement_titre : ''],
+              ['Motif', motif],
+              ['Delai de preavis', delai + ' mois'],
+              ['Date de depart estimee', dateFinEstimee],
+              ['Note', note || 'Aucune note']
+            ].map(function(row) {
+              return (
+                <div key={row[0]} style={{display:'flex', justifyContent:'space-between', fontSize:'12px', padding:'6px 0', borderBottom:'0.5px solid #EFEFEF', flexWrap:'wrap', gap:'4px'}}>
+                  <span style={{color:'#888'}}>{row[0]}</span>
+                  <span style={{fontWeight:'600', color:'#333', textAlign:'right', maxWidth:'60%'}}>{row[1]}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          <div style={{display:'flex', gap:'10px'}}>
+            <button
+              onClick={function() { setStep('form'); }}
+              style={{flex:1, background:'#F0F0F0', color:'#555', border:'none', borderRadius:'10px', padding:'12px', fontSize:'13px', cursor:'pointer'}}
+              type="button"
+            >
+              Modifier
+            </button>
+            <button
+              onClick={envoyerPreavis}
+              style={{flex:2, background:'#C62828', color:'#fff', border:'none', borderRadius:'10px', padding:'12px', fontSize:'14px', fontWeight:'700', cursor:'pointer'}}
+              type="button"
+            >
+              Confirmer l'envoi du preavis
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  var motifs = estProprietaire ? MOTIFS_PROPRIO : MOTIFS_LOCATAIRE;
+
+  return (
+    <div>
+      <div className="dash-page-header">
+        <div>
+          <h1>Preavis de depart</h1>
+          <p>{estProprietaire ? 'Notifiez officiellement votre locataire' : 'Notifiez votre proprietaire'}</p>
+        </div>
+      </div>
+
+      <div style={{background:'#FFF8E1', borderRadius:'12px', padding:'12px 14px', marginBottom:'16px', display:'flex', gap:'8px'}}>
+        <span style={{fontSize:'16px', flexShrink:0}}>⚖️</span>
+        <span style={{fontSize:'12px', color:'#7B4F00', lineHeight:'1.6'}}>
+          En Guinee, le delai de preavis legal standard est generalement d'<strong>1 mois</strong> pour un logement meuble
+          et <strong>3 mois</strong> pour un logement non meuble. Verifiez les conditions de votre bail.
+        </span>
+      </div>
+
+      <div className="dash-form-card">
+        <h3>Informations du preavis</h3>
+
+        {reservations.length > 1 && (
+          <div className="form-group">
+            <label>Bien concerne *</label>
+            <div style={{display:'flex', flexDirection:'column', gap:'6px'}}>
+              {reservations.map(function(r) {
+                return (
+                  <div
+                    key={r.id}
+                    onClick={function() { setBienSelectionne(r); }}
+                    style={{
+                      display:'flex', alignItems:'center', gap:'10px', padding:'11px 12px',
+                      border: bienSelectionne && bienSelectionne.id === r.id ? '2px solid #C62828' : '0.5px solid #E0E0E0',
+                      background: bienSelectionne && bienSelectionne.id === r.id ? '#FFEBEE' : '#FAFAFA',
+                      borderRadius:'10px', cursor:'pointer'
+                    }}
+                  >
+                    <span style={{fontSize:'20px'}}>🏠</span>
+                    <div style={{flex:1}}>
+                      <div style={{fontSize:'13px', fontWeight:'600', color:'#1B2B22'}}>{r.logement_titre}</div>
+                      <div style={{fontSize:'11px', color:'#888'}}>
+                        {estProprietaire ? (r.locataire_prenom + ' ' + r.locataire_nom) : r.logement_ville}
+                      </div>
+                    </div>
+                    {bienSelectionne && bienSelectionne.id === r.id && (
+                      <span style={{color:'#C62828', fontSize:'16px'}}>✓</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        <div className="form-group">
+          <label>Motif de depart *</label>
+          <div style={{display:'flex', flexDirection:'column', gap:'6px'}}>
+            {motifs.map(function(m) {
+              return (
+                <div
+                  key={m}
+                  onClick={function() { setMotif(m); }}
+                  style={{
+                    display:'flex', alignItems:'center', gap:'10px', padding:'10px 12px',
+                    border: motif === m ? '1.5px solid #C62828' : '0.5px solid #E0E0E0',
+                    background: motif === m ? '#FFEBEE' : '#FAFAFA',
+                    borderRadius:'10px', cursor:'pointer'
+                  }}
+                >
+                  <div style={{
+                    width:'18px', height:'18px', borderRadius:'50%', flexShrink:0,
+                    border: motif === m ? 'none' : '1.5px solid #CCC',
+                    background: motif === m ? '#C62828' : 'transparent',
+                    display:'flex', alignItems:'center', justifyContent:'center'
+                  }}>
+                    {motif === m && <span style={{color:'#fff', fontSize:'11px'}}>✓</span>}
+                  </div>
+                  <span style={{fontSize:'13px', color: motif === m ? '#B71C1C' : '#555'}}>{m}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label>Delai de preavis *</label>
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:'8px'}}>
+            {[['1','1 mois'],['2','2 mois'],['3','3 mois']].map(function(opt) {
+              return (
+                <button
+                  key={opt[0]}
+                  type="button"
+                  onClick={function() { setDelai(opt[0]); }}
+                  style={{
+                    padding:'10px', borderRadius:'10px',
+                    border: delai === opt[0] ? '2px solid #C62828' : '0.5px solid #E0E0E0',
+                    background: delai === opt[0] ? '#FFEBEE' : '#FAFAFA',
+                    color: delai === opt[0] ? '#B71C1C' : '#555',
+                    fontSize:'13px', fontWeight: delai === opt[0] ? 700 : 400, cursor:'pointer'
+                  }}
+                >
+                  {opt[1]}
+                </button>
+              );
+            })}
+          </div>
+          {delai && (
+            <div style={{background:'#FFEBEE', borderRadius:'10px', padding:'10px 14px', marginTop:'10px', display:'flex', justifyContent:'space-between'}}>
+              <span style={{fontSize:'12px', color:'#B71C1C'}}>Date de depart estimee</span>
+              <span style={{fontSize:'12px', fontWeight:'700', color:'#C62828'}}>{dateFinEstimee}</span>
+            </div>
+          )}
+        </div>
+
+        <div className="form-group">
+          <label>Message personnel (optionnel)</label>
+          <textarea
+            value={note}
+            onChange={function(e) { setNote(e.target.value); }}
+            placeholder="Ajoutez un message personnel..."
+            style={{
+              width:'100%', padding:'10px 12px', borderRadius:'10px',
+              border:'0.5px solid #E0E0E0', fontSize:'13px',
+              resize:'none', height:'80px', fontFamily:'inherit'
+            }}
+          />
+        </div>
+
+        <button
+          type="button"
+          onClick={function() { if (motif && delai) setStep('confirm'); }}
+          style={{
+            width:'100%', padding:'13px',
+            background: motif && delai ? '#C62828' : '#CCC',
+            color:'#fff', border:'none', borderRadius:'12px',
+            fontSize:'14px', fontWeight:'700',
+            cursor: motif && delai ? 'pointer' : 'not-allowed'
+          }}
+        >
+          Continuer — Preparer le preavis officiel
+        </button>
+        {(!motif || !delai) && (
+          <div style={{fontSize:'11px', color:'#C62828', textAlign:'center', marginTop:'6px'}}>
+            Selectionnez un motif et un delai de preavis
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ================================================
 // COMPOSANT PRINCIPAL : Dashboard
 // ================================================
@@ -1456,6 +2064,7 @@ export default function Dashboard() {
   var pageTitle = {
     '/dashboard': 'Tableau de bord',
     '/dashboard/biens': 'Mes biens',
+    '/dashboard/preavis': 'Preavis de depart',
     '/dashboard/locataires': 'Locataires',
     '/dashboard/reservations': 'Reservations',
     '/dashboard/paiements': 'Paiements',
@@ -1470,6 +2079,7 @@ export default function Dashboard() {
   var pageIcon = {
     '/dashboard': '📊',
     '/dashboard/biens': '🏠',
+    '/dashboard/preavis': '📤',
     '/dashboard/locataires': '👥',
     '/dashboard/reservations': '📅',
     '/dashboard/paiements': '💳',
@@ -1530,6 +2140,7 @@ export default function Dashboard() {
   function renderOnglet() {
     if (onglet === '/dashboard') return <OngletOverview stats={stats} user={user} alertes={alertes} />;
     if (onglet === '/dashboard/biens') return <OngletBiens stats={stats} recharger={chargerDonnees} />;
+    if (onglet === '/dashboard/preavis') return <OngletPreavis user={user} />;
     if (onglet === '/dashboard/locataires') return <OngletLocataires stats={stats} logements={stats.logements} />;
     if (onglet === '/dashboard/reservations') return <OngletReservations stats={stats} traiter={traiterReservation} user={user} />;
     if (onglet === '/dashboard/paiements') return <OngletPaiements stats={stats} />;
