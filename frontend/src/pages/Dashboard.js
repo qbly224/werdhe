@@ -6,8 +6,6 @@ import api from '../services/api';
 import Sidebar from '../components/dashboard/Sidebar';
 import toast from 'react-hot-toast';
 import './Dashboard.css';
-import { OngletPaiementsProprietaire, OngletPaiementsLocataire } from '../components/OngletPaiements';
-import { PreavisLocataire, PreavisProprietaire } from '../components/OngletPreavis';
 
 // ================================================
 // UTILITAIRE — Formater les montants en GNF
