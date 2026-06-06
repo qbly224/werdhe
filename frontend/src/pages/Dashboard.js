@@ -6,6 +6,8 @@ import api from '../services/api';
 import Sidebar from '../components/dashboard/Sidebar';
 import toast from 'react-hot-toast';
 import './Dashboard.css';
+import { OngletPaiementsProprietaire, OngletPaiementsLocataire } from '../components/OngletPaiements';
+import { PreavisLocataire, PreavisProprietaire } from '../components/OngletPreavis';
 
 // ================================================
 // UTILITAIRE — Formater les montants en GNF
@@ -213,7 +215,7 @@ function OngletOverview(props) {
 }
 
 // ================================================
-// ONGLET : Mes biens
+// ONGLET : Mes biens (avec préavis badges + bouton)
 // ================================================
 function OngletBiens(props) {
   var stats = props.stats;
@@ -221,6 +223,67 @@ function OngletBiens(props) {
   var [showConfirm, setShowConfirm] = useState(null);
   var [modeEdit, setModeEdit] = useState(null);
   var [formEdit, setFormEdit] = useState({});
+  var [preavisActifs, setPreavisActifs] = useState({});
+  var [modalPreavis, setModalPreavis] = useState(null);
+  var [preavisForm, setPreavisForm] = useState({ motif: '', delai: '1', message: '' });
+  var [preavisStep, setPreavisStep] = useState('form');
+  var [preavisLoading, setPreavisLoading] = useState(false);
+
+  var MOTIFS_PROPRIO = [
+    'Vente du bien immobilier',
+    'Reprise du bien pour usage personnel',
+    'Travaux de renovation importants',
+    'Non-paiement repete des loyers',
+    'Troubles de voisinage',
+    'Fin de bail non renouvele',
+    'Autre motif'
+  ];
+
+  useEffect(function() {
+    api.get('/documents')
+      .then(function(res) {
+        var docs = res.data.documents || [];
+        var actifs = {};
+        docs.forEach(function(d) {
+          if (d.type === 'preavis') actifs[d.logement_id] = true;
+        });
+        setPreavisActifs(actifs);
+      })
+      .catch(console.error);
+  }, []);
+
+  function addMonths(n) {
+    var d = new Date();
+    d.setMonth(d.getMonth() + n);
+    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+  }
+
+  function ouvrirModalPreavis(b) {
+    setModalPreavis(b);
+    setPreavisForm({ motif: '', delai: '1', message: '' });
+    setPreavisStep('form');
+  }
+
+  function envoyerPreavis() {
+    if (!preavisForm.motif || !preavisForm.delai || !modalPreavis) {
+      toast.error('Completez tous les champs');
+      return;
+    }
+    var resa = stats.reservations && stats.reservations.find(function(r) { return r.logement_id === modalPreavis.id && r.statut === 'confirmee'; });
+    if (!resa) {
+      toast.error('Aucun locataire actif sur ce bien');
+      return;
+    }
+    setPreavisLoading(true);
+    api.post('/documents/generer', { reservation_id: resa.id, type: 'preavis' })
+      .then(function() {
+        setPreavisActifs(function(prev) { var n = Object.assign({}, prev); n[modalPreavis.id] = true; return n; });
+        toast.success('Preavis envoye au locataire !');
+        setPreavisStep('sent');
+      })
+      .catch(function() { toast.error('Erreur envoi preavis'); })
+      .finally(function() { setPreavisLoading(false); });
+  }
 
   function handleDelete(id) {
     api.delete('/logements/' + id)
@@ -239,6 +302,8 @@ function OngletBiens(props) {
       .catch(function() { toast.error('Erreur modification'); });
   }
 
+  var dateFinEstimee = preavisForm.delai ? addMonths(parseInt(preavisForm.delai)) : '—';
+
   return (
     <div>
       {showConfirm && (
@@ -250,6 +315,113 @@ function OngletBiens(props) {
               <button className="btn-green" style={{ background: '#B71C1C' }} onClick={function() { handleDelete(showConfirm); }}>Supprimer</button>
               <button className="btn-outline-green" onClick={function() { setShowConfirm(null); }}>Annuler</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {modalPreavis && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'flex-end', zIndex: 1000 }}
+          onClick={function(e) { if (e.target === e.currentTarget) setModalPreavis(null); }}>
+          <div style={{ background: '#fff', borderRadius: '20px 20px 0 0', padding: '24px 20px 36px', width: '100%', maxWidth: 600, margin: '0 auto', maxHeight: '90vh', overflowY: 'auto' }}>
+
+            {preavisStep === 'sent' ? (
+              <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                <div style={{ fontSize: 52, marginBottom: 14 }}>📨</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>Preavis envoye !</div>
+                <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6, marginBottom: 20 }}>
+                  Votre locataire a ete notifie instantanement par notification et SMS.
+                </div>
+                <div style={{ background: '#FFF8E1', borderRadius: 12, padding: 14, textAlign: 'left', marginBottom: 20 }}>
+                  {[['Bien', modalPreavis.titre], ['Motif', preavisForm.motif], ['Delai', preavisForm.delai + ' mois'], ['Date de sortie', dateFinEstimee]].map(function(r) {
+                    return <div key={r[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0', borderBottom: '0.5px solid #FFE082' }}>
+                      <span style={{ color: '#888' }}>{r[0]}</span>
+                      <span style={{ fontWeight: 600, color: '#7B4F00' }}>{r[1]}</span>
+                    </div>;
+                  })}
+                </div>
+                <button onClick={function() { setModalPreavis(null); }} style={{ width: '100%', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }} type="button">
+                  Fermer
+                </button>
+              </div>
+            ) : preavisStep === 'confirm' ? (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700 }}>Confirmer le preavis</div>
+                  <button onClick={function() { setPreavisStep('form'); }} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 13 }} type="button">Modifier</button>
+                </div>
+                <div style={{ background: '#FFEBEE', borderRadius: 10, padding: 14, marginBottom: 16 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#B71C1C', marginBottom: 4 }}>Action officielle et irreversible</div>
+                  <div style={{ fontSize: 12, color: '#C62828', lineHeight: 1.6 }}>Une fois envoye, le preavis est notifie instantanement a votre locataire.</div>
+                </div>
+                <div style={{ background: '#F8F8F8', borderRadius: 10, padding: 14, marginBottom: 16 }}>
+                  {[['Bien', modalPreavis.titre], ['Motif', preavisForm.motif], ['Delai accorde', preavisForm.delai + ' mois'], ['Date de sortie estimee', dateFinEstimee], ['Message', preavisForm.message || 'Aucun message']].map(function(r) {
+                    return <div key={r[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '6px 0', borderBottom: '0.5px solid #EFEFEF', flexWrap: 'wrap', gap: 4 }}>
+                      <span style={{ color: '#888' }}>{r[0]}</span>
+                      <span style={{ fontWeight: 600, color: '#333', textAlign: 'right', maxWidth: '60%' }}>{r[1]}</span>
+                    </div>;
+                  })}
+                </div>
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button onClick={function() { setPreavisStep('form'); }} style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer' }} type="button">Modifier</button>
+                  <button onClick={envoyerPreavis} disabled={preavisLoading} style={{ flex: 2, background: '#C62828', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: preavisLoading ? 'not-allowed' : 'pointer' }} type="button">
+                    {preavisLoading ? 'Envoi...' : 'Confirmer et envoyer le preavis'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>Envoyer un preavis</div>
+                    <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{modalPreavis.titre}</div>
+                  </div>
+                  <button onClick={function() { setModalPreavis(null); }} style={{ width: 32, height: 32, borderRadius: '50%', border: 'none', background: '#F5F5F5', cursor: 'pointer', fontSize: 16 }} type="button">×</button>
+                </div>
+
+                <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8, color: '#1B2B22' }}>Motif officiel *</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 16 }}>
+                  {MOTIFS_PROPRIO.map(function(m) {
+                    return (
+                      <div key={m} onClick={function() { setPreavisForm(Object.assign({}, preavisForm, { motif: m })); }}
+                        style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', border: preavisForm.motif === m ? '1.5px solid #C62828' : '0.5px solid #E0E0E0', background: preavisForm.motif === m ? '#FFEBEE' : '#FAFAFA', borderRadius: 10, cursor: 'pointer' }}>
+                        <div style={{ width: 18, height: 18, borderRadius: '50%', flexShrink: 0, border: preavisForm.motif === m ? 'none' : '1.5px solid #CCC', background: preavisForm.motif === m ? '#C62828' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          {preavisForm.motif === m && <span style={{ color: '#fff', fontSize: 11 }}>✓</span>}
+                        </div>
+                        <span style={{ fontSize: 13, color: preavisForm.motif === m ? '#B71C1C' : '#555' }}>{m}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8, color: '#1B2B22' }}>Delai accorde au locataire *</div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 10 }}>
+                  {[['1', '1 mois'], ['2', '2 mois'], ['3', '3 mois']].map(function(opt) {
+                    return (
+                      <button key={opt[0]} type="button" onClick={function() { setPreavisForm(Object.assign({}, preavisForm, { delai: opt[0] })); }}
+                        style={{ padding: 10, borderRadius: 10, border: preavisForm.delai === opt[0] ? '2px solid #C62828' : '0.5px solid #E0E0E0', background: preavisForm.delai === opt[0] ? '#FFEBEE' : '#FAFAFA', color: preavisForm.delai === opt[0] ? '#B71C1C' : '#555', fontSize: 13, fontWeight: preavisForm.delai === opt[0] ? 700 : 400, cursor: 'pointer' }}>
+                        {opt[1]}
+                      </button>
+                    );
+                  })}
+                </div>
+                {preavisForm.delai && (
+                  <div style={{ background: '#FFEBEE', borderRadius: 10, padding: '10px 14px', marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: 12, color: '#B71C1C' }}>Date de sortie estimee</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: '#C62828' }}>{dateFinEstimee}</span>
+                  </div>
+                )}
+
+                <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 6, color: '#1B2B22' }}>Message personnalise (optionnel)</div>
+                <textarea value={preavisForm.message} onChange={function(e) { setPreavisForm(Object.assign({}, preavisForm, { message: e.target.value })); }}
+                  placeholder="Ajouter un message personnel au locataire..."
+                  style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 70, fontFamily: 'inherit', marginBottom: 16 }} />
+
+                <button type="button" onClick={function() { if (preavisForm.motif && preavisForm.delai) setPreavisStep('confirm'); }}
+                  style={{ width: '100%', padding: 13, background: preavisForm.motif && preavisForm.delai ? '#C62828' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: preavisForm.motif && preavisForm.delai ? 'pointer' : 'not-allowed' }}>
+                  Preparer le preavis officiel
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -275,6 +447,7 @@ function OngletBiens(props) {
 
       <div className="biens-cards-grid">
         {stats.logements.map(function(b) {
+          var aPreavis = preavisActifs[b.id];
           var borderColor = b.statut === 'loue' ? '#1B6B3A' : '#F5A623';
           return (
             <div key={b.id} className="bien-card-proto" style={{ borderTop: '4px solid ' + borderColor }}>
@@ -317,9 +490,16 @@ function OngletBiens(props) {
                         <div className="bien-card-addr">{b.adresse}, {b.ville}</div>
                       </div>
                     </div>
-                    <span className={b.statut === 'loue' ? 'badge-occupe' : 'badge-libre'}>
-                      {b.statut === 'loue' ? 'Occupe' : 'Libre'}
-                    </span>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+                      <span className={b.statut === 'loue' ? 'badge-occupe' : 'badge-libre'}>
+                        {b.statut === 'loue' ? 'Occupe' : 'Libre'}
+                      </span>
+                      {aPreavis && (
+                        <span style={{ background: '#FFF3E0', color: '#E65100', border: '0.5px solid #FFB74D', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>
+                          ⚠️ Preavis envoye
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="bien-card-stats">
                     <div className="bien-stat-box">
@@ -333,6 +513,15 @@ function OngletBiens(props) {
                   </div>
                   <div className="bien-card-btns">
                     <button className="btn-bien-primary" onClick={function() { handleEdit(b); }}>Modifier</button>
+                    {b.statut === 'loue' && !aPreavis && (
+                      <button
+                        onClick={function() { ouvrirModalPreavis(b); }}
+                        style={{ flex: 1, background: '#FFF3E0', color: '#E65100', border: '0.5px solid #FFB74D', borderRadius: 8, padding: '8px 10px', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}
+                        type="button"
+                      >
+                        📤 Preavis
+                      </button>
+                    )}
                     <button className="btn-bien-secondary" onClick={function() { setShowConfirm(b.id); }}>Supprimer</button>
                   </div>
                 </div>
@@ -1694,6 +1883,254 @@ function OngletMesLocations(props) {
   );
 }
 
+// ================================================
+// ONGLET : Paiements côté locataire
+// ================================================
+function OngletPaiementsLocataire(props) {
+  var stats = props.stats;
+  var PAY_MODES_LOC = [
+    { id: 'om', label: 'Orange Money', color: '#FF6600', text: '#fff', abbr: 'OM', sub: 'Instantane' },
+    { id: 'mtn', label: 'MTN MoMo', color: '#FFCC00', text: '#1B2B22', abbr: 'MM', sub: 'Instantane' },
+    { id: 'cash', label: 'Especes', icon: '💵', sub: 'Recu PDF genere' },
+    { id: 'bank', label: 'Virement', icon: '🏦', sub: 'BICIGUI · Ecobank' }
+  ];
+
+  var locationActive = stats.reservations.find(function(r) { return r.statut === 'confirmee'; });
+  var paiementsListe = stats.paiements || [];
+  var loyerMensuel = locationActive ? Number(locationActive.montant_total) : 0;
+
+  var [nbMois, setNbMois] = useState(1);
+  var [selectedMode, setSelectedMode] = useState('om');
+  var [payStep, setPayStep] = useState('home');
+  var [processing, setProcessing] = useState(false);
+  var [done, setDone] = useState(false);
+
+  var total = loyerMensuel * nbMois;
+
+  function calcPeriode() {
+    var debut = new Date();
+    var fin = new Date();
+    fin.setMonth(fin.getMonth() + nbMois);
+    var opts = { month: 'long', year: 'numeric' };
+    return debut.toLocaleDateString('fr-FR', opts) + ' — ' + fin.toLocaleDateString('fr-FR', opts);
+  }
+
+  function confirmerPaiement() {
+    setProcessing(true);
+    setTimeout(function() {
+      setProcessing(false);
+      setDone(true);
+    }, 2200);
+  }
+
+  if (!locationActive) {
+    return (
+      <div>
+        <div className="dash-page-header"><div><h1>Paiements</h1></div></div>
+        <div className="dash-empty-state">
+          <span>💳</span>
+          <h3>Aucune location active</h3>
+          <p>Vous devez avoir une reservation confirmee pour effectuer un paiement</p>
+          <Link to="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>Trouver un logement</Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (done) {
+    return (
+      <div>
+        <div className="dash-page-header"><div><h1>Paiements</h1></div></div>
+        <div style={{ textAlign: 'center', padding: '28px 0' }}>
+          <div style={{ width: 76, height: 76, background: '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: 40 }}>✅</div>
+          <div style={{ fontSize: 20, fontWeight: 700, color: '#1B6B3A', marginBottom: 6 }}>Paiement confirme !</div>
+          <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6, marginBottom: 22 }}>
+            Votre loyer de <strong>{GNF(total)}</strong> a ete enregistre avec succes.<br />
+            Une quittance PDF a ete generee et envoyee.
+          </div>
+          <div style={{ background: '#F0F4F1', borderRadius: 14, padding: 16, marginBottom: 22, textAlign: 'left' }}>
+            <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>Recapitulatif</div>
+            {[
+              ['Logement', locationActive.logement_titre],
+              ['Montant', GNF(total)],
+              ['Periode', calcPeriode()],
+              ['Mode', PAY_MODES_LOC.find(function(p) { return p.id === selectedMode; }) ? PAY_MODES_LOC.find(function(p) { return p.id === selectedMode; }).label : ''],
+              ['Statut', 'Paye ✅'],
+              ['Date', new Date().toLocaleDateString('fr-FR')]
+            ].map(function(row) {
+              return (
+                <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#555', padding: '4px 0', borderBottom: '0.5px solid #F0F0F0' }}>
+                  <span style={{ fontWeight: 600 }}>{row[0]}</span>
+                  <span>{row[1]}</span>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button style={{ flex: 1, background: '#F0F4F1', color: '#1B6B3A', border: '0.5px solid #A5D6A7', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer', fontWeight: 600 }} type="button">Voir la quittance</button>
+            <button onClick={function() { setDone(false); setPayStep('home'); }} style={{ flex: 1, background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer', fontWeight: 700 }} type="button">Retour</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="dash-page-header"><div><h1>Paiements</h1></div></div>
+
+      {/* Carte logement actuel */}
+      <div style={{ background: '#fff', borderRadius: 16, padding: 18, marginBottom: 16, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid #1B6B3A' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+          <div style={{ width: 48, height: 48, background: '#E8F5E9', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, flexShrink: 0 }}>🏠</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22' }}>{locationActive.logement_titre}</div>
+            <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
+              Depuis le {new Date(locationActive.date_debut).toLocaleDateString('fr-FR')}
+            </div>
+          </div>
+          <span style={{ background: '#E8F5E9', color: '#1B5E20', border: '0.5px solid #A5D6A7', borderRadius: 20, padding: '4px 10px', fontSize: 11, fontWeight: 700 }}>Active</span>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+          {[
+            ['Loyer mensuel', GNF(loyerMensuel), '#1B6B3A'],
+            ['Statut loyer', 'A jour ✓', '#1B6B3A'],
+            ['Caution', 'Securisee 🛡️', '#1565C0'],
+            ['Bail', 'Signe ✓', '#1565C0']
+          ].map(function(item) {
+            return (
+              <div key={item[0]} style={{ background: '#F8F8F8', borderRadius: 10, padding: '10px 12px' }}>
+                <div style={{ fontSize: 10, color: '#888', marginBottom: 2 }}>{item[0]}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: item[2] }}>{item[1]}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Historique 3 derniers mois */}
+      <div style={{ background: '#fff', borderRadius: 16, padding: 18, marginBottom: 16, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 12 }}>Historique des paiements</div>
+        {paiementsListe.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '20px 0', color: '#888', fontSize: 13 }}>Aucun paiement enregistre</div>
+        ) : (
+          paiementsListe.slice(0, 3).map(function(p, i) {
+            var estPaye = p.statut === 'complete';
+            return (
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < Math.min(2, paiementsListe.length - 1) ? '0.5px solid #F5F5F5' : 'none' }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>
+                    {p.date_paiement ? new Date(p.date_paiement).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }) : 'Mois en cours'}
+                  </div>
+                  <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{p.mode_paiement ? p.mode_paiement.toUpperCase() : 'N/A'}</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#1B6B3A' }}>{GNF(p.montant)}</div>
+                  <span style={{ background: estPaye ? '#E8F5E9' : '#FFEBEE', color: estPaye ? '#1B5E20' : '#B71C1C', border: '0.5px solid ' + (estPaye ? '#A5D6A7' : '#FFCDD2'), borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>
+                    {estPaye ? 'Paye ✓' : 'En attente'}
+                  </span>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Section payer loyer */}
+      {payStep === 'home' && (
+        <div style={{ background: '#fff', borderRadius: 16, padding: 18, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>Payer mon loyer</div>
+
+          <div style={{ fontSize: 12, color: '#666', marginBottom: 8, fontWeight: 600 }}>Nombre de mois a payer</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8, marginBottom: 14 }}>
+            {[[1,'1 mois'],[2,'2 mois'],[3,'3 mois'],[6,'6 mois'],[12,'1 an']].map(function(opt) {
+              return (
+                <button key={opt[0]} type="button" onClick={function() { setNbMois(opt[0]); }}
+                  style={{ padding: '9px 4px', borderRadius: 10, fontSize: 11, border: nbMois === opt[0] ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: nbMois === opt[0] ? '#E8F5E9' : '#FAFAFA', color: nbMois === opt[0] ? '#1B5E20' : '#555', fontWeight: nbMois === opt[0] ? 700 : 400, cursor: 'pointer' }}>
+                  {opt[1]}
+                </button>
+              );
+            })}
+          </div>
+
+          <div style={{ background: '#F0F4F1', borderRadius: 12, padding: 14, marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <div style={{ fontSize: 11, color: '#666' }}>Total a payer</div>
+              <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>Periode : {calcPeriode()}</div>
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: '#1B6B3A' }}>{GNF(total)}</div>
+          </div>
+
+          <div style={{ fontSize: 12, color: '#666', marginBottom: 8, fontWeight: 600 }}>Mode de paiement</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
+            {PAY_MODES_LOC.map(function(p) {
+              return (
+                <div key={p.id} onClick={function() { setSelectedMode(p.id); }}
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '14px 10px', border: selectedMode === p.id ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: selectedMode === p.id ? '#E8F5E9' : '#FAFAFA', borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s', position: 'relative' }}>
+                  {selectedMode === p.id && (
+                    <div style={{ position: 'absolute', top: 6, right: 8, width: 18, height: 18, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#fff', fontWeight: 700 }}>✓</div>
+                  )}
+                  <div style={{ width: 40, height: 40, background: p.color || '#E8F5E9', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: p.icon ? 22 : 13, fontWeight: 700, color: p.text || '#1B6B3A' }}>
+                    {p.icon || p.abbr}
+                  </div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22', textAlign: 'center' }}>{p.label}</div>
+                  <div style={{ fontSize: 10, color: '#888', textAlign: 'center' }}>{p.sub}</div>
+                </div>
+              );
+            })}
+          </div>
+
+          <button type="button" onClick={function() { setPayStep('recap'); }}
+            style={{ width: '100%', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+            Continuer — {GNF(total)}
+          </button>
+        </div>
+      )}
+
+      {payStep === 'recap' && (
+        <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>Recapitulatif avant confirmation</div>
+
+          <div style={{ background: '#F0F4F1', borderRadius: 12, padding: 14, marginBottom: 16 }}>
+            {[
+              ['Logement', locationActive.logement_titre],
+              ['Nombre de mois', nbMois + ' mois'],
+              ['Periode couverte', calcPeriode()],
+              ['Mode de paiement', PAY_MODES_LOC.find(function(p) { return p.id === selectedMode; }) ? PAY_MODES_LOC.find(function(p) { return p.id === selectedMode; }).label : ''],
+              ['Montant total', GNF(total)]
+            ].map(function(row) {
+              return (
+                <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '7px 0', borderBottom: '0.5px solid #E8F0EB' }}>
+                  <span style={{ color: '#666' }}>{row[0]}</span>
+                  <span style={{ fontWeight: 600, color: '#1B2B22' }}>{row[1]}</span>
+                </div>
+              );
+            })}
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, padding: '10px 0 0', fontWeight: 700 }}>
+              <span style={{ color: '#1B2B22' }}>Total</span>
+              <span style={{ color: '#1B6B3A' }}>{GNF(total)}</span>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
+            <button type="button" onClick={function() { setPayStep('home'); }}
+              style={{ flex: 1, background: '#F5F5F5', color: '#555', border: 'none', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer' }}>
+              Modifier
+            </button>
+            <button type="button" onClick={confirmerPaiement} disabled={processing}
+              style={{ flex: 2, background: processing ? '#999' : '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: processing ? 'not-allowed' : 'pointer' }}>
+              {processing ? 'Traitement en cours...' : 'Confirmer le paiement'}
+            </button>
+          </div>
+          <div style={{ fontSize: 11, color: '#888', textAlign: 'center', lineHeight: 1.6 }}>
+            En confirmant, une quittance PDF sera generee et envoyee automatiquement.
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function OngletPreavis(props) {
   var user = props.user;
   var estProprietaire = user && user.role !== 'locataire';
@@ -2140,10 +2577,18 @@ export default function Dashboard() {
   function renderOnglet() {
     if (onglet === '/dashboard') return <OngletOverview stats={stats} user={user} alertes={alertes} />;
     if (onglet === '/dashboard/biens') return <OngletBiens stats={stats} recharger={chargerDonnees} />;
-    if (onglet === '/dashboard/preavis') return <OngletPreavis user={user} />;
+    if (onglet === '/dashboard/preavis') {
+  return user && user.role === 'locataire'
+    ? <PreavisLocataire stats={stats} />
+    : <PreavisProprietaire stats={stats} />;
+}
     if (onglet === '/dashboard/locataires') return <OngletLocataires stats={stats} logements={stats.logements} />;
     if (onglet === '/dashboard/reservations') return <OngletReservations stats={stats} traiter={traiterReservation} user={user} />;
-    if (onglet === '/dashboard/paiements') return <OngletPaiements stats={stats} />;
+    if (onglet === '/dashboard/paiements') {
+  return user && user.role === 'locataire'
+    ? <OngletPaiementsLocataire stats={stats} />
+    : <OngletPaiementsProprietaire stats={stats} />;
+}
     if (onglet === '/dashboard/documents') return <OngletDocuments user={user} />;
     if (onglet === '/dashboard/alertes') return <OngletAlertes />;
     if (onglet === '/dashboard/messages') return <OngletMessages />;
