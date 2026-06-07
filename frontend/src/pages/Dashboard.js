@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import Sidebar from '../components/dashboard/Sidebar';
 import toast from 'react-hot-toast';
+import OngletPreavisComponent from '../components/OngletPreavis';
+import OngletPaiementsComponent from '../components/OngletPaiements';
 import './Dashboard.css';
 
 // ================================================
@@ -1653,12 +1655,12 @@ export default function Dashboard() {
     if (onglet === '/dashboard/biens') return <OngletBiens stats={stats} recharger={chargerDonnees} />;
     if (onglet === '/dashboard/locataires') return <OngletLocataires stats={stats} logements={stats.logements} />;
     if (onglet === '/dashboard/reservations') return <OngletReservations stats={stats} traiter={traiterReservation} user={user} />;
-    if (onglet === '/dashboard/paiements') return <OngletPaiements stats={stats} user={user} />;
+    if (onglet === '/dashboard/paiements') return <OngletPaiementsComponent />;
+    if (onglet === '/dashboard/preavis')   return <OngletPreavisComponent />;
     if (onglet === '/dashboard/documents') return <OngletDocuments user={user} />;
     if (onglet === '/dashboard/alertes') return <OngletAlertes />;
     if (onglet === '/dashboard/messages') return <OngletMessages />;
     if (onglet === '/dashboard/reclamations') return <OngletReclamations />;
-    if (onglet === '/dashboard/preavis') return <OngletPreavis user={user} stats={stats} />;
     if (onglet === '/dashboard/parametres') return <OngletParametres user={user} />;
     if (onglet === '/dashboard/mes-locations') return <OngletMesLocations stats={stats} />;
     return <OngletOverview stats={stats} user={user} alertes={alertes} />;
