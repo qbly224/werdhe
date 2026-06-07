@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
@@ -506,42 +507,189 @@ function OngletLocataires(props) {
 // ================================================
 function OngletReservations(props) {
   var stats = props.stats;
-  var traiter = props.traiter;
   var user = props.user;
+  var navigate = props.navigate;
+  var navigate = useNavigate ? useNavigate() : null;
+  var estProprietaire = user && (user.role === 'proprietaire' || user.role === 'les_deux');
+
+  // ─── VUE LOCATAIRE ────────────────────────────────────────────────
+  // Le locataire voit la liste de ses réservations avec leur statut
+  // et peut cliquer pour accéder à son flux de réservation complet
+  if (!estProprietaire) {
+    var reservationsLocataire = stats.reservations || [];
+    return (
+      <div>
+        <div className="dash-page-header">
+          <div>
+            <h1>Mes réservations</h1>
+            <p>{reservationsLocataire.length} réservation(s)</p>
+          </div>
+        </div>
+
+        {reservationsLocataire.length === 0 && (
+          <div className="dash-empty-state">
+            <span>📅</span>
+            <h3>Aucune réservation</h3>
+            <p>Trouvez un logement et envoyez une demande au propriétaire</p>
+            <a href="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
+              Trouver un logement
+            </a>
+          </div>
+        )}
+
+        {reservationsLocataire.map(function(r) {
+          // Libellés selon le statut stocké en base
+          var statuts = {
+            en_attente          : { label: '⏳ En attente de réponse',     couleur: '#F5A623', bg: '#FFF8E1', action: 'Suivre ma demande' },
+            dossier_requis      : { label: '📁 Dossier demandé',            couleur: '#1565C0', bg: '#E3F2FD', action: 'Soumettre mon dossier' },
+            en_examen           : { label: '🔍 Dossier en cours d\'examen', couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Voir l\'avancement' },
+            acceptee            : { label: '✅ Candidature acceptée',        couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Démarrer les échanges' },
+            echanges            : { label: '💬 En discussion',              couleur: '#1565C0', bg: '#E3F2FD', action: 'Voir la discussion' },
+            caution_requise     : { label: '🔒 Caution à payer',            couleur: '#E65100', bg: '#FFF3E0', action: 'Payer la caution' },
+            caution_payee       : { label: '🛡️ Caution versée',             couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir l\'avancement' },
+            bail_en_cours       : { label: '📝 Bail à signer',              couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer le bail' },
+            bail_signe_proprio  : { label: '✍️ À mon tour de signer',       couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer maintenant' },
+            confirmee           : { label: '🗝️ Location active',            couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir le récapitulatif' },
+            refusee             : { label: '❌ Candidature refusée',         couleur: '#B71C1C', bg: '#FFEBEE', action: '' },
+          };
+          var cfg = statuts[r.statut] || { label: r.statut, couleur: '#888', bg: '#F5F5F5', action: 'Voir' };
+          var urgente = ['dossier_requis', 'caution_requise', 'bail_en_cours', 'bail_signe_proprio', 'acceptee'].includes(r.statut);
+
+          return (
+            <div key={r.id} style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderLeft: '4px solid ' + cfg.couleur }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22' }}>{r.logement_titre}</div>
+                  <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>
+                    {r.date_debut ? 'Depuis le ' + new Date(r.date_debut).toLocaleDateString('fr-FR') : 'Date à définir'}
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6B3A', marginTop: 4 }}>
+                    {new Intl.NumberFormat('fr-FR').format(r.montant_total || r.prix_mensuel)} GNF / mois
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{ display: 'inline-block', padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: cfg.bg, color: cfg.couleur }}>
+                    {cfg.label}
+                  </span>
+                </div>
+              </div>
+              {urgente && (
+                <div style={{ background: '#FFF8E1', borderRadius: 8, padding: '7px 12px', marginBottom: 10, fontSize: 12, color: '#7B4F00', fontWeight: 600 }}>
+                  ⚡ Une action est attendue de votre part
+                </div>
+              )}
+              {cfg.action && (
+                <button
+                  onClick={function() {
+                    if (navigate) navigate('/reservation/' + r.id);
+                    else window.location.href = '/reservation/' + r.id;
+                  }}
+                  style={{ width: '100%', background: urgente ? '#1B6B3A' : '#F0F0F0', color: urgente ? '#fff' : '#555', border: 'none', borderRadius: 10, padding: 10, fontSize: 13, fontWeight: urgente ? 700 : 400, cursor: 'pointer' }}>
+                  {cfg.action} →
+                </button>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // ─── VUE PROPRIÉTAIRE ─────────────────────────────────────────────
+  // Le proprio voit toutes les demandes avec les actions à faire
+  var reservations = stats.reservations || [];
+  var actionsRequises = reservations.filter(function(r) {
+    return ['en_attente', 'en_examen', 'caution_payee', 'bail_en_cours'].includes(r.statut);
+  });
+
+  var configPropio = {
+    en_attente         : { label: '📩 Nouvelle demande',           couleur: '#E53935', action: '⚖️ Répondre maintenant', urgent: true },
+    dossier_requis     : { label: '⏳ Attente du dossier',          couleur: '#F5A623', action: '',                       urgent: false },
+    en_examen          : { label: '📋 Dossier à examiner',          couleur: '#7B1FA2', action: '🔍 Examiner le dossier', urgent: true },
+    acceptee           : { label: '✅ Acceptée',                     couleur: '#1B6B3A', action: '💬 Voir les échanges',  urgent: false },
+    echanges           : { label: '💬 Discussion en cours',         couleur: '#1565C0', action: '💬 Continuer',           urgent: false },
+    caution_requise    : { label: '⏳ Caution en attente',           couleur: '#F5A623', action: '',                       urgent: false },
+    caution_payee      : { label: '✅ Caution reçue',                couleur: '#1B6B3A', action: '📝 Préparer le bail',   urgent: true },
+    bail_en_cours      : { label: '📝 Bail à signer',               couleur: '#7B1FA2', action: '✍️ Signer le bail',     urgent: true },
+    bail_signe_proprio : { label: '⏳ Attente signature locataire', couleur: '#F5A623', action: '',                       urgent: false },
+    confirmee          : { label: '🗝️ Location active',             couleur: '#1B6B3A', action: '📋 Voir le détail',     urgent: false },
+    refusee            : { label: '❌ Refusée',                      couleur: '#888',    action: '',                       urgent: false },
+  };
+
   return (
     <div>
       <div className="dash-page-header">
-        <div><h1>Reservations</h1><p>{stats.reservations.length} reservation(s)</p></div>
+        <div>
+          <h1>Réservations</h1>
+          <p>{reservations.length} réservation(s)</p>
+        </div>
       </div>
-      {stats.reservations.length === 0 && (
-        <div className="dash-empty-state">
-          <span>📅</span><h3>Aucune reservation</h3><p>Les demandes apparaitront ici</p>
+
+      {actionsRequises.length > 0 && (
+        <div style={{ background: '#FFEBEE', borderRadius: 12, padding: '12px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ fontSize: 20 }}>⚡</span>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#B71C1C' }}>
+              {actionsRequises.length} action(s) requise(s) de votre part
+            </div>
+            <div style={{ fontSize: 12, color: '#C62828' }}>
+              Répondez aux demandes en attente pour ne pas les faire patienter.
+            </div>
+          </div>
         </div>
       )}
-      {stats.reservations.map(function(r) {
+
+      {reservations.length === 0 && (
+        <div className="dash-empty-state">
+          <span>📅</span>
+          <h3>Aucune demande reçue</h3>
+          <p>Les demandes de réservation de vos locataires apparaîtront ici</p>
+        </div>
+      )}
+
+      {reservations.map(function(r) {
+        var cfg = configPropio[r.statut] || { label: r.statut, couleur: '#888', action: 'Voir', urgent: false };
         return (
-          <div key={r.id} className="locataire-row" style={{ flexWrap: 'wrap', gap: 12, alignItems: 'flex-start' }}>
-            <div style={{ flex: 1 }}>
-              <div className="locataire-row-name">{r.logement_titre}</div>
-              <div className="locataire-row-sub">
-                Du {new Date(r.date_debut).toLocaleDateString('fr-FR')}
-                {r.date_fin ? ' au ' + new Date(r.date_fin).toLocaleDateString('fr-FR') : ''}
-                {r.type_location === 'longue_duree' ? ' (Longue duree)' : ''}
-              </div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6B3A', marginTop: 4 }}>{GNF(r.montant_total)}</div>
-              {r.locataire_nom && <div style={{ fontSize: 12, color: '#888' }}>👤 {r.locataire_prenom} {r.locataire_nom}</div>}
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
-              <span className={r.statut === 'confirmee' ? 'badge-paye' : r.statut === 'annulee' ? 'badge-retard' : 'badge-libre'}>
-                {r.statut === 'en_attente' ? 'En attente' : r.statut === 'confirmee' ? 'Confirmee' : r.statut === 'annulee' ? 'Annulee' : 'Terminee'}
-              </span>
-              {user && user.role !== 'locataire' && r.statut === 'en_attente' && (
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <button className="btn-bien-primary" style={{ padding: '7px 14px' }} onClick={function() { traiter(r.id, 'confirmee'); }}>Confirmer</button>
-                  <button style={{ background: '#FFEBEE', color: '#B71C1C', border: 'none', borderRadius: 8, padding: '7px 12px', fontSize: 13, cursor: 'pointer', fontWeight: 600 }} onClick={function() { traiter(r.id, 'annulee'); }}>Refuser</button>
+          <div key={r.id} style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderLeft: '4px solid ' + (cfg.urgent ? '#E53935' : '#1B6B3A') }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                  <div style={{ width: 36, height: 36, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
+                    {((r.locataire_prenom || 'L').charAt(0) + (r.locataire_nom || 'L').charAt(0)).toUpperCase()}
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{r.locataire_prenom} {r.locataire_nom}</div>
+                    <div style={{ fontSize: 11, color: '#888' }}>{r.locataire_telephone}</div>
+                  </div>
                 </div>
-              )}
+                <div style={{ fontSize: 12, color: '#555' }}>🏠 {r.logement_titre}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6B3A', marginTop: 3 }}>
+                  {new Intl.NumberFormat('fr-FR').format(r.montant_total || r.prix_mensuel)} GNF/mois
+                </div>
+              </div>
+              <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: cfg.urgent ? '#FFEBEE' : '#E8F5E9', color: cfg.couleur }}>
+                {cfg.label}
+              </span>
             </div>
+
+            {cfg.urgent && (
+              <div style={{ background: '#FFF8E1', borderRadius: 8, padding: '7px 12px', marginBottom: 10, fontSize: 12, color: '#7B4F00', fontWeight: 600 }}>
+                ⚡ Votre intervention est requise
+              </div>
+            )}
+
+            {cfg.action && (
+              <button
+                onClick={function() {
+                  // Ouvre le détail dans l'onglet réservations proprio
+                  window.reservationSelectee = r;
+                  if (navigate) navigate('/dashboard/reservations/' + r.id);
+                  else window.location.href = '/dashboard/reservations/' + r.id;
+                }}
+                style={{ width: '100%', background: cfg.urgent ? '#1B6B3A' : '#F0F0F0', color: cfg.urgent ? '#fff' : '#555', border: 'none', borderRadius: 10, padding: 10, fontSize: 13, fontWeight: cfg.urgent ? 700 : 400, cursor: 'pointer' }}>
+                {cfg.action} →
+              </button>
+            )}
           </div>
         );
       })}
@@ -1569,6 +1717,7 @@ export default function Dashboard() {
   var [loading, setLoading] = useState(true);
   var [showNotif, setShowNotif] = useState(false);
   var [alertes, setAlertes] = useState([]);
+  var navigate = useNavigate();
   var [stats, setStats] = useState({ logements: [], reservations: [], paiements: [] });
 
   // ================================================
@@ -1654,7 +1803,7 @@ export default function Dashboard() {
     if (onglet === '/dashboard') return <OngletOverview stats={stats} user={user} alertes={alertes} />;
     if (onglet === '/dashboard/biens') return <OngletBiens stats={stats} recharger={chargerDonnees} />;
     if (onglet === '/dashboard/locataires') return <OngletLocataires stats={stats} logements={stats.logements} />;
-    if (onglet === '/dashboard/reservations') return <OngletReservations stats={stats} traiter={traiterReservation} user={user} />;
+    if (onglet === '/dashboard/reservations') return <OngletReservations stats={stats} traiter={traiterReservation} user={user} navigate={navigate} />;
     if (onglet === '/dashboard/paiements') return <OngletPaiementsComponent />;
     if (onglet === '/dashboard/preavis')   return <OngletPreavisComponent />;
     if (onglet === '/dashboard/documents') return <OngletDocuments user={user} />;

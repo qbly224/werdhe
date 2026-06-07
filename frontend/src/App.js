@@ -14,6 +14,7 @@ import Dashboard from './pages/Dashboard';
 import Profil from './pages/Profil';
 import Reserver from './pages/Reserver';
 import AjouterLogement from './pages/AjouterLogement';
+import ReservationLocataire from './pages/ReservationLocataire';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 
@@ -43,6 +44,7 @@ function App() {
           <Route path="/dashboard" element={<RoutePrivee><Dashboard /></RoutePrivee>} />
           <Route path="/profil" element={<RoutePrivee><Profil /></RoutePrivee>} />
           <Route path="/logements/:id/reserver" element={<RoutePrivee><Reserver /></RoutePrivee>} />
+          <Route path="/reservation/:id" element={<ReservationLocataire />} />
           <Route path="/logements/ajouter" element={<RoutePrivee><AjouterLogement /></RoutePrivee>} />
         </Routes>
       </BrowserRouter>
