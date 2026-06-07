@@ -507,85 +507,83 @@ function OngletLocataires(props) {
 function OngletReservations(props) {
   var stats = props.stats;
   var user = props.user;
-  var navigate = props.navigate;
-  var navigate = useNavigate ? useNavigate() : null;
+  var recharger = props.recharger;
   var estProprietaire = user && (user.role === 'proprietaire' || user.role === 'les_deux');
 
-  // ─── VUE LOCATAIRE ────────────────────────────────────────────────
-  // Le locataire voit la liste de ses réservations avec leur statut
-  // et peut cliquer pour accéder à son flux de réservation complet
+  // ── LOCATAIRE : liste des réservations avec lien vers le flux ─────
   if (!estProprietaire) {
-    var reservationsLocataire = stats.reservations || [];
+    var reservationsLoc = stats.reservations || [];
+
+    var statutsLoc = {
+      en_attente          : { label: '⏳ En attente de réponse',      couleur: '#F5A623', bg: '#FFF8E1', action: 'Suivre ma demande',       urgent: true  },
+      dossier_requis      : { label: '📁 Dossier demandé',             couleur: '#1565C0', bg: '#E3F2FD', action: 'Soumettre mon dossier',   urgent: true  },
+      en_examen           : { label: '🔍 Dossier en cours d\'examen',  couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Voir l\'avancement',      urgent: false },
+      acceptee            : { label: '✅ Candidature acceptée',         couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Démarrer les échanges',  urgent: true  },
+      echanges            : { label: '💬 En discussion',               couleur: '#1565C0', bg: '#E3F2FD', action: 'Voir la discussion',      urgent: false },
+      caution_requise     : { label: '🔒 Caution à payer',             couleur: '#E65100', bg: '#FFF3E0', action: 'Payer la caution',        urgent: true  },
+      caution_payee       : { label: '🛡️ Caution versée',              couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir l\'avancement',      urgent: false },
+      bail_en_cours       : { label: '📝 Bail à signer',               couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer le bail',         urgent: true  },
+      bail_signe_proprio  : { label: '✍️ À mon tour de signer',        couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer maintenant',      urgent: true  },
+      confirmee           : { label: '🗝️ Location active',             couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir le récapitulatif',  urgent: false },
+      refusee             : { label: '❌ Candidature refusée',          couleur: '#B71C1C', bg: '#FFEBEE', action: null,                     urgent: false },
+    };
+
     return (
       <div>
         <div className="dash-page-header">
           <div>
             <h1>Mes réservations</h1>
-            <p>{reservationsLocataire.length} réservation(s)</p>
+            <p>{reservationsLoc.length} réservation(s)</p>
           </div>
+          <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>
+            + Chercher un logement
+          </Link>
         </div>
 
-        {reservationsLocataire.length === 0 && (
+        {reservationsLoc.length === 0 && (
           <div className="dash-empty-state">
             <span>📅</span>
             <h3>Aucune réservation</h3>
             <p>Trouvez un logement et envoyez une demande au propriétaire</p>
-            <a href="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
+            <Link to="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
               Trouver un logement
-            </a>
+            </Link>
           </div>
         )}
 
-        {reservationsLocataire.map(function(r) {
-          // Libellés selon le statut stocké en base
-          var statuts = {
-            en_attente          : { label: '⏳ En attente de réponse',     couleur: '#F5A623', bg: '#FFF8E1', action: 'Suivre ma demande' },
-            dossier_requis      : { label: '📁 Dossier demandé',            couleur: '#1565C0', bg: '#E3F2FD', action: 'Soumettre mon dossier' },
-            en_examen           : { label: '🔍 Dossier en cours d\'examen', couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Voir l\'avancement' },
-            acceptee            : { label: '✅ Candidature acceptée',        couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Démarrer les échanges' },
-            echanges            : { label: '💬 En discussion',              couleur: '#1565C0', bg: '#E3F2FD', action: 'Voir la discussion' },
-            caution_requise     : { label: '🔒 Caution à payer',            couleur: '#E65100', bg: '#FFF3E0', action: 'Payer la caution' },
-            caution_payee       : { label: '🛡️ Caution versée',             couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir l\'avancement' },
-            bail_en_cours       : { label: '📝 Bail à signer',              couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer le bail' },
-            bail_signe_proprio  : { label: '✍️ À mon tour de signer',       couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer maintenant' },
-            confirmee           : { label: '🗝️ Location active',            couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir le récapitulatif' },
-            refusee             : { label: '❌ Candidature refusée',         couleur: '#B71C1C', bg: '#FFEBEE', action: '' },
-          };
-          var cfg = statuts[r.statut] || { label: r.statut, couleur: '#888', bg: '#F5F5F5', action: 'Voir' };
-          var urgente = ['dossier_requis', 'caution_requise', 'bail_en_cours', 'bail_signe_proprio', 'acceptee'].includes(r.statut);
-
+        {reservationsLoc.map(function(r) {
+          var cfg = statutsLoc[r.statut] || { label: r.statut, couleur: '#888', bg: '#F5F5F5', action: 'Voir', urgent: false };
           return (
             <div key={r.id} style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderLeft: '4px solid ' + cfg.couleur }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
-                <div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22' }}>{r.logement_titre}</div>
-                  <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>
-                    {r.date_debut ? 'Depuis le ' + new Date(r.date_debut).toLocaleDateString('fr-FR') : 'Date à définir'}
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 3 }}>
+                    {r.logement_titre}
+                  </div>
+                  <div style={{ fontSize: 12, color: '#888' }}>
+                    {r.date_debut ? 'Demande du ' + new Date(r.created_at).toLocaleDateString('fr-FR') : 'Demande en cours'}
                   </div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6B3A', marginTop: 4 }}>
-                    {new Intl.NumberFormat('fr-FR').format(r.montant_total || r.prix_mensuel)} GNF / mois
+                    {new Intl.NumberFormat('fr-FR').format(r.montant_total || r.prix_mensuel || 0)} GNF / mois
                   </div>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <span style={{ display: 'inline-block', padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: cfg.bg, color: cfg.couleur }}>
-                    {cfg.label}
-                  </span>
-                </div>
+                <span style={{ display: 'inline-block', padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: cfg.bg, color: cfg.couleur, flexShrink: 0, marginLeft: 10 }}>
+                  {cfg.label}
+                </span>
               </div>
-              {urgente && (
+
+              {cfg.urgent && (
                 <div style={{ background: '#FFF8E1', borderRadius: 8, padding: '7px 12px', marginBottom: 10, fontSize: 12, color: '#7B4F00', fontWeight: 600 }}>
                   ⚡ Une action est attendue de votre part
                 </div>
               )}
+
               {cfg.action && (
-                <button
-                  onClick={function() {
-                    if (navigate) navigate('/reservation/' + r.id);
-                    else window.location.href = '/reservation/' + r.id;
-                  }}
-                  style={{ width: '100%', background: urgente ? '#1B6B3A' : '#F0F0F0', color: urgente ? '#fff' : '#555', border: 'none', borderRadius: 10, padding: 10, fontSize: 13, fontWeight: urgente ? 700 : 400, cursor: 'pointer' }}>
+                <Link
+                  to={'/reservation/' + r.id}
+                  style={{ display: 'block', width: '100%', background: cfg.urgent ? '#1B6B3A' : '#F0F0F0', color: cfg.urgent ? '#fff' : '#555', border: 'none', borderRadius: 10, padding: '10px 0', fontSize: 13, fontWeight: cfg.urgent ? 700 : 400, cursor: 'pointer', textDecoration: 'none', textAlign: 'center', boxSizing: 'border-box' }}>
                   {cfg.action} →
-                </button>
+                </Link>
               )}
             </div>
           );
@@ -594,27 +592,463 @@ function OngletReservations(props) {
     );
   }
 
-  // ─── VUE PROPRIÉTAIRE ─────────────────────────────────────────────
-  // Le proprio voit toutes les demandes avec les actions à faire
+  // ── PROPRIÉTAIRE : liste + détail inline (pas de navigation) ──────
+  return <OngletReservationsProprio stats={stats} recharger={recharger} user={user} />;
+}
+
+// ─── Séparé pour garder le code propre ────────────────────────────
+function OngletReservationsProprio(props) {
+  var stats = props.stats;
+  var recharger = props.recharger;
+  var user = props.user;
+  var [selectionne, setSelectionne] = useState(null);
+  var [motifRefus, setMotifRefus] = useState('');
+  var [msgs, setMsgs] = useState([]);
+  var [newMsg, setNewMsg] = useState('');
+  var [bailSigne, setBailSigne] = useState(false);
+
+  // Polling toutes les 5s pour mettre à jour le statut
+  useEffect(function() {
+    var interval = setInterval(function() {
+      if (recharger) recharger();
+    }, 5000);
+    return function() { clearInterval(interval); };
+  }, [recharger]);
+
+  // Quand la liste se met à jour, mettre à jour aussi la vue détail
+  useEffect(function() {
+    if (selectionne) {
+      var updated = (stats.reservations || []).find(function(r) { return r.id === selectionne.id; });
+      if (updated && updated.statut !== selectionne.statut) {
+        setSelectionne(updated);
+      }
+    }
+  }, [stats.reservations]);
+
+  // Charger les messages quand on ouvre la discussion
+  useEffect(function() {
+    if (selectionne && selectionne.locataire_id && ['acceptee', 'echanges'].includes(selectionne.statut)) {
+      api.get('/messages/' + selectionne.locataire_id)
+        .then(function(res) { setMsgs(res.data.messages || []); })
+        .catch(console.error);
+    }
+  }, [selectionne && selectionne.statut]);
+
+  function action(endpoint, body, msgSucces) {
+    api.patch('/reservations/' + selectionne.id + endpoint, body)
+      .then(function(res) {
+        toast.success(msgSucces);
+        setMotifRefus('');
+        if (recharger) recharger();
+      })
+      .catch(function(err) {
+        toast.error('Erreur — vérifiez la console');
+        console.error(err);
+      });
+  }
+
+  function signerBail() {
+    api.patch('/reservations/' + selectionne.id + '/signer-bail', { role: 'proprietaire' })
+      .then(function() {
+        setBailSigne(true);
+        toast.success('Bail signé ! En attente de la signature du locataire.');
+        if (recharger) recharger();
+      })
+      .catch(function() {
+        setBailSigne(true);
+        toast.success('Bail signé !');
+      });
+  }
+
+  function envoyerMessage() {
+    if (!newMsg.trim()) return;
+    api.post('/messages', {
+      destinataire_id: selectionne.locataire_id,
+      reservation_id: selectionne.id,
+      contenu: newMsg
+    })
+      .then(function(res) {
+        setMsgs(function(prev) { return prev.concat(res.data.data || { contenu: newMsg, expedition_id: user && user.id, created_at: new Date().toISOString() }); });
+        setNewMsg('');
+      })
+      .catch(function() { toast.error('Erreur envoi'); });
+  }
+
   var reservations = stats.reservations || [];
   var actionsRequises = reservations.filter(function(r) {
     return ['en_attente', 'en_examen', 'caution_payee', 'bail_en_cours'].includes(r.statut);
   });
 
-  var configPropio = {
-    en_attente         : { label: '📩 Nouvelle demande',           couleur: '#E53935', action: '⚖️ Répondre maintenant', urgent: true },
-    dossier_requis     : { label: '⏳ Attente du dossier',          couleur: '#F5A623', action: '',                       urgent: false },
-    en_examen          : { label: '📋 Dossier à examiner',          couleur: '#7B1FA2', action: '🔍 Examiner le dossier', urgent: true },
-    acceptee           : { label: '✅ Acceptée',                     couleur: '#1B6B3A', action: '💬 Voir les échanges',  urgent: false },
-    echanges           : { label: '💬 Discussion en cours',         couleur: '#1565C0', action: '💬 Continuer',           urgent: false },
-    caution_requise    : { label: '⏳ Caution en attente',           couleur: '#F5A623', action: '',                       urgent: false },
-    caution_payee      : { label: '✅ Caution reçue',                couleur: '#1B6B3A', action: '📝 Préparer le bail',   urgent: true },
-    bail_en_cours      : { label: '📝 Bail à signer',               couleur: '#7B1FA2', action: '✍️ Signer le bail',     urgent: true },
-    bail_signe_proprio : { label: '⏳ Attente signature locataire', couleur: '#F5A623', action: '',                       urgent: false },
-    confirmee          : { label: '🗝️ Location active',             couleur: '#1B6B3A', action: '📋 Voir le détail',     urgent: false },
-    refusee            : { label: '❌ Refusée',                      couleur: '#888',    action: '',                       urgent: false },
+  var cfgStatuts = {
+    en_attente         : { label: '📩 Nouvelle demande',            couleur: '#E53935', urgent: true  },
+    dossier_requis     : { label: '⏳ Attente du dossier',           couleur: '#F5A623', urgent: false },
+    en_examen          : { label: '📋 Dossier à examiner',           couleur: '#7B1FA2', urgent: true  },
+    acceptee           : { label: '✅ Acceptée',                      couleur: '#1B6B3A', urgent: false },
+    echanges           : { label: '💬 Discussion en cours',          couleur: '#1565C0', urgent: false },
+    caution_requise    : { label: '⏳ Caution en attente',            couleur: '#F5A623', urgent: false },
+    caution_payee      : { label: '✅ Caution reçue',                 couleur: '#1B6B3A', urgent: true  },
+    bail_en_cours      : { label: '📝 Bail à signer',                couleur: '#7B1FA2', urgent: true  },
+    bail_signe_proprio : { label: '⏳ Attente signature locataire',  couleur: '#F5A623', urgent: false },
+    confirmee          : { label: '🗝️ Location active',              couleur: '#1B6B3A', urgent: false },
+    refusee            : { label: '❌ Refusée',                       couleur: '#888',    urgent: false },
   };
 
+  // ── VUE DÉTAIL ──────────────────────────────────────────────────
+  if (selectionne) {
+    var r = selectionne;
+    var loyer = Number(r.montant_total || r.prix_mensuel || 0);
+
+    return (
+      <div>
+        {/* Bouton retour */}
+        <button
+          onClick={function() { setSelectionne(null); setBailSigne(false); setMotifRefus(''); setMsgs([]); }}
+          style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', color: '#1B6B3A', fontWeight: 700, fontSize: 14, cursor: 'pointer', marginBottom: 16, padding: 0 }}>
+          ← Retour à la liste
+        </button>
+
+        {/* En-tête locataire */}
+        <div style={{ background: '#1B6B3A', borderRadius: 14, padding: '16px 18px', marginBottom: 18 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <div style={{ color: '#fff', fontWeight: 700, fontSize: 16 }}>
+                {r.locataire_prenom} {r.locataire_nom}
+              </div>
+              <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 12, marginTop: 3 }}>
+                {r.logement_titre} · {new Intl.NumberFormat('fr-FR').format(loyer)} GNF/mois
+              </div>
+              {r.locataire_telephone && (
+                <a href={'tel:' + r.locataire_telephone} style={{ color: 'rgba(255,255,255,0.85)', fontSize: 12, marginTop: 3, display: 'block' }}>
+                  📞 {r.locataire_telephone}
+                </a>
+              )}
+            </div>
+            <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: 20, padding: '5px 14px', fontSize: 12, color: '#fff', fontWeight: 600 }}>
+              {cfgStatuts[r.statut] ? cfgStatuts[r.statut].label : r.statut}
+            </div>
+          </div>
+        </div>
+
+        {/* ─ NOUVELLE DEMANDE ─ */}
+        {r.statut === 'en_attente' && (
+          <div style={{ background: '#fff', borderRadius: 14, padding: 18, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>📩 Demande reçue</div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 16 }}>
+              {[
+                ['Logement', r.logement_titre],
+                ['Loyer', new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF/mois'],
+                ['Date souhaitée', r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'Non précisée'],
+                ['Durée', r.duree_mois ? r.duree_mois + ' mois' : 'Non précisée'],
+                ['Reçue le', new Date(r.created_at).toLocaleDateString('fr-FR')],
+                ['Email', r.locataire_email || 'N/A'],
+              ].map(function(row) {
+                return (
+                  <div key={row[0]} style={{ background: '#F8F8F8', borderRadius: 10, padding: '10px 12px' }}>
+                    <div style={{ fontSize: 10, color: '#888', marginBottom: 3 }}>{row[0]}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>{row[1]}</div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {r.message_locataire && (
+              <div style={{ background: '#F0F7FF', borderRadius: 10, padding: 12, marginBottom: 16 }}>
+                <div style={{ fontSize: 11, color: '#888', marginBottom: 4, fontWeight: 600 }}>Message du locataire</div>
+                <div style={{ fontSize: 13, color: '#333', fontStyle: 'italic' }}>"{r.message_locataire}"</div>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <button
+                onClick={function() { action('/decision', { decision: 'dossier_requis' }, 'Dossier demandé ! Le locataire va uploader ses documents.'); }}
+                style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                📁 Demander le dossier complet
+              </button>
+              <button
+                onClick={function() { action('/decision', { decision: 'acceptee' }, 'Candidature acceptée ! Le locataire est notifié.'); }}
+                style={{ background: '#E8F5E9', color: '#1B5E20', border: '1px solid #A5D6A7', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+                ✅ Accepter directement (sans dossier)
+              </button>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <input
+                  type="text"
+                  value={motifRefus}
+                  onChange={function(e) { setMotifRefus(e.target.value); }}
+                  placeholder="Motif du refus (obligatoire)"
+                  style={{ flex: 1, padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none' }} />
+                <button
+                  onClick={function() {
+                    if (!motifRefus.trim()) { toast.error('Indiquez un motif de refus'); return; }
+                    action('/decision', { decision: 'refusee', motif: motifRefus }, 'Candidature refusée. Le locataire est notifié.');
+                  }}
+                  style={{ background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                  ❌ Refuser
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ─ DOSSIER EN ATTENTE ─ */}
+        {r.statut === 'dossier_requis' && (
+          <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <div style={{ fontSize: 36, marginBottom: 12 }}>⏳</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>
+              En attente du dossier de {r.locataire_prenom}
+            </div>
+            <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6 }}>
+              Le locataire prépare ses documents. Vous serez notifié(e) dès que le dossier est soumis. La page se met à jour automatiquement.
+            </div>
+          </div>
+        )}
+
+        {/* ─ EXAMINER LE DOSSIER ─ */}
+        {r.statut === 'en_examen' && (
+          <div style={{ background: '#fff', borderRadius: 14, padding: 18, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>
+              📋 Dossier soumis par {r.locataire_prenom}
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              {[
+                { label: 'Pièce d\'identité (CNI)', ok: true },
+                { label: 'Attestation d\'emploi',   ok: true },
+                { label: 'Fiches de paie',          ok: Boolean(r.doc_paie_url) },
+                { label: 'Contact garant',          ok: Boolean(r.doc_garant_url) },
+              ].map(function(d) {
+                return (
+                  <div key={d.label} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 0', borderBottom: '0.5px solid #F5F5F5' }}>
+                    <span style={{ fontSize: 16 }}>{d.ok ? '✅' : '⏳'}</span>
+                    <span style={{ fontSize: 13, color: d.ok ? '#1B2B22' : '#888' }}>{d.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <button
+                onClick={function() { action('/decision', { decision: 'acceptee' }, 'Dossier validé ! Candidature acceptée.'); }}
+                style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                ✅ Valider le dossier — Accepter
+              </button>
+              <button
+                onClick={function() { action('/decision', { decision: 'dossier_requis' }, 'Informations complémentaires demandées.'); }}
+                style={{ background: '#E3F2FD', color: '#1565C0', border: '1px solid #90CAF9', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+                💬 Demander des informations complémentaires
+              </button>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <input
+                  type="text"
+                  value={motifRefus}
+                  onChange={function(e) { setMotifRefus(e.target.value); }}
+                  placeholder="Motif du refus"
+                  style={{ flex: 1, padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none' }} />
+                <button
+                  onClick={function() {
+                    if (!motifRefus.trim()) { toast.error('Indiquez un motif'); return; }
+                    action('/decision', { decision: 'refusee', motif: motifRefus }, 'Candidature refusée.');
+                  }}
+                  style={{ background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                  ❌ Refuser
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ─ ÉCHANGES CHAT ─ */}
+        {(r.statut === 'acceptee' || r.statut === 'echanges') && (
+          <div>
+            <div style={{ background: '#E8F5E9', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
+              <span>🎉</span>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#1B5E20' }}>Candidature acceptée !</div>
+                <div style={{ fontSize: 12, color: '#2E7D32' }}>Discutez des conditions. Le locataire paiera la caution quand il sera prêt.</div>
+              </div>
+            </div>
+            <div style={{ background: '#fff', borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+              <div style={{ background: '#1B6B3A', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 32, height: 32, background: 'rgba(255,255,255,0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 700 }}>
+                  {((r.locataire_prenom || 'L').charAt(0) + (r.locataire_nom || 'L').charAt(0)).toUpperCase()}
+                </div>
+                <div style={{ color: '#fff', fontWeight: 700, fontSize: 13 }}>{r.locataire_prenom} {r.locataire_nom}</div>
+              </div>
+              <div style={{ height: 240, overflowY: 'auto', padding: 12, display: 'flex', flexDirection: 'column', gap: 8, background: '#F8F9F8' }}>
+                {msgs.length === 0 && (
+                  <div style={{ textAlign: 'center', color: '#ccc', fontSize: 13, paddingTop: 30 }}>Commencez la discussion</div>
+                )}
+                {msgs.map(function(m, i) {
+                  var isMoi = m.expedition_id === (user && user.id);
+                  return (
+                    <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: isMoi ? 'flex-end' : 'flex-start' }}>
+                      <div style={{ maxWidth: '78%', padding: '9px 13px', borderRadius: isMoi ? '16px 16px 4px 16px' : '16px 16px 16px 4px', background: isMoi ? '#1B6B3A' : '#fff', color: isMoi ? '#fff' : '#1B2B22', fontSize: 13, lineHeight: 1.5, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+                        {m.contenu}
+                        <div style={{ fontSize: 10, opacity: 0.7, marginTop: 3, textAlign: 'right' }}>
+                          {new Date(m.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={{ padding: '10px 12px', background: '#fff', borderTop: '0.5px solid #F0F0F0', display: 'flex', gap: 8 }}>
+                <input
+                  value={newMsg}
+                  onChange={function(e) { setNewMsg(e.target.value); }}
+                  onKeyDown={function(e) { if (e.key === 'Enter') envoyerMessage(); }}
+                  placeholder="Écrivez un message..."
+                  style={{ flex: 1, padding: '9px 14px', borderRadius: 20, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: '#F8F8F8' }} />
+                <button onClick={envoyerMessage} style={{ width: 38, height: 38, borderRadius: '50%', background: '#1B6B3A', border: 'none', color: '#fff', fontSize: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>↗</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ─ CAUTION EN ATTENTE ─ */}
+        {r.statut === 'caution_requise' && (
+          <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <div style={{ fontSize: 36, marginBottom: 12 }}>⏳</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>
+              {r.locataire_prenom} est en train de payer la caution
+            </div>
+            <div style={{ fontSize: 13, color: '#666' }}>
+              Vous serez notifié(e) dès que le paiement de <strong>{new Intl.NumberFormat('fr-FR').format(loyer)} GNF</strong> est confirmé.
+            </div>
+          </div>
+        )}
+
+        {/* ─ CAUTION REÇUE → PRÉPARER LE BAIL ─ */}
+        {r.statut === 'caution_payee' && (
+          <div>
+            <div style={{ background: '#E8F5E9', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
+              <span>✅</span>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#1B5E20' }}>
+                  Caution reçue : {new Intl.NumberFormat('fr-FR').format(loyer)} GNF
+                </div>
+                <div style={{ fontSize: 12, color: '#2E7D32' }}>
+                  Préparez maintenant le bail pour les deux signatures.
+                </div>
+              </div>
+            </div>
+            <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>
+                Le bail sera généré avec :
+              </div>
+              {[
+                'Identités des deux parties',
+                'Adresse complète du logement',
+                'Loyer mensuel : ' + new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF',
+                'Date de début et durée du bail',
+                'Caution versée : ' + new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF ✅',
+              ].map(function(item) {
+                return (
+                  <div key={item} style={{ display: 'flex', gap: 8, padding: '5px 0', fontSize: 13, color: '#555' }}>
+                    <span style={{ color: '#1B6B3A' }}>✓</span>
+                    <span>{item}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <button
+              onClick={function() { action('/statut', { statut: 'bail_en_cours' }, 'Bail généré ! Les deux parties peuvent signer.'); }}
+              style={{ width: '100%', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+              📝 Générer et préparer le bail
+            </button>
+          </div>
+        )}
+
+        {/* ─ BAIL À SIGNER ─ */}
+        {r.statut === 'bail_en_cours' && (
+          <div style={{ background: '#fff', borderRadius: 14, padding: 18, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>📝 Bail prêt à signer</div>
+            <div style={{ background: '#F8F8F8', borderRadius: 10, padding: 12, marginBottom: 16, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              {[
+                ['Locataire', r.locataire_prenom + ' ' + r.locataire_nom],
+                ['Logement', r.logement_titre],
+                ['Loyer', new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF/mois'],
+                ['Début', r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A'],
+                ['Durée', r.duree_mois ? r.duree_mois + ' mois' : 'N/A'],
+                ['Caution', new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF ✅'],
+              ].map(function(row) {
+                return (
+                  <div key={row[0]} style={{ fontSize: 11, color: '#666' }}>
+                    <b>{row[0]} :</b> {row[1]}
+                  </div>
+                );
+              })}
+            </div>
+            <div onClick={function() { if (!bailSigne) signerBail(); }}
+              style={{ padding: 16, border: bailSigne ? '1.5px solid #1B6B3A' : '1.5px dashed #1B6B3A', background: bailSigne ? '#E8F5E9' : '#F0FBF0', borderRadius: 12, textAlign: 'center', cursor: bailSigne ? 'default' : 'pointer', marginBottom: 14 }}>
+              {bailSigne ? (
+                <div>
+                  <div style={{ fontSize: 22, marginBottom: 4 }}>✅</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#1B6B3A' }}>Vous avez signé !</div>
+                  <div style={{ fontSize: 12, color: '#2E7D32', marginTop: 4 }}>En attente de la signature du locataire...</div>
+                </div>
+              ) : (
+                <div>
+                  <div style={{ fontSize: 28, marginBottom: 6 }}>✍️</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#1B6B3A' }}>Appuyer pour signer le bail</div>
+                  <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>Signature numérique sécurisée</div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ─ EN ATTENTE SIGNATURE LOCATAIRE ─ */}
+        {r.statut === 'bail_signe_proprio' && (
+          <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <div style={{ fontSize: 36, marginBottom: 12 }}>⏳</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>
+              En attente de la signature de {r.locataire_prenom}
+            </div>
+            <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6 }}>
+              Vous avez signé. Le locataire doit maintenant signer à son tour. La page se met à jour automatiquement.
+            </div>
+          </div>
+        )}
+
+        {/* ─ LOCATION ACTIVE ─ */}
+        {r.statut === 'confirmee' && (
+          <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <div style={{ textAlign: 'center', marginBottom: 16 }}>
+              <div style={{ fontSize: 40, marginBottom: 8 }}>🗝️</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#1B6B3A' }}>Location active</div>
+              <div style={{ fontSize: 13, color: '#666', marginTop: 6 }}>
+                {r.locataire_prenom} {r.locataire_nom} occupe votre logement.
+              </div>
+            </div>
+            {[
+              ['Locataire',       r.locataire_prenom + ' ' + r.locataire_nom],
+              ['Téléphone',       r.locataire_telephone || 'N/A'],
+              ['Logement',        r.logement_titre],
+              ['Loyer mensuel',   new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF'],
+              ['Caution versée',  new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF'],
+            ].map(function(row) {
+              return (
+                <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '7px 0', borderBottom: '0.5px solid #F5F5F5' }}>
+                  <span style={{ color: '#888' }}>{row[0]}</span>
+                  <span style={{ fontWeight: 600, color: '#1B2B22' }}>{row[1]}</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* ─ REFUSÉE ─ */}
+        {r.statut === 'refusee' && (
+          <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <div style={{ fontSize: 36, marginBottom: 12 }}>❌</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#B71C1C' }}>Demande refusée</div>
+            <div style={{ fontSize: 13, color: '#666', marginTop: 8 }}>Le locataire a été notifié du refus.</div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ── VUE LISTE ────────────────────────────────────────────────────
   return (
     <div>
       <div className="dash-page-header">
@@ -632,7 +1066,7 @@ function OngletReservations(props) {
               {actionsRequises.length} action(s) requise(s) de votre part
             </div>
             <div style={{ fontSize: 12, color: '#C62828' }}>
-              Répondez aux demandes en attente pour ne pas les faire patienter.
+              Répondez aux demandes en attente pour ne pas faire patienter vos locataires.
             </div>
           </div>
         </div>
@@ -642,53 +1076,46 @@ function OngletReservations(props) {
         <div className="dash-empty-state">
           <span>📅</span>
           <h3>Aucune demande reçue</h3>
-          <p>Les demandes de réservation de vos locataires apparaîtront ici</p>
+          <p>Les demandes de réservation apparaîtront ici</p>
         </div>
       )}
 
       {reservations.map(function(r) {
-        var cfg = configPropio[r.statut] || { label: r.statut, couleur: '#888', action: 'Voir', urgent: false };
+        var cfg = cfgStatuts[r.statut] || { label: r.statut, couleur: '#888', urgent: false };
         return (
           <div key={r.id} style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderLeft: '4px solid ' + (cfg.urgent ? '#E53935' : '#1B6B3A') }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
               <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                  <div style={{ width: 36, height: 36, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                  <div style={{ width: 38, height: 38, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14, fontWeight: 700, flexShrink: 0 }}>
                     {((r.locataire_prenom || 'L').charAt(0) + (r.locataire_nom || 'L').charAt(0)).toUpperCase()}
                   </div>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{r.locataire_prenom} {r.locataire_nom}</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>
+                      {r.locataire_prenom} {r.locataire_nom}
+                    </div>
                     <div style={{ fontSize: 11, color: '#888' }}>{r.locataire_telephone}</div>
                   </div>
                 </div>
                 <div style={{ fontSize: 12, color: '#555' }}>🏠 {r.logement_titre}</div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6B3A', marginTop: 3 }}>
-                  {new Intl.NumberFormat('fr-FR').format(r.montant_total || r.prix_mensuel)} GNF/mois
+                  {new Intl.NumberFormat('fr-FR').format(r.montant_total || r.prix_mensuel || 0)} GNF/mois
                 </div>
               </div>
-              <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: cfg.urgent ? '#FFEBEE' : '#E8F5E9', color: cfg.couleur }}>
+              <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: cfg.urgent ? '#FFEBEE' : '#E8F5E9', color: cfg.couleur, flexShrink: 0, marginLeft: 10 }}>
                 {cfg.label}
               </span>
             </div>
-
             {cfg.urgent && (
               <div style={{ background: '#FFF8E1', borderRadius: 8, padding: '7px 12px', marginBottom: 10, fontSize: 12, color: '#7B4F00', fontWeight: 600 }}>
                 ⚡ Votre intervention est requise
               </div>
             )}
-
-            {cfg.action && (
-              <button
-                onClick={function() {
-                  // Ouvre le détail dans l'onglet réservations proprio
-                  window.reservationSelectee = r;
-                  if (navigate) navigate('/dashboard/reservations/' + r.id);
-                  else window.location.href = '/dashboard/reservations/' + r.id;
-                }}
-                style={{ width: '100%', background: cfg.urgent ? '#1B6B3A' : '#F0F0F0', color: cfg.urgent ? '#fff' : '#555', border: 'none', borderRadius: 10, padding: 10, fontSize: 13, fontWeight: cfg.urgent ? 700 : 400, cursor: 'pointer' }}>
-                {cfg.action} →
-              </button>
-            )}
+            <button
+              onClick={function() { setSelectionne(r); }}
+              style={{ width: '100%', background: cfg.urgent ? '#1B6B3A' : '#F0F0F0', color: cfg.urgent ? '#fff' : '#555', border: 'none', borderRadius: 10, padding: 10, fontSize: 13, fontWeight: cfg.urgent ? 700 : 400, cursor: 'pointer' }}>
+              {cfg.urgent ? '⚡ Répondre maintenant →' : 'Voir le détail →'}
+            </button>
           </div>
         );
       })}
