@@ -2186,11 +2186,11 @@ export default function Dashboard() {
   };
 
   useEffect(function() {
+    setLoading(true);
     chargerDonnees();
   }, []);
 
   function chargerDonnees() {
-    setLoading(true);
     var estProprietaire = user && (user.role === 'proprietaire' || user.role === 'les_deux');
     var req;
     if (estProprietaire) {
