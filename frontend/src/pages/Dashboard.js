@@ -607,13 +607,16 @@ function OngletReservationsProprio(props) {
   var [newMsg, setNewMsg] = useState('');
   var [bailSigne, setBailSigne] = useState(false);
 
-  // Polling toutes les 5s pour mettre à jour le statut
-  useEffect(function() {
-    var interval = setInterval(function() {
-      if (recharger) recharger();
-    }, 5000);
-    return function() { clearInterval(interval); };
-  }, [recharger]);
+  // Polling toutes les 10s pour mettre à jour le statut
+
+  var rechargerRef = useRef(recharger);
+useEffect(function() { rechargerRef.current = recharger; }, [recharger]);
+useEffect(function() {
+  var interval = setInterval(function() {
+    if (rechargerRef.current) rechargerRef.current();
+  }, 10000);
+  return function() { clearInterval(interval); };
+}, []);
 
   // Quand la liste se met à jour, mettre à jour aussi la vue détail
   useEffect(function() {
