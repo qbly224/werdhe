@@ -642,8 +642,11 @@ function OngletReservationsProprio(props) {
         if (recharger) recharger();
       })
       .catch(function(err) {
-        toast.error('Erreur — vérifiez la console');
-        console.error(err);
+       var msg = err.response && err.response.data && err.response.data.erreur
+       ? err.response.data.erreur
+       : 'Erreur serveur';
+       toast.error(msg);
+       console.error('Détail erreur:', err.response && err.response.data);
       });
   }
 
@@ -2229,7 +2232,7 @@ export default function Dashboard() {
     if (onglet === '/dashboard') return <OngletOverview stats={stats} user={user} alertes={alertes} />;
     if (onglet === '/dashboard/biens') return <OngletBiens stats={stats} recharger={chargerDonnees} />;
     if (onglet === '/dashboard/locataires') return <OngletLocataires stats={stats} logements={stats.logements} />;
-    if (onglet === '/dashboard/reservations') return <OngletReservations stats={stats} traiter={traiterReservation} user={user} navigate={navigate} />;
+    if (onglet === '/dashboard/reservations') return <OngletReservations stats={stats} traiter={traiterReservation} user={user} navigate={navigate} recharger={chargerDonnees} />;
     if (onglet === '/dashboard/paiements') return <OngletPaiementsComponent />;
     if (onglet === '/dashboard/preavis')   return <OngletPreavisComponent />;
     if (onglet === '/dashboard/documents') return <OngletDocuments user={user} />;
