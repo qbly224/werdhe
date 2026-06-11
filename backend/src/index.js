@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+require('./services/cronService');
 
 const db = require('./database');
 const authRoutes = require('./routes/auth');
@@ -18,6 +19,9 @@ const scoresRoutes = require('./routes/scores');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const adminRoutes = require('./routes/admin');
+app.use('/admin', adminRoutes);
 
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
