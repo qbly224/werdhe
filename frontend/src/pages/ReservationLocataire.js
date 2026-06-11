@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import EtatDesLieux from '../components/EtatDesLieux';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 
@@ -620,6 +621,16 @@ export default function ReservationLocataire() {
           )}
         </div>
       )}
+
+    {(statut === 'bail_en_cours' || statut === 'bail_signe_proprio') && signed && (
+      <div style={{ marginTop: 16 }}>
+       <EtatDesLieux
+        reservationId={reservationId}
+        type="entree"
+        onTermine={function() { toast.success('État des lieux validé !'); }}
+       />
+     </div>
+    )}
 
       {/* ═══ ÉTAPE 7 : ACCÈS ACCORDÉ ════════════════════════════════ */}
       {statut === 'confirmee' && (

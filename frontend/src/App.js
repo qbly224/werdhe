@@ -17,6 +17,7 @@ import AjouterLogement from './pages/AjouterLogement';
 import ReservationLocataire from './pages/ReservationLocataire';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import Admin from './pages/Admin';
 
 function RoutePrivee(props) {
   var auth = useAuth();
@@ -46,6 +47,7 @@ function App() {
           <Route path="/logements/:id/reserver" element={<RoutePrivee><Reserver /></RoutePrivee>} />
           <Route path="/reservation/:id" element={<ReservationLocataire />} />
           <Route path="/logements/ajouter" element={<RoutePrivee><AjouterLogement /></RoutePrivee>} />
+          <Route path="/admin" element={<RoutePrivee><Admin /></RoutePrivee>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

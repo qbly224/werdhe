@@ -1,182 +1,283 @@
-import { useState, useEffect } from 'react';
+/* eslint-disable */
+import { useState, useEffect, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import Navbar from '../components/Navbar';
-import CarteLogement from '../components/CarteLogement';
-import CarteLeaflet from '../components/CarteLeaflet';
-import './Logements.css';
 
-const CATEGORIES = [
-  { value: '', label: 'Tous', icon: '🏘️' },
-  { value: 'villa_luxe', label: 'Villa luxe', icon: '👑' },
-  { value: 'villa_standard', label: 'Villa', icon: '🏰' },
-  { value: 'maison_moderne', label: 'Maison', icon: '🏠' },
-  { value: 'maison_banco', label: 'Maison trad.', icon: '🛖' },
-  { value: 'concession', label: 'Concession', icon: '🏘️' },
-  { value: 'appartement', label: 'Appartement', icon: '🏢' },
-  { value: 'duplex', label: 'Duplex', icon: '🏬' },
-  { value: 'studio_moderne', label: 'Studio', icon: '🏨' },
-  { value: 'chambre_habitant', label: 'Chambre', icon: '🛏️' },
-  { value: 'boutique', label: 'Boutique', icon: '🏪' },
-  { value: 'bureau', label: 'Bureau', icon: '💼' },
-  { value: 'local_commercial', label: 'Local comm.', icon: '🏬' }
-];
+var GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 
-const Logements = () => {
-  const [logements, setLogements] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [vue, setVue] = useState('liste'); // 'liste' ou 'carte'
+var CATEGORIES = ['appartement', 'villa', 'studio', 'chambre', 'duplex', 'bureau'];
+var VILLES_GN  = ['Conakry', 'Kindia', 'Labé', 'Kankan', 'Mamou', 'Boké', 'Faranah', 'N\'Zérékoré', 'Coyah', 'Dubréka', 'Fria', 'Télimélé'];
+var EQUIPEMENTS_OPTS = ['Eau courante', 'Électricité', 'Climatisation', 'Gardiennage', 'Parking', 'Groupe électrogène', 'Cuisine équipée', 'Balcon', 'Piscine'];
 
-  const [filtres, setFiltres] = useState({
-    ville: '', prix_min: '', prix_max: '',
-    nb_chambres: '', categorie: ''
-  });
+export default function Logements() {
+  var navigate = useNavigate();
+  var [logements, setLogements]   = useState([]);
+  var [loading, setLoading]       = useState(true);
+  var [total, setTotal]           = useState(0);
+  var [page, setPage]             = useState(1);
+  var [showFiltres, setShowFiltres] = useState(false);
 
-  useEffect(() => { chargerLogements(); }, []);
+  // Filtres
+  var [search, setSearch]         = useState('');
+  var [ville, setVille]           = useState('');
+  var [categorie, setCategorie]   = useState('');
+  var [prixMin, setPrixMin]       = useState('');
+  var [prixMax, setPrixMax]       = useState('');
+  var [nbChambres, setNbChambres] = useState('');
+  var [superficieMin, setSuperficieMin] = useState('');
 
-  const chargerLogements = async (params = {}) => {
+  var nbFiltresActifs = [ville, categorie, prixMin, prixMax, nbChambres, superficieMin].filter(Boolean).length;
+
+  var charger = useCallback(function() {
     setLoading(true);
-    try {
-      const response = await api.get('/logements', { params });
-      setLogements(response.data.logements);
-    } catch (err) {
-      console.error('Erreur chargement logements:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    var params = new URLSearchParams();
+    if (search)       params.append('search', search);
+    if (ville)        params.append('ville', ville);
+    if (categorie)    params.append('categorie', categorie);
+    if (prixMin)      params.append('prix_min', prixMin);
+    if (prixMax)      params.append('prix_max', prixMax);
+    if (nbChambres)   params.append('nb_chambres', nbChambres);
+    if (superficieMin) params.append('superficie_min', superficieMin);
+    params.append('page', page);
+    params.append('limit', 12);
 
-  const handleRecherche = (e) => {
-    e.preventDefault();
-    const params = Object.fromEntries(
-      Object.entries(filtres).filter(([_, v]) => v !== '')
-    );
-    chargerLogements(params);
-  };
+    api.get('/logements?' + params.toString())
+      .then(function(res) {
+        setLogements(res.data.logements || []);
+        setTotal(res.data.total || 0);
+      })
+      .catch(console.error)
+      .finally(function() { setLoading(false); });
+  }, [search, ville, categorie, prixMin, prixMax, nbChambres, superficieMin, page]);
 
-  const handleReset = () => {
-    setFiltres({ ville: '', prix_min: '', prix_max: '', nb_chambres: '', categorie: '' });
-    chargerLogements();
-  };
+  useEffect(function() {
+    var timer = setTimeout(charger, 400);
+    return function() { clearTimeout(timer); };
+  }, [charger]);
 
-  const handleCategorie = (cat) => {
-    const nouveauxFiltres = { ...filtres, categorie: cat };
-    setFiltres(nouveauxFiltres);
-    const params = Object.fromEntries(
-      Object.entries(nouveauxFiltres).filter(([_, v]) => v !== '')
-    );
-    chargerLogements(params);
-  };
+  function reinitialiser() {
+    setVille(''); setCategorie('');
+    setPrixMin(''); setPrixMax('');
+    setNbChambres(''); setSuperficieMin('');
+    setPage(1);
+  }
 
   return (
-    <div>
-      <Navbar />
-      <div className="logements-page">
+    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
 
-        {/* Barre catégories */}
-        <div className="categories-bar">
-          <div className="container">
-            <div className="categories-list">
-              {CATEGORIES.map(cat => (
-                <button
-                  key={cat.value}
-                  className={`cat-btn ${filtres.categorie === cat.value ? 'active' : ''}`}
-                  onClick={() => handleCategorie(cat.value)}
-                >
-                  <span className="cat-icon">{cat.icon}</span>
-                  <span>{cat.label}</span>
-                </button>
-              ))}
-            </div>
+      {/* HEADER */}
+      <div style={{ background: '#1B6B3A', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <button onClick={function() { navigate(-1); }} style={{ background: 'none', border: 'none', color: '#fff', fontSize: 22, cursor: 'pointer', padding: 0 }}>←</button>
+        <div style={{ flex: 1 }}>
+          <div style={{ color: '#fff', fontWeight: 700, fontSize: 17 }}>Logements disponibles</div>
+          <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 12 }}>{total} logement(s) trouvé(s)</div>
+        </div>
+        <Link to="/dashboard" style={{ color: 'rgba(255,255,255,0.8)', textDecoration: 'none', fontSize: 13 }}>Mon espace</Link>
+      </div>
+
+      {/* BARRE DE RECHERCHE */}
+      <div style={{ background: '#fff', padding: '14px 16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+        <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
+          <div style={{ flex: 1, position: 'relative' }}>
+            <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#888', fontSize: 16 }}>🔍</span>
+            <input
+              type="text"
+              placeholder="Rechercher : titre, quartier, adresse..."
+              value={search}
+              onChange={function(e) { setSearch(e.target.value); setPage(1); }}
+              style={{ width: '100%', padding: '10px 12px 10px 36px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box', background: '#F8F8F8' }} />
           </div>
+          <button
+            onClick={function() { setShowFiltres(!showFiltres); }}
+            style={{ padding: '10px 16px', borderRadius: 10, border: nbFiltresActifs > 0 ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: nbFiltresActifs > 0 ? '#E8F5E9' : '#F8F8F8', color: nbFiltresActifs > 0 ? '#1B6B3A' : '#555', fontSize: 13, fontWeight: nbFiltresActifs > 0 ? 700 : 400, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+            🎛️ Filtres {nbFiltresActifs > 0 && <span style={{ background: '#1B6B3A', color: '#fff', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>{nbFiltresActifs}</span>}
+          </button>
         </div>
 
-        {/* Barre de recherche */}
-        <div className="recherche-bar">
-          <div className="container">
-            <form onSubmit={handleRecherche} className="recherche-form">
-              <input type="text" placeholder="🏙 Ville (ex: Conakry)"
-                value={filtres.ville}
-                onChange={(e) => setFiltres({...filtres, ville: e.target.value})} />
-              <input type="number" placeholder="💰 Prix min (GNF)"
-                value={filtres.prix_min}
-                onChange={(e) => setFiltres({...filtres, prix_min: e.target.value})} />
-              <input type="number" placeholder="💰 Prix max (GNF)"
-                value={filtres.prix_max}
-                onChange={(e) => setFiltres({...filtres, prix_max: e.target.value})} />
-              <select value={filtres.nb_chambres}
-                onChange={(e) => setFiltres({...filtres, nb_chambres: e.target.value})}>
-                <option value="">🛏 Chambres</option>
-                <option value="1">1+</option>
-                <option value="2">2+</option>
-                <option value="3">3+</option>
-                <option value="4">4+</option>
+        {/* FILTRES RAPIDES — villes */}
+        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
+          {['Toutes', ...VILLES_GN.slice(0, 6)].map(function(v) {
+            var actif = v === 'Toutes' ? !ville : ville === v;
+            return (
+              <button key={v} onClick={function() { setVille(v === 'Toutes' ? '' : v); setPage(1); }}
+                style={{ padding: '5px 14px', borderRadius: 20, border: actif ? '1.5px solid #1B6B3A' : '0.5px solid #E0E0E0', background: actif ? '#1B6B3A' : '#fff', color: actif ? '#fff' : '#555', fontSize: 12, fontWeight: actif ? 700 : 400, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                {v}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* PANNEAU FILTRES AVANCÉS */}
+      {showFiltres && (
+        <div style={{ background: '#fff', padding: '16px', borderBottom: '0.5px solid #F0F0F0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>Filtres avancés</div>
+            {nbFiltresActifs > 0 && (
+              <button onClick={reinitialiser} style={{ background: 'none', border: 'none', color: '#E53935', fontSize: 13, cursor: 'pointer', fontWeight: 600 }}>
+                Réinitialiser tout
+              </button>
+            )}
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12 }}>
+
+            {/* Ville */}
+            <div>
+              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>Ville</div>
+              <select value={ville} onChange={function(e) { setVille(e.target.value); setPage(1); }}
+                style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: ville ? '#E8F5E9' : '#FAFAFA' }}>
+                <option value="">Toutes les villes</option>
+                {VILLES_GN.map(function(v) { return <option key={v} value={v}>{v}</option>; })}
               </select>
-              <button type="submit" className="btn btn-primary">Rechercher</button>
-              <button type="button" className="btn btn-secondary" onClick={handleReset}>
-                Réinitialiser
-              </button>
-            </form>
-          </div>
-        </div>
+            </div>
 
-        {/* Contenu */}
-        <div className="container">
+            {/* Catégorie */}
+            <div>
+              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>Type</div>
+              <select value={categorie} onChange={function(e) { setCategorie(e.target.value); setPage(1); }}
+                style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: categorie ? '#E8F5E9' : '#FAFAFA' }}>
+                <option value="">Tous les types</option>
+                {CATEGORIES.map(function(c) { return <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>; })}
+              </select>
+            </div>
 
-          {/* Header avec toggle vue */}
-          <div className="logements-header">
-            <h3>
-              {loading ? 'Chargement...' : `${logements.length} logement(s) trouvé(s)`}
-              {filtres.categorie && (
-                <span className="filtre-actif">
-                  {CATEGORIES.find(c => c.value === filtres.categorie)?.icon}{' '}
-                  {CATEGORIES.find(c => c.value === filtres.categorie)?.label}
-                </span>
-              )}
-            </h3>
+            {/* Prix min */}
+            <div>
+              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>Prix minimum (GNF)</div>
+              <input type="number" placeholder="Ex: 500000" value={prixMin}
+                onChange={function(e) { setPrixMin(e.target.value); setPage(1); }}
+                style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box', background: prixMin ? '#E8F5E9' : '#FAFAFA' }} />
+            </div>
 
-            {/* Toggle liste / carte */}
-            <div className="vue-toggle">
-              <button
-                className={`vue-btn ${vue === 'liste' ? 'active' : ''}`}
-                onClick={() => setVue('liste')}
-              >
-                ▦ Liste
-              </button>
-              <button
-                className={`vue-btn ${vue === 'carte' ? 'active' : ''}`}
-                onClick={() => setVue('carte')}
-              >
-                🗺️ Carte
-              </button>
+            {/* Prix max */}
+            <div>
+              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>Prix maximum (GNF)</div>
+              <input type="number" placeholder="Ex: 2000000" value={prixMax}
+                onChange={function(e) { setPrixMax(e.target.value); setPage(1); }}
+                style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box', background: prixMax ? '#E8F5E9' : '#FAFAFA' }} />
+            </div>
+
+            {/* Chambres */}
+            <div>
+              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>Chambres minimum</div>
+              <select value={nbChambres} onChange={function(e) { setNbChambres(e.target.value); setPage(1); }}
+                style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: nbChambres ? '#E8F5E9' : '#FAFAFA' }}>
+                <option value="">Peu importe</option>
+                {[1,2,3,4,5].map(function(n) { return <option key={n} value={n}>{n}+</option>; })}
+              </select>
+            </div>
+
+            {/* Superficie */}
+            <div>
+              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>Superficie min (m²)</div>
+              <input type="number" placeholder="Ex: 30" value={superficieMin}
+                onChange={function(e) { setSuperficieMin(e.target.value); setPage(1); }}
+                style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box', background: superficieMin ? '#E8F5E9' : '#FAFAFA' }} />
             </div>
           </div>
 
-          {loading ? (
-            <div className="loading">⏳ Chargement des logements...</div>
-          ) : logements.length === 0 ? (
-            <div className="empty">
-              <p>😔 Aucun logement trouvé</p>
-              <button className="btn btn-primary" onClick={handleReset}>
-                Voir tous les logements
-              </button>
-            </div>
-          ) : vue === 'liste' ? (
-            <div className="logements-grid">
-              {logements.map(logement => (
-                <CarteLogement key={logement.id} logement={logement} />
-              ))}
-            </div>
-          ) : (
-            /* VUE CARTE */
-            <div className="vue-carte-container">
-              <CarteLeaflet logements={logements} hauteur="600px" />
+          {/* Fourchette prix visuelle */}
+          {(prixMin || prixMax) && (
+            <div style={{ marginTop: 12, padding: '10px 14px', background: '#E8F5E9', borderRadius: 10, fontSize: 13, color: '#1B5E20', fontWeight: 600 }}>
+              💰 Fourchette : {prixMin ? GNF(prixMin) : '0'} — {prixMax ? GNF(prixMax) : 'illimité'}
             </div>
           )}
-
         </div>
+      )}
+
+      {/* LISTE DES LOGEMENTS */}
+      <div style={{ padding: '16px', maxWidth: 900, margin: '0 auto' }}>
+        {loading && (
+          <div style={{ textAlign: 'center', padding: '40px 0', color: '#888' }}>
+            <div style={{ fontSize: 36, marginBottom: 10 }}>🔍</div>
+            Recherche en cours...
+          </div>
+        )}
+
+        {!loading && logements.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '50px 20px' }}>
+            <div style={{ fontSize: 48, marginBottom: 14 }}>🏠</div>
+            <div style={{ fontSize: 17, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>Aucun logement trouvé</div>
+            <div style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>Essayez avec d'autres critères</div>
+            {nbFiltresActifs > 0 && (
+              <button onClick={reinitialiser}
+                style={{ padding: '10px 24px', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                Réinitialiser les filtres
+              </button>
+            )}
+          </div>
+        )}
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
+          {logements.map(function(l) {
+            return (
+              <div key={l.id}
+                onClick={function() { navigate('/logements/' + l.id); }}
+                style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.07)', cursor: 'pointer', transition: 'transform .2s, box-shadow .2s' }}
+                onMouseEnter={function(e) { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)'; }}
+                onMouseLeave={function(e) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.07)'; }}>
+
+                {/* Photo / placeholder */}
+                <div style={{ height: 160, background: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48, position: 'relative' }}>
+                  {l.photos && l.photos.length > 0
+                    ? <img src={l.photos[0]} alt={l.titre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    : '🏠'}
+                  <div style={{ position: 'absolute', top: 10, right: 10, background: '#1B6B3A', color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
+                    Disponible
+                  </div>
+                  {l.categorie && (
+                    <div style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(0,0,0,0.5)', color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11 }}>
+                      {l.categorie}
+                    </div>
+                  )}
+                </div>
+
+                <div style={{ padding: '14px 16px' }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 4 }}>{l.titre}</div>
+                  <div style={{ fontSize: 12, color: '#888', marginBottom: 8 }}>📍 {l.adresse}, {l.ville}</div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: '#1B6B3A', marginBottom: 10 }}>{GNF(l.prix_mensuel)}<span style={{ fontSize: 12, fontWeight: 400, color: '#888' }}>/mois</span></div>
+
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
+                    {l.nb_chambres && <span style={{ background: '#F5F5F5', color: '#555', padding: '3px 8px', borderRadius: 6, fontSize: 11 }}>🛏️ {l.nb_chambres} ch.</span>}
+                    {l.nb_salles_bain && <span style={{ background: '#F5F5F5', color: '#555', padding: '3px 8px', borderRadius: 6, fontSize: 11 }}>🚿 {l.nb_salles_bain} SdB</span>}
+                    {l.superficie && <span style={{ background: '#F5F5F5', color: '#555', padding: '3px 8px', borderRadius: 6, fontSize: 11 }}>📐 {l.superficie}m²</span>}
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <div style={{ width: 24, height: 24, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 10, fontWeight: 700 }}>
+                        {(l.prop_prenom || 'P').charAt(0)}{(l.prop_nom || 'R').charAt(0)}
+                      </div>
+                      <span style={{ fontSize: 11, color: '#888' }}>{l.prop_prenom} {l.prop_nom}</span>
+                    </div>
+                    <div style={{ background: '#1B6B3A', color: '#fff', borderRadius: 8, padding: '6px 14px', fontSize: 12, fontWeight: 700 }}>
+                      Réserver →
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* PAGINATION */}
+        {total > 12 && (
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 24 }}>
+            <button onClick={function() { setPage(function(p) { return Math.max(1, p - 1); }); }} disabled={page === 1}
+              style={{ padding: '8px 16px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: page === 1 ? '#F5F5F5' : '#fff', color: page === 1 ? '#ccc' : '#555', cursor: page === 1 ? 'not-allowed' : 'pointer', fontSize: 13 }}>
+              ← Précédent
+            </button>
+            <div style={{ padding: '8px 16px', fontSize: 13, color: '#888', display: 'flex', alignItems: 'center' }}>
+              Page {page} / {Math.ceil(total / 12)}
+            </div>
+            <button onClick={function() { setPage(function(p) { return p + 1; }); }} disabled={page >= Math.ceil(total / 12)}
+              style={{ padding: '8px 16px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: page >= Math.ceil(total / 12) ? '#F5F5F5' : '#1B6B3A', color: page >= Math.ceil(total / 12) ? '#ccc' : '#fff', cursor: page >= Math.ceil(total / 12) ? 'not-allowed' : 'pointer', fontSize: 13, fontWeight: 700 }}>
+              Suivant →
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
-};
-
-export default Logements;
+}
