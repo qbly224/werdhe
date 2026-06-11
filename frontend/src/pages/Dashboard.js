@@ -2186,11 +2186,14 @@ export default function Dashboard() {
   };
 
   useEffect(function() {
-    setLoading(true);
     chargerDonnees();
   }, []);
 
   function chargerDonnees() {
+    // Affiche le chargement SEULEMENT la première fois
+    if (premierChargement.current) {
+      setLoading(true);
+  }
     var estProprietaire = user && (user.role === 'proprietaire' || user.role === 'les_deux');
     var req;
     if (estProprietaire) {
@@ -2219,7 +2222,10 @@ export default function Dashboard() {
         });
       });
     }
-    req.catch(console.error).finally(function() { setLoading(false); });
+    req.catch(console.error).finally(function() { 
+      setLoading(false);
+      premierChargement.current = false;
+     });
   }
 
   function traiterReservation(id, statut) {
