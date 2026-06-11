@@ -2144,6 +2144,8 @@ function OngletMesLocations(props) {
 export default function Dashboard() {
   var auth = useAuth();
   var user = auth.user;
+  var navigate = useNavigate();
+  
   var [onglet, setOnglet] = useState('/dashboard');
   var [sidebarOpen, setSidebarOpen] = useState(true);
   var [loading, setLoading] = useState(true);
@@ -2152,6 +2154,7 @@ export default function Dashboard() {
   var navigate = useNavigate();
   var [stats, setStats] = useState({ logements: [], reservations: [], paiements: [] });
 
+  var premierChargement = useRef(true);
   // ================================================
   // Titres et icones des onglets
   // ================================================
