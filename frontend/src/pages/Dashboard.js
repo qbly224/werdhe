@@ -2003,6 +2003,13 @@ function OngletParametres(props) {
             <div style={{ fontSize: 14, color: '#333', marginBottom: 4 }}>Email : {user && user.email}</div>
             <div style={{ fontSize: 14, color: '#333' }}>Role : {user && user.role}</div>
           </div>
+      {user && user.role === 'admin' && (
+        <button
+          onClick={function() { navigate('/admin'); }}
+          style={{ background: '#1B2B22', color: '#fff', border: 'none', borderRadius: 12, padding: '14px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+          ⚙️ Panneau administrateur
+        </button>
+      )}
           <button onClick={function() { auth.logout(); }}
             style={{ background: '#FFEBEE', color: '#B71C1C', border: 'none', borderRadius: 12, padding: '14px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
             Se deconnecter
@@ -2145,7 +2152,7 @@ export default function Dashboard() {
   var auth = useAuth();
   var user = auth.user;
   var navigate = useNavigate();
-  
+
   var [onglet, setOnglet] = useState('/dashboard');
   var [sidebarOpen, setSidebarOpen] = useState(true);
   var [loading, setLoading] = useState(true);
