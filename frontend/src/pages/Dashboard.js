@@ -218,36 +218,115 @@ function OngletOverview(props) {
 // ONGLET : Mes biens
 // ================================================
 function OngletBiens(props) {
-  var stats = props.stats;
+  var stats    = props.stats;
   var recharger = props.recharger;
+  var user     = props.user;
+  var setOnglet = props.setOnglet;
+  var estProprio = user && (user.role === 'proprietaire' || user.role === 'les_deux');
+
   var [showConfirm, setShowConfirm] = useState(null);
-  var [modeEdit, setModeEdit] = useState(null);
-  var [formEdit, setFormEdit] = useState({});
+  var [modeEdit, setModeEdit]       = useState(null);
+  var [formEdit, setFormEdit]       = useState({});
+  var [reservationsActives, setReservationsActives] = useState([]);
+
+  // Charger les réservations pour avoir les infos locataires
+  useEffect(function() {
+    if (!estProprio) return;
+    api.get('/reservations/proprietaire')
+      .then(function(res) {
+        setReservationsActives(
+          (res.data.reservations || []).filter(function(r) {
+            return r.statut === 'confirmee';
+          })
+        );
+      })
+      .catch(console.error);
+  }, [estProprio]);
+
+  function getLocataireInfo(logementId) {
+    return reservationsActives.find(function(r) { return r.logement_id === logementId; });
+  }
 
   function handleDelete(id) {
     api.delete('/logements/' + id)
-      .then(function() { toast.success('Bien supprime !'); setShowConfirm(null); recharger(); })
+      .then(function() { toast.success('Bien supprimé !'); setShowConfirm(null); recharger(); })
       .catch(function() { toast.error('Erreur suppression'); });
-  }
-
-  function handleEdit(l) {
-    setModeEdit(l.id);
-    setFormEdit({ titre: l.titre, adresse: l.adresse, ville: l.ville, prix_mensuel: l.prix_mensuel, statut: l.statut });
   }
 
   function handleSave(id) {
     api.put('/logements/' + id, formEdit)
-      .then(function() { toast.success('Bien modifie !'); setModeEdit(null); recharger(); })
+      .then(function() { toast.success('Bien modifié !'); setModeEdit(null); recharger(); })
       .catch(function() { toast.error('Erreur modification'); });
   }
 
+  // ── VUE LOCATAIRE ─────────────────────────────────────────────
+  if (!estProprio) {
+    var locationsActives = stats.reservations.filter(function(r) { return r.statut === 'confirmee'; });
+    return (
+      <div>
+        <div className="dash-page-header">
+          <div><h1>Mes locations</h1><p>{locationsActives.length} location(s) active(s)</p></div>
+          <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>
+            Chercher un logement
+          </Link>
+        </div>
+
+        {locationsActives.length === 0 && (
+          <div className="dash-empty-state">
+            <span>🏠</span>
+            <h3>Aucune location active</h3>
+            <p>Réservez un logement pour commencer</p>
+            <Link to="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
+              Trouver un logement
+            </Link>
+          </div>
+        )}
+
+        {locationsActives.map(function(r) {
+          return (
+            <div key={r.id} style={{ background: '#fff', borderRadius: 16, padding: 18, marginBottom: 14, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid #1B6B3A' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
+                <div style={{ width: 48, height: 48, background: '#E8F5E9', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>🏠</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{r.logement_titre}</div>
+                  <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>
+                    📍 {r.logement_ville} · Depuis le {r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A'}
+                  </div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#1B6B3A', marginTop: 6 }}>
+                    {new Intl.NumberFormat('fr-FR').format(r.montant_total || r.prix_mensuel)} GNF/mois
+                  </div>
+                </div>
+                <div style={{ background: '#E8F5E9', color: '#1B5E20', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
+                  • Active
+                </div>
+              </div>
+
+              {/* Boutons locataire */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <Link to={'/reservation/' + r.id}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E8F5E9', color: '#1B5E20', textDecoration: 'none', fontSize: 13, fontWeight: 600, border: '0.5px solid #A5D6A7' }}>
+                  📋 Détails
+                </Link>
+                <button onClick={function() { if (setOnglet) setOnglet('/dashboard/documents'); }}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', fontSize: 13, fontWeight: 600, border: '0.5px solid #90CAF9', cursor: 'pointer' }}>
+                  📄 Documents
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // ── VUE PROPRIÉTAIRE ──────────────────────────────────────────
   return (
     <div>
       {showConfirm && (
         <div className="modal-overlay">
           <div className="modal-box">
             <h3 style={{ color: '#B71C1C' }}>Confirmer la suppression</h3>
-            <p>Voulez-vous vraiment supprimer ce bien ? Cette action est irreversible.</p>
+            <p>Voulez-vous vraiment supprimer ce bien ? Cette action est irréversible.</p>
             <div className="modal-actions">
               <button className="btn-green" style={{ background: '#B71C1C' }} onClick={function() { handleDelete(showConfirm); }}>Supprimer</button>
               <button className="btn-outline-green" onClick={function() { setShowConfirm(null); }}>Annuler</button>
@@ -259,7 +338,7 @@ function OngletBiens(props) {
       <div className="dash-page-header">
         <div>
           <h1>Mes biens</h1>
-          <p>{stats.logements.length} biens enregistres</p>
+          <p>{stats.logements.length} bien(s) en gestion</p>
         </div>
         <Link to="/logements/ajouter" className="btn-green" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
           + Ajouter un bien
@@ -269,74 +348,127 @@ function OngletBiens(props) {
       {stats.logements.length === 0 && (
         <div className="dash-empty-state">
           <span>🏠</span>
-          <h3>Aucun bien enregistre</h3>
-          <p>Publiez votre premier logement pour commencer</p>
-          <Link to="/logements/ajouter" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>+ Ajouter un bien</Link>
+          <h3>Aucun bien enregistré</h3>
+          <Link to="/logements/ajouter" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
+            + Ajouter mon premier bien
+          </Link>
         </div>
       )}
 
-      <div className="biens-cards-grid">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         {stats.logements.map(function(b) {
-          var borderColor = b.statut === 'loue' ? '#1B6B3A' : '#F5A623';
-          return (
-            <div key={b.id} className="bien-card-proto" style={{ borderTop: '4px solid ' + borderColor }}>
-              {modeEdit === b.id ? (
-                <div>
-                  <div className="form-row-2">
-                    <div className="form-group">
-                      <label>Titre</label>
-                      <input type="text" value={formEdit.titre} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { titre: e.target.value })); }} />
-                    </div>
-                    <div className="form-group">
-                      <label>Prix (GNF)</label>
-                      <input type="number" value={formEdit.prix_mensuel} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { prix_mensuel: e.target.value })); }} />
-                    </div>
-                    <div className="form-group">
-                      <label>Adresse</label>
-                      <input type="text" value={formEdit.adresse} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { adresse: e.target.value })); }} />
-                    </div>
-                    <div className="form-group">
-                      <label>Statut</label>
-                      <select value={formEdit.statut} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { statut: e.target.value })); }}>
-                        <option value="disponible">Disponible</option>
-                        <option value="loue">Loue</option>
-                        <option value="suspendu">Suspendu</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <button className="btn-bien-primary" onClick={function() { handleSave(b.id); }}>Sauvegarder</button>
-                    <button className="btn-bien-secondary" onClick={function() { setModeEdit(null); }}>Annuler</button>
+          var estOccupe  = b.statut === 'loue';
+          var locataire  = estOccupe ? getLocataireInfo(b.id) : null;
+          var preavisActif = b.preavis_actif || false;
+          var borderColor = preavisActif ? '#E53935' : estOccupe ? '#1B6B3A' : '#F5A623';
+
+          // Mode édition
+          if (modeEdit === b.id) {
+            return (
+              <div key={b.id} style={{ background: '#fff', borderRadius: 16, padding: 18, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid #1565C0' }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>Modifier — {b.titre}</div>
+                <div className="form-row-2">
+                  <div className="form-group"><label>Titre</label><input type="text" value={formEdit.titre} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { titre: e.target.value })); }} /></div>
+                  <div className="form-group"><label>Prix (GNF)</label><input type="number" value={formEdit.prix_mensuel} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { prix_mensuel: e.target.value })); }} /></div>
+                  <div className="form-group"><label>Adresse</label><input type="text" value={formEdit.adresse} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { adresse: e.target.value })); }} /></div>
+                  <div className="form-group">
+                    <label>Statut</label>
+                    <select value={formEdit.statut} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { statut: e.target.value })); }}>
+                      <option value="disponible">Disponible</option>
+                      <option value="loue">Loué</option>
+                      <option value="suspendu">Suspendu</option>
+                    </select>
                   </div>
                 </div>
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button className="btn-bien-primary" onClick={function() { handleSave(b.id); }}>Sauvegarder</button>
+                  <button className="btn-bien-secondary" onClick={function() { setModeEdit(null); }}>Annuler</button>
+                </div>
+              </div>
+            );
+          }
+
+          return (
+            <div key={b.id} style={{ background: '#fff', borderRadius: 16, padding: 18, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid ' + borderColor }}>
+
+              {/* En-tête bien */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
+                <div style={{ width: 48, height: 48, background: estOccupe ? '#E8F5E9' : '#FFF8E1', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>
+                  {b.categorie && b.categorie.includes('villa') ? '🏡' : b.categorie && b.categorie.includes('studio') ? '🏢' : '🏠'}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{b.titre}</div>
+                  <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>
+                    {locataire
+                      ? locataire.locataire_prenom + ' ' + locataire.locataire_nom + ' · Depuis le ' + (locataire.date_debut ? new Date(locataire.date_debut).toLocaleDateString('fr-FR') : 'N/A')
+                      : (b.adresse ? b.adresse + ', ' : '') + (b.ville || '')}
+                  </div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#1B6B3A', marginTop: 6 }}>
+                    {new Intl.NumberFormat('fr-FR').format(b.prix_mensuel)} GNF/mois
+                  </div>
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  {preavisActif ? (
+                    <div style={{ background: '#FFEBEE', color: '#B71C1C', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
+                      ⚠️ Préavis envoyé
+                    </div>
+                  ) : estOccupe ? (
+                    <div style={{ background: '#E8F5E9', color: '#1B5E20', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
+                      • Occupé
+                    </div>
+                  ) : (
+                    <div style={{ background: '#FFF8E1', color: '#C8860A', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
+                      Libre
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Bannière préavis actif */}
+              {preavisActif && (
+                <div style={{ background: '#FFEBEE', borderRadius: 10, padding: '10px 14px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#B71C1C' }}>
+                  <span>📋</span>
+                  <span>
+                    Préavis de départ envoyé à <b>{locataire && locataire.locataire_prenom + ' ' + locataire.locataire_nom}</b>. En attente d'accusé de réception.
+                    {' '}<span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={function() { if (setOnglet) setOnglet('/dashboard/preavis'); }}>Voir le préavis</span>
+                  </span>
+                </div>
+              )}
+
+              {/* Boutons selon statut */}
+              {estOccupe ? (
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+                  <button onClick={function() { if (setOnglet) setOnglet('/dashboard/messages'); }}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#E8F5E9', color: '#1B5E20', border: '0.5px solid #A5D6A7', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                    💬 Messagerie
+                  </button>
+                  <button onClick={function() { if (setOnglet) setOnglet('/dashboard/documents'); }}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', border: '0.5px solid #90CAF9', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                    📄 Documents
+                  </button>
+                  {!preavisActif && (
+                    <button onClick={function() { if (setOnglet) setOnglet('/dashboard/preavis'); }}
+                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                      📤 Préavis
+                    </button>
+                  )}
+                  {preavisActif && (
+                    <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#F5F5F5', color: '#888', border: '0.5px solid #E0E0E0', fontSize: 12, cursor: 'not-allowed' }} disabled>
+                      ⚠️ Préavis envoyé
+                    </button>
+                  )}
+                </div>
               ) : (
-                <div>
-                  <div className="bien-card-header">
-                    <div className="bien-card-left">
-                      <div className="bien-card-photo">🏠</div>
-                      <div>
-                        <div className="bien-card-title">{b.titre}</div>
-                        <div className="bien-card-addr">{b.adresse}, {b.ville}</div>
-                      </div>
-                    </div>
-                    <span className={b.statut === 'loue' ? 'badge-occupe' : 'badge-libre'}>
-                      {b.statut === 'loue' ? 'Occupe' : 'Libre'}
-                    </span>
-                  </div>
-                  <div className="bien-card-stats">
-                    <div className="bien-stat-box">
-                      <div className="bien-stat-label">Loyer mensuel</div>
-                      <div className="bien-stat-val" style={{ color: '#1B6B3A' }}>{GNF(b.prix_mensuel)}</div>
-                    </div>
-                    <div className="bien-stat-box">
-                      <div className="bien-stat-label">Categorie</div>
-                      <div className="bien-stat-val" style={{ fontSize: 13 }}>{b.categorie || 'N/A'}</div>
-                    </div>
-                  </div>
-                  <div className="bien-card-btns">
-                    <button className="btn-bien-primary" onClick={function() { handleEdit(b); }}>Modifier</button>
-                    <button className="btn-bien-secondary" onClick={function() { setShowConfirm(b.id); }}>Supprimer</button>
-                  </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  <button className="btn-bien-primary" onClick={function() {
+                    setModeEdit(b.id);
+                    setFormEdit({ titre: b.titre, adresse: b.adresse, prix_mensuel: b.prix_mensuel, statut: b.statut });
+                  }}>
+                    ✏️ Modifier
+                  </button>
+                  <button className="btn-bien-secondary" onClick={function() { setShowConfirm(b.id); }}>
+                    🗑️ Supprimer
+                  </button>
                 </div>
               )}
             </div>
@@ -2250,7 +2382,7 @@ export default function Dashboard() {
   // ================================================
   function renderOnglet() {
     if (onglet === '/dashboard') return <OngletOverview stats={stats} user={user} alertes={alertes} />;
-    if (onglet === '/dashboard/biens') return <OngletBiens stats={stats} recharger={chargerDonnees} />;
+    if (onglet === '/dashboard/biens') return <OngletBiens stats={stats} recharger={chargerDonnees} user={user} setOnglet={setOnglet} />;
     if (onglet === '/dashboard/locataires') return <OngletLocataires stats={stats} logements={stats.logements} />;
     if (onglet === '/dashboard/reservations') return <OngletReservations stats={stats} traiter={traiterReservation} user={user} navigate={navigate} recharger={chargerDonnees} />;
     if (onglet === '/dashboard/paiements') return <OngletPaiementsComponent />;
