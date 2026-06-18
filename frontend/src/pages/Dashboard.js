@@ -1939,6 +1939,7 @@ function OngletReclamations() {
 function OngletParametres(props) {
   var user = props.user;
   var auth = useAuth();
+  var navigate = useNavigate();
   var [section, setSection] = useState(null);
   var [formProfil, setFormProfil] = useState({ prenom: user ? user.prenom : '', nom: user ? user.nom : '', email: user ? user.email : '', telephone: user ? user.telephone || '' : '' });
   var [formMdp, setFormMdp] = useState({ ancien: '', nouveau: '', confirmer: '' });
