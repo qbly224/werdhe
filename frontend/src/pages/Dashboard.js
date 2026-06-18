@@ -2006,7 +2006,7 @@ function OngletParametres(props) {
           </div>
       {user && user.role === 'admin' && (
         <button
-          onClick={function() { navigate('/admin'); }}
+          onClick={function() { window.location.href = '/admin'; }}
           style={{ background: '#1B2B22', color: '#fff', border: 'none', borderRadius: 12, padding: '14px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
           ⚙️ Panneau administrateur
         </button>
