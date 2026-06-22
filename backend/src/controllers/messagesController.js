@@ -1,5 +1,5 @@
 const db = require('../database');
-const cloudinary = require('../services/cloudinaryService');
+const { cloudinary } = require('../services/cloudinaryService');
 const multer = require('multer');
 
 // ================================================
@@ -41,21 +41,25 @@ const envoyerMessage = async (req, res) => {
     }
 
     // Si un fichier est joint, l'uploader sur Cloudinary
-    if (req.file) {
+   if (req.file) {
       var isImage = req.file.mimetype.startsWith('image/');
-      var buffer = req.file.buffer.toString('base64');
+      var buffer  = req.file.buffer.toString('base64');
       var dataUri = 'data:' + req.file.mimetype + ';base64,' + buffer;
 
-      var uploadResult = await cloudinary.uploader.upload(dataUri, {
-        folder: 'werdhe/messages',
-        resource_type: isImage ? 'image' : 'raw',
-        public_id: 'msg_' + Date.now()
-      });
-
-      fichierUrl = uploadResult.secure_url;
-      fichierNom = req.file.originalname;
-      fichierType = req.file.mimetype;
-      typeMsg = isImage ? 'photo' : 'document';
+      // Vérifier que cloudinary est bien configuré
+      if (!cloudinary || !cloudinary.uploader) {
+        console.warn('[Messages] Cloudinary non configuré — fichier ignoré');
+      } else {
+        var uploadResult = await cloudinary.uploader.upload(dataUri, {
+          folder:        'werdhe/messages',
+          resource_type: isImage ? 'image' : 'raw',
+          public_id:     'msg_' + Date.now()
+        });
+        fichierUrl  = uploadResult.secure_url;
+        fichierNom  = req.file.originalname;
+        fichierType = req.file.mimetype;
+        typeMsg     = isImage ? 'photo' : 'document';
+      }
     }
 
     if (!contenu && !fichierUrl) {
