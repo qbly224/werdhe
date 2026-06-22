@@ -23,6 +23,9 @@ const PORT = process.env.PORT || 3000;
 const adminRoutes = require('./routes/admin');
 app.use('/admin', adminRoutes);
 
+const preavisRoutes = require('./routes/preavis');
+app.use('/preavis', preavisRoutes);
+
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
     ? process.env.FRONTEND_URL : '*',
