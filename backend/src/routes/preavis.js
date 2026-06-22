@@ -108,12 +108,17 @@ router.post('/', verifierToken, async (req, res) => {
       </div>
     `;
 
-    await resend.emails.send({
-      from:    'Werdhe <no-reply@werdhe.com>',
-      to:      destEmail,
-      subject: sujetEmail,
-      html:    contenuEmail
-    });
+   try {
+      await resend.emails.send({
+        from:    'Werdhe <no-reply@werdhe.com>',
+        to:      destEmail,
+        subject: sujetEmail,
+        html:    contenuEmail
+      });
+      console.log('[Préavis] Email envoyé à ' + destEmail);
+    } catch (emailErr) {
+      console.warn('[Préavis] Email non envoyé (non bloquant):', emailErr.message);
+    }
 
     // 2. NOTIFICATION dans la plateforme (table alertes)
     await db.query(
