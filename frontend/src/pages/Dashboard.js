@@ -1477,6 +1477,13 @@ function OngletPreavis(props) {
 
   function envoyer() {
     var reservationId = estProprietaire ? (bien && bien.id) : (reservation && reservation.id);
+    
+    console.log('=== PREAVIS DEBUG ===');
+    console.log('reservationId:', reservationId);
+    console.log('motif:', motif);
+    console.log('delai:', delai);
+    console.log('type:', estProprietaire ? 'proprietaire' : 'locataire');
+    console.log('reservation:', reservation);
     if (!reservationId) { toast.error('Aucune réservation active trouvée'); return; }
     setLoading(true);
     api.post('/preavis', {
