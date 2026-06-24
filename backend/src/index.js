@@ -26,7 +26,6 @@ app.use('/admin', adminRoutes);
 const preavisRoutes = require('./routes/preavis');
 app.use('/preavis', preavisRoutes);
 
-const cors = require('cors');
 
 app.use(cors({
   origin: function(origin, callback) {
