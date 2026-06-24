@@ -26,18 +26,26 @@ app.use('/admin', adminRoutes);
 const preavisRoutes = require('./routes/preavis');
 app.use('/preavis', preavisRoutes);
 
+const cors = require('cors');
+
 app.use(cors({
-  origin: [
-    'https://werdhe.vercel.app',
-    'http://localhost:3000',
-    'http://localhost:3001'
-  ],
+  origin: function(origin, callback) {
+    var allowed = [
+      'https://werdhe.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:3001'
+    ];
+    if (!origin || allowed.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Accepter toutes les origines pour l'instant
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
 
-app.options('*', cors());
 
 app.use(express.json());
 
