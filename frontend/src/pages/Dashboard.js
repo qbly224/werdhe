@@ -928,70 +928,84 @@ useEffect(function() {
           </div>
         )}
 
-        {/* ─ DOSSIER EN ATTENTE ─ */}
-        {r.statut === 'dossier_requis' && (
-          <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontSize: 36, marginBottom: 12 }}>⏳</div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>
-              En attente du dossier de {r.locataire_prenom}
-            </div>
-            <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6 }}>
-              Le locataire prépare ses documents. Vous serez notifié(e) dès que le dossier est soumis. La page se met à jour automatiquement.
-            </div>
-          </div>
-        )}
-
         {/* ─ EXAMINER LE DOSSIER ─ */}
-        {r.statut === 'en_examen' && (
-          <div style={{ background: '#fff', borderRadius: 14, padding: 18, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>
-              📋 Dossier soumis par {r.locataire_prenom}
-            </div>
-            <div style={{ marginBottom: 16 }}>
-              {[
-                { label: 'Pièce d\'identité (CNI)', ok: true },
-                { label: 'Attestation d\'emploi',   ok: true },
-                { label: 'Fiches de paie',          ok: Boolean(r.doc_paie_url) },
-                { label: 'Contact garant',          ok: Boolean(r.doc_garant_url) },
-              ].map(function(d) {
-                return (
-                  <div key={d.label} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 0', borderBottom: '0.5px solid #F5F5F5' }}>
-                    <span style={{ fontSize: 16 }}>{d.ok ? '✅' : '⏳'}</span>
-                    <span style={{ fontSize: 13, color: d.ok ? '#1B2B22' : '#888' }}>{d.label}</span>
-                  </div>
-                );
-              })}
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <button
-                onClick={function() { action('/decision', { decision: 'acceptee' }, 'Dossier validé ! Candidature acceptée.'); }}
-                style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-                ✅ Valider le dossier — Accepter
-              </button>
-              <button
-                onClick={function() { action('/decision', { decision: 'dossier_requis' }, 'Informations complémentaires demandées.'); }}
-                style={{ background: '#E3F2FD', color: '#1565C0', border: '1px solid #90CAF9', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-                💬 Demander des informations complémentaires
-              </button>
-              <div style={{ display: 'flex', gap: 10 }}>
-                <input
-                  type="text"
-                  value={motifRefus}
-                  onChange={function(e) { setMotifRefus(e.target.value); }}
-                  placeholder="Motif du refus"
-                  style={{ flex: 1, padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none' }} />
-                <button
-                  onClick={function() {
-                    if (!motifRefus.trim()) { toast.error('Indiquez un motif'); return; }
-                    action('/decision', { decision: 'refusee', motif: motifRefus }, 'Candidature refusée.');
-                  }}
-                  style={{ background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
-                  ❌ Refuser
-                </button>
-              </div>
-            </div>
+{r.statut === 'en_examen' && (
+  <div style={{ background: '#fff', borderRadius: 14, padding: 18, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+    <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>
+      📋 Dossier soumis par {r.locataire_prenom}
+    </div>
+
+    {/* Documents avec liens de téléchargement */}
+    <div style={{ marginBottom: 16 }}>
+      {[
+        { label: 'Pièce d\'identité (CNI)',  url: r.doc_cni_url,    ok: true },
+        { label: 'Attestation d\'emploi',    url: r.doc_emploi_url, ok: true },
+        { label: 'Fiches de paie (3 mois)', url: r.doc_paie_url,   ok: Boolean(r.doc_paie_url) },
+        { label: 'Contact garant',          url: r.doc_garant_url, ok: Boolean(r.doc_garant_url) },
+      ].map(function(d) {
+        return (
+          <div key={d.label} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0', borderBottom: '0.5px solid #F5F5F5' }}>
+            <span style={{ fontSize: 18, flexShrink: 0 }}>{d.ok ? '✅' : '⏳'}</span>
+            <span style={{ fontSize: 13, color: d.ok ? '#1B2B22' : '#888', flex: 1 }}>{d.label}</span>
+            {d.ok && d.url && (
+              <a href={d.url} target="_blank" rel="noreferrer"
+                style={{ padding: '5px 12px', borderRadius: 8, background: '#E8F5E9', color: '#1B6B3A', textDecoration: 'none', fontSize: 12, fontWeight: 600, border: '0.5px solid #A5D6A7', flexShrink: 0 }}>
+                Voir →
+              </a>
+            )}
+            {d.ok && !d.url && (
+              <span style={{ fontSize: 11, color: '#1B6B3A', fontWeight: 600 }}>Soumis ✓</span>
+            )}
           </div>
-        )}
+        );
+      })}
+    </div>
+
+    {/* Infos locataire */}
+    <div style={{ background: '#F8F8F8', borderRadius: 10, padding: 12, marginBottom: 16 }}>
+      <div style={{ fontSize: 12, color: '#888', marginBottom: 8, fontWeight: 600 }}>Informations du candidat</div>
+      {[
+        ['Nom complet', r.locataire_prenom + ' ' + r.locataire_nom],
+        ['Email',       r.locataire_email || 'N/A'],
+        ['Téléphone',  r.locataire_telephone || 'N/A'],
+        ['Logement',   r.logement_titre],
+        ['Loyer',      GNF(loyer) + '/mois'],
+        ['Date souhaitée', r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A'],
+        ['Durée',      r.duree_mois ? r.duree_mois + ' mois' : 'N/A'],
+      ].map(function(row) {
+        return (
+          <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0', borderBottom: '0.5px solid #EFEFEF' }}>
+            <span style={{ color: '#888' }}>{row[0]}</span>
+            <span style={{ fontWeight: 600, color: '#1B2B22' }}>{row[1]}</span>
+          </div>
+        );
+      })}
+    </div>
+
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <button onClick={function() { action('/decision', { decision: 'acceptee' }, 'Dossier validé ! Candidature acceptée.'); }}
+        style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+        ✅ Valider le dossier — Accepter la candidature
+      </button>
+      <button onClick={function() { action('/decision', { decision: 'dossier_requis' }, 'Informations complémentaires demandées.'); }}
+        style={{ background: '#E3F2FD', color: '#1565C0', border: '1px solid #90CAF9', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+        💬 Demander des informations complémentaires
+      </button>
+      <div style={{ display: 'flex', gap: 10 }}>
+        <input type="text" value={motifRefus} onChange={function(e) { setMotifRefus(e.target.value); }}
+          placeholder="Motif du refus"
+          style={{ flex: 1, padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none' }} />
+        <button onClick={function() {
+          if (!motifRefus.trim()) { toast.error('Indiquez un motif'); return; }
+          action('/decision', { decision: 'refusee', motif: motifRefus }, 'Candidature refusée.');
+        }}
+          style={{ background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+          ❌ Refuser
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
         {/* ─ ÉCHANGES CHAT ─ */}
         {(r.statut === 'acceptee' || r.statut === 'echanges') && (
@@ -2611,7 +2625,6 @@ export default function Dashboard() {
   var [loading, setLoading] = useState(true);
   var [showNotif, setShowNotif] = useState(false);
   var [alertes, setAlertes] = useState([]);
-  var navigate = useNavigate();
   var [stats, setStats] = useState({ logements: [], reservations: [], paiements: [] });
 
   var premierChargement = useRef(true);
@@ -2649,8 +2662,14 @@ export default function Dashboard() {
   };
 
   useEffect(function() {
-    chargerDonnees();
-  }, []);
+  // Lire l'onglet sauvegardé depuis ReservationLocataire
+  var savedOnglet = localStorage.getItem('dashboardOnglet');
+  if (savedOnglet) {
+    setOnglet(savedOnglet);
+    localStorage.removeItem('dashboardOnglet');
+  }
+  chargerDonnees();
+}, []);
 
   function chargerDonnees() {
     // Affiche le chargement SEULEMENT la première fois
@@ -2676,13 +2695,15 @@ export default function Dashboard() {
     } else {
       req = Promise.all([
         api.get('/reservations/mes-reservations'),
-        api.get('/paiements/mes-paiements')
+        api.get('/paiements/mes-paiements'),
+        api.get('/alertes/mes-alertes').catch(function() { return { data: { alertes: [] } }; })
       ]).then(function(results) {
         setStats({
-          logements: [],
+          logements:    [],
           reservations: results[0].data.reservations || [],
-          paiements: results[1].data.paiements || []
+          paiements:    results[1].data.paiements    || []
         });
+        setAlertes(results[2].data.alertes || []);
       });
     }
     req.catch(console.error).finally(function() { 

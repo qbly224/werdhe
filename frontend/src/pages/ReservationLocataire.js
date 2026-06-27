@@ -664,16 +664,23 @@ export default function ReservationLocataire() {
             </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            {[['📄', 'Documents', 'documents'], ['💬', 'Messages', 'messages']].map(function(item) {
-              return (
-                <div key={item[0]} onClick={function() { navigate('/dashboard/' + item[2]); }}
-                  style={{ padding: 14, border: '0.5px solid #E0E0E0', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: '#fff' }}>
-                  <div style={{ fontSize: 22, marginBottom: 6 }}>{item[0]}</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22' }}>{item[1]}</div>
-                </div>
-              );
-            })}
-          </div>
+  <button onClick={function() {
+    localStorage.setItem('dashboardOnglet', '/dashboard/documents');
+    navigate('/dashboard');
+  }}
+    style={{ padding: 14, border: '0.5px solid #E0E0E0', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+    <div style={{ fontSize: 22 }}>📄</div>
+    <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22' }}>Documents</div>
+  </button>
+  <button onClick={function() {
+    localStorage.setItem('dashboardOnglet', '/dashboard/messages');
+    navigate('/dashboard');
+  }}
+    style={{ padding: 14, border: '0.5px solid #E0E0E0', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+    <div style={{ fontSize: 22 }}>💬</div>
+    <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22' }}>Messages</div>
+  </button>
+</div>
         </div>
       )}
 
