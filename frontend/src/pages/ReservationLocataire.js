@@ -174,18 +174,28 @@ export default function ReservationLocataire() {
 
   // ── ACTIONS ───────────────────────────────────────────────────────
   function soumettreDocuments(e) {
-    e.preventDefault();
-    var nbDocs = Object.values(docs).filter(Boolean).length;
-    if (nbDocs < 2) { toast.error('Ajoutez au moins 2 documents'); return; }
-    api.patch('/reservations/' + reservationId + '/soumettre-dossier', {})
-      .then(function() {
-        toast.success('Dossier soumis ! Le propriétaire va l\'examiner.');
-      })
-      .catch(function(err) {
-        toast.error('Erreur lors de la soumission');
-        console.error(err);
-      });
-  }
+  e.preventDefault();
+  var nbDocs = Object.values(docs).filter(Boolean).length;
+  if (nbDocs < 2) { toast.error('Ajoutez au moins 2 documents'); return; }
+
+  var fd = new FormData();
+  // Envoyer chaque fichier réel
+  if (docs.cni)    fd.append('cni',    docs.cni);
+  if (docs.emploi) fd.append('emploi', docs.emploi);
+  if (docs.paie)   fd.append('paie',   docs.paie);
+  if (docs.garant) fd.append('garant', docs.garant);
+
+  api.post('/reservations/' + reservationId + '/dossier', fd, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
+    .then(function() {
+      toast.success('Dossier soumis ! Le propriétaire va l\'examiner.');
+    })
+    .catch(function(err) {
+      toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur soumission');
+      console.error(err);
+    });
+}
 
   function payerCaution() {
     setPayProcessing(true);
