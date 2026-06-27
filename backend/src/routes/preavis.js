@@ -116,7 +116,9 @@ router.post('/', verifierToken, async (req, res) => {
     }
 
     // ── 4. Notification plateforme (non bloquante) ────────────
+    // ── 4. Notification plateforme (proprio ET locataire) ────────
     try {
+      // Alerte visible par le proprio
       await db.query(
         `INSERT INTO alertes
            (proprietaire_id, logement_id, type, titre, description, priorite)
@@ -130,9 +132,27 @@ router.post('/', verifierToken, async (req, res) => {
           'Date de sortie : ' + dateSortie + ' · Délai : ' + delai_mois + ' mois'
         ]
       );
-      console.log('[Préavis] Notification créée ✅');
+
+      // Alerte visible par le DESTINATAIRE (locataire ou proprio)
+      var destinataireId = estLocataire ? r.proprietaire_id : r.locataire_id;
+      await db.query(
+        `INSERT INTO alertes
+           (proprietaire_id, destinataire_id, logement_id, type, titre, description, priorite)
+         VALUES ($1, $2, $3, 'bail_bientot', $4, $5, 'haute')`,
+        [
+          r.proprietaire_id,
+          destinataireId,
+          r.logement_id,
+          estLocataire
+            ? '📤 Préavis de départ reçu — ' + r.logement_titre
+            : '📋 Préavis reçu de votre propriétaire — ' + r.logement_titre,
+          'Date de sortie estimée : ' + dateSortie + ' · Motif : ' + motif
+        ]
+      );
+
+      console.log('[Préavis] Notifications créées ✅');
     } catch (alerteErr) {
-      console.warn('[Préavis] Notification non créée (non bloquant):', alerteErr.message);
+      console.warn('[Préavis] Notification non bloquante:', alerteErr.message);
     }
 
     // ── 5. Réponse succès ─────────────────────────────────────

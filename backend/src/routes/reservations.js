@@ -395,7 +395,16 @@ router.patch('/:id/statut', verifierToken, async (req, res) => {
 });
 
 // ─── LOCATAIRE SOUMET SON DOSSIER ─────────────────────────────────
-router.patch('/:id/soumettre-dossier', verifierToken, async (req, res) => {
+// Upload du dossier locataire avec fichiers
+const multer = require('multer');
+const uploadDossier = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
+
+router.post('/:id/dossier', verifierToken, uploadDossier.fields([
+  { name: 'cni',    maxCount: 1 },
+  { name: 'emploi', maxCount: 1 },
+  { name: 'paie',   maxCount: 1 },
+  { name: 'garant', maxCount: 1 },
+]), async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -403,21 +412,56 @@ router.patch('/:id/soumettre-dossier', verifierToken, async (req, res) => {
       'SELECT id FROM reservations WHERE id = $1 AND locataire_id = $2',
       [id, req.user.id]
     );
-
     if (check.rows.length === 0) {
       return res.status(403).json({ erreur: 'Non autorisé' });
     }
 
+    const { cloudinary } = require('../services/cloudinaryService');
+    var urls = {};
+
+    // Uploader chaque fichier sur Cloudinary
+    for (var champ of ['cni', 'emploi', 'paie', 'garant']) {
+      if (req.files && req.files[champ] && req.files[champ][0]) {
+        var file    = req.files[champ][0];
+        var buffer  = file.buffer.toString('base64');
+        var dataUri = 'data:' + file.mimetype + ';base64,' + buffer;
+        try {
+          var result = await cloudinary.uploader.upload(dataUri, {
+            folder:        'werdhe/dossiers',
+            resource_type: 'auto',
+            public_id:     'doc_' + champ + '_' + id + '_' + Date.now()
+          });
+          urls['doc_' + champ + '_url'] = result.secure_url;
+        } catch (uploadErr) {
+          console.warn('[Dossier] Upload ' + champ + ' échoué (non bloquant):', uploadErr.message);
+        }
+      }
+    }
+
+    // Mettre à jour le statut et les URLs en base
     await db.query(
-      'UPDATE reservations SET statut = $1, updated_at = NOW() WHERE id = $2',
-      ['en_examen', id]
+      `UPDATE reservations SET
+         statut          = 'en_examen',
+         doc_cni_url     = COALESCE($1, doc_cni_url),
+         doc_emploi_url  = COALESCE($2, doc_emploi_url),
+         doc_paie_url    = COALESCE($3, doc_paie_url),
+         doc_garant_url  = COALESCE($4, doc_garant_url),
+         updated_at      = NOW()
+       WHERE id = $5`,
+      [
+        urls.doc_cni_url    || null,
+        urls.doc_emploi_url || null,
+        urls.doc_paie_url   || null,
+        urls.doc_garant_url || null,
+        id
+      ]
     );
 
-    res.json({ message: 'Dossier soumis', statut: 'en_examen' });
+    res.json({ message: 'Dossier soumis', statut: 'en_examen', urls });
 
   } catch (err) {
-    console.error('PATCH /reservations/:id/soumettre-dossier', err.message);
-    res.status(500).json({ erreur: 'Erreur serveur' });
+    console.error('[POST dossier]', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur : ' + err.message });
   }
 });
 
