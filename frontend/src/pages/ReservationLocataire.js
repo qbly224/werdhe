@@ -173,27 +173,31 @@ export default function ReservationLocataire() {
   var loyer  = logement ? Number(logement.prix_mensuel || 0) : 0;
 
   // ── ACTIONS ───────────────────────────────────────────────────────
-  function soumettreDocuments(e) {
+ function soumettreDocuments(e) {
   e.preventDefault();
   var nbDocs = Object.values(docs).filter(Boolean).length;
   if (nbDocs < 2) { toast.error('Ajoutez au moins 2 documents'); return; }
 
   var fd = new FormData();
-  // Envoyer chaque fichier réel
   if (docs.cni)    fd.append('cni',    docs.cni);
   if (docs.emploi) fd.append('emploi', docs.emploi);
   if (docs.paie)   fd.append('paie',   docs.paie);
   if (docs.garant) fd.append('garant', docs.garant);
 
+  toast.loading('Upload en cours...');
+
   api.post('/reservations/' + reservationId + '/dossier', fd, {
     headers: { 'Content-Type': 'multipart/form-data' }
   })
-    .then(function() {
-      toast.success('Dossier soumis ! Le propriétaire va l\'examiner.');
+    .then(function(res) {
+      toast.dismiss();
+      toast.success('Dossier soumis ! Le propriétaire va examiner vos documents.');
     })
     .catch(function(err) {
-      toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur soumission');
-      console.error(err);
+      toast.dismiss();
+      var msg = err.response && err.response.data ? err.response.data.erreur : 'Erreur soumission';
+      toast.error(msg);
+      console.error('[Dossier]', err.response && err.response.data);
     });
 }
 
