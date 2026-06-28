@@ -1,5 +1,6 @@
-const express = require('express');
-const router = express.Router();
+const express    = require('express');
+const router     = express.Router();
+const db         = require('../database');  // ← MANQUAIT
 const verifierToken = require('../middleware/auth');
 const {
   getAlertes,
@@ -8,9 +9,10 @@ const {
   traiterSignalement
 } = require('../controllers/alerteController');
 
+// Alertes proprio
 router.get('/', verifierToken, getAlertes);
 
-// Alertes pour le locataire connecté
+// Alertes destinées au locataire connecté
 router.get('/mes-alertes', verifierToken, async (req, res) => {
   try {
     var result = await db.query(
@@ -22,6 +24,7 @@ router.get('/mes-alertes', verifierToken, async (req, res) => {
     );
     res.json({ alertes: result.rows });
   } catch (err) {
+    console.error('[GET /alertes/mes-alertes]', err.message);
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 });
