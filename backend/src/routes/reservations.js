@@ -422,23 +422,22 @@ router.post('/:id/dossier', verifierToken, uploadDossier.fields([
     var urls = {};
 
     // Uploader chaque fichier sur Cloudinary
-    for (var champ of ['cni', 'emploi', 'paie', 'garant']) {
-      if (req.files && req.files[champ] && req.files[champ][0]) {
-        var file    = req.files[champ][0];
-        var buffer  = file.buffer.toString('base64');
-        var dataUri = 'data:' + file.mimetype + ';base64,' + buffer;
-        try {
-          var result = await cloudinary.uploader.upload(dataUri, {
-            folder:        'werdhe/dossiers',
-            resource_type: 'auto',
-            public_id:     'doc_' + champ + '_' + id + '_' + Date.now()
-          });
-          urls['doc_' + champ + '_url'] = result.secure_url;
-        } catch (uploadErr) {
-          console.warn('[Dossier] Upload ' + champ + ' échoué (non bloquant):', uploadErr.message);
-        }
-      }
-    }
+    var isImage = file.mimetype.startsWith('image/');
+var result  = await cloudinary.uploader.upload(dataUri, {
+  folder:        'werdhe/dossiers',
+  resource_type: isImage ? 'image' : 'raw',
+  type:          'upload',
+  access_mode:   'public',
+  public_id:     'doc_' + champ + '_' + id + '_' + Date.now()
+});
+
+// Pour les fichiers raw, construire l'URL publique manuellement
+var fileUrl = result.secure_url;
+if (!isImage) {
+  // S'assurer que l'URL est accessible sans authentification
+  fileUrl = result.secure_url.replace('/raw/upload/', '/raw/upload/fl_attachment/');
+}
+urls['doc_' + champ + '_url'] = result.secure_url;
 
     // Mettre à jour le statut et les URLs en base
     await db.query(
@@ -464,6 +463,45 @@ router.post('/:id/dossier', verifierToken, uploadDossier.fields([
   } catch (err) {
     console.error('[POST dossier]', err.message);
     res.status(500).json({ erreur: 'Erreur serveur : ' + err.message });
+  }
+});
+
+// Route pour visualiser un document de dossier
+router.get('/:id/document/:champ', verifierToken, async (req, res) => {
+  try {
+    const { id, champ } = req.params;
+
+    var colonnes = {
+      cni:    'doc_cni_url',
+      emploi: 'doc_emploi_url',
+      paie:   'doc_paie_url',
+      garant: 'doc_garant_url'
+    };
+
+    var colonne = colonnes[champ];
+    if (!colonne) return res.status(400).json({ erreur: 'Champ invalide' });
+
+    var result = await db.query(
+      `SELECT r.${colonne}
+       FROM reservations r
+       JOIN logements l ON r.logement_id = l.id
+       WHERE r.id = $1
+         AND (l.proprietaire_id = $2 OR r.locataire_id = $2)`,
+      [id, req.user.id]
+    );
+
+    if (!result.rows[0] || !result.rows[0][colonne]) {
+      return res.status(404).json({ erreur: 'Document non trouvé' });
+    }
+
+    var url = result.rows[0][colonne];
+
+    // Rediriger vers l'URL Cloudinary
+    res.redirect(url);
+
+  } catch (err) {
+    console.error('[GET document]', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
   }
 });
 

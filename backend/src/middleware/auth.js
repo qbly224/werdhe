@@ -26,4 +26,23 @@ const verifierToken = (req, res, next) => {
   }
 };
 
-module.exports = verifierToken;
+module.exports = function verifierToken(req, res, next) {
+  // Token depuis header Authorization OU depuis query param
+  var token = null;
+  var authHeader = req.headers['authorization'];
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.split(' ')[1];
+  } else if (req.query.token) {
+    token = req.query.token;  // ← AJOUTER
+  }
+
+  if (!token) return res.status(401).json({ erreur: 'Accès refusé - Token manquant' });
+
+  try {
+    var decoded = require('jsonwebtoken').verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ erreur: 'Token invalide ou expiré' });
+  }
+};
