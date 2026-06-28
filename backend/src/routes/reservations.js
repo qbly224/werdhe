@@ -406,6 +406,8 @@ router.post('/:id/dossier', verifierToken, uploadDossier.fields([
   { name: 'garant', maxCount: 1 },
 ]), async (req, res) => {
   try {
+    console.log('[Dossier] Fichiers reçus:', Object.keys(req.files || {}));
+    console.log('[Dossier] Réservation ID:', req.params.id);
     const { id } = req.params;
 
     const check = await db.query(
