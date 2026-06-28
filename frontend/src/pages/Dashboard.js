@@ -948,9 +948,15 @@ useEffect(function() {
             <span style={{ fontSize: 18, flexShrink: 0 }}>{d.ok ? '✅' : '⏳'}</span>
             <span style={{ fontSize: 13, color: d.ok ? '#1B2B22' : '#888', flex: 1 }}>{d.label}</span>
             {d.ok && d.url && (
-              <a href={d.url} target="_blank" rel="noreferrer"
-                style={{ padding: '5px 12px', borderRadius: 8, background: '#E8F5E9', color: '#1B6B3A', textDecoration: 'none', fontSize: 12, fontWeight: 600, border: '0.5px solid #A5D6A7', flexShrink: 0 }}>
-                Voir →
+              <a href={'https://werdhe-backend.onrender.com/reservations/' + r.id + '/document/' + (
+                 d.label.includes('CNI') ? 'cni' :
+                 d.label.includes('emploi') ? 'emploi' :
+                 d.label.includes('paie') ? 'paie' : 'garant'
+              ) + '?token=' + localStorage.getItem('token')}
+              target="_blank"
+              rel="noreferrer"
+              style={{ padding: '5px 12px', borderRadius: 8, background: '#E8F5E9', color: '#1B6B3A', textDecoration: 'none', fontSize: 12, fontWeight: 600, border: '0.5px solid #A5D6A7', flexShrink: 0 }}>
+              Voir →
               </a>
             )}
             {d.ok && !d.url && (
