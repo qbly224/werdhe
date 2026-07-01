@@ -127,6 +127,50 @@ router.get('/proprietaire/mes-logements', verifierToken, async (req, res) => {
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 });
+
+// Libérer un bien immédiatement (sans préavis)
+router.patch('/:id/liberer', verifierToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Vérifier que c'est bien le proprio
+    const check = await db.query(
+      'SELECT id FROM logements WHERE id = $1 AND proprietaire_id = $2',
+      [id, req.user.id]
+    );
+    if (check.rows.length === 0) {
+      return res.status(403).json({ erreur: 'Non autorisé' });
+    }
+
+    // Terminer la réservation active
+    await db.query(
+      `UPDATE reservations SET statut = 'terminee', updated_at = NOW()
+       WHERE logement_id = $1 AND statut = 'confirmee'`,
+      [id]
+    );
+
+    // Terminer le préavis actif si existant
+    await db.query(
+      `UPDATE preavis SET statut = 'termine'
+       WHERE reservation_id IN (
+         SELECT id FROM reservations WHERE logement_id = $1
+       ) AND statut = 'envoye'`,
+      [id]
+    );
+
+    // Remettre le logement disponible
+    await db.query(
+      `UPDATE logements SET statut = 'disponible' WHERE id = $1`,
+      [id]
+    );
+
+    res.json({ message: 'Bien libéré avec succès', statut: 'disponible' });
+
+  } catch (err) {
+    console.error('[PATCH /logements/:id/liberer]', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+});
 router.post('/', verifierToken, ajouterLogement);
 router.put('/:id', verifierToken, modifierLogement);
 router.delete('/:id', verifierToken, supprimerLogement);
