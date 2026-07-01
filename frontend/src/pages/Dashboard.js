@@ -357,11 +357,15 @@ function OngletBiens(props) {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         {stats.logements.map(function(b) {
-          var estOccupe  = b.statut === 'loue';
-          var locataire  = estOccupe ? getLocataireInfo(b.id) : null;
-          var preavisActif = b.preavis_actif || false;
-          var borderColor = preavisActif ? '#E53935' : estOccupe ? '#1B6B3A' : '#F5A623';
-
+        var estOccupe    = b.statut === 'loue';
+          var locataire    = estOccupe ? getLocataireInfo(b.id) : null;
+          var preavisActif = b.preavis_statut === 'envoye';
+          var joursRestants = preavisActif && b.date_sortie_estimee
+            ? Math.ceil((new Date(b.date_sortie_estimee) - new Date()) / (1000 * 60 * 60 * 24))
+            : null;
+          var borderColor  = preavisActif
+            ? (joursRestants !== null && joursRestants <= 5 ? '#C62828' : '#E65100')
+            : estOccupe ? '#1B6B3A' : '#F5A623';       
           // Mode édition
           if (modeEdit === b.id) {
             return (
@@ -407,7 +411,7 @@ function OngletBiens(props) {
                     {new Intl.NumberFormat('fr-FR').format(b.prix_mensuel)} GNF/mois
                   </div>
                 </div>
-                <div style={{ flexShrink: 0 }}>
+                <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
                   {preavisActif ? (
                     <div style={{ background: '#FFEBEE', color: '#B71C1C', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
                       ⚠️ Préavis envoyé
@@ -419,6 +423,16 @@ function OngletBiens(props) {
                   ) : (
                     <div style={{ background: '#FFF8E1', color: '#C8860A', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
                       Libre
+                    </div>
+                  )}
+                  {preavisActif && joursRestants !== null && (
+                    <div style={{
+                      background: joursRestants <= 5 ? '#FFEBEE' : joursRestants <= 15 ? '#FFF3E0' : '#FFF8E1',
+                      color:      joursRestants <= 5 ? '#C62828' : joursRestants <= 15 ? '#E65100' : '#7B4F00',
+                      border:     '1.5px solid ' + (joursRestants <= 5 ? '#FFCDD2' : joursRestants <= 15 ? '#FFCC80' : '#FFE082'),
+                      borderRadius: 20, padding: '4px 12px', fontSize: 13, fontWeight: 800
+                    }}>
+                      J-{joursRestants > 0 ? joursRestants : 0}
                     </div>
                   )}
                 </div>
@@ -2770,9 +2784,28 @@ export default function Dashboard() {
           </div>
           <div className="dash-header-right">
             <div className="dash-om-badge">Orange Money connecte</div>
-            <button className="dash-notif-btn" type="button" onClick={function() { setShowNotif(!showNotif); }}>
+            <button className="dash-notif-btn" type="button" onClick={function() {
+  var nouvelEtat = !showNotif;
+  setShowNotif(nouvelEtat);
+  // Marquer comme lues quand on ouvre
+  if (nouvelEtat && alertes.length > 0) {
+    var estLocataire = user && user.role === 'locataire';
+    api.patch(estLocataire ? '/alertes/mes-alertes/lues' : '/alertes/lues')
+      .then(function() {
+        // Mettre à jour localement : toutes marquées comme lues
+        setAlertes(function(prev) {
+          return prev.map(function(a) { return Object.assign({}, a, { lu: true }); });
+        });
+      })
+      .catch(console.error);
+  }
+}}>
               🔔
-              {alertes.length > 0 && <div className="dash-notif-badge">{alertes.length}</div>}
+              {alertes.filter(function(a) { return !a.lu; }).length > 0 && (
+  <div className="dash-notif-badge">
+    {alertes.filter(function(a) { return !a.lu; }).length}
+  </div>
+)}
             </button>
           </div>
         </div>
