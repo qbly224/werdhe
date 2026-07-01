@@ -169,4 +169,103 @@ cron.schedule('0 9 * * *', async function() {
 });
 
 console.log('[CRON] Service de rappels démarré ✅');
+
+// ════════════════════════════════════════════════════════
+// CRON 3 — Rappel préavis J-5
+// Tourne tous les jours à 10h
+// ════════════════════════════════════════════════════════
+cron.schedule('0 10 * * *', async function() {
+  console.log('[CRON] Vérification préavis J-5 — ' + new Date().toLocaleDateString('fr-FR'));
+  try {
+    var result = await db.query(
+      `SELECT
+         p.*,
+         r.locataire_id,
+         l.titre as logement_titre, l.proprietaire_id,
+         u_loc.nom as loc_nom, u_loc.prenom as loc_prenom, u_loc.email as loc_email,
+         u_prop.nom as prop_nom, u_prop.prenom as prop_prenom, u_prop.email as prop_email
+       FROM preavis p
+       JOIN reservations r ON p.reservation_id = r.id
+       JOIN logements l ON r.logement_id = l.id
+       JOIN users u_loc ON r.locataire_id = u_loc.id
+       JOIN users u_prop ON l.proprietaire_id = u_prop.id
+       WHERE p.statut = 'envoye'
+         AND p.date_sortie_estimee IS NOT NULL
+         AND p.date_sortie_estimee::date = (CURRENT_DATE + INTERVAL '5 days')::date`
+    );
+
+    for (var p of result.rows) {
+      var dateSortie = new Date(p.date_sortie_estimee).toLocaleDateString('fr-FR');
+
+      // Email au locataire
+      try {
+        const { Resend } = require('resend');
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        await resend.emails.send({
+          from:    'Werdhe <no-reply@werdhe.com>',
+          to:      p.loc_email,
+          subject: '⚠️ Rappel — Votre départ est dans 5 jours',
+          html: `
+            <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
+              <div style="background:#C62828;padding:20px;border-radius:12px 12px 0 0">
+                <h2 style="color:#fff;margin:0">🏠 Werdhe — Rappel important</h2>
+              </div>
+              <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
+                <p>Bonjour <b>${p.loc_prenom}</b>,</p>
+                <div style="background:#FFEBEE;border:1px solid #FFCDD2;border-radius:10px;padding:16px;margin:16px 0;text-align:center">
+                  <div style="font-size:32px;font-weight:800;color:#C62828">J-5</div>
+                  <div style="color:#555;font-size:13px">Votre départ de <b>${p.logement_titre}</b> est prévu le <b>${dateSortie}</b></div>
+                </div>
+                <p>Pensez à :</p>
+                <ul style="color:#555;font-size:13px;line-height:2">
+                  <li>Préparer vos affaires</li>
+                  <li>Remettre les clés au propriétaire</li>
+                  <li>Planifier l'état des lieux de sortie</li>
+                </ul>
+                <a href="https://werdhe.com/dashboard"
+                   style="display:inline-block;background:#1B6B3A;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700">
+                  Accéder à mon espace →
+                </a>
+              </div>
+            </div>
+          `
+        });
+        console.log('[CRON J-5] Email envoyé à ' + p.loc_email);
+      } catch (emailErr) {
+        console.warn('[CRON J-5] Email non envoyé:', emailErr.message);
+      }
+
+      // Notification plateforme pour les deux
+      await db.query(
+        `INSERT INTO alertes
+           (proprietaire_id, logement_id, type, titre, description, priorite)
+         VALUES ($1, $2, 'loyer_retard', $3, $4, 'haute')`,
+        [
+          p.proprietaire_id,
+          (await db.query('SELECT logement_id FROM reservations WHERE id = $1', [p.reservation_id])).rows[0].logement_id,
+          '⚠️ Départ imminent J-5 — ' + p.logement_titre,
+          p.loc_prenom + ' ' + p.loc_nom + ' · Sortie prévue le ' + dateSortie
+        ]
+      );
+
+      // Notif locataire
+      await db.query(
+        `INSERT INTO alertes
+           (proprietaire_id, destinataire_id, logement_id, type, titre, description, priorite)
+         VALUES ($1, $2, $3, 'loyer_retard', $4, $5, 'haute')`,
+        [
+          p.proprietaire_id,
+          p.locataire_id,
+          (await db.query('SELECT logement_id FROM reservations WHERE id = $1', [p.reservation_id])).rows[0].logement_id,
+          '⚠️ Votre départ est dans 5 jours',
+          'Logement : ' + p.logement_titre + ' · Date de sortie : ' + dateSortie
+        ]
+      );
+    }
+
+    console.log('[CRON J-5] ' + result.rows.length + ' rappel(s) envoyé(s)');
+  } catch (err) {
+    console.error('[CRON J-5] Erreur:', err.message);
+  }
+});
 module.exports = {};

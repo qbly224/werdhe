@@ -98,7 +98,35 @@ router.get('/:id', getLogement);
 
 // Routes protégées (token JWT obligatoire)
 // Seuls les utilisateurs connectés peuvent faire ces actions
-router.get('/proprietaire/mes-logements', verifierToken, getMesLogements);
+router.get('/proprietaire/mes-logements', verifierToken, async (req, res) => {
+  try {
+    var result = await db.query(
+      `SELECT l.*,
+         -- Infos préavis actif
+         p.id        as preavis_id,
+         p.statut    as preavis_statut,
+         p.date_sortie_estimee,
+         p.delai_mois,
+         -- Infos locataire actuel
+         u.prenom    as locataire_prenom,
+         u.nom       as locataire_nom,
+         u.telephone as locataire_tel
+       FROM logements l
+       LEFT JOIN reservations r
+         ON r.logement_id = l.id AND r.statut = 'confirmee'
+       LEFT JOIN preavis p
+         ON p.reservation_id = r.id AND p.statut = 'envoye'
+       LEFT JOIN users u ON r.locataire_id = u.id
+       WHERE l.proprietaire_id = $1
+       ORDER BY l.created_at DESC`,
+      [req.user.id]
+    );
+    res.json({ logements: result.rows });
+  } catch (err) {
+    console.error('[GET mes-logements]', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+});
 router.post('/', verifierToken, ajouterLogement);
 router.put('/:id', verifierToken, modifierLogement);
 router.delete('/:id', verifierToken, supprimerLogement);
