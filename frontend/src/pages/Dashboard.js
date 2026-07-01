@@ -226,6 +226,7 @@ function OngletBiens(props) {
 
   var [showConfirm, setShowConfirm] = useState(null);
   var [modeEdit, setModeEdit]       = useState(null);
+  var [showLiberer, setShowLiberer] = useState(null);
   var [formEdit, setFormEdit]       = useState({});
   var [reservationsActives, setReservationsActives] = useState([]);
 
@@ -257,6 +258,18 @@ function OngletBiens(props) {
     api.put('/logements/' + id, formEdit)
       .then(function() { toast.success('Bien modifié !'); setModeEdit(null); recharger(); })
       .catch(function() { toast.error('Erreur modification'); });
+  }
+
+  function libererBien(id) {
+  api.patch('/logements/' + id + '/liberer')
+    .then(function() {
+      toast.success('Bien libéré immédiatement !');
+      setShowLiberer(null);
+      recharger();
+    })
+    .catch(function(err) {
+      toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur');
+    });
   }
 
   // ── VUE LOCATAIRE ─────────────────────────────────────────────
@@ -334,6 +347,30 @@ function OngletBiens(props) {
           </div>
         </div>
       )}
+
+    {showLiberer && (
+  <div className="modal-overlay">
+    <div className="modal-box">
+      <h3 style={{ color: '#C62828' }}>⚡ Libérer immédiatement</h3>
+      <p style={{ fontSize: 13, color: '#555', lineHeight: 1.6 }}>
+        Cette action va <b>terminer la location en cours</b> et remettre le bien en "Disponible" immédiatement, sans délai de préavis.
+      </p>
+      <div style={{ background: '#FFEBEE', borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 12, color: '#B71C1C' }}>
+        ⚠️ Le locataire sera notifié. Cette action est irréversible.
+      </div>
+      <div className="modal-actions">
+        <button
+          style={{ background: '#C62828', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontWeight: 700, cursor: 'pointer' }}
+          onClick={function() { libererBien(showLiberer); }}>
+          ⚡ Libérer maintenant
+        </button>
+        <button className="btn-outline-green" onClick={function() { setShowLiberer(null); }}>
+          Annuler
+        </button>
+      </div>
+    </div>
+  </div>
+  )}
 
       <div className="dash-page-header">
         <div>
@@ -471,6 +508,16 @@ function OngletBiens(props) {
                       ⚠️ Préavis envoyé
                     </button>
                   )}
+                  {estOccupe && (
+  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 8 }}>
+    {/* ... boutons existants Messagerie, Documents, Préavis ... */}
+    <button
+      onClick={function() { setShowLiberer(b.id); }}
+      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#FFEBEE', color: '#C62828', border: '0.5px solid #FFCDD2', fontSize: 12, fontWeight: 600, cursor: 'pointer', gridColumn: '1 / -1' }}>
+      ⚡ Libérer immédiatement
+    </button>
+  </div>
+)}
                 </div>
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -1509,6 +1556,34 @@ function OngletPreavis(props) {
     }
   }, [estProprietaire]);
 
+var [preavisRecus, setPreavisRecus] = useState([]);
+var [reponseModal, setReponseModal] = useState(null); // préavis en cours de réponse
+var [messageReponse, setMessageReponse] = useState('');
+var [reponseLoading, setReponseLoading] = useState(false);
+
+useEffect(function() {
+  api.get('/preavis/recus')
+    .then(function(res) { setPreavisRecus(res.data.preavis || []); })
+    .catch(console.error);
+}, []);
+
+function repondre(preavisId, reponse) {
+  setReponseLoading(true);
+  api.patch('/preavis/' + preavisId + '/repondre', {
+    reponse:  reponse,
+    message:  messageReponse
+  })
+    .then(function() {
+      toast.success(reponse === 'accepte' ? 'Préavis accepté ✅' : 'Demande de renouvellement envoyée 🔄');
+      setReponseModal(null);
+      setMessageReponse('');
+      setPreavisRecus(function(prev) { return prev.filter(function(p) { return p.id !== preavisId; }); });
+    })
+    .catch(function(err) {
+      toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur');
+    })
+    .finally(function() { setReponseLoading(false); });
+}
   function envoyer() {
     var reservationId = estProprietaire ? (bien && bien.id) : (reservation && reservation.id);
     
@@ -1702,6 +1777,89 @@ function OngletPreavis(props) {
           </div>
         </div>
       )}
+
+      {/* ── PRÉAVIS REÇUS ─────────────────────────────────────── */}
+{preavisRecus.length > 0 && (
+  <div style={{ marginBottom: 20 }}>
+    <div style={{ fontSize: 14, fontWeight: 700, color: '#B71C1C', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+      <span>📩</span> Préavis reçu{preavisRecus.length > 1 ? 's' : ''} ({preavisRecus.length})
+    </div>
+    {preavisRecus.map(function(p) {
+      var dateSortie = p.date_sortie_estimee ? new Date(p.date_sortie_estimee).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : 'N/A';
+      var maintenant = new Date();
+      var diff       = p.date_sortie_estimee ? Math.ceil((new Date(p.date_sortie_estimee) - maintenant) / 86400000) : null;
+      var expediteur = p.type === 'locataire'
+        ? p.loc_prenom + ' ' + p.loc_nom + ' (locataire)'
+        : p.prop_prenom + ' ' + p.prop_nom + ' (propriétaire)';
+
+      return (
+        <div key={p.id} style={{ background: '#fff', borderRadius: 14, padding: 18, marginBottom: 12, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid #C62828' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>📋 Préavis — {p.logement_titre}</div>
+              <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>De : {expediteur}</div>
+            </div>
+            {diff !== null && (
+              <div style={{ background: diff <= 5 ? '#FFEBEE' : '#FFF8E1', color: diff <= 5 ? '#C62828' : '#7B4F00', borderRadius: 20, padding: '4px 12px', fontSize: 13, fontWeight: 800 }}>
+                J-{diff > 0 ? diff : 0}
+              </div>
+            )}
+          </div>
+
+          <div style={{ background: '#FFF8E1', borderRadius: 10, padding: 12, marginBottom: 14 }}>
+            {[
+              ['Motif',               p.motif],
+              ['Délai',               p.delai_mois + ' mois'],
+              ['Date de sortie',      dateSortie],
+              ['Reçu le',             new Date(p.created_at).toLocaleDateString('fr-FR')],
+            ].map(function(row) {
+              return (
+                <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0', borderBottom: '0.5px solid #FFE082' }}>
+                  <span style={{ color: '#888' }}>{row[0]}</span>
+                  <span style={{ fontWeight: 600, color: '#7B4F00' }}>{row[1]}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          {reponseModal === p.id ? (
+            <div>
+              <textarea
+                value={messageReponse}
+                onChange={function(e) { setMessageReponse(e.target.value); }}
+                placeholder="Message optionnel pour expliquer votre réponse..."
+                style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 70, fontFamily: 'system-ui', boxSizing: 'border-box', outline: 'none', marginBottom: 10 }} />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <button
+                  onClick={function() { repondre(p.id, 'renouveler'); }}
+                  disabled={reponseLoading}
+                  style={{ padding: 12, borderRadius: 10, border: '1.5px solid #1565C0', background: '#E3F2FD', color: '#1565C0', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                  🔄 Demander le renouvellement
+                </button>
+                <button
+                  onClick={function() { repondre(p.id, 'accepte'); }}
+                  disabled={reponseLoading}
+                  style={{ padding: 12, borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                  ✅ Accepter le départ
+                </button>
+              </div>
+              <button onClick={function() { setReponseModal(null); setMessageReponse(''); }}
+                style={{ width: '100%', marginTop: 8, padding: 8, borderRadius: 8, border: 'none', background: '#F5F5F5', color: '#888', fontSize: 12, cursor: 'pointer' }}>
+                Annuler
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={function() { setReponseModal(p.id); }}
+              style={{ width: '100%', background: '#C62828', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+              📩 Répondre au préavis →
+            </button>
+          )}
+        </div>
+      );
+    })}
+  </div>
+)}
 
       {/* ── FORMULAIRE ───────────────────────────────────────── */}
       {step === 'form' && (
