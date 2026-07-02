@@ -11,6 +11,7 @@ var INDICATIFS = [
   { code: '+223', pays: 'Mali', flag: '🇲🇱' },
   { code: '+225', pays: "Côte d'Ivoire", flag: '🇨🇮' },
   { code: '+33',  pays: 'France', flag: '🇫🇷' },
+  { code: '+241',  pays: 'Gabon', flag: 'GA' },
 ];
 
 export default function LoginTelephone() {
@@ -159,28 +160,28 @@ export default function LoginTelephone() {
             </div>
 
             {/* Sélecteur indicatif */}
-            <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-              <select
-                value={indicatif}
-                onChange={function(e) { setIndicatif(e.target.value); }}
-                style={{ padding: '12px 10px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 13, background: '#FAFAFA', outline: 'none', flexShrink: 0 }}>
-                {INDICATIFS.map(function(i) {
-                  return (
-                    <option key={i.code} value={i.code}>
-                      {i.flag} {i.code}
-                    </option>
-                  );
-                })}
-              </select>
-              <input
-                type="tel"
-                placeholder="6XX XX XX XX"
-                value={telephone}
-                onChange={function(e) { setTelephone(e.target.value.replace(/\D/g, '')); }}
-                onKeyDown={function(e) { if (e.key === 'Enter') envoyerOTP(); }}
-                style={{ flex: 1, padding: '12px 14px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 15, outline: 'none', fontFamily: 'monospace' }}
-                autoFocus />
-            </div>
+<div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
+  <select
+    value={indicatif}
+    onChange={function(e) { setIndicatif(e.target.value); }}
+    style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 13, background: '#FAFAFA', outline: 'none' }}>
+    {INDICATIFS.map(function(i) {
+      return (
+        <option key={i.code} value={i.code}>
+          {i.flag} {i.pays} ({i.code})
+        </option>
+      );
+    })}
+  </select>
+  <input
+    type="tel"
+    placeholder="Ex: 621 41 42 85"
+    value={telephone}
+    onChange={function(e) { setTelephone(e.target.value.replace(/\D/g, '')); }}
+    onKeyDown={function(e) { if (e.key === 'Enter') envoyerOTP(); }}
+    style={{ width: '100%', padding: '14px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 16, outline: 'none', fontFamily: 'monospace', letterSpacing: 2, boxSizing: 'border-box' }}
+    autoFocus />
+</div>
 
             {/* Prévisualisation du numéro */}
             {telephone && (
