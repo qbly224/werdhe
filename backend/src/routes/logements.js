@@ -172,6 +172,12 @@ router.patch('/:id/liberer', verifierToken, async (req, res) => {
   }
 });
 router.post('/', verifierToken, ajouterLogement);
+const { verifierLimiteBiens, verifierFonctionnalite } = require('../middleware/verifierPlan');
+
+// Ajouter un bien — vérifier la limite du plan
+router.post('/', verifierToken, verifierLimiteBiens, async (req, res) => {
+  // ... code existant ...
+});
 router.put('/:id', verifierToken, modifierLogement);
 router.delete('/:id', verifierToken, supprimerLogement);
 
