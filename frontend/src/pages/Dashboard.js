@@ -30,6 +30,39 @@ var DOCS_TYPES = [
 ];
 
 // ================================================
+// Composant UpgradeBanner
+// ================================================
+
+function UpgradeBanner({ fonctionnalite, planRequis }) {
+  var navigate = useNavigate();
+  var messages = {
+    mobile_money:  'Les paiements Mobile Money (Orange Money, MTN) sont disponibles à partir du plan Pro.',
+    documents_pdf: 'La génération de baux et quittances PDF est disponible à partir du plan Pro.',
+    annuaire:      'La visibilité dans l\'annuaire Werdhe est disponible à partir du plan Pro.',
+    rapports:      'Les rapports financiers sont disponibles à partir du plan Pro.',
+    max_biens:     'Vous avez atteint la limite de 2 biens du plan Gratuit. Passez au plan Pro pour jusqu\'à 25 biens.',
+  };
+  return (
+    <div style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', borderRadius: 14, padding: 18, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+      <div style={{ fontSize: 28, flexShrink: 0 }}>🔒</div>
+      <div style={{ flex: 1 }}>
+        <div style={{ color: '#fff', fontWeight: 700, fontSize: 14, marginBottom: 4 }}>
+          Fonctionnalité réservée au plan {planRequis || 'Pro'}
+        </div>
+        <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 12, lineHeight: 1.5 }}>
+          {messages[fonctionnalite] || 'Passez au plan supérieur pour accéder à cette fonctionnalité.'}
+        </div>
+      </div>
+      <button
+        onClick={function() { navigate('/pricing'); }}
+        style={{ background: '#F5A623', color: '#1B2B22', border: 'none', borderRadius: 10, padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>
+        Voir les plans →
+      </button>
+    </div>
+  );
+}
+
+// ================================================
 // COMPOSANT : Badge Score de Confiance
 // ================================================
 function BadgeScore({ userId }) {
@@ -218,11 +251,13 @@ function OngletOverview(props) {
 // ONGLET : Mes biens
 // ================================================
 function OngletBiens(props) {
-  var stats    = props.stats;
+  var stats     = props.stats;
   var recharger = props.recharger;
-  var user     = props.user;
+  var user      = props.user;
   var setOnglet = props.setOnglet;
+  var plan      = props.plan || { plan: 'gratuit', droits: { max_biens: 2 }, nb_biens: 0 }; // ← AJOUTER
   var estProprio = user && (user.role === 'proprietaire' || user.role === 'les_deux');
+  var limiteAtteinte = plan.nb_biens >= plan.droits.max_biens;
 
   var [showConfirm, setShowConfirm] = useState(null);
   var [modeEdit, setModeEdit]       = useState(null);
@@ -377,9 +412,16 @@ function OngletBiens(props) {
           <h1>Mes biens</h1>
           <p>{stats.logements.length} bien(s) en gestion</p>
         </div>
-        <Link to="/logements/ajouter" className="btn-green" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          + Ajouter un bien
-        </Link>
+        {limiteAtteinte ? (
+          <button onClick={function() { window.location.href = '/pricing'; }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 16px', borderRadius: 10, background: '#F5A623', color: '#1B2B22', border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+            🔒 Limite atteinte — Upgrader
+          </button>
+        ) : (
+          <Link to="/logements/ajouter" className="btn-green" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            + Ajouter un bien
+          </Link>
+        )}
       </div>
 
       {stats.logements.length === 0 && (
@@ -2017,6 +2059,15 @@ function OngletAlertes() {
 // ONGLET : Documents
 // ================================================
 function OngletDocuments(props) {
+  var plan = props.plan || { plan: 'gratuit', droits: { documents_pdf: false } };
+if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
+  return (
+    <div>
+      <div className="dash-page-header"><div><h1>Documents</h1></div></div>
+      <UpgradeBanner fonctionnalite="documents_pdf" planRequis="Pro" />
+    </div>
+  );
+}
   var user = props.user;
   var [reservations, setReservations] = useState([]);
   var [documents, setDocuments] = useState([]);
@@ -2617,6 +2668,27 @@ function OngletParametres(props) {
               </div>
             );
           })}
+
+          {/* Badge plan actuel */}
+<div style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginBottom: 12 }}>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div>
+      <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>Mon abonnement</div>
+      <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
+        {user && user.role !== 'locataire' ? 'Plan actuel' : 'Accès locataire gratuit'}
+      </div>
+    </div>
+    <div style={{ background: user && user.plan === 'pro' ? '#E8F5E9' : user && user.plan === 'agence' ? '#E3F2FD' : '#F5F5F5', color: user && user.plan === 'pro' ? '#1B6B3A' : user && user.plan === 'agence' ? '#1565C0' : '#888', borderRadius: 20, padding: '4px 14px', fontSize: 13, fontWeight: 700, textTransform: 'capitalize' }}>
+      {user && user.plan ? user.plan : 'Gratuit'}
+    </div>
+  </div>
+  {user && user.role !== 'locataire' && user.plan === 'gratuit' && (
+    <button onClick={function() { window.location.href = '/pricing'; }}
+      style={{ width: '100%', marginTop: 12, background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+      ⬆️ Passer au plan Pro — 14 jours gratuits
+    </button>
+  )}
+</div>
           <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <div style={{ fontSize: 12, color: '#888', marginBottom: 10, fontWeight: 600 }}>Informations du compte</div>
             <div style={{ fontSize: 14, color: '#333', marginBottom: 4 }}>Email : {user && user.email}</div>
@@ -2804,6 +2876,7 @@ export default function Dashboard() {
   var [showNotif, setShowNotif] = useState(false);
   var [alertes, setAlertes] = useState([]);
   var [stats, setStats] = useState({ logements: [], reservations: [], paiements: [] });
+  var [monPlan, setMonPlan] = useState({ plan: 'gratuit', droits: { max_biens: 2, mobile_money: false, documents_pdf: false }, nb_biens: 0 });
 
   var premierChargement = useRef(true);
   // ================================================
@@ -2855,6 +2928,7 @@ export default function Dashboard() {
       setLoading(true);
   }
     var estProprietaire = user && (user.role === 'proprietaire' || user.role === 'les_deux');
+    var [monPlan, setMonPlan] = useState({ plan: 'gratuit', droits: { max_biens: 2, mobile_money: false, documents_pdf: false, annuaire: false, rapports: false }, nb_biens: 0 });
     var req;
     if (estProprietaire) {
       req = Promise.all([
@@ -2884,10 +2958,15 @@ export default function Dashboard() {
         setAlertes(results[2].data.alertes || []);
       });
     }
-    req.catch(console.error).finally(function() { 
+    // Charger le plan en parallèle
+    api.get('/abonnements/mon-plan')
+      .then(function(res) { setMonPlan(res.data); })
+      .catch(console.error);
+
+    req.catch(console.error).finally(function() {
       setLoading(false);
       premierChargement.current = false;
-     });
+    });
   }
 
   function traiterReservation(id, statut) {
@@ -2901,12 +2980,12 @@ export default function Dashboard() {
   // ================================================
   function renderOnglet() {
     if (onglet === '/dashboard') return <OngletOverview stats={stats} user={user} alertes={alertes} />;
-    if (onglet === '/dashboard/biens') return <OngletBiens stats={stats} recharger={chargerDonnees} user={user} setOnglet={setOnglet} />;
+    if (onglet === '/dashboard/biens')  return <OngletBiens stats={stats} recharger={chargerDonnees} user={user} setOnglet={setOnglet} plan={monPlan} />;
     if (onglet === '/dashboard/locataires') return <OngletLocataires stats={stats} logements={stats.logements} />;
     if (onglet === '/dashboard/reservations') return <OngletReservations stats={stats} traiter={traiterReservation} user={user} navigate={navigate} recharger={chargerDonnees} />;
-    if (onglet === '/dashboard/paiements') return <OngletPaiementsComponent />;
+    if (onglet === '/dashboard/paiements')  return <OngletPaiementsComponent plan={monPlan} />;
     if (onglet === '/dashboard/preavis') return <OngletPreavis user={user} setOnglet={setOnglet} />;
-    if (onglet === '/dashboard/documents') return <OngletDocuments user={user} />;
+    if (onglet === '/dashboard/documents')  return <OngletDocuments user={user} plan={monPlan} />;
     if (onglet === '/dashboard/alertes') return <OngletAlertes />;
     if (onglet === '/dashboard/messages') return <OngletMessages />;
     if (onglet === '/dashboard/reclamations') return <OngletReclamations />;
