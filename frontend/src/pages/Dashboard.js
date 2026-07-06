@@ -1390,11 +1390,53 @@ useEffect(function() {
 
 function OngletPaiements(props) {
   var stats = props.stats;
-  var user = props.user;
+  var user  = props.user;
   var estLocataire = user && user.role === 'locataire';
-  if (estLocataire) return <PaiementsLocataire stats={stats} />;
-  return <PaiementsProprietaire stats={stats} />;
-}
+
+  // ── VUE LOCATAIRE ─────────────────────────────────────────────
+  if (estLocataire) {
+    var paiements = stats.paiements || [];
+    return (
+      <div>
+        <div className="dash-page-header">
+          <div><h1>Mes paiements</h1><p>{paiements.length} paiement(s)</p></div>
+        </div>
+
+        {paiements.length === 0 && (
+          <div className="dash-empty-state">
+            <span>💰</span>
+            <h3>Aucun paiement enregistré</h3>
+            <p>Vos paiements apparaîtront ici</p>
+          </div>
+        )}
+
+        {paiements.map(function(p, i) {
+          var statut = p.statut === 'complete' ? { label: 'Payé', color: '#1B6B3A', bg: '#E8F5E9' }
+            : p.statut === 'retard'   ? { label: 'En retard', color: '#B71C1C', bg: '#FFEBEE' }
+            : { label: 'En attente', color: '#E65100', bg: '#FFF3E0' };
+          return (
+            <div key={i} style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderLeft: '4px solid ' + statut.color }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{p.logement_titre}</div>
+                  <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>{new Date(p.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}</div>
+                  {p.mode_paiement && <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>Via {p.mode_paiement}</div>}
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: statut.color }}>
+                    {new Intl.NumberFormat('fr-FR').format(p.montant)} GNF
+                  </div>
+                  <span style={{ background: statut.bg, color: statut.color, borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, display: 'inline-block', marginTop: 4 }}>
+                    {statut.label}
+                  </span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
 
 function PaiementsProprietaire(props) {
   var stats = props.stats;
@@ -2913,61 +2955,74 @@ export default function Dashboard() {
     '/dashboard/mes-locations': '🏠'
   };
 
-  useEffect(function() {
-  // Lire l'onglet sauvegardé depuis ReservationLocataire
+ useEffect(function() {
   var savedOnglet = localStorage.getItem('dashboardOnglet');
   if (savedOnglet) {
     setOnglet(savedOnglet);
     localStorage.removeItem('dashboardOnglet');
   }
   chargerDonnees();
+
+  // ── Écouter les événements de refresh ────────────────────────
+  function handleRefresh() { chargerDonnees(); }
+  window.addEventListener('werdhe:refresh', handleRefresh);
+
+  // ── Polling silencieux toutes les 15 secondes ─────────────────
+  var interval = setInterval(chargerDonnees, 15000);
+
+  return function() {
+    window.removeEventListener('werdhe:refresh', handleRefresh);
+    clearInterval(interval);
+  };
 }, []);
 
-  function chargerDonnees() {
-    // Affiche le chargement SEULEMENT la première fois
-    if (premierChargement.current) {
-      setLoading(true);
-  }
-    var estProprietaire = user && (user.role === 'proprietaire' || user.role === 'les_deux');
-    var req;
-    if (estProprietaire) {
-      req = Promise.all([
-        api.get('/logements/proprietaire/mes-logements'),
-        api.get('/reservations/proprietaire'),
-        api.get('/paiements/proprietaire'),
-        api.get('/alertes')
-      ]).then(function(results) {
-        setStats({
-          logements: results[0].data.logements || [],
-          reservations: results[1].data.reservations || [],
-          paiements: results[2].data.paiements || []
-        });
-        setAlertes(results[3].data.alertes || []);
-      });
-    } else {
-      req = Promise.all([
-        api.get('/reservations/mes-reservations'),
-        api.get('/paiements/mes-paiements'),
-        api.get('/alertes/mes-alertes').catch(function() { return { data: { alertes: [] } }; })
-      ]).then(function(results) {
-        setStats({
-          logements:    [],
-          reservations: results[0].data.reservations || [],
-          paiements:    results[1].data.paiements    || []
-        });
-        setAlertes(results[2].data.alertes || []);
-      });
-    }
-    // Charger le plan en parallèle
-    api.get('/abonnements/mon-plan')
-      .then(function(res) { setMonPlan(res.data); })
-      .catch(console.error);
+function chargerDonnees() {
+  if (premierChargement.current) setLoading(true);
 
-    req.catch(console.error).finally(function() {
-      setLoading(false);
-      premierChargement.current = false;
+  var estProprietaire = user && (user.role === 'proprietaire' || user.role === 'les_deux');
+  var req;
+
+  if (estProprietaire) {
+    req = Promise.all([
+      api.get('/logements/proprietaire/mes-logements'),
+      api.get('/reservations/proprietaire'),
+      api.get('/paiements/proprietaire'),
+      api.get('/alertes'),
+    ]).then(function(results) {
+      setStats({
+        logements:    results[0].data.logements    || [],
+        reservations: results[1].data.reservations || [],
+        paiements:    results[2].data.paiements    || [],
+      });
+      setAlertes(results[3].data.alertes || []);
+    });
+  } else {
+    req = Promise.all([
+      api.get('/reservations/mes-reservations'),
+      api.get('/paiements/mes-paiements'),
+      api.get('/alertes/mes-alertes').catch(function() { return { data: { alertes: [] } }; }),
+    ]).then(function(results) {
+      setStats({
+        logements:    [],
+        reservations: results[0].data.reservations || [],
+        paiements:    results[1].data.paiements    || [],
+      });
+      setAlertes(results[2].data.alertes || []);
     });
   }
+
+  // Charger le plan en parallèle
+  api.get('/abonnements/mon-plan')
+    .then(function(res) { setMonPlan(res.data); })
+    .catch(console.error);
+
+  req.catch(console.error).finally(function() {
+    setLoading(false);
+    premierChargement.current = false;
+    // Rendre refresh accessible globalement
+    window.__werdheRefresh = chargerDonnees;
+  });
+}
 
   function traiterReservation(id, statut) {
     api.patch('/reservations/' + id + '/traiter', { statut: statut })
@@ -2983,7 +3038,7 @@ export default function Dashboard() {
     if (onglet === '/dashboard/biens')  return <OngletBiens stats={stats} recharger={chargerDonnees} user={user} setOnglet={setOnglet} plan={monPlan} />;
     if (onglet === '/dashboard/locataires') return <OngletLocataires stats={stats} logements={stats.logements} />;
     if (onglet === '/dashboard/reservations') return <OngletReservations stats={stats} traiter={traiterReservation} user={user} navigate={navigate} recharger={chargerDonnees} />;
-    if (onglet === '/dashboard/paiements')  return <OngletPaiementsComponent plan={monPlan} />;
+    if (onglet === '/dashboard/paiements') return <OngletPaiements stats={stats} user={user} plan={monPlan} />;
     if (onglet === '/dashboard/preavis') return <OngletPreavis user={user} setOnglet={setOnglet} />;
     if (onglet === '/dashboard/documents')  return <OngletDocuments user={user} plan={monPlan} />;
     if (onglet === '/dashboard/alertes') return <OngletAlertes />;
