@@ -2903,7 +2903,7 @@ function OngletMesLocations(props) {
       </div>
     </div>
   );
-}
+}}
 
 // ================================================
 // COMPOSANT PRINCIPAL : Dashboard
