@@ -248,4 +248,74 @@ router.post('/telephone/verifier-otp', async (req, res) => {
   }
 });
 
+// Alias pour compatibilité avec le frontend
+router.post('/login', async (req, res) => {
+  req.url = '/connexion';
+  var { email, mot_de_passe } = req.body;
+  if (!email || !mot_de_passe) {
+    return res.status(400).json({ erreur: 'Email et mot de passe requis' });
+  }
+  try {
+    var result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (result.rows.length === 0) {
+      return res.status(401).json({ erreur: 'Email ou mot de passe incorrect' });
+    }
+    var user  = result.rows[0];
+    if (user.suspendu) {
+      return res.status(403).json({ erreur: 'Compte suspendu. Contactez le support.' });
+    }
+    var bcrypt = require('bcrypt');
+    var valid  = await bcrypt.compare(mot_de_passe, user.mot_de_passe);
+    if (!valid) {
+      return res.status(401).json({ erreur: 'Email ou mot de passe incorrect' });
+    }
+    var token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role, nom: user.nom, prenom: user.prenom, plan: user.plan || 'gratuit' },
+      process.env.JWT_SECRET,
+      { expiresIn: '30d' }
+    );
+    res.json({
+      message: 'Connexion réussie', token,
+      user: { id: user.id, nom: user.nom, prenom: user.prenom, email: user.email, role: user.role, telephone: user.telephone, plan: user.plan || 'gratuit' }
+    });
+  } catch (err) {
+    console.error('[POST /login]', err.message);
+    res.status(500).json({ erreur: err.message });
+  }
+});
+
+// Alias inscription
+router.post('/register', async (req, res) => {
+  var { nom, prenom, email, mot_de_passe, role, telephone } = req.body;
+  if (!nom || !email || !mot_de_passe) {
+    return res.status(400).json({ erreur: 'Champs obligatoires manquants' });
+  }
+  try {
+    var existing = await db.query('SELECT id FROM users WHERE email = $1', [email]);
+    if (existing.rows.length > 0) {
+      return res.status(409).json({ erreur: 'Email déjà utilisé' });
+    }
+    var bcrypt = require('bcrypt');
+    var hash   = await bcrypt.hash(mot_de_passe, 10);
+    var result = await db.query(
+      `INSERT INTO users (nom, prenom, email, mot_de_passe, role, telephone)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [nom, prenom || '', email, hash, role || 'locataire', telephone || null]
+    );
+    var user  = result.rows[0];
+    var token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role, nom: user.nom, prenom: user.prenom, plan: user.plan || 'gratuit' },
+      process.env.JWT_SECRET,
+      { expiresIn: '30d' }
+    );
+    res.status(201).json({
+      message: 'Compte créé !', token,
+      user: { id: user.id, nom: user.nom, prenom: user.prenom, email: user.email, role: user.role, telephone: user.telephone, plan: user.plan || 'gratuit' }
+    });
+  } catch (err) {
+    console.error('[POST /register]', err.message);
+    res.status(500).json({ erreur: err.message });
+  }
+});
+
 module.exports = router;
