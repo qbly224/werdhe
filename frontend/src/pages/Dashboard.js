@@ -1574,6 +1574,10 @@ function OngletPreavis(props) {
   var [reservation, setReservation] = useState(null);
   var [resultat, setResultat] = useState(null);
   var [loading, setLoading] = useState(false);
+  var [preavisRecus, setPreavisRecus]   = useState([]);      
+  var [reponseModal, setReponseModal]   = useState(null);     
+  var [messageReponse, setMessageReponse] = useState('');     
+  var [reponseLoading, setReponseLoading] = useState(false);  
 
   var addDays = function(n) {
     var d = new Date(); d.setDate(d.getDate() + n);
@@ -1598,10 +1602,6 @@ function OngletPreavis(props) {
     }
   }, [estProprietaire]);
 
-var [preavisRecus, setPreavisRecus] = useState([]);
-var [reponseModal, setReponseModal] = useState(null); // préavis en cours de réponse
-var [messageReponse, setMessageReponse] = useState('');
-var [reponseLoading, setReponseLoading] = useState(false);
 
 useEffect(function() {
   api.get('/preavis/recus')
@@ -2615,6 +2615,7 @@ function OngletParametres(props) {
   var [notifs, setNotifs] = useState({ email: true, sms: true, loyers: true, bails: true, pannes: false });
   var [langue, setLangue] = useState('fr');
   var [saving, setSaving] = useState(false);
+  
 
   function saveProfil(e) {
     e.preventDefault();
@@ -2928,7 +2929,6 @@ export default function Dashboard() {
       setLoading(true);
   }
     var estProprietaire = user && (user.role === 'proprietaire' || user.role === 'les_deux');
-    var [monPlan, setMonPlan] = useState({ plan: 'gratuit', droits: { max_biens: 2, mobile_money: false, documents_pdf: false, annuaire: false, rapports: false }, nb_biens: 0 });
     var req;
     if (estProprietaire) {
       req = Promise.all([
