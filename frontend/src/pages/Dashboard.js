@@ -1435,8 +1435,11 @@ function OngletPaiements(props) {
           );
         })}
       </div>
-    );
+   );
   }
+  // Proprio → déléguer à PaiementsProprietaire
+  return <PaiementsProprietaire stats={stats} />;
+}
 
 function PaiementsProprietaire(props) {
   var stats = props.stats;
