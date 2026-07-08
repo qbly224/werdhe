@@ -443,4 +443,51 @@ router.patch('/signalements/:id/traiter', verifierToken, verifierAdmin, async (r
   }
 });
 
+router.get('/reservations', verifierToken, verifierAdmin, async (req, res) => {
+  try {
+    var result = await db.query(
+      `SELECT r.*,
+         l.titre as logement_titre,
+         l.id as logement_id,
+         u_loc.nom as locataire_nom,
+         u_loc.prenom as locataire_prenom,
+         u_loc.id as locataire_id,
+         u_prop.nom as prop_nom,
+         u_prop.prenom as prop_prenom,
+         u_prop.id as proprietaire_id
+       FROM reservations r
+       JOIN logements l ON r.logement_id = l.id
+       JOIN users u_loc ON r.locataire_id = u_loc.id
+       JOIN users u_prop ON l.proprietaire_id = u_prop.id
+       ORDER BY r.created_at DESC
+       LIMIT 200`
+    );
+    res.json({ reservations: result.rows });
+  } catch (err) {
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+});
+
+// Tous les préavis
+router.get('/preavis', verifierToken, verifierAdmin, async (req, res) => {
+  try {
+    var result = await db.query(
+      `SELECT p.*,
+         l.titre as logement_titre,
+         u_loc.nom as loc_nom, u_loc.prenom as loc_prenom,
+         u_prop.nom as prop_nom, u_prop.prenom as prop_prenom
+       FROM preavis p
+       JOIN reservations r ON p.reservation_id = r.id
+       JOIN logements l ON r.logement_id = l.id
+       JOIN users u_loc ON r.locataire_id = u_loc.id
+       JOIN users u_prop ON l.proprietaire_id = u_prop.id
+       ORDER BY p.created_at DESC
+       LIMIT 50`
+    );
+    res.json({ preavis: result.rows });
+  } catch (err) {
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+});
+
 module.exports = router;
