@@ -1,5 +1,23 @@
 const express = require('express');
 const cors    = require('cors');
+const rateLimit = require('express-rate-limit');
+
+// Limiter les tentatives de connexion (10 par minute par IP)
+const limiteurConnexion = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  message: { erreur: 'Trop de tentatives. Réessayez dans 1 minute.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Limiter les requêtes API générales (100 par minute par IP)
+const limiteurAPI = rateLimit({
+  windowMs: 60 * 1000,
+  max: 100,
+  message: { erreur: 'Trop de requêtes. Réessayez dans 1 minute.' },
+});
+
 require('dotenv').config();
 require('./services/cronService');
 
@@ -37,6 +55,11 @@ app.use(cors({
 
 // ── Body parser — AVANT les routes ───────────────────────────────
 app.use(express.json({ limit: '10mb' }));
+// Appliquer les limites
+app.use('/api', limiteurAPI);
+app.use('/auth/connexion',              limiteurConnexion);
+app.use('/auth/login',                  limiteurConnexion);
+app.use('/auth/telephone/envoyer-otp',  limiteurConnexion);
 app.use(express.urlencoded({ extended: true }));
 
 // ── Routes ───────────────────────────────────────────────────────

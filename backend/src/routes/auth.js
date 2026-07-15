@@ -1,3 +1,5 @@
+const { valider } = require('../middleware/valider');
+const audit = require('../services/auditService');
 const express  = require('express');
 const router   = express.Router();
 const jwt      = require('jsonwebtoken');
@@ -6,7 +8,7 @@ const crypto   = require('crypto');
 const db       = require('../database');
 
 // ─── INSCRIPTION ──────────────────────────────────────────────────
-router.post('/inscription', async (req, res) => {
+router.post('/inscription', valider('inscription'), async (req, res) => {
   try {
     var { nom, prenom, email, mot_de_passe, role, telephone } = req.body;
     if (!nom || !email || !mot_de_passe) {
@@ -34,6 +36,8 @@ router.post('/inscription', async (req, res) => {
       ).catch(console.warn);
     }
 
+    await audit.log(user.id, 'inscription', { email: user.email, role: user.role }, req.ip);
+
     var token = jwt.sign(
       { id: user.id, email: user.email, role: user.role, nom: user.nom, prenom: user.prenom, plan: user.plan || 'gratuit' },
       process.env.JWT_SECRET,
@@ -52,7 +56,7 @@ router.post('/inscription', async (req, res) => {
 });
 
 // ─── CONNEXION EMAIL ─────────────────────────────────────────────
-router.post('/connexion', async (req, res) => {
+router.post('/connexion', valider('connexion'), async (req, res) => {
   try {
     var { email, mot_de_passe } = req.body;
     if (!email || !mot_de_passe) {
@@ -80,6 +84,9 @@ router.post('/connexion', async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '30d' }
     );
+
+    // Logger la connexion
+await audit.log(user.id, 'connexion', { email: user.email, role: user.role }, req.ip);
 
     res.json({
       message: 'Connexion réussie',
@@ -226,7 +233,7 @@ router.post('/telephone/verifier-otp', async (req, res) => {
     var token = jwt.sign(
       { id: user.id, email: user.email, role: user.role, nom: user.nom, prenom: user.prenom, plan: user.plan || 'gratuit' },
       process.env.JWT_SECRET,
-      { expiresIn: '30d' }
+      { expiresIn: '7d' }
     );
 
     res.json({

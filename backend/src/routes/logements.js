@@ -1,3 +1,4 @@
+const { valider } = require('../middleware/valider');
 const express = require('express');
 const db = require('../database');
 const router = express.Router();
@@ -175,7 +176,7 @@ router.post('/', verifierToken, ajouterLogement);
 const { verifierLimiteBiens, verifierFonctionnalite } = require('../middleware/verifierPlan');
 
 // Ajouter un bien — vérifier la limite du plan
-router.post('/', verifierToken, verifierLimiteBiens, async (req, res) => {
+router.post('/', verifierToken, verifierLimiteBiens, valider('logement'), async (req, res) => {
   // ... code existant ...
 });
 router.put('/:id', verifierToken, modifierLogement);
