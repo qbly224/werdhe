@@ -101,3 +101,43 @@ label {
   font-size: 13px;
   margin-bottom: 10px;
 }
+
+/* ── MODE SOMBRE ─────────────────────────────────────── */
+body.dark-mode {
+  background-color: #0F1A12 !important;
+  color: #E8F5E9 !important;
+}
+
+body.dark-mode .dash-white-card,
+body.dark-mode .bien-card-proto,
+body.dark-mode .locataire-row,
+body.dark-mode .alerte-card-proto {
+  background: #1B2B22 !important;
+  border-color: #2D4A35 !important;
+  color: #E8F5E9 !important;
+}
+
+body.dark-mode .dashboard-main {
+  background: #0F1A12 !important;
+}
+
+body.dark-mode .dash-header {
+  background: #1B2B22 !important;
+  border-bottom: 1px solid #2D4A35 !important;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+  background: #1B2B22 !important;
+  color: #E8F5E9 !important;
+  border-color: #2D4A35 !important;
+}
+
+body.dark-mode .stat-card-colored {
+  opacity: 0.9;
+}
+
+body.dark-mode .dash-scroll {
+  background: #0F1A12 !important;
+}

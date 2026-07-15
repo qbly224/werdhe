@@ -7,6 +7,8 @@ import Sidebar from '../components/dashboard/Sidebar';
 import toast from 'react-hot-toast';
 import OngletPreavisComponent from '../components/OngletPreavis';
 import OngletPaiementsComponent from '../components/OngletPaiements';
+import useDarkMode from '../hooks/useDarkMode';
+import RechercheGlobale from '../components/dashboard/RechercheGlobale';
 import './Dashboard.css';
 
 // ================================================
@@ -2925,6 +2927,7 @@ export default function Dashboard() {
   var [monPlan, setMonPlan] = useState({ plan: 'gratuit', droits: { max_biens: 2, mobile_money: false, documents_pdf: false }, nb_biens: 0 });
 
   var premierChargement = useRef(true);
+  var { darkMode, toggle: toggleDarkMode } = useDarkMode();
   // ================================================
   // Titres et icones des onglets
   // ================================================
@@ -2970,11 +2973,30 @@ export default function Dashboard() {
   function handleRefresh() { chargerDonnees(); }
   window.addEventListener('werdhe:refresh', handleRefresh);
 
+  // ── Raccourcis clavier ──────────────
+    function handleRaccourcis(e) {
+      // Ignorer si on est dans un input
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      // G + B → Mes biens
+      if (e.key === 'b') { setOnglet('/dashboard/biens');        toast('🏠 Mes biens',        { duration: 800 }); }
+      // G + R → Réservations
+      if (e.key === 'r') { setOnglet('/dashboard/reservations'); toast('📅 Réservations',      { duration: 800 }); }
+      // G + M → Messages
+      if (e.key === 'm') { setOnglet('/dashboard/messages');     toast('💬 Messages',          { duration: 800 }); }
+      // G + P → Paiements
+      if (e.key === 'p') { setOnglet('/dashboard/paiements');    toast('💳 Paiements',         { duration: 800 }); }
+      // G + H → Accueil (overview)
+      if (e.key === 'h') { setOnglet('/dashboard');              toast('📊 Tableau de bord',   { duration: 800 }); }
+    }
+    window.addEventListener('keydown', handleRaccourcis);
+
   // ── Polling silencieux toutes les 15 secondes ─────────────────
   var interval = setInterval(chargerDonnees, 15000);
 
   return function() {
     window.removeEventListener('werdhe:refresh', handleRefresh);
+    window.removeEventListener('keydown', handleRaccourcis);
     clearInterval(interval);
   };
 }, []);
@@ -3068,7 +3090,7 @@ function chargerDonnees() {
 
       <div className="dashboard-main" style={{ marginLeft: sidebarWidth }}>
         <div className="dash-header">
-          <div className="dash-header-left">
+          <div className="dash-header-left" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <button className="dash-toggle-btn" onClick={function() { setSidebarOpen(!sidebarOpen); }} type="button">
               ☰
             </button>
@@ -3076,9 +3098,16 @@ function chargerDonnees() {
               <h1>{pageIcon[onglet] || '📊'} {pageTitle[onglet] || 'Tableau de bord'}</h1>
               <p>{new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
             </div>
-          </div>
+          <RechercheGlobale stats={stats} onNavigate={setOnglet} />
+        </div>
           <div className="dash-header-right">
             <div className="dash-om-badge">Orange Money connecte</div>
+            <button
+              onClick={toggleDarkMode}
+              title={darkMode ? 'Mode clair' : 'Mode sombre'}
+              style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', padding: '4px 8px' }}>
+              {darkMode ? '☀️' : '🌙'}
+            </button>
             <button className="dash-notif-btn" type="button" onClick={function() {
   var nouvelEtat = !showNotif;
   setShowNotif(nouvelEtat);
