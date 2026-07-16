@@ -34,6 +34,18 @@ router.get('/mes-paiements', verifierToken, async (req, res) => {
   }
 });
 
+// Calculer et enregistrer la commission Werdhe (5%)
+var montantCommission = Number(montant) * 0.05;
+await db.query(
+  `INSERT INTO commissions
+     (reservation_id, paiement_id, montant_loyer, taux, montant_commission)
+   VALUES ($1, $2, $3, 5.00, $4)`,
+  [reservation_id, paiementResult.rows[0].id, montant, montantCommission]
+).catch(function(err) {
+  console.warn('[Commission] Non bloquant:', err.message);
+});
+console.log('[Commission] 5% calculé:', montantCommission, 'GNF');
+
 // Propriétaire
 router.get('/proprietaire', verifierToken, getPaiementsProprietaire);
 router.patch('/:id/confirmer-especes', verifierToken, confirmerPaiementEspeces);

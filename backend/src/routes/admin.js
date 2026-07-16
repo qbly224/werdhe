@@ -490,4 +490,57 @@ router.get('/preavis', verifierToken, verifierAdmin, async (req, res) => {
   }
 });
 
+// Revenus et statistiques financières
+router.get('/revenus', verifierToken, verifierAdmin, async (req, res) => {
+  try {
+    var [commissions, abonnements, evolution] = await Promise.all([
+
+      // Total commissions
+      db.query(`
+        SELECT
+          COUNT(*) as nb_commissions,
+          COALESCE(SUM(montant_commission), 0) as total_commissions,
+          COALESCE(SUM(CASE WHEN statut = 'encaissee' THEN montant_commission END), 0) as encaisse,
+          COALESCE(SUM(CASE WHEN statut = 'due' THEN montant_commission END), 0) as en_attente
+        FROM commissions
+        WHERE created_at >= NOW() - INTERVAL '30 days'
+      `),
+
+      // Revenus abonnements
+      db.query(`
+        SELECT
+          COUNT(*) as nb_abonnes,
+          COALESCE(SUM(montant), 0) as revenus_abonnements,
+          COUNT(CASE WHEN plan = 'pro' THEN 1 END) as nb_pro,
+          COUNT(CASE WHEN plan = 'agence' THEN 1 END) as nb_agence
+        FROM factures_abonnements
+        WHERE statut = 'emise'
+          AND created_at >= NOW() - INTERVAL '30 days'
+      `),
+
+      // Évolution sur 6 mois
+      db.query(`
+        SELECT
+          DATE_TRUNC('month', created_at) as mois,
+          COALESCE(SUM(montant_commission), 0) as commissions,
+          COUNT(*) as nb_paiements
+        FROM commissions
+        WHERE created_at >= NOW() - INTERVAL '6 months'
+        GROUP BY DATE_TRUNC('month', created_at)
+        ORDER BY mois ASC
+      `)
+    ]);
+
+    res.json({
+      commissions:        commissions.rows[0],
+      abonnements:        abonnements.rows[0],
+      evolution:          evolution.rows,
+    });
+
+  } catch (err) {
+    console.error('[GET /admin/revenus]', err.message);
+    res.status(500).json({ erreur: err.message });
+  }
+});
+
 module.exports = router;
