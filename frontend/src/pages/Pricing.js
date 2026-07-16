@@ -65,7 +65,10 @@ export default function Pricing() {
   var navigate  = useNavigate();
   var auth      = useAuth();
   var user      = auth.user;
-  var [loading, setLoading] = useState(null);
+  var [loading, setLoading]   = useState(null);
+  var [codePromo, setCodePromo] = useState('');
+  var [promoInfo, setPromoInfo] = useState(null);
+  var [promoLoading, setPromoLoading] = useState(false);
 
   function handleCTA(plan) {
     if (!user) { navigate('/login'); return; }
@@ -95,6 +98,21 @@ export default function Pricing() {
       return;
     }
   }
+
+  function verifierPromo(planId) {
+  if (!codePromo.trim()) return;
+  setPromoLoading(true);
+  api.post('/abonnements/verifier-promo', { code: codePromo, plan: planId })
+    .then(function(res) {
+      setPromoInfo(res.data);
+      toast.success('Code promo valide ! -' + res.data.reduction_pct + '%');
+    })
+    .catch(function(err) {
+      setPromoInfo(null);
+      toast.error(err.response && err.response.data ? err.response.data.erreur : 'Code invalide');
+    })
+    .finally(function() { setPromoLoading(false); });
+}
 
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh', padding: '40px 16px' }}>
@@ -183,6 +201,36 @@ export default function Pricing() {
           );
         })}
       </div>
+
+      {/* Code promo */}
+<div style={{ maxWidth: 400, margin: '0 auto 40px', background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.07)' }}>
+  <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 12 }}>🎟️ Vous avez un code promo ?</div>
+  <div style={{ display: 'flex', gap: 8 }}>
+    <input
+      type="text"
+      placeholder="Ex: WERDHE50"
+      value={codePromo}
+      onChange={function(e) { setCodePromo(e.target.value.toUpperCase()); setPromoInfo(null); }}
+      style={{ flex: 1, padding: '10px 14px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 14, outline: 'none', fontFamily: 'monospace', letterSpacing: 1 }} />
+    <button
+      onClick={function() { verifierPromo('pro'); }}
+      disabled={promoLoading || !codePromo.trim()}
+      style={{ padding: '10px 16px', borderRadius: 10, background: '#1B6B3A', color: '#fff', border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+      {promoLoading ? '...' : 'Valider'}
+    </button>
+  </div>
+  {promoInfo && (
+    <div style={{ marginTop: 12, background: '#E8F5E9', borderRadius: 10, padding: 12 }}>
+      <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6B3A' }}>✅ Code valide — {promoInfo.reduction_pct}% de réduction</div>
+      <div style={{ fontSize: 12, color: '#555', marginTop: 4 }}>
+        <span style={{ textDecoration: 'line-through', color: '#aaa' }}>{new Intl.NumberFormat('fr-FR').format(promoInfo.montant_base)} GNF</span>
+        {' → '}
+        <span style={{ fontWeight: 700, color: '#1B6B3A' }}>{new Intl.NumberFormat('fr-FR').format(promoInfo.montant_reduit)} GNF</span>
+        {' (économie : '}{new Intl.NumberFormat('fr-FR').format(promoInfo.economie)}{' GNF)'}
+      </div>
+    </div>
+  )}
+</div>
 
       {/* FAQ */}
       <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center' }}>

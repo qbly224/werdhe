@@ -18,6 +18,7 @@ export default function Admin() {
   var [logements, setLogements]     = useState([]);
   var [reservations, setReservations] = useState([]);
   var [preavis, setPreavis]         = useState([]);
+  var [revenus, setRevenus] = useState(null);
   var [alertes, setAlertes]         = useState([]);
   var [loading, setLoading]         = useState(true);
   var [searchUser, setSearchUser]   = useState('');
@@ -44,6 +45,7 @@ export default function Admin() {
       api.get('/admin/logements'),
       api.get('/admin/reservations'),
       api.get('/admin/preavis').catch(function() { return { data: { preavis: [] } }; }),
+      api.get('/admin/revenus').catch(function() { return { data: null }; }),
       api.get('/alertes').catch(function() { return { data: { alertes: [] } }; }),
     ]).then(function(results) {
       setStats(results[0].data);
@@ -51,6 +53,7 @@ export default function Admin() {
       setLogements(results[2].data.logements || []);
       setReservations(results[3].data.reservations || []);
       setPreavis(results[4].data.preavis || []);
+      setRevenus(results[5].data || null);
       setAlertes(results[5].data.alertes || []);
     }).catch(function(err) {
       console.error('[Admin] Erreur chargement:', err.message);
@@ -90,13 +93,14 @@ export default function Admin() {
     return filterStatut === 'tous' || r.statut === filterStatut;
   });
 
-  var NAV = [
-    { id: 'stats',        label: 'Vue d\'ensemble', icon: '📊' },
-    { id: 'users',        label: 'Utilisateurs',    icon: '👥' },
-    { id: 'logements',    label: 'Logements',       icon: '🏠' },
-    { id: 'reservations', label: 'Réservations',    icon: '📅' },
-    { id: 'alertes',      label: 'Alertes',         icon: '🔔' },
-  ];
+ var NAV = [
+  { id: 'stats',        label: 'Vue d\'ensemble', icon: '📊' },
+  { id: 'revenus',      label: 'Revenus',         icon: '💰' },
+  { id: 'users',        label: 'Utilisateurs',    icon: '👥' },
+  { id: 'logements',    label: 'Logements',       icon: '🏠' },
+  { id: 'reservations', label: 'Réservations',    icon: '📅' },
+  { id: 'alertes',      label: 'Alertes',         icon: '🔔' },
+];
 
   var cfgStatuts = {
     en_attente:         { label: 'En attente',      color: '#F5A623', bg: '#FFF8E1' },
@@ -403,6 +407,68 @@ export default function Admin() {
             </div>
           </div>
         )}
+
+        {/* ═══ REVENUS ════════════════════════════════════ */}
+{onglet === 'revenus' && (
+  <div>
+    <div style={{ marginBottom: 24 }}>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>💰 Revenus Werdhe</h1>
+      <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>Commissions et abonnements</p>
+    </div>
+
+    {!revenus && (
+      <div style={{ textAlign: 'center', padding: 40, color: '#888' }}>Chargement des revenus...</div>
+    )}
+
+    {revenus && (
+      <div>
+        {/* KPIs */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 24 }}>
+          {[
+            { label: 'Commissions ce mois',     val: GNF(revenus.commissions.total_commissions || 0),   icon: '💰', color: '#1B6B3A', bg: '#E8F5E9' },
+            { label: 'Commissions encaissées',   val: GNF(revenus.commissions.encaisse || 0),            icon: '✅', color: '#1B6B3A', bg: '#E8F5E9' },
+            { label: 'Commissions en attente',   val: GNF(revenus.commissions.en_attente || 0),          icon: '⏳', color: '#E65100', bg: '#FFF3E0' },
+            { label: 'Revenus abonnements',      val: GNF(revenus.abonnements.revenus_abonnements || 0), icon: '📋', color: '#1565C0', bg: '#E3F2FD' },
+            { label: 'Abonnés Pro',              val: revenus.abonnements.nb_pro || 0,                   icon: '⭐', color: '#1B6B3A', bg: '#E8F5E9' },
+            { label: 'Abonnés Agence',           val: revenus.abonnements.nb_agence || 0,                icon: '🏢', color: '#7B1FA2', bg: '#F3E5F5' },
+          ].map(function(s, i) {
+            return (
+              <div key={i} style={{ background: s.bg, borderRadius: 14, padding: 16, borderLeft: '4px solid ' + s.color }}>
+                <div style={{ fontSize: 24, marginBottom: 6 }}>{s.icon}</div>
+                <div style={{ fontSize: 20, fontWeight: 800, color: s.color }}>{s.val}</div>
+                <div style={{ fontSize: 11, color: '#555', marginTop: 4 }}>{s.label}</div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Évolution 6 mois */}
+        <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>Évolution des commissions (6 mois)</div>
+          {revenus.evolution.length === 0 && (
+            <div style={{ color: '#888', fontSize: 13 }}>Aucune commission pour le moment.</div>
+          )}
+          {revenus.evolution.map(function(m, i) {
+            var max = Math.max.apply(null, revenus.evolution.map(function(x) { return Number(x.commissions); }));
+            var pct = max > 0 ? Math.round(Number(m.commissions) / max * 100) : 0;
+            var moisLabel = new Date(m.mois).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+            return (
+              <div key={i} style={{ marginBottom: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5, fontSize: 12 }}>
+                  <span style={{ color: '#555', textTransform: 'capitalize' }}>{moisLabel}</span>
+                  <span style={{ fontWeight: 700, color: '#1B6B3A' }}>{GNF(m.commissions)}</span>
+                </div>
+                <div style={{ background: '#F0F0F0', borderRadius: 4, height: 10, overflow: 'hidden' }}>
+                  <div style={{ background: 'linear-gradient(90deg, #1B6B3A, #34A853)', width: pct + '%', height: '100%', borderRadius: 4, transition: 'width .5s' }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    )}
+  </div>
+)}
 
         {/* ═══ ALERTES ═════════════════════════════════════════ */}
         {onglet === 'alertes' && (
