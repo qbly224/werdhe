@@ -3101,11 +3101,11 @@ function chargerDonnees() {
           <RechercheGlobale stats={stats} onNavigate={setOnglet} />
         </div>
           <div className="dash-header-right">
-            <div style={{ display: 'flex', gap: 4 }}>
+           <div style={{ display: 'flex', gap: 4 }}>
   {[
-    { code: 'fr',      flag: '🇫🇷', label: 'Français' },
-    { code: 'pular',   flag: '🇬🇳', label: 'Pular'    },
-    { code: 'malinke', flag: '🇬🇳', label: 'Malinké'  },
+    { code: 'fr',      flag: '🇫🇷', abbr: 'FR',  label: 'Français' },
+    { code: 'pular',   flag: '🇬🇳', abbr: 'PUL', label: 'Pular'   },
+    { code: 'malinke', flag: '🇬🇳', abbr: 'MAL', label: 'Malinké' },
   ].map(function(l) {
     var actif = getLangue() === l.code;
     return (
@@ -3114,17 +3114,19 @@ function chargerDonnees() {
         onClick={function() { changerLangue(l.code); }}
         title={l.label}
         style={{
-          background:  actif ? '#1B6B3A' : 'rgba(255,255,255,0.15)',
-          border:      actif ? '2px solid #fff' : '1px solid rgba(255,255,255,0.3)',
+          background:   actif ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.08)',
+          border:       actif ? '1.5px solid rgba(255,255,255,0.8)' : '1px solid rgba(255,255,255,0.2)',
           borderRadius: 8,
-          padding:     '3px 7px',
-          fontSize:    18,
-          cursor:      'pointer',
-          lineHeight:  1,
-          opacity:     actif ? 1 : 0.6,
-          transition:  'all .2s'
+          padding:      '3px 8px',
+          cursor:       'pointer',
+          display:      'flex',
+          alignItems:   'center',
+          gap:          4,
+          opacity:      actif ? 1 : 0.5,
+          transition:   'all .2s'
         }}>
-        {l.flag}
+        <span style={{ fontSize: 14 }}>{l.flag}</span>
+        <span style={{ fontSize: 10, fontWeight: actif ? 700 : 400, color: '#fff', letterSpacing: 0.5 }}>{l.abbr}</span>
       </button>
     );
   })}
