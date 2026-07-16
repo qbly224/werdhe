@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import OngletPreavisComponent from '../components/OngletPreavis';
 import OngletPaiementsComponent from '../components/OngletPaiements';
 import useDarkMode from '../hooks/useDarkMode';
-import { changerLangue, getLangue } from '../services/i18n';
+import { t, changerLangue, getLangue } from '../services/i18n';
 import RechercheGlobale from '../components/dashboard/RechercheGlobale';
 import './Dashboard.css';
 
@@ -2932,21 +2932,20 @@ export default function Dashboard() {
   // ================================================
   // Titres et icones des onglets
   // ================================================
-  var pageTitle = {
-    '/dashboard': 'Tableau de bord',
-    '/dashboard/biens': 'Mes biens',
-    '/dashboard/locataires': 'Locataires',
-    '/dashboard/reservations': 'Reservations',
-    '/dashboard/paiements': 'Paiements',
-    '/dashboard/documents': 'Documents',
-    '/dashboard/alertes': 'Alertes',
-    '/dashboard/messages': 'Messages',
-    '/dashboard/reclamations': 'Reclamations',
-    '/dashboard/preavis': 'Preavis de depart',
-    '/dashboard/parametres': 'Parametres',
-    '/dashboard/mes-locations': 'Mes locations'
-  };
-
+ var pageTitle = {
+  '/dashboard':              t('tableau_bord'),
+  '/dashboard/biens':        t('mes_biens'),
+  '/dashboard/locataires':   t('locataires'),
+  '/dashboard/reservations': t('reservations'),
+  '/dashboard/paiements':    t('paiements'),
+  '/dashboard/documents':    t('documents'),
+  '/dashboard/alertes':      'Alertes',
+  '/dashboard/messages':     t('messages'),
+  '/dashboard/reclamations': t('reclamations'),
+  '/dashboard/preavis':      t('preavis'),
+  '/dashboard/parametres':   t('parametres'),
+  '/dashboard/mes-locations': t('mes_locations'),
+};
   var pageIcon = {
     '/dashboard': '📊',
     '/dashboard/biens': '🏠',
@@ -3102,14 +3101,34 @@ function chargerDonnees() {
           <RechercheGlobale stats={stats} onNavigate={setOnglet} />
         </div>
           <div className="dash-header-right">
-            <select
-  value={getLangue()}
-  onChange={function(e) { changerLangue(e.target.value); }}
-  style={{ padding: '4px 8px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 12, background: '#F8F8F8', cursor: 'pointer' }}>
-  <option value="fr">🇫🇷 Français</option>
-  <option value="pular">🇬🇳 Pular</option>
-  <option value="malinke">🇬🇳 Malinké</option>
-</select>
+            <div style={{ display: 'flex', gap: 4 }}>
+  {[
+    { code: 'fr',      flag: '🇫🇷', label: 'Français' },
+    { code: 'pular',   flag: '🇬🇳', label: 'Pular'    },
+    { code: 'malinke', flag: '🇬🇳', label: 'Malinké'  },
+  ].map(function(l) {
+    var actif = getLangue() === l.code;
+    return (
+      <button
+        key={l.code}
+        onClick={function() { changerLangue(l.code); }}
+        title={l.label}
+        style={{
+          background:  actif ? '#1B6B3A' : 'rgba(255,255,255,0.15)',
+          border:      actif ? '2px solid #fff' : '1px solid rgba(255,255,255,0.3)',
+          borderRadius: 8,
+          padding:     '3px 7px',
+          fontSize:    18,
+          cursor:      'pointer',
+          lineHeight:  1,
+          opacity:     actif ? 1 : 0.6,
+          transition:  'all .2s'
+        }}>
+        {l.flag}
+      </button>
+    );
+  })}
+</div>
             <div className="dash-om-badge">Orange Money connecte</div>
             <button
               onClick={toggleDarkMode}
