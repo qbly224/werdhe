@@ -113,6 +113,9 @@ export default function ReservationLocataire() {
   var [signed, setSigned]           = useState(false);
   var [signProcessing, setSignProcessing] = useState(false);
   var chatRef = useRef(null);
+  var [noteSelectionnee, setNoteSelectionnee] = useState(0);
+  var [commentaireNote, setCommentaireNote]   = useState('');
+  var [noteEnvoyee, setNoteEnvoyee]           = useState(false);
 
   // ── POLLING STABLE — ne se recrée qu'une seule fois ──────────────
   // On utilise [reservationId] comme seule dépendance (jamais change)
@@ -264,6 +267,22 @@ export default function ReservationLocataire() {
       })
       .catch(function() { toast.error('Erreur envoi message'); });
   }
+
+  function envoyerNote() {
+  if (noteSelectionnee === 0) return;
+  api.post('/notations', {
+    reservation_id: reservationId,
+    note:           noteSelectionnee,
+    commentaire:    commentaireNote
+  })
+    .then(function() {
+      setNoteEnvoyee(true);
+      toast.success('Note envoyée ! Merci pour votre retour.');
+    })
+    .catch(function(err) {
+      toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur');
+    });
+}
 
   // ── LOADING ───────────────────────────────────────────────────────
   if (loading) {
@@ -697,6 +716,41 @@ export default function ReservationLocataire() {
 </div>
         </div>
       )}
+
+      {/* Bouton noter le propriétaire */}
+{!noteEnvoyee && (
+  <div style={{ marginTop: 14, background: '#FFF8E1', borderRadius: 12, padding: 14 }}>
+    <div style={{ fontSize: 13, fontWeight: 700, color: '#7B4F00', marginBottom: 10 }}>
+      ⭐ Noter votre propriétaire
+    </div>
+    <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+      {[1, 2, 3, 4, 5].map(function(n) {
+        return (
+          <button key={n} onClick={function() { setNoteSelectionnee(n); }}
+            style={{ fontSize: 28, background: 'none', border: 'none', cursor: 'pointer', opacity: noteSelectionnee >= n ? 1 : 0.3, transform: noteSelectionnee >= n ? 'scale(1.1)' : 'scale(1)', transition: 'all .15s' }}>
+            ⭐
+          </button>
+        );
+      })}
+    </div>
+    {noteSelectionnee > 0 && (
+      <div>
+        <textarea value={commentaireNote} onChange={function(e) { setCommentaireNote(e.target.value); }}
+          placeholder="Commentaire optionnel..."
+          style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 60, fontFamily: 'system-ui', boxSizing: 'border-box', outline: 'none', marginBottom: 8 }} />
+        <button onClick={envoyerNote}
+          style={{ width: '100%', background: '#F5A623', color: '#fff', border: 'none', borderRadius: 10, padding: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+          Envoyer ma note ({noteSelectionnee}/5) →
+        </button>
+      </div>
+    )}
+  </div>
+)}
+{noteEnvoyee && (
+  <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginTop: 14, fontSize: 13, color: '#1B5E20', fontWeight: 600 }}>
+    ⭐ Vous avez noté ce propriétaire. Merci !
+  </div>
+)}
 
       <div style={{ height: 30 }} />
     </div>

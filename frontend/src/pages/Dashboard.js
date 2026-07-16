@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import OngletPreavisComponent from '../components/OngletPreavis';
 import OngletPaiementsComponent from '../components/OngletPaiements';
 import useDarkMode from '../hooks/useDarkMode';
+import { changerLangue, getLangue } from '../services/i18n';
 import RechercheGlobale from '../components/dashboard/RechercheGlobale';
 import './Dashboard.css';
 
@@ -3101,6 +3102,14 @@ function chargerDonnees() {
           <RechercheGlobale stats={stats} onNavigate={setOnglet} />
         </div>
           <div className="dash-header-right">
+            <select
+  value={getLangue()}
+  onChange={function(e) { changerLangue(e.target.value); }}
+  style={{ padding: '4px 8px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 12, background: '#F8F8F8', cursor: 'pointer' }}>
+  <option value="fr">🇫🇷 Français</option>
+  <option value="pular">🇬🇳 Pular</option>
+  <option value="malinke">🇬🇳 Malinké</option>
+</select>
             <div className="dash-om-badge">Orange Money connecte</div>
             <button
               onClick={toggleDarkMode}
