@@ -3101,32 +3101,35 @@ function chargerDonnees() {
           <RechercheGlobale stats={stats} onNavigate={setOnglet} />
         </div>
           <div className="dash-header-right">
-           <div style={{ display: 'flex', gap: 4 }}>
+          <div style={{ display: 'flex', gap: 4, background: 'rgba(0,0,0,0.15)', borderRadius: 10, padding: 3 }}>
   {[
-    { code: 'fr',      flag: '🇫🇷', abbr: 'FR',  label: 'Français' },
-    { code: 'pular',   flag: '🇬🇳', abbr: 'PUL', label: 'Pular'   },
-    { code: 'malinke', flag: '🇬🇳', abbr: 'MAL', label: 'Malinké' },
+    { code: 'fr',      emoji: '🇫🇷', abbr: 'FR'  },
+    { code: 'pular',   emoji: '🇬🇳', abbr: 'PUL' },
+    { code: 'malinke', emoji: '🇬🇳', abbr: 'MAL' },
   ].map(function(l) {
     var actif = getLangue() === l.code;
     return (
       <button
         key={l.code}
         onClick={function() { changerLangue(l.code); }}
-        title={l.label}
+        title={l.abbr === 'FR' ? 'Français' : l.abbr === 'PUL' ? 'Pular' : 'Malinké'}
         style={{
-          background:   actif ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.08)',
-          border:       actif ? '1.5px solid rgba(255,255,255,0.8)' : '1px solid rgba(255,255,255,0.2)',
-          borderRadius: 8,
-          padding:      '3px 8px',
+          background:   actif ? '#1B6B3A' : 'transparent',
+          border:       'none',
+          borderRadius: 7,
+          padding:      '4px 10px',
           cursor:       'pointer',
           display:      'flex',
+          flexDirection: 'column',
           alignItems:   'center',
-          gap:          4,
-          opacity:      actif ? 1 : 0.5,
-          transition:   'all .2s'
+          gap:          2,
+          transition:   'all .2s',
+          minWidth:     42
         }}>
-        <span style={{ fontSize: 14 }}>{l.flag}</span>
-        <span style={{ fontSize: 10, fontWeight: actif ? 700 : 400, color: '#fff', letterSpacing: 0.5 }}>{l.abbr}</span>
+        <span style={{ fontSize: 16, lineHeight: 1 }}>{l.emoji}</span>
+        <span style={{ fontSize: 9, fontWeight: actif ? 700 : 500, color: actif ? '#fff' : 'rgba(255,255,255,0.6)', letterSpacing: 0.5 }}>
+          {l.abbr}
+        </span>
       </button>
     );
   })}
