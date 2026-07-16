@@ -268,4 +268,124 @@ cron.schedule('0 10 * * *', async function() {
     console.error('[CRON J-5] Erreur:', err.message);
   }
 });
+
+// ════════════════════════════════════════════════════════
+// CRON 4 — Mise en demeure automatique J+5 loyer impayé
+// Tourne tous les jours à 7h
+// ════════════════════════════════════════════════════════
+cron.schedule('0 7 * * *', async function() {
+  console.log('[CRON] Vérification loyers impayés J+5');
+  try {
+    // Trouver les locations actives dont le loyer du mois courant n'est pas payé
+    // et dont on est le 5 du mois (J+5 après le 1er)
+    var jour = new Date().getDate();
+    if (jour !== 5) return; // On ne lance que le 5 du mois
+
+    var result = await db.query(
+      `SELECT
+         r.id as reservation_id,
+         r.locataire_id,
+         r.montant_total as loyer,
+         l.titre as logement_titre,
+         l.proprietaire_id,
+         u_loc.nom as loc_nom, u_loc.prenom as loc_prenom,
+         u_loc.email as loc_email, u_loc.telephone as loc_tel,
+         u_prop.nom as prop_nom, u_prop.prenom as prop_prenom,
+         u_prop.email as prop_email
+       FROM reservations r
+       JOIN logements l ON r.logement_id = l.id
+       JOIN users u_loc ON r.locataire_id = u_loc.id
+       JOIN users u_prop ON l.proprietaire_id = u_prop.id
+       WHERE r.statut = 'confirmee'
+         AND r.bail_signe = TRUE
+         AND NOT EXISTS (
+           SELECT 1 FROM paiements p
+           WHERE p.reservation_id = r.id
+             AND p.statut = 'complete'
+             AND DATE_TRUNC('month', p.created_at) = DATE_TRUNC('month', NOW())
+         )`
+    );
+
+    for (var loc of result.rows) {
+      // Envoyer mise en demeure par email
+      if (process.env.RESEND_API_KEY) {
+        try {
+          const { Resend } = require('resend');
+          const resend = new Resend(process.env.RESEND_API_KEY);
+
+          // Email au locataire
+          await resend.emails.send({
+            from:    'Werdhe <no-reply@werdhe.com>',
+            to:      loc.loc_email,
+            subject: '⚠️ Mise en demeure — Loyer impayé',
+            html: `
+              <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
+                <div style="background:#B71C1C;padding:20px;border-radius:12px 12px 0 0">
+                  <h2 style="color:#fff;margin:0">⚠️ Mise en demeure</h2>
+                </div>
+                <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
+                  <p>Bonjour <b>${loc.loc_prenom}</b>,</p>
+                  <p>Votre loyer du mois en cours pour <b>${loc.logement_titre}</b> n'a pas été reçu.</p>
+                  <div style="background:#FFEBEE;border:1px solid #FFCDD2;border-radius:8px;padding:16px;margin:16px 0">
+                    <div style="font-size:20px;font-weight:700;color:#B71C1C">
+                      ${new Intl.NumberFormat('fr-FR').format(loc.loyer)} GNF
+                    </div>
+                    <div style="color:#555;font-size:13px">à régler immédiatement</div>
+                  </div>
+                  <p>Sans règlement sous <b>48h</b>, une procédure de résiliation pourra être engagée.</p>
+                  <a href="https://werdhe.com/dashboard"
+                     style="display:inline-block;background:#B71C1C;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700">
+                    Payer maintenant →
+                  </a>
+                </div>
+              </div>
+            `
+          });
+
+          // Email au propriétaire
+          await resend.emails.send({
+            from:    'Werdhe <no-reply@werdhe.com>',
+            to:      loc.prop_email,
+            subject: '⚠️ Loyer impayé — ' + loc.logement_titre,
+            html: `
+              <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
+                <div style="background:#E65100;padding:20px;border-radius:12px 12px 0 0">
+                  <h2 style="color:#fff;margin:0">🏠 Werdhe — Alerte loyer</h2>
+                </div>
+                <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
+                  <p>Bonjour <b>${loc.prop_prenom}</b>,</p>
+                  <p>Le loyer de <b>${loc.loc_prenom} ${loc.loc_nom}</b> pour <b>${loc.logement_titre}</b> n'a pas été payé ce mois-ci.</p>
+                  <p>Une mise en demeure automatique a été envoyée au locataire.</p>
+                  <a href="https://werdhe.com/dashboard"
+                     style="display:inline-block;background:#1B6B3A;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700">
+                    Voir mon dashboard →
+                  </a>
+                </div>
+              </div>
+            `
+          });
+        } catch (emailErr) {
+          console.warn('[CRON J+5] Email:', emailErr.message);
+        }
+      }
+
+      // Alerte dans le dashboard propriétaire
+      await db.query(
+        `INSERT INTO alertes
+           (proprietaire_id, logement_id, type, titre, description, priorite)
+         VALUES ($1, $2, 'loyer_retard', $3, $4, 'haute')`,
+        [
+          loc.proprietaire_id,
+          (await db.query('SELECT logement_id FROM reservations WHERE id = $1', [loc.reservation_id])).rows[0].logement_id,
+          '⚠️ Loyer impayé J+5 — ' + loc.logement_titre,
+          loc.loc_prenom + ' ' + loc.loc_nom + ' · Mise en demeure envoyée automatiquement'
+        ]
+      ).catch(console.warn);
+    }
+
+    console.log('[CRON J+5]', result.rows.length, 'mise(s) en demeure envoyée(s)');
+  } catch (err) {
+    console.error('[CRON J+5] Erreur:', err.message);
+  }
+});
 module.exports = {};

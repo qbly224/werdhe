@@ -39,6 +39,7 @@ const scoresRoutes       = require('./routes/scores');
 const adminRoutes        = require('./routes/admin');
 const preavisRoutes      = require('./routes/preavis');
 const abonnementRoutes = require('./routes/abonnements');
+const notationsRoutes = require('./routes/notations');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -78,6 +79,7 @@ app.use('/scores',            scoresRoutes);
 app.use('/admin',             adminRoutes);
 app.use('/preavis',           preavisRoutes);
 app.use('/abonnements', abonnementRoutes);
+app.use('/notations', notationsRoutes);
 
 // ── Routes de test ───────────────────────────────────────────────
 app.get('/', (req, res) => {

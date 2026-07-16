@@ -201,6 +201,22 @@ router.patch('/:id/signer-bail', verifierToken, async (req, res) => {
     } else if (estLocataire) {
       // Locataire signe en dernier → location confirmée
       nouveauStatut = 'confirmee';
+
+      // Vérifier si le locataire mérite le badge après 3 locations
+var nbLocations = await db.query(
+  `SELECT COUNT(*) FROM reservations
+   WHERE locataire_id = $1 AND statut = 'confirmee'`,
+  [r.locataire_id]
+);
+if (parseInt(nbLocations.rows[0].count) >= 3) {
+  await db.query(
+    `UPDATE users SET locataire_verifie = TRUE,
+       nb_locations_terminees = $1
+     WHERE id = $2`,
+    [parseInt(nbLocations.rows[0].count), r.locataire_id]
+  );
+  console.log('[Badge] Locataire vérifié:', r.locataire_id);
+}
       // Marquer le logement comme loué
       await db.query(
         'UPDATE logements SET statut = $1 WHERE id = $2',
