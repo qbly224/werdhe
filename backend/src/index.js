@@ -1,5 +1,6 @@
 const express = require('express');
 const cors    = require('cors');
+const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 
 // Limiter les tentatives de connexion (10 par minute par IP)
@@ -41,7 +42,27 @@ const preavisRoutes      = require('./routes/preavis');
 const abonnementRoutes = require('./routes/abonnements');
 const notationsRoutes = require('./routes/notations');
 
+// ── Vérifier les variables d'environnement obligatoires ──────────
+var ENV_REQUISES = ['JWT_SECRET', 'DATABASE_URL'];
+var manquantes = ENV_REQUISES.filter(function(v) { return !process.env[v]; });
+if (manquantes.length > 0) {
+  console.error('❌ Variables d\'environnement manquantes:', manquantes.join(', '));
+  process.exit(1);
+}
+console.log('✅ Variables d\'environnement vérifiées');
+
 const app  = express();
+const logger = require('./services/loggerService');
+
+// Middleware de logging des requêtes
+app.use(function(req, res, next) {
+  var debut = Date.now();
+  res.on('finish', function() {
+    logger.requete(req, res, Date.now() - debut);
+  });
+  next();
+});
+
 const PORT = process.env.PORT || 3000;
 
 // ── CORS — DOIT ÊTRE EN PREMIER ──────────────────────────────────
@@ -53,6 +74,9 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials:  true
 }));
+
+// Compresser toutes les réponses (gzip)
+app.use(compression());
 
 // ── Body parser — AVANT les routes ───────────────────────────────
 app.use(express.json({ limit: '10mb' }));
@@ -83,7 +107,35 @@ app.use('/notations', notationsRoutes);
 
 // ── Routes de test ───────────────────────────────────────────────
 app.get('/', (req, res) => {
-  res.json({ message: 'Werdhe API fonctionne !' });
+  res.json({
+    status:  'ok',
+    service: 'Werdhe API',
+    version: '1.0.0',
+    date:    new Date().toISOString()
+  });
+});
+
+// Health check pour Render / monitoring
+app.get('/health', async (req, res) => {
+  try {
+    var debut = Date.now();
+    await db.query('SELECT 1');
+    var duree = Date.now() - debut;
+    res.json({
+      status:   'healthy',
+      database: 'connected',
+      latence:  duree + 'ms',
+      uptime:   Math.round(process.uptime()) + 's',
+      memoire:  Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + 'MB',
+      date:     new Date().toISOString()
+    });
+  } catch (err) {
+    res.status(503).json({
+      status:   'unhealthy',
+      database: 'disconnected',
+      erreur:   err.message
+    });
+  }
 });
 
 app.get('/test-db', async (req, res) => {

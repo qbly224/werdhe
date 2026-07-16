@@ -388,4 +388,35 @@ cron.schedule('0 7 * * *', async function() {
     console.error('[CRON J+5] Erreur:', err.message);
   }
 });
+
+// ════════════════════════════════════════════════════════
+// CRON 5 — Nettoyage OTP expirés (toutes les heures)
+// ════════════════════════════════════════════════════════
+cron.schedule('0 * * * *', async function() {
+  try {
+    var result = await db.query(
+      'DELETE FROM otp_telephone WHERE expire_at < NOW() OR utilise = TRUE'
+    );
+    if (result.rowCount > 0) {
+      console.log('[CRON] ' + result.rowCount + ' OTP expirés supprimés');
+    }
+  } catch (err) {
+    console.warn('[CRON OTP]', err.message);
+  }
+});
+
+// ════════════════════════════════════════════════════════
+// CRON 6 — Nettoyage logs anciens (tous les dimanches)
+// ════════════════════════════════════════════════════════
+cron.schedule('0 2 * * 0', async function() {
+  try {
+    var result = await db.query(
+      'DELETE FROM logs_audit WHERE created_at < NOW() - INTERVAL \'90 days\''
+    );
+    console.log('[CRON] ' + result.rowCount + ' logs anciens supprimés');
+  } catch (err) {
+    console.warn('[CRON Logs]', err.message);
+  }
+});
+
 module.exports = {};
