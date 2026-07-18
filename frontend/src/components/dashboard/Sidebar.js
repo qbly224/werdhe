@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
 
@@ -43,19 +44,19 @@ export default function Sidebar(props) {
   }
 
   return (
-    <div style={{
+    <div className={'sidebar-desktop' + (open ? ' open' : '')} style={{
       width: open ? 240 : 70,
       background: 'linear-gradient(180deg, #1B6B3A 0%, #134F2B 100%)',
       display: 'flex',
       flexDirection: 'column',
-      transition: 'width 0.3s ease',
+      transition: 'all 0.3s ease',
       flexShrink: 0,
       boxShadow: '4px 0 20px rgba(0,0,0,0.15)',
       height: '100vh',
       position: 'fixed',
       left: 0,
       top: 0,
-      zIndex: 50,
+      zIndex: 1000,
       overflow: 'hidden'
     }}>
 
@@ -95,7 +96,7 @@ export default function Sidebar(props) {
             >
               <span style={{fontSize:18, flexShrink:0}}>{item.icon}</span>
               {open && (
-                <span style={{fontSize:14, fontWeight: isActive ? 600 : 400}}>
+                <span className="sidebar-label" style={{fontSize:14, fontWeight: isActive ? 600 : 400}}>
                   {item.label}
                 </span>
               )}

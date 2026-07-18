@@ -3110,18 +3110,22 @@ function chargerDonnees() {
 
   return (
     <div className="dashboard-wrapper">
+      
       {/* Overlay sombre sur mobile quand sidebar ouverte */}
 {isMobile && sidebarOpen && (
   <div
     className="sidebar-overlay"
     onClick={function() { setSidebarOpen(false); }} />
 )}
-<div className={'sidebar-desktop' + (sidebarOpen ? ' open' : '')}>
-  <Sidebar
+{isMobile && sidebarOpen && (
+  <div
+    onClick={function() { setSidebarOpen(false); }}
+    style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 999 }} />
+)}
+<Sidebar
     ongletActif={onglet}
     setOnglet={function(o) { setOnglet(o); if (isMobile) setSidebarOpen(false); }}
     open={sidebarOpen} />
-</div>
 
       <div className="dashboard-main" style={{ marginLeft: sidebarWidth }}>
         <div className="dash-header">
@@ -3133,10 +3137,10 @@ function chargerDonnees() {
               <h1>{pageIcon[onglet] || '📊'} {pageTitle[onglet] || 'Tableau de bord'}</h1>
               <p>{new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
             </div>
-          <RechercheGlobale stats={stats} onNavigate={setOnglet} />
+          {!isMobile && <RechercheGlobale stats={stats} onNavigate={setOnglet} />}
         </div>
           <div className="dash-header-right">
-          <div style={{ display: 'flex', gap: 4, background: 'rgba(0,0,0,0.15)', borderRadius: 10, padding: 3 }}>
+         {!isMobile && <div style={{ display: 'flex', gap: 4, background: 'rgba(0,0,0,0.15)' , borderRadius: 10, padding: 3 }}>
   {[
     { code: 'fr',      emoji: '🇫🇷', abbr: 'FR'  },
     { code: 'pular',   emoji: '🇬🇳', abbr: 'PUL' },
@@ -3168,8 +3172,8 @@ function chargerDonnees() {
       </button>
     );
   })}
-</div>
-            <div className="dash-om-badge">Orange Money connecte</div>
+</div>}
+            {!isMobile && <div className="dash-om-badge">Orange Money connecté</div>}
             <button
               onClick={toggleDarkMode}
               title={darkMode ? 'Mode clair' : 'Mode sombre'}

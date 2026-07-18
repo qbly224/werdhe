@@ -209,7 +209,7 @@ export default function Logements() {
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(260px, 100%), 1fr))', gap: 16 }}>
+        <div style={{ display: 'grid',gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))' , gap: 16 }}>
           {logements.map(function(l) {
             return (
               <div key={l.id}
@@ -219,10 +219,24 @@ export default function Logements() {
                 onMouseLeave={function(e) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.07)'; }}>
 
                 {/* Photo / placeholder */}
-                <div style={{ height: 160, background: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48, position: 'relative' }}>
-                  {l.photos && l.photos.length > 0
-                    ? <img src={l.photos[0]} alt={l.titre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    : '🏠'}
+                 <div style={{ height: 180, position: 'relative', background: '#E8F5E9', overflow: 'hidden',display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48, position: 'relative' }}>
+                  {l.photos && l.photos.length > 0 ? (
+  <img src={l.photos[0]} alt={l.titre} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+) : (
+  <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1B6B3A 0%, #2D9E5F 50%, #E8F5E9 100%)' }}>
+    <span style={{ fontSize: 48, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.2))' }}>
+      {l.categorie === 'villa' || l.categorie === 'villa_luxe' ? '🏡'
+       : l.categorie === 'studio'           ? '🏢'
+       : l.categorie === 'appartement'      ? '🏬'
+       : l.categorie === 'bureau'           ? '🏪'
+       : l.categorie === 'duplex'           ? '🏘️'
+       : '🏠'}
+    </span>
+    <div style={{ color: 'rgba(255,255,255,0.9)', fontSize: 12, fontWeight: 600, marginTop: 8, textTransform: 'capitalize', letterSpacing: 0.5 }}>
+      {l.categorie ? l.categorie.replace(/_/g, ' ') : 'Logement'}
+    </div>
+  </div>
+)}
                   <div style={{ position: 'absolute', top: 10, right: 10, background: '#1B6B3A', color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
                     Disponible
                   </div>

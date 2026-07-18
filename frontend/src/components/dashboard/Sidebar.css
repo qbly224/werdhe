@@ -153,3 +153,21 @@
     font-size: 14px !important;
   }
 }
+
+/* ── RESPONSIVE SIDEBAR ─────────────────────────────── */
+@media (max-width: 768px) {
+  .sidebar-desktop {
+    transform: translateX(-100%) !important;
+    width: 240px !important;
+    z-index: 1000 !important;
+  }
+
+  .sidebar-desktop.open {
+    transform: translateX(0) !important;
+    box-shadow: 4px 0 30px rgba(0,0,0,0.4) !important;
+  }
+
+  .sidebar-label {
+    display: inline !important;
+  }
+}
