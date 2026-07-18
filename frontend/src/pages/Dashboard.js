@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import Sidebar from '../components/dashboard/Sidebar';
 import toast from 'react-hot-toast';
+import GestionPhotos from '../components/GestionPhotos';
 import OngletPreavisComponent from '../components/OngletPreavis';
 import OngletPaiementsComponent from '../components/OngletPaiements';
 import useDarkMode from '../hooks/useDarkMode';
@@ -466,6 +467,16 @@ function OngletBiens(props) {
                     </select>
                   </div>
                 </div>
+                {modeEdit === b.id && (
+  <div style={{ marginBottom: 16 }}>
+    <GestionPhotos
+      logementId={b.id}
+      photosInitiales={b.photos || []}
+      onUpdate={function(nouvPhotos) {
+        toast.success(nouvPhotos.length + ' photo(s) enregistrée(s)');
+      }} />
+  </div>
+)}
                 <div style={{ display: 'flex', gap: 10 }}>
                   <button className="btn-bien-primary" onClick={function() { handleSave(b.id); }}>Sauvegarder</button>
                   <button className="btn-bien-secondary" onClick={function() { setModeEdit(null); }}>Annuler</button>
