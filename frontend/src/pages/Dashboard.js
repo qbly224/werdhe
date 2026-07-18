@@ -2931,7 +2931,8 @@ export default function Dashboard() {
   var navigate = useNavigate();
 
   var [onglet, setOnglet] = useState('/dashboard');
-  var [sidebarOpen, setSidebarOpen] = useState(true);
+  var [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
+  var [isMobile, setIsMobile]       = useState(window.innerWidth <= 768);
   var [loading, setLoading] = useState(true);
   var [showNotif, setShowNotif] = useState(false);
   var [alertes, setAlertes] = useState([]);
@@ -2971,6 +2972,18 @@ export default function Dashboard() {
     '/dashboard/parametres': '⚙️',
     '/dashboard/mes-locations': '🏠'
   };
+
+  // Détecter le resize
+useEffect(function() {
+  function handleResize() {
+    var mobile = window.innerWidth <= 768;
+    setIsMobile(mobile);
+    if (!mobile && !sidebarOpen) setSidebarOpen(true);
+    if (mobile) setSidebarOpen(false);
+  }
+  window.addEventListener('resize', handleResize);
+  return function() { window.removeEventListener('resize', handleResize); };
+}, []);
 
  useEffect(function() {
   var savedOnglet = localStorage.getItem('dashboardOnglet');
@@ -3097,7 +3110,18 @@ function chargerDonnees() {
 
   return (
     <div className="dashboard-wrapper">
-      <Sidebar ongletActif={onglet} setOnglet={setOnglet} open={sidebarOpen} />
+      {/* Overlay sombre sur mobile quand sidebar ouverte */}
+{isMobile && sidebarOpen && (
+  <div
+    className="sidebar-overlay"
+    onClick={function() { setSidebarOpen(false); }} />
+)}
+<div className={'sidebar-desktop' + (sidebarOpen ? ' open' : '')}>
+  <Sidebar
+    ongletActif={onglet}
+    setOnglet={function(o) { setOnglet(o); if (isMobile) setSidebarOpen(false); }}
+    open={sidebarOpen} />
+</div>
 
       <div className="dashboard-main" style={{ marginLeft: sidebarWidth }}>
         <div className="dash-header">
@@ -3185,8 +3209,50 @@ function chargerDonnees() {
         )}
 
         <div className="dash-scroll">
-          {renderOnglet()}
-        </div>
+  {renderOnglet()}
+</div>
+
+{/* Barre navigation mobile */}
+{isMobile && (
+  <div style={{
+    position: 'fixed', bottom: 0, left: 0, right: 0,
+    background: '#fff', borderTop: '0.5px solid #E0E0E0',
+    display: 'flex', justifyContent: 'space-around',
+    padding: '8px 0 calc(8px + env(safe-area-inset-bottom))',
+    zIndex: 500, boxShadow: '0 -4px 12px rgba(0,0,0,0.08)'
+  }}>
+    {(user && user.role === 'locataire' ? [
+      { path: '/dashboard',               icon: '📊', label: 'Accueil'       },
+      { path: '/dashboard/mes-locations',  icon: '🏠', label: 'Locations'    },
+      { path: '/dashboard/messages',       icon: '💬', label: 'Messages'     },
+      { path: '/dashboard/paiements',      icon: '💳', label: 'Paiements'   },
+      { path: '/dashboard/parametres',     icon: '⚙️', label: 'Profil'       },
+    ] : [
+      { path: '/dashboard',               icon: '📊', label: 'Accueil'       },
+      { path: '/dashboard/biens',          icon: '🏠', label: 'Biens'        },
+      { path: '/dashboard/reservations',   icon: '📅', label: 'Résas'        },
+      { path: '/dashboard/messages',       icon: '💬', label: 'Messages'     },
+      { path: '/dashboard/parametres',     icon: '⚙️', label: 'Profil'       },
+    ]).map(function(item) {
+      var actif = onglet === item.path;
+      return (
+        <button key={item.path}
+          onClick={function() { setOnglet(item.path); }}
+          style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            gap: 3, background: 'none', border: 'none', cursor: 'pointer',
+            padding: '4px 12px', borderRadius: 10, flex: 1,
+            color: actif ? '#1B6B3A' : '#888',
+            transition: 'all .15s'
+          }}>
+          <span style={{ fontSize: 22, lineHeight: 1 }}>{item.icon}</span>
+          <span style={{ fontSize: 10, fontWeight: actif ? 700 : 400, letterSpacing: 0.2 }}>{item.label}</span>
+          {actif && <div style={{ width: 4, height: 4, background: '#1B6B3A', borderRadius: '50%' }} />}
+        </button>
+      );
+    })}
+  </div>
+)}
       </div>
     </div>
   );

@@ -141,3 +141,46 @@ body.dark-mode .stat-card-colored {
 body.dark-mode .dash-scroll {
   background: #0F1A12 !important;
 }
+
+/* ── RESET RESPONSIVE GLOBAL ───────────────────────── */
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Scrollbar fine sur mobile */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #C8E6C9;
+    border-radius: 4px;
+  }
+
+  /* Texte plus lisible sur petit écran */
+  body {
+    font-size: 14px;
+  }
+
+  /* Inputs plus grands sur mobile (évite le zoom iOS) */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  /* Boutons plus faciles à tapper */
+  button {
+    min-height: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-sidebar { display: none !important; }
+  .admin-mobile-menu { display: block !important; }
+  .admin-mobile-menu > div { display: flex !important; }
+}

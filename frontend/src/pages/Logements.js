@@ -110,7 +110,7 @@ export default function Logements() {
 
       {/* PANNEAU FILTRES AVANCÉS */}
       {showFiltres && (
-        <div style={{ background: '#fff', padding: '16px', borderBottom: '0.5px solid #F0F0F0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
+        <div style={{ background: '#fff', padding: '16px', borderBottom: '0.5px solid #F0F0F0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', overflowY: 'auto', maxHeight: '80vh' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>Filtres avancés</div>
             {nbFiltresActifs > 0 && (
@@ -209,7 +209,7 @@ export default function Logements() {
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(260px, 100%), 1fr))', gap: 16 }}>
           {logements.map(function(l) {
             return (
               <div key={l.id}

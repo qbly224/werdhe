@@ -130,7 +130,7 @@ export default function Admin() {
     <div style={{ fontFamily: 'system-ui, sans-serif', display: 'flex', minHeight: '100vh', background: '#F7F8F7' }}>
 
       {/* ── SIDEBAR ───────────────────────────────────────────── */}
-      <div style={{ width: 220, background: '#1B2B22', minHeight: '100vh', padding: '0', flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
+      <div className="admin-sidebar" style={{ width: 220, background: '#1B2B22', minHeight: '100vh', padding: '0', flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
         <div style={{ padding: '20px 16px', borderBottom: '0.5px solid rgba(255,255,255,0.1)' }}>
           <div style={{ color: '#fff', fontWeight: 800, fontSize: 18 }}>🏠 Werdhe</div>
           <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11, marginTop: 3 }}>Panneau Admin</div>
@@ -166,7 +166,20 @@ export default function Admin() {
       </div>
 
       {/* ── CONTENU ───────────────────────────────────────────── */}
-      <div style={{ flex: 1, padding: '24px', overflowY: 'auto' }}>
+      <div style={{ flex: 1, padding: 'clamp(12px, 3vw, 24px)', overflowY: 'auto', width: '100%', minWidth: 0 }}>
+  {/* Menu mobile admin */}
+  <div style={{ display: 'none' }} className="admin-mobile-menu">
+    <div style={{ background: '#1B2B22', padding: '12px 16px', display: 'flex', gap: 8, overflowX: 'auto', marginBottom: 16, borderRadius: 10 }}>
+      {NAV.map(function(n) {
+        return (
+          <button key={n.id} onClick={function() { setOnglet(n.id); }}
+            style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: onglet === n.id ? 'rgba(255,255,255,0.2)' : 'transparent', color: '#fff', fontSize: 12, cursor: 'pointer', whiteSpace: 'nowrap', fontWeight: onglet === n.id ? 700 : 400 }}>
+            {n.icon} {n.label}
+          </button>
+        );
+      })}
+    </div>
+  </div>
 
         {/* ═══ VUE D'ENSEMBLE ═══════════════════════════════════ */}
         {onglet === 'stats' && stats && (

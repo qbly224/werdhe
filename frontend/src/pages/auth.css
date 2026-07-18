@@ -718,3 +718,52 @@
   .auth-card { padding: 20px 16px; border-radius: 10px; }
   .auth-otp-input { width: 38px; height: 46px; font-size: 18px; }
 }
+
+/* ── RESPONSIVE LOGIN ───────────────────────────────── */
+@media (max-width: 768px) {
+  .auth-page {
+    padding: 16px;
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+
+  .auth-card {
+    padding: 24px 18px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 100%;
+    box-shadow: none;
+  }
+
+  .auth-header h2 {
+    font-size: 20px;
+  }
+
+  .auth-header p {
+    font-size: 13px;
+  }
+
+  .auth-btn-green,
+  .auth-btn-outline {
+    padding: 13px;
+    font-size: 14px;
+  }
+
+  .auth-mm-grid {
+    gap: 8px;
+  }
+
+  .auth-mm-btn {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 380px) {
+  .auth-card {
+    padding: 20px 14px;
+  }
+
+  .auth-header h2 {
+    font-size: 18px;
+  }
+}

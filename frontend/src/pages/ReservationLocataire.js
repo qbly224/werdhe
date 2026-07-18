@@ -309,7 +309,7 @@ export default function ReservationLocataire() {
   }
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', maxWidth: 560, margin: '0 auto', padding: '12px 16px', background: '#F7F8F7', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'system-ui, sans-serif', maxWidth: 560, margin: '0 auto', padding: '12px 16px 80px', background: '#F7F8F7', minHeight: '100vh', width: '100%' }}>
 
       {/* HEADER */}
       <div style={{ background: '#1B6B3A', borderRadius: 14, padding: '14px 18px', marginBottom: 18 }}>
