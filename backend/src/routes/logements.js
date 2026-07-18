@@ -1,4 +1,5 @@
 const { valider } = require('../middleware/valider');
+const { upload, cloudinary } = require('../services/cloudinaryService');
 const express = require('express');
 const db = require('../database');
 const router = express.Router();
@@ -181,5 +182,81 @@ router.post('/', verifierToken, verifierLimiteBiens, valider('logement'), async 
 });
 router.put('/:id', verifierToken, modifierLogement);
 router.delete('/:id', verifierToken, supprimerLogement);
+
+// ─── UPLOAD PHOTOS D'UN LOGEMENT ─────────────────────────────────
+router.post('/:id/photos', verifierToken, upload.array('photos', 10), async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Vérifier que c'est bien le proprio
+    var check = await db.query(
+      'SELECT id FROM logements WHERE id = $1 AND proprietaire_id = $2',
+      [id, req.user.id]
+    );
+    if (check.rows.length === 0) {
+      return res.status(403).json({ erreur: 'Non autorisé' });
+    }
+
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ erreur: 'Aucune photo reçue' });
+    }
+
+    // Récupérer les URLs Cloudinary
+    var urls = req.files.map(function(f) { return f.path; });
+
+    // Ajouter aux photos existantes
+    var existant = await db.query('SELECT photos FROM logements WHERE id = $1', [id]);
+    var photosActuelles = existant.rows[0].photos || [];
+    var toutesPhotos    = photosActuelles.concat(urls);
+
+    await db.query(
+      'UPDATE logements SET photos = $1 WHERE id = $2',
+      [JSON.stringify(toutesPhotos), id]
+    );
+
+    res.json({
+      message: urls.length + ' photo(s) ajoutée(s) !',
+      photos:  toutesPhotos
+    });
+
+  } catch (err) {
+    console.error('[POST /logements/:id/photos]', err.message);
+    res.status(500).json({ erreur: err.message });
+  }
+});
+
+// ─── SUPPRIMER UNE PHOTO ─────────────────────────────────────────
+router.delete('/:id/photos', verifierToken, async (req, res) => {
+  try {
+    const { id }      = req.params;
+    const { photoUrl } = req.body;
+
+    var check = await db.query(
+      'SELECT id, photos FROM logements WHERE id = $1 AND proprietaire_id = $2',
+      [id, req.user.id]
+    );
+    if (check.rows.length === 0) {
+      return res.status(403).json({ erreur: 'Non autorisé' });
+    }
+
+    // Supprimer de Cloudinary
+    try {
+      var publicId = photoUrl.split('/').slice(-2).join('/').split('.')[0];
+      await cloudinary.uploader.destroy(publicId);
+    } catch (e) {
+      console.warn('[Photo] Suppression Cloudinary non bloquante:', e.message);
+    }
+
+    // Retirer de la liste
+    var photos = (check.rows[0].photos || []).filter(function(p) { return p !== photoUrl; });
+    await db.query('UPDATE logements SET photos = $1 WHERE id = $2', [JSON.stringify(photos), id]);
+
+    res.json({ message: 'Photo supprimée', photos });
+
+  } catch (err) {
+    console.error('[DELETE /logements/:id/photos]', err.message);
+    res.status(500).json({ erreur: err.message });
+  }
+});
 
 module.exports = router;
