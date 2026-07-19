@@ -93,7 +93,7 @@ export default function Reserver() {
             ←
           </button>
           <div>
-            <div style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>Demande de réservation</div>
+            <div style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>Candidature de location</div>
             <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 }}>Étape 1 / 7 — Côté locataire</div>
           </div>
         </div>
@@ -238,7 +238,7 @@ export default function Reserver() {
             fontSize: 15, fontWeight: 700, cursor: envoi ? 'not-allowed' : 'pointer',
             background: envoi ? '#999' : '#1B6B3A', color: '#fff'
           }}>
-          {envoi ? '⏳ Envoi en cours...' : '📤 Envoyer la demande au propriétaire'}
+          {envoi ? '⏳ Envoi en cours...' : '📤 Envoyer ma candidature au propriétaire'}
         </button>
       </form>
 

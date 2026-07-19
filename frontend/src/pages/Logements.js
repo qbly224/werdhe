@@ -266,7 +266,7 @@ export default function Logements() {
                       <span style={{ fontSize: 11, color: '#888' }}>{l.prop_prenom} {l.prop_nom}</span>
                     </div>
                     <div style={{ background: '#1B6B3A', color: '#fff', borderRadius: 8, padding: '6px 14px', fontSize: 12, fontWeight: 700 }}>
-                      Réserver →
+                      Candidater →
                     </div>
                   </div>
                 </div>

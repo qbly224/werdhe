@@ -345,7 +345,7 @@ function OngletBiens(props) {
                     📍 {r.logement_ville} · Depuis le {r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A'}
                   </div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: '#1B6B3A', marginTop: 6 }}>
-                    {new Intl.NumberFormat('fr-FR').format(r.montant_total || r.prix_mensuel)} GNF/mois
+                    {new Intl.NumberFormat('fr-FR').format(r.prix_mensuel || 0)} GNF/mois
                   </div>
                 </div>
                 <div style={{ background: '#E8F5E9', color: '#1B5E20', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
@@ -764,25 +764,24 @@ function OngletReservations(props) {
     var reservationsLoc = stats.reservations || [];
 
     var statutsLoc = {
-      en_attente          : { label: '⏳ En attente de réponse',      couleur: '#F5A623', bg: '#FFF8E1', action: 'Suivre ma demande',       urgent: true  },
-      dossier_requis      : { label: '📁 Dossier demandé',             couleur: '#1565C0', bg: '#E3F2FD', action: 'Soumettre mon dossier',   urgent: true  },
-      en_examen           : { label: '🔍 Dossier en cours d\'examen',  couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Voir l\'avancement',      urgent: false },
-      acceptee            : { label: '✅ Candidature acceptée',         couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Démarrer les échanges',  urgent: true  },
-      echanges            : { label: '💬 En discussion',               couleur: '#1565C0', bg: '#E3F2FD', action: 'Voir la discussion',      urgent: false },
-      caution_requise     : { label: '🔒 Caution à payer',             couleur: '#E65100', bg: '#FFF3E0', action: 'Payer la caution',        urgent: true  },
-      caution_payee       : { label: '🛡️ Caution versée',              couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir l\'avancement',      urgent: false },
-      bail_en_cours       : { label: '📝 Bail à signer',               couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer le bail',         urgent: true  },
-      bail_signe_proprio  : { label: '✍️ À mon tour de signer',        couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer maintenant',      urgent: true  },
-      confirmee           : { label: '🗝️ Location active',             couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir le récapitulatif',  urgent: false },
-      refusee             : { label: '❌ Candidature refusée',          couleur: '#B71C1C', bg: '#FFEBEE', action: null,                     urgent: false },
+      en_attente:         { label: '📤 Candidature envoyée',      couleur: '#F5A623', bg: '#FFF8E1', action: 'Suivre ma candidature',   urgent: true  },
+      dossier_requis:     { label: '📁 Dossier demandé',           couleur: '#1565C0', bg: '#E3F2FD', action: 'Soumettre mon dossier',   urgent: true  },
+      en_examen:          { label: '🔍 Dossier en cours d\'examen', couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Voir l\'avancement',      urgent: false },
+      acceptee:           { label: '✅ Candidature acceptée',       couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Démarrer les échanges',  urgent: true  },
+      echanges:           { label: '💬 En discussion',             couleur: '#1565C0', bg: '#E3F2FD', action: 'Voir la discussion',     urgent: false },
+      caution_requise:    { label: '🔒 Caution à payer',           couleur: '#E65100', bg: '#FFF3E0', action: 'Payer la caution',       urgent: true  },
+      caution_payee:      { label: '🛡️ Caution versée',            couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir l\'avancement',      urgent: false },
+      bail_en_cours:      { label: '📝 Bail à signer',             couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer le bail',        urgent: true  },
+      bail_signe_proprio: { label: '✍️ À mon tour de signer',      couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer maintenant',     urgent: true  },
+      confirmee:          { label: '🗝️ Location active',           couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir le récapitulatif', urgent: false },
+      refusee:            { label: '❌ Candidature non retenue',    couleur: '#B71C1C', bg: '#FFEBEE', action: null,                    urgent: false },
     };
 
     return (
       <div>
         <div className="dash-page-header">
           <div>
-            <h1>Mes réservations</h1>
-            <p>{reservationsLoc.length} réservation(s)</p>
+            <h1>Mes Candidatures</h1><p>{reservationsLoc.length} candidature(s)</p>
           </div>
           <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>
             + Chercher un logement
@@ -813,7 +812,7 @@ function OngletReservations(props) {
                     {r.date_debut ? 'Demande du ' + new Date(r.created_at).toLocaleDateString('fr-FR') : 'Demande en cours'}
                   </div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6B3A', marginTop: 4 }}>
-                    {new Intl.NumberFormat('fr-FR').format(r.montant_total || r.prix_mensuel || 0)} GNF / mois
+                    {new Intl.NumberFormat('fr-FR').format(r.prix_mensuel || 0)} GNF / mois
                   </div>
                 </div>
                 <span style={{ display: 'inline-block', padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: cfg.bg, color: cfg.couleur, flexShrink: 0, marginLeft: 10 }}>
@@ -935,7 +934,7 @@ useEffect(function() {
   });
 
   var cfgStatuts = {
-    en_attente         : { label: '📩 Nouvelle demande',            couleur: '#E53935', urgent: true  },
+    en_attente         : { label: '📩 Nouvelle candidature', couleur: '#E53935', urgent: true },
     dossier_requis     : { label: '⏳ Attente du dossier',           couleur: '#F5A623', urgent: false },
     en_examen          : { label: '📋 Dossier à examiner',           couleur: '#7B1FA2', urgent: true  },
     acceptee           : { label: '✅ Acceptée',                      couleur: '#1B6B3A', urgent: false },
@@ -951,7 +950,7 @@ useEffect(function() {
   // ── VUE DÉTAIL ──────────────────────────────────────────────────
   if (selectionne) {
     var r = selectionne;
-    var loyer = Number(r.montant_total || r.prix_mensuel || 0);
+    var loyer = Number(r.prix_mensuel || r.montant_total || 0);
 
     return (
       <div>
@@ -1328,8 +1327,7 @@ useEffect(function() {
     <div>
       <div className="dash-page-header">
         <div>
-          <h1>Réservations</h1>
-          <p>{reservations.length} réservation(s)</p>
+          <h1>Candidatures reçues</h1><p>{reservations.length} candidature(s)</p>
         </div>
       </div>
 
@@ -1374,7 +1372,7 @@ useEffect(function() {
                 </div>
                 <div style={{ fontSize: 12, color: '#555' }}>🏠 {r.logement_titre}</div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6B3A', marginTop: 3 }}>
-                  {new Intl.NumberFormat('fr-FR').format(r.montant_total || r.prix_mensuel || 0)} GNF/mois
+                  {new Intl.NumberFormat('fr-FR').format(r.prix_mensuel || 0)} GNF/mois
                 </div>
               </div>
               <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: cfg.urgent ? '#FFEBEE' : '#E8F5E9', color: cfg.couleur, flexShrink: 0, marginLeft: 10 }}>
@@ -1560,7 +1558,7 @@ function PaiementsLocataire(props) {
   var [logement, setLogement] = useState(null);
   useEffect(function() {
     var r = (stats.reservations||[]).find(function(r){return r.statut==='confirmee';});
-    if(r){setLogement({nom:r.logement_titre||'Mon logement',proprio:(r.proprietaire_prenom||'')+' '+(r.proprietaire_nom||''),propIni:((r.proprietaire_prenom||'').charAt(0)+(r.proprietaire_nom||'').charAt(0)).toUpperCase()||'P',quartier:r.logement_ville||'Conakry',loyer:Number(r.montant_total)||1500000,debut:r.date_debut?new Date(r.date_debut).toLocaleDateString('fr-FR'):'—',fin:r.date_fin?new Date(r.date_fin).toLocaleDateString('fr-FR'):'—'});}
+    if(r){setLogement({nom:r.logement_titre||'Mon logement',proprio:(r.proprietaire_prenom||'')+' '+(r.proprietaire_nom||''),propIni:((r.proprietaire_prenom||'').charAt(0)+(r.proprietaire_nom||'').charAt(0)).toUpperCase()||'P',quartier:r.logement_ville||'Conakry',loyer:Number(r.prix_mensuel)||0,debut:r.date_debut?new Date(r.date_debut).toLocaleDateString('fr-FR'):'—',fin:r.date_fin?new Date(r.date_fin).toLocaleDateString('fr-FR'):'—'});}
     else{setLogement({nom:'Appartement F3 - Ratoma',proprio:'Mamadou Barry',propIni:'MB',quartier:'Ratoma, Conakry',loyer:1500000,debut:'1 juillet 2025',fin:'30 juin 2026'});}
   }, [stats]);
   if (!logement) return null;
@@ -2867,7 +2865,7 @@ function OngletMesLocations(props) {
       <div className="dash-page-header">
         <div><h1>Mes locations</h1><p>{locationsActives.length} location(s) active(s)</p></div>
         <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>
-          Chercher un logement
+          🔍 Chercher un logement
         </Link>
       </div>
 
@@ -2877,7 +2875,7 @@ function OngletMesLocations(props) {
           <h3>Aucune location active</h3>
           <p>Réservez un logement pour commencer</p>
           <Link to="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
-            Trouver un logement
+            🔍 Trouver un logement
           </Link>
         </div>
       )}
@@ -2894,7 +2892,7 @@ function OngletMesLocations(props) {
                     Depuis le {r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A'}
                   </div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: '#1B6B3A', marginTop: 6 }}>
-                    {new Intl.NumberFormat('fr-FR').format(r.montant_total || r.prix_mensuel)} GNF
+                    {new Intl.NumberFormat('fr-FR').format(r.prix_mensuel || 0)} GNF/mois
                     <span style={{ fontSize: 11, fontWeight: 400, color: '#888' }}> / mois</span>
                   </div>
                 </div>
@@ -2948,7 +2946,7 @@ export default function Dashboard() {
   '/dashboard':              t('tableau_bord'),
   '/dashboard/biens':        t('mes_biens'),
   '/dashboard/locataires':   t('locataires'),
-  '/dashboard/reservations': t('reservations'),
+  '/dashboard/reservations': user && (user.role === 'proprietaire' || user.role === 'les_deux') ? 'Candidatures reçues' : 'Mes Candidatures',
   '/dashboard/paiements':    t('paiements'),
   '/dashboard/documents':    t('documents'),
   '/dashboard/alertes':      'Alertes',
@@ -2962,7 +2960,7 @@ export default function Dashboard() {
     '/dashboard': '📊',
     '/dashboard/biens': '🏠',
     '/dashboard/locataires': '👥',
-    '/dashboard/reservations': '📅',
+    '/dashboard/reservations': '📋',
     '/dashboard/paiements': '💳',
     '/dashboard/documents': '📄',
     '/dashboard/alertes': '🔔',
@@ -3110,7 +3108,7 @@ function chargerDonnees() {
 
   return (
     <div className="dashboard-wrapper">
-      
+
       {/* Overlay sombre sur mobile quand sidebar ouverte */}
 {isMobile && sidebarOpen && (
   <div
