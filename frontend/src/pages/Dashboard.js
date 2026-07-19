@@ -762,6 +762,7 @@ function OngletReservations(props) {
   // ── LOCATAIRE : liste des réservations avec lien vers le flux ─────
   if (!estProprietaire) {
     var reservationsLoc = stats.reservations || [];
+    console.log('[Debug] Candidatures locataire:', reservationsLoc.length, reservationsLoc);
 
     var statutsLoc = {
       en_attente:         { label: '📤 Candidature envoyée',      couleur: '#F5A623', bg: '#FFF8E1', action: 'Suivre ma candidature',   urgent: true  },
@@ -950,7 +951,8 @@ useEffect(function() {
   // ── VUE DÉTAIL ──────────────────────────────────────────────────
   if (selectionne) {
     var r = selectionne;
-    var loyer = Number(r.prix_mensuel || r.montant_total || 0);
+    var loyer = Number(r.prix_mensuel) || Number(r.montant_total) || 0;
+    console.log('[Debug loyer]', r.logement_titre, 'prix_mensuel:', r.prix_mensuel, 'montant_total:', r.montant_total, 'loyer calculé:', loyer);
 
     return (
       <div>
