@@ -84,11 +84,11 @@ export default function Sidebar(props) {
 
       <nav style={{flex:1, padding:'12px 8px', overflowY:'auto', overflowX:'hidden'}}>
         {nav.map(function(item) {
-          var isActive = ongletActif === '/dashboard/' + item.id || (item.id === 'dashboard' && ongletActif === '/dashboard');
+          var isActive = ongletActif === item.path;
           return (
             <div
-              key={item.id}
-              onClick={function() { setOnglet('/dashboard/' + item.id); }}
+              key={item.path}
+              onClick={function() { setOnglet(item.path); }}
               style={{
                 display:'flex', alignItems:'center', gap:12,
                 padding:'11px 12px', borderRadius:10, marginBottom:4,
