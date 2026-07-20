@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Home, Users, CalendarCheck,
   CreditCard, FileText, Bell, MessageCircle,
-  Wrench, Send, Settings, MapPin
+  Wrench, Send, Settings
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
