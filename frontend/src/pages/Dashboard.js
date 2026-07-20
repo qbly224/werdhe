@@ -12,6 +12,11 @@ import useDarkMode from '../hooks/useDarkMode';
 import { t, changerLangue, getLangue } from '../services/i18n';
 import RechercheGlobale from '../components/dashboard/RechercheGlobale';
 import './Dashboard.css';
+import {
+  Menu, Bell, Sun, Moon, Search,
+  LayoutDashboard, Home, CalendarCheck,
+  MessageCircle, CreditCard, Settings
+} from 'lucide-react';
 
 // ================================================
 // UTILITAIRE — Formater les montants en GNF
@@ -3131,7 +3136,7 @@ function chargerDonnees() {
         <div className="dash-header">
           <div className="dash-header-left" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <button className="dash-toggle-btn" onClick={function() { setSidebarOpen(!sidebarOpen); }} type="button">
-              ☰
+             <Menu size={22} strokeWidth={1.5} />
             </button>
             <div className="dash-header-title">
               <h1>{pageIcon[onglet] || '📊'} {pageTitle[onglet] || 'Tableau de bord'}</h1>
@@ -3178,7 +3183,7 @@ function chargerDonnees() {
               onClick={toggleDarkMode}
               title={darkMode ? 'Mode clair' : 'Mode sombre'}
               style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', padding: '4px 8px' }}>
-              {darkMode ? '☀️' : '🌙'}
+              {darkMode ? <Sun size={20} strokeWidth={1.5} /> : <Moon size={20} strokeWidth={1.5} />}
             </button>
             <button className="dash-notif-btn" type="button" onClick={function() {
   var nouvelEtat = !showNotif;
@@ -3196,7 +3201,7 @@ function chargerDonnees() {
       .catch(console.error);
   }
 }}>
-              🔔
+       <Bell size={22} strokeWidth={1.5} />
               {alertes.filter(function(a) { return !a.lu; }).length > 0 && (
   <div className="dash-notif-badge">
     {alertes.filter(function(a) { return !a.lu; }).length}
@@ -3226,17 +3231,17 @@ function chargerDonnees() {
     zIndex: 500, boxShadow: '0 -4px 12px rgba(0,0,0,0.08)'
   }}>
     {(user && user.role === 'locataire' ? [
-      { path: '/dashboard',               icon: '📊', label: 'Accueil'       },
-      { path: '/dashboard/mes-locations',  icon: '🏠', label: 'Locations'    },
-      { path: '/dashboard/messages',       icon: '💬', label: 'Messages'     },
-      { path: '/dashboard/paiements',      icon: '💳', label: 'Paiements'   },
-      { path: '/dashboard/parametres',     icon: '⚙️', label: 'Profil'       },
+      { path: '/dashboard',               icon: <LayoutDashboard size={22} strokeWidth={1.5} />, label: 'Accueil'   },
+      { path: '/dashboard/mes-locations', icon: <Home            size={22} strokeWidth={1.5} />, label: 'Locations' },
+      { path: '/dashboard/messages',      icon: <MessageCircle   size={22} strokeWidth={1.5} />, label: 'Messages'  },
+      { path: '/dashboard/paiements',     icon: <CreditCard      size={22} strokeWidth={1.5} />, label: 'Paiements' },
+      { path: '/dashboard/parametres',    icon: <Settings        size={22} strokeWidth={1.5} />, label: 'Profil'    },
     ] : [
-      { path: '/dashboard',               icon: '📊', label: 'Accueil'       },
-      { path: '/dashboard/biens',          icon: '🏠', label: 'Biens'        },
-      { path: '/dashboard/reservations',   icon: '📅', label: 'Résas'        },
-      { path: '/dashboard/messages',       icon: '💬', label: 'Messages'     },
-      { path: '/dashboard/parametres',     icon: '⚙️', label: 'Profil'       },
+      { path: '/dashboard',               icon: <LayoutDashboard size={22} strokeWidth={1.5} />, label: 'Accueil'   },
+      { path: '/dashboard/biens',         icon: <Home            size={22} strokeWidth={1.5} />, label: 'Biens'     },
+      { path: '/dashboard/reservations',  icon: <CalendarCheck   size={22} strokeWidth={1.5} />, label: 'Résas'     },
+      { path: '/dashboard/messages',      icon: <MessageCircle   size={22} strokeWidth={1.5} />, label: 'Messages'  },
+      { path: '/dashboard/parametres',    icon: <Settings        size={22} strokeWidth={1.5} />, label: 'Profil'    },
     ]).map(function(item) {
       var actif = onglet === item.path;
       return (
@@ -3245,13 +3250,13 @@ function chargerDonnees() {
           style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center',
             gap: 3, background: 'none', border: 'none', cursor: 'pointer',
-            padding: '4px 12px', borderRadius: 10, flex: 1,
+            padding: '4px 8px', borderRadius: 10, flex: 1,
             color: actif ? '#1B6B3A' : '#888',
             transition: 'all .15s'
           }}>
-          <span style={{ fontSize: 22, lineHeight: 1 }}>{item.icon}</span>
+          {item.icon}
           <span style={{ fontSize: 10, fontWeight: actif ? 700 : 400, letterSpacing: 0.2 }}>{item.label}</span>
-          {actif && <div style={{ width: 4, height: 4, background: '#1B6B3A', borderRadius: '50%' }} />}
+          {actif && <div style={{ width: 4, height: 4, background: '#1B6B3A', borderRadius: '50%', marginTop: 2 }} />}
         </button>
       );
     })}

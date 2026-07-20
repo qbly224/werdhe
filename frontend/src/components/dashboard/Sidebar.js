@@ -1,30 +1,37 @@
+import {
+  LayoutDashboard, Home, Users, CalendarCheck,
+  CreditCard, FileText, Bell, MessageCircle,
+  Wrench, Send, Settings, MapPin
+} from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
 
+// Navigation propriétaire
 var NAV_PROPRIETAIRE = [
-  { id: 'dashboard', label: 'Tableau de bord', icon: '📊' },
-  { id: 'biens', label: 'Mes biens', icon: '🏠' },
-  { id: 'preavis', label: 'Preavis de depart', icon: '📤' },
-  { id: 'locataires', label: 'Locataires', icon: '👥' },
-  { id: 'reservations', label: 'Candidatures reçues', icon: '📋' },
-  { id: 'paiements', label: 'Paiements', icon: '💳' },
-  { id: 'documents', label: 'Documents', icon: '📄' },
-  { id: 'alertes', label: 'Alertes', icon: '🔔', badge: true },
-  { id: 'messages', label: 'Messages', icon: '💬' },
-  { id: 'reclamations', label: 'Reclamations', icon: '🔧' },
-  { id: 'parametres', label: 'Parametres', icon: '⚙️' }
+  { path: '/dashboard',              icon: <LayoutDashboard size={20} strokeWidth={1.5} />, label: 'Tableau de bord' },
+  { path: '/dashboard/biens',        icon: <Home            size={20} strokeWidth={1.5} />, label: 'Mes biens'       },
+  { path: '/dashboard/locataires',   icon: <Users           size={20} strokeWidth={1.5} />, label: 'Locataires'     },
+  { path: '/dashboard/reservations', icon: <CalendarCheck   size={20} strokeWidth={1.5} />, label: 'Candidatures reçues' },
+  { path: '/dashboard/paiements',    icon: <CreditCard      size={20} strokeWidth={1.5} />, label: 'Paiements'      },
+  { path: '/dashboard/documents',    icon: <FileText        size={20} strokeWidth={1.5} />, label: 'Documents'      },
+  { path: '/dashboard/alertes',      icon: <Bell            size={20} strokeWidth={1.5} />, label: 'Alertes'        },
+  { path: '/dashboard/messages',     icon: <MessageCircle   size={20} strokeWidth={1.5} />, label: 'Messages'       },
+  { path: '/dashboard/reclamations', icon: <Wrench          size={20} strokeWidth={1.5} />, label: 'Réclamations'  },
+  { path: '/dashboard/preavis',      icon: <Send            size={20} strokeWidth={1.5} />, label: 'Préavis'        },
+  { path: '/dashboard/parametres',   icon: <Settings        size={20} strokeWidth={1.5} />, label: 'Paramètres'    },
 ];
 
+// Navigation locataire
 var NAV_LOCATAIRE = [
-  { id: 'dashboard', label: 'Tableau de bord', icon: '📊' },
-  { id: 'mes-locations', label: 'Mes locations', icon: '🏠' },
-  { id: 'preavis', label: 'Preavis de depart', icon: '📤' },
-  { id: 'reservations', label: 'Mes Candidatures', icon: '📋' },
-  { id: 'paiements', label: 'Paiements', icon: '💳' },
-  { id: 'documents', label: 'Mes documents', icon: '📄' },
-  { id: 'messages', label: 'Messages', icon: '💬' },
-  { id: 'reclamations', label: 'Reclamations', icon: '🔧' },
-  { id: 'parametres', label: 'Parametres', icon: '⚙️' }
+  { path: '/dashboard',               icon: <LayoutDashboard size={20} strokeWidth={1.5} />, label: 'Tableau de bord'  },
+  { path: '/dashboard/mes-locations', icon: <Home            size={20} strokeWidth={1.5} />, label: 'Mes locations'    },
+  { path: '/dashboard/reservations',  icon: <CalendarCheck   size={20} strokeWidth={1.5} />, label: 'Mes Candidatures' },
+  { path: '/dashboard/paiements',     icon: <CreditCard      size={20} strokeWidth={1.5} />, label: 'Paiements'       },
+  { path: '/dashboard/documents',     icon: <FileText        size={20} strokeWidth={1.5} />, label: 'Documents'       },
+  { path: '/dashboard/messages',      icon: <MessageCircle   size={20} strokeWidth={1.5} />, label: 'Messages'        },
+  { path: '/dashboard/reclamations',  icon: <Wrench          size={20} strokeWidth={1.5} />, label: 'Réclamations'   },
+  { path: '/dashboard/preavis',       icon: <Send            size={20} strokeWidth={1.5} />, label: 'Préavis'         },
+  { path: '/dashboard/parametres',    icon: <Settings        size={20} strokeWidth={1.5} />, label: 'Paramètres'     },
 ];
 
 export default function Sidebar(props) {
