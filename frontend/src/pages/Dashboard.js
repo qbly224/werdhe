@@ -15,7 +15,16 @@ import './Dashboard.css';
 import {
   Menu, Bell, Sun, Moon, Search,
   LayoutDashboard, Home, CalendarCheck,
-  MessageCircle, CreditCard, Settings
+  MessageCircle, CreditCard, Settings,
+  Users, FileText, Wrench, Send, AlertTriangle,
+  CheckCircle, XCircle, Clock, Key, Lock,
+  Plus, Pencil, Trash2, Download, Upload,
+  Eye, Copy, Phone, Mail, MapPin,
+  Star, RefreshCw, Building2, Camera,
+  Banknote, TrendingUp, Receipt, Shield,
+  ChevronRight, ChevronLeft, Info, Zap,
+  FileSignature, BedDouble, Bath, Maximize2,
+  LogOut, UserCheck, Award, AlertCircle
 } from 'lucide-react';
 
 // ================================================
@@ -33,9 +42,9 @@ var DOCS_TYPES = [
   { icon: '🧾', titre: 'Quittance de loyer', desc: 'Generer une quittance officielle', color: '#1565C0', type: 'quittance' },
   { icon: '📋', titre: 'Etat des lieux', desc: 'Entree ou sortie du locataire', color: '#E65100', type: 'etat_lieux' },
   { icon: '📜', titre: 'Mise en demeure', desc: 'Pour loyer impaye', color: '#B71C1C', type: 'mise_en_demeure' },
-  { icon: '📊', titre: 'Rapport financier', desc: "Revenus du mois ou de l'annee", color: '#4A148C', type: 'rapport_financier' },
+  { icon: <TrendingUp size={24} strokeWidth={1.5} />, titre: 'Rapport financier', desc: "Revenus du mois ou de l'annee", color: '#4A148C', type: 'rapport_financier' },
   { icon: '🔏', titre: 'Caution / Depot', desc: 'Contrat de caution solidaire', color: '#00695C', type: 'caution' },
-  { icon: '📤', titre: 'Preavis de depart', desc: 'Lettre de preavis locataire', color: '#37474F', type: 'preavis' }
+  { icon: '<Send size={14} strokeWidth={1.5} />', titre: 'Preavis de depart', desc: 'Lettre de preavis locataire', color: '#37474F', type: 'preavis' }
 ];
 
 // ================================================
@@ -53,7 +62,7 @@ function UpgradeBanner({ fonctionnalite, planRequis }) {
   };
   return (
     <div style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', borderRadius: 14, padding: 18, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-      <div style={{ fontSize: 28, flexShrink: 0 }}>🔒</div>
+      <div style={{ fontSize: 28, flexShrink: 0 }}><Lock size={14} strokeWidth={1.5} /></div>
       <div style={{ flex: 1 }}>
         <div style={{ color: '#fff', fontWeight: 700, fontSize: 14, marginBottom: 4 }}>
           Fonctionnalité réservée au plan {planRequis || 'Pro'}
@@ -180,13 +189,13 @@ function OngletOverview(props) {
     ? Math.round(biensOccupes / stats.logements.length * 100) : 0;
 
   var statsCards = user && user.role !== 'locataire' ? [
-    { label: 'Revenus du mois', value: GNF(loiersPercus), sub: 'Encaisses ce mois', color: '#1B6B3A', bg: '#E8F5E9', icon: '💰' },
-    { label: 'Biens occupes', value: biensOccupes + '/' + stats.logements.length, sub: biensLibres + ' bien(s) libre(s)', color: '#1565C0', bg: '#E3F2FD', icon: '🏠' },
-    { label: 'Loyer en retard', value: alertes.filter(function(a) { return a.type === 'loyer_retard'; }).length + ' locataire(s)', sub: 'A relancer', color: '#B71C1C', bg: '#FFEBEE', icon: '⚠️' },
-    { label: "Taux d'occupation", value: tauxOccup + '%', sub: 'Performance du mois', color: '#E65100', bg: '#FFF3E0', icon: '📈' }
+    { label: 'Revenus du mois', value: GNF(loiersPercus), sub: 'Encaisses ce mois', color: '#1B6B3A', bg: '#E8F5E9', icon: <Home size={24} strokeWidth={1.5} /> },
+    { label: 'Biens occupes', value: biensOccupes + '/' + stats.logements.length, sub: biensLibres + ' bien(s) libre(s)', color: '#1565C0', bg: '#E3F2FD', icon: <Home size={24} strokeWidth={1.5} /> },
+    { label: 'Loyer en retard', value: alertes.filter(function(a) { return a.type === 'loyer_retard'; }).length + ' locataire(s)', sub: 'A relancer', color: '#B71C1C', bg: '#FFEBEE', icon: <AlertTriangle size={24} strokeWidth={1.5} /> },
+    { label: "Taux d'occupation", value: tauxOccup + '%', sub: 'Performance du mois', color: '#E65100', bg: '#FFF3E0', icon: <TrendingUp size={24} strokeWidth={1.5} /> }
   ] : [
-    { label: 'Mes reservations', value: String(stats.reservations.length), sub: 'Total', color: '#1565C0', bg: '#E3F2FD', icon: '📅' },
-    { label: 'Paiements effectues', value: String(stats.paiements.filter(function(p) { return p.statut === 'complete'; }).length), sub: 'Ce mois', color: '#1B6B3A', bg: '#E8F5E9', icon: '💰' }
+    { label: 'Mes reservations', value: String(stats.reservations.length), sub: 'Total', color: '#1565C0', bg: '#E3F2FD', icon: <CalendarCheck size={24} strokeWidth={1.5} /> },
+    { label: 'Paiements effectues', value: String(stats.paiements.filter(function(p) { return p.statut === 'complete'; }).length), sub: 'Ce mois', color: '#1B6B3A', bg: '#E8F5E9', icon: <Banknote size={24} strokeWidth={1.5} /> }
   ];
 
   return (
@@ -238,7 +247,7 @@ function OngletOverview(props) {
             return (
               <div key={i} className="bien-list-item">
                 <div className="bien-list-left">
-                  <span style={{ fontSize: 22 }}>🏠</span>
+                  <Home size={22} strokeWidth={1.5} />
                   <div>
                     <div className="bien-list-info-title">{b.titre}</div>
                     <div className="bien-list-info-sub">{GNF(b.prix_mensuel)}/mois</div>
@@ -366,7 +375,7 @@ function OngletBiens(props) {
                 </Link>
                 <button onClick={function() { if (setOnglet) setOnglet('/dashboard/documents'); }}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', fontSize: 13, fontWeight: 600, border: '0.5px solid #90CAF9', cursor: 'pointer' }}>
-                  📄 Documents
+                  <FileText size={14} strokeWidth={1.5} /> Documents
                 </button>
               </div>
             </div>
@@ -424,7 +433,7 @@ function OngletBiens(props) {
         {limiteAtteinte ? (
           <button onClick={function() { window.location.href = '/pricing'; }}
             style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 16px', borderRadius: 10, background: '#F5A623', color: '#1B2B22', border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-            🔒 Limite atteinte — Upgrader
+            <Lock size={14} strokeWidth={1.5} /> Limite atteinte — Upgrader
           </button>
         ) : (
           <Link to="/logements/ajouter" className="btn-green" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
@@ -552,16 +561,16 @@ function OngletBiens(props) {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                   <button onClick={function() { if (setOnglet) setOnglet('/dashboard/messages'); }}
                     style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#E8F5E9', color: '#1B5E20', border: '0.5px solid #A5D6A7', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                    💬 Messagerie
+                    <MessageCircle size={14} strokeWidth={1.5} /> Messagerie
                   </button>
                   <button onClick={function() { if (setOnglet) setOnglet('/dashboard/documents'); }}
                     style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', border: '0.5px solid #90CAF9', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                    📄 Documents
+                    <FileText size={14} strokeWidth={1.5} /> Documents
                   </button>
                   {!preavisActif && (
                     <button onClick={function() { if (setOnglet) setOnglet('/dashboard/preavis'); }}
                       style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                      📤 Préavis
+                      <Send size={14} strokeWidth={1.5} /> Préavis
                     </button>
                   )}
                   {preavisActif && (
@@ -586,10 +595,10 @@ function OngletBiens(props) {
                     setModeEdit(b.id);
                     setFormEdit({ titre: b.titre, adresse: b.adresse, prix_mensuel: b.prix_mensuel, statut: b.statut });
                   }}>
-                    ✏️ Modifier
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Pencil size={14} strokeWidth={1.5} /> Modifier</span>
                   </button>
                   <button className="btn-bien-secondary" onClick={function() { setShowConfirm(b.id); }}>
-                    🗑️ Supprimer
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Trash2 size={14} strokeWidth={1.5} /> Supprimer</span>
                   </button>
                 </div>
               )}
@@ -770,17 +779,17 @@ function OngletReservations(props) {
     console.log('[Debug] Candidatures locataire:', reservationsLoc.length, reservationsLoc);
 
     var statutsLoc = {
-      en_attente:         { label: '📤 Candidature envoyée',      couleur: '#F5A623', bg: '#FFF8E1', action: 'Suivre ma candidature',   urgent: true  },
+      en_attente:         { label: 'Candidature envoyée',     couleur: '#F5A623', bg: '#FFF8E1', action: 'Suivre ma candidature',   urgent: true  },
       dossier_requis:     { label: '📁 Dossier demandé',           couleur: '#1565C0', bg: '#E3F2FD', action: 'Soumettre mon dossier',   urgent: true  },
       en_examen:          { label: '🔍 Dossier en cours d\'examen', couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Voir l\'avancement',      urgent: false },
-      acceptee:           { label: '✅ Candidature acceptée',       couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Démarrer les échanges',  urgent: true  },
-      echanges:           { label: '💬 En discussion',             couleur: '#1565C0', bg: '#E3F2FD', action: 'Voir la discussion',     urgent: false },
-      caution_requise:    { label: '🔒 Caution à payer',           couleur: '#E65100', bg: '#FFF3E0', action: 'Payer la caution',       urgent: true  },
+      acceptee:           { label: '<CheckCircle size={14} strokeWidth={1.5} /> Candidature acceptée',       couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Démarrer les échanges',  urgent: true  },
+      echanges:           { label: '<MessageCircle size={14} strokeWidth={1.5} /> En discussion',             couleur: '#1565C0', bg: '#E3F2FD', action: 'Voir la discussion',     urgent: false },
+      caution_requise:    { label: '<Lock size={14} strokeWidth={1.5} /> Caution à payer',           couleur: '#E65100', bg: '#FFF3E0', action: 'Payer la caution',       urgent: true  },
       caution_payee:      { label: '🛡️ Caution versée',            couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir l\'avancement',      urgent: false },
       bail_en_cours:      { label: '📝 Bail à signer',             couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer le bail',        urgent: true  },
       bail_signe_proprio: { label: '✍️ À mon tour de signer',      couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer maintenant',     urgent: true  },
-      confirmee:          { label: '🗝️ Location active',           couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir le récapitulatif', urgent: false },
-      refusee:            { label: '❌ Candidature non retenue',    couleur: '#B71C1C', bg: '#FFEBEE', action: null,                    urgent: false },
+      confirmee:          { label: '<Key size={14} strokeWidth={1.5} /> Location active',           couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir le récapitulatif', urgent: false },
+      refusee:            { label: '<XCircle size={14} strokeWidth={1.5} /> Candidature non retenue',    couleur: '#B71C1C', bg: '#FFEBEE', action: null,                    urgent: false },
     };
 
     return (
@@ -796,7 +805,7 @@ function OngletReservations(props) {
 
         {reservationsLoc.length === 0 && (
           <div className="dash-empty-state">
-            <span>📅</span>
+            <CalendarCheck size={48} strokeWidth={1} color="#C8E6C9" />
             <h3>Aucune réservation</h3>
             <p>Trouvez un logement et envoyez une demande au propriétaire</p>
             <Link to="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
@@ -943,14 +952,14 @@ useEffect(function() {
     en_attente         : { label: '📩 Nouvelle candidature', couleur: '#E53935', urgent: true },
     dossier_requis     : { label: '⏳ Attente du dossier',           couleur: '#F5A623', urgent: false },
     en_examen          : { label: '📋 Dossier à examiner',           couleur: '#7B1FA2', urgent: true  },
-    acceptee           : { label: '✅ Acceptée',                      couleur: '#1B6B3A', urgent: false },
-    echanges           : { label: '💬 Discussion en cours',          couleur: '#1565C0', urgent: false },
+    acceptee           : { label: '<CheckCircle size={14} strokeWidth={1.5} /> Acceptée',                      couleur: '#1B6B3A', urgent: false },
+    echanges           : { label: '<MessageCircle size={14} strokeWidth={1.5} /> Discussion en cours',          couleur: '#1565C0', urgent: false },
     caution_requise    : { label: '⏳ Caution en attente',            couleur: '#F5A623', urgent: false },
-    caution_payee      : { label: '✅ Caution reçue',                 couleur: '#1B6B3A', urgent: true  },
+    caution_payee      : { label: '<CheckCircle size={14} strokeWidth={1.5} /> Caution reçue',                 couleur: '#1B6B3A', urgent: true  },
     bail_en_cours      : { label: '📝 Bail à signer',                couleur: '#7B1FA2', urgent: true  },
     bail_signe_proprio : { label: '⏳ Attente signature locataire',  couleur: '#F5A623', urgent: false },
-    confirmee          : { label: '🗝️ Location active',              couleur: '#1B6B3A', urgent: false },
-    refusee            : { label: '❌ Refusée',                       couleur: '#888',    urgent: false },
+    confirmee          : { label: '<Key size={14} strokeWidth={1.5} /> Location active',              couleur: '#1B6B3A', urgent: false },
+    refusee            : { label: '<XCircle size={14} strokeWidth={1.5} /> Refusée',                       couleur: '#888',    urgent: false },
   };
 
   // ── VUE DÉTAIL ──────────────────────────────────────────────────
@@ -1029,7 +1038,7 @@ useEffect(function() {
               <button
                 onClick={function() { action('/decision', { decision: 'acceptee' }, 'Candidature acceptée ! Le locataire est notifié.'); }}
                 style={{ background: '#E8F5E9', color: '#1B5E20', border: '1px solid #A5D6A7', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-                ✅ Accepter directement (sans dossier)
+                <CheckCircle size={14} strokeWidth={1.5} /> Accepter directement (sans dossier)
               </button>
               <div style={{ display: 'flex', gap: 10 }}>
                 <input
@@ -1044,7 +1053,7 @@ useEffect(function() {
                     action('/decision', { decision: 'refusee', motif: motifRefus }, 'Candidature refusée. Le locataire est notifié.');
                   }}
                   style={{ background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
-                  ❌ Refuser
+                  <XCircle size={14} strokeWidth={1.5} /> Refuser
                 </button>
               </div>
             </div>
@@ -1068,7 +1077,7 @@ useEffect(function() {
       ].map(function(d) {
         return (
           <div key={d.label} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0', borderBottom: '0.5px solid #F5F5F5' }}>
-            <span style={{ fontSize: 18, flexShrink: 0 }}>{d.ok ? '✅' : '⏳'}</span>
+            <span style={{ fontSize: 18, flexShrink: 0 }}>{d.ok ? '<CheckCircle size={14} strokeWidth={1.5} />' : '⏳'}</span>
             <span style={{ fontSize: 13, color: d.ok ? '#1B2B22' : '#888', flex: 1 }}>{d.label}</span>
             {d.ok && d.url && (
               <a href={'https://werdhe-backend.onrender.com/reservations/' + r.id + '/document/' + (
@@ -1114,11 +1123,11 @@ useEffect(function() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <button onClick={function() { action('/decision', { decision: 'acceptee' }, 'Dossier validé ! Candidature acceptée.'); }}
         style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-        ✅ Valider le dossier — Accepter la candidature
+        <CheckCircle size={14} strokeWidth={1.5} /> Valider le dossier — Accepter la candidature
       </button>
       <button onClick={function() { action('/decision', { decision: 'dossier_requis' }, 'Informations complémentaires demandées.'); }}
         style={{ background: '#E3F2FD', color: '#1565C0', border: '1px solid #90CAF9', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-        💬 Demander des informations complémentaires
+        <MessageCircle size={14} strokeWidth={1.5} /> Demander des informations complémentaires
       </button>
       <div style={{ display: 'flex', gap: 10 }}>
         <input type="text" value={motifRefus} onChange={function(e) { setMotifRefus(e.target.value); }}
@@ -1129,7 +1138,7 @@ useEffect(function() {
           action('/decision', { decision: 'refusee', motif: motifRefus }, 'Candidature refusée.');
         }}
           style={{ background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-          ❌ Refuser
+          <XCircle size={14} strokeWidth={1.5} /> Refuser
         </button>
       </div>
     </div>
@@ -1201,7 +1210,7 @@ useEffect(function() {
         {r.statut === 'caution_payee' && (
           <div>
             <div style={{ background: '#E8F5E9', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
-              <span>✅</span>
+              <span><CheckCircle size={14} strokeWidth={1.5} /></span>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#1B5E20' }}>
                   Caution reçue : {new Intl.NumberFormat('fr-FR').format(loyer)} GNF
@@ -1220,7 +1229,7 @@ useEffect(function() {
                 'Adresse complète du logement',
                 'Loyer mensuel : ' + new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF',
                 'Date de début et durée du bail',
-                'Caution versée : ' + new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF ✅',
+                'Caution versée : ' + new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF <CheckCircle size={14} strokeWidth={1.5} />',
               ].map(function(item) {
                 return (
                   <div key={item} style={{ display: 'flex', gap: 8, padding: '5px 0', fontSize: 13, color: '#555' }}>
@@ -1249,7 +1258,7 @@ useEffect(function() {
                 ['Loyer', new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF/mois'],
                 ['Début', r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A'],
                 ['Durée', r.duree_mois ? r.duree_mois + ' mois' : 'N/A'],
-                ['Caution', new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF ✅'],
+                ['Caution', new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF <CheckCircle size={14} strokeWidth={1.5} />'],
               ].map(function(row) {
                 return (
                   <div key={row[0]} style={{ fontSize: 11, color: '#666' }}>
@@ -1262,7 +1271,7 @@ useEffect(function() {
               style={{ padding: 16, border: bailSigne ? '1.5px solid #1B6B3A' : '1.5px dashed #1B6B3A', background: bailSigne ? '#E8F5E9' : '#F0FBF0', borderRadius: 12, textAlign: 'center', cursor: bailSigne ? 'default' : 'pointer', marginBottom: 14 }}>
               {bailSigne ? (
                 <div>
-                  <div style={{ fontSize: 22, marginBottom: 4 }}>✅</div>
+                  <div style={{ fontSize: 22, marginBottom: 4 }}><CheckCircle size={14} strokeWidth={1.5} /></div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: '#1B6B3A' }}>Vous avez signé !</div>
                   <div style={{ fontSize: 12, color: '#2E7D32', marginTop: 4 }}>En attente de la signature du locataire...</div>
                 </div>
@@ -1294,7 +1303,7 @@ useEffect(function() {
         {r.statut === 'confirmee' && (
           <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <div style={{ textAlign: 'center', marginBottom: 16 }}>
-              <div style={{ fontSize: 40, marginBottom: 8 }}>🗝️</div>
+              <div style={{ fontSize: 40, marginBottom: 8 }}><Key size={14} strokeWidth={1.5} /></div>
               <div style={{ fontSize: 18, fontWeight: 700, color: '#1B6B3A' }}>Location active</div>
               <div style={{ fontSize: 13, color: '#666', marginTop: 6 }}>
                 {r.locataire_prenom} {r.locataire_nom} occupe votre logement.
@@ -1320,7 +1329,7 @@ useEffect(function() {
         {/* ─ REFUSÉE ─ */}
         {r.statut === 'refusee' && (
           <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontSize: 36, marginBottom: 12 }}>❌</div>
+            <div style={{ fontSize: 36, marginBottom: 12 }}><XCircle size={14} strokeWidth={1.5} /></div>
             <div style={{ fontSize: 15, fontWeight: 700, color: '#B71C1C' }}>Demande refusée</div>
             <div style={{ fontSize: 13, color: '#666', marginTop: 8 }}>Le locataire a été notifié du refus.</div>
           </div>
@@ -1423,7 +1432,7 @@ function OngletPaiements(props) {
 
         {paiements.length === 0 && (
           <div className="dash-empty-state">
-            <span>💰</span>
+            <Banknote size={48} strokeWidth={1} color="#C8E6C9" />
             <h3>Aucun paiement enregistré</h3>
             <p>Vos paiements apparaîtront ici</p>
           </div>
@@ -1478,12 +1487,12 @@ function PaiementsProprietaire(props) {
     var bl = stats.logements.map(function(l) {
       var dp = stats.paiements.find(function(p) { return String(p.logement_id) === String(l.id) && p.statut === 'complete'; });
       var ea = stats.paiements.find(function(p) { return String(p.logement_id) === String(l.id) && p.statut === 'en_attente'; });
-      return { id: l.id, nom: l.titre, locataire: '—', quartier: l.ville, loyer: Number(l.prix_mensuel), statut: l.statut === 'loue' ? (dp ? 'paye' : ea ? 'en_retard' : 'impaye') : 'impaye', jours: ea ? 5 : 0, icon: '🏠' };
+      return { id: l.id, nom: l.titre, locataire: '—', quartier: l.ville, loyer: Number(l.prix_mensuel), statut: l.statut === 'loue' ? (dp ? 'paye' : ea ? 'en_retard' : 'impaye') : 'impaye', jours: ea ? 5 : 0, icon: <Home size={24} strokeWidth={1.5} /> };
     });
     if (bl.length === 0) bl = [
-      { id: '1', nom: 'Villa Ratoma', locataire: 'Mamadou Diallo', quartier: 'Ratoma', loyer: 2500000, statut: 'en_retard', jours: 12, icon: '🏠' },
+      { id: '1', nom: 'Villa Ratoma', locataire: 'Mamadou Diallo', quartier: 'Ratoma', loyer: 2500000, statut: 'en_retard', jours: 12, icon: <Home size={24} strokeWidth={1.5} /> },
       { id: '2', nom: 'Appart Kaloum 2', locataire: 'Fatoumata Camara', quartier: 'Kaloum', loyer: 1800000, statut: 'impaye', jours: 3, icon: '🏢' },
-      { id: '3', nom: 'Studio Matam', locataire: 'Sekou Konate', quartier: 'Matam', loyer: 900000, statut: 'paye', jours: 0, icon: '🏠' }
+      { id: '3', nom: 'Studio Matam', locataire: 'Sekou Konate', quartier: 'Matam', loyer: 900000, statut: 'paye', jours: 0, icon: <Home size={24} strokeWidth={1.5} /> }
     ];
     setBiensList(bl);
   }, [stats]);
@@ -1540,7 +1549,7 @@ function PaiementsProprietaire(props) {
             {PAY_MODES.map(function(p){return(<div key={p.id} onClick={function(){setSelectedMode(p.id);}} style={{display:'flex',alignItems:'center',gap:'12px',padding:'12px 14px',border:selectedMode===p.id?'2px solid #1B6B3A':'0.5px solid #E0E0E0',background:selectedMode===p.id?'#E8F5E9':'#fff',borderRadius:'12px',marginBottom:'8px',cursor:'pointer'}}><div style={{width:'40px',height:'40px',background:p.color||'#E8F5E9',borderRadius:'10px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:p.icon?'20px':'13px',fontWeight:'700',color:p.text||'#1B6B3A'}}>{p.icon||p.abbr}</div><div style={{flex:1}}><div style={{fontSize:'14px',fontWeight:'600'}}>{p.label}</div><div style={{fontSize:'11px',color:'#888'}}>{p.sub}</div></div><div style={{width:'22px',height:'22px',borderRadius:'50%',border:selectedMode===p.id?'none':'1.5px solid #E0E0E0',background:selectedMode===p.id?'#1B6B3A':'transparent',display:'flex',alignItems:'center',justifyContent:'center'}}>{selectedMode===p.id&&<span style={{color:'#fff',fontSize:'12px'}}>✓</span>}</div></div>);})}
             <button type="button" onClick={confirmerPaiement} disabled={processing} style={{width:'100%',background:processing?'#999':'#1B6B3A',color:'#fff',border:'none',borderRadius:'12px',padding:'14px',fontSize:'15px',fontWeight:'700',cursor:processing?'not-allowed':'pointer',marginTop:'6px'}}>{processing?'Traitement...':'Confirmer — '+GNF(modal.loyer)}</button>
           </div>):(<div style={{textAlign:'center',padding:'20px 0'}}>
-            <div style={{width:'70px',height:'70px',background:'#E8F5E9',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px',fontSize:'36px'}}>✅</div>
+            <div style={{width:'70px',height:'70px',background:'#E8F5E9',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px',fontSize:'36px'}}><CheckCircle size={14} strokeWidth={1.5} /></div>
             <div style={{fontSize:'20px',fontWeight:'700',color:'#1B6B3A',marginBottom:'8px'}}>Paiement enregistre !</div>
             <div style={{fontSize:'13px',color:'#666',marginBottom:'20px'}}>Quittance envoyee au locataire.</div>
             <div style={{display:'flex',gap:'10px'}}><button type="button" style={{flex:1,background:'#F0F4F1',color:'#1B6B3A',border:'0.5px solid #A5D6A7',borderRadius:'10px',padding:'12px',fontSize:'13px',cursor:'pointer',fontWeight:'600'}}>Voir quittance</button><button type="button" onClick={fermerModal} style={{flex:1,background:'#1B6B3A',color:'#fff',border:'none',borderRadius:'10px',padding:'12px',fontSize:'13px',cursor:'pointer',fontWeight:'700'}}>Retour</button></div>
@@ -1680,7 +1689,7 @@ function repondre(preavisId, reponse) {
     message:  messageReponse
   })
     .then(function() {
-      toast.success(reponse === 'accepte' ? 'Préavis accepté ✅' : 'Demande de renouvellement envoyée 🔄');
+      toast.success(reponse === 'accepte' ? 'Préavis accepté <CheckCircle size={14} strokeWidth={1.5} />' : 'Demande de renouvellement envoyée 🔄');
       setReponseModal(null);
       setMessageReponse('');
       setPreavisRecus(function(prev) { return prev.filter(function(p) { return p.id !== preavisId; }); });
@@ -1779,7 +1788,7 @@ function repondre(preavisId, reponse) {
     <div>
       <div className="dash-page-header">
         <div>
-          <h1>📤 Préavis de départ</h1>
+          <h1><Send size={14} strokeWidth={1.5} /> Préavis de départ</h1>
           <p>{estProprietaire ? 'Notifier un locataire' : 'Notifier votre propriétaire'}</p>
         </div>
         {step !== 'form' && (
@@ -1794,7 +1803,7 @@ function repondre(preavisId, reponse) {
         <div style={{ background: '#fff', borderRadius: 16, padding: 24, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
           <div style={{ textAlign: 'center', marginBottom: 20 }}>
             <div style={{ width: 64, height: 64, background: estProprietaire ? '#FFF3E0' : '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', fontSize: 32 }}>
-              {estProprietaire ? '📤' : '✅'}
+              {estProprietaire ? '<Send size={14} strokeWidth={1.5} />' : '<CheckCircle size={14} strokeWidth={1.5} />'}
             </div>
             <div style={{ fontSize: 20, fontWeight: 700, color: estProprietaire ? '#C62828' : '#1B6B3A', marginBottom: 8 }}>
               {estProprietaire ? 'Préavis officiel envoyé' : 'Préavis envoyé !'}
@@ -1842,11 +1851,11 @@ function repondre(preavisId, reponse) {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             <button onClick={contacter}
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '12px', borderRadius: 10, background: '#F5F5F5', color: '#555', border: '0.5px solid #E0E0E0', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-              💬 {estProprietaire ? 'Contacter le locataire' : 'Contacter le proprio'}
+              <MessageCircle size={14} strokeWidth={1.5} /> {estProprietaire ? 'Contacter le locataire' : 'Contacter le proprio'}
             </button>
             <button onClick={telechargerPDF}
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '12px', borderRadius: 10, background: estProprietaire ? '#C62828' : '#1B6B3A', color: '#fff', border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-              📄 Télécharger PDF
+              <FileText size={14} strokeWidth={1.5} /> Télécharger PDF
             </button>
           </div>
         </div>
@@ -1878,7 +1887,7 @@ function repondre(preavisId, reponse) {
               style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer' }}>← Modifier</button>
             <button onClick={envoyer} disabled={loading}
               style={{ flex: 2, background: loading ? '#999' : (estProprietaire ? '#C62828' : '#1B6B3A'), color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
-              {loading ? '⏳ Envoi en cours...' : '📤 Envoyer le préavis officiel'}
+              {loading ? '⏳ Envoi en cours...' : '<Send size={14} strokeWidth={1.5} /> Envoyer le préavis officiel'}
             </button>
           </div>
         </div>
@@ -1946,7 +1955,7 @@ function repondre(preavisId, reponse) {
                   onClick={function() { repondre(p.id, 'accepte'); }}
                   disabled={reponseLoading}
                   style={{ padding: 12, borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-                  ✅ Accepter le départ
+                  <CheckCircle size={14} strokeWidth={1.5} /> Accepter le départ
                 </button>
               </div>
               <button onClick={function() { setReponseModal(null); setMessageReponse(''); }}
@@ -2094,7 +2103,7 @@ function OngletAlertes() {
       </div>
       {total === 0 && (
         <div className="dash-empty-state">
-          <span>✅</span><h3>Aucune alerte</h3><p>Tout est en ordre !</p>
+          <span><CheckCircle size={14} strokeWidth={1.5} /></span><h3>Aucune alerte</h3><p>Tout est en ordre !</p>
         </div>
       )}
       {data.alertes.map(function(a) {
@@ -2237,7 +2246,7 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
         <div className="dash-white-card" style={{ marginTop: 16 }}>
           <h3 style={{ marginBottom: 14 }}>Historique des documents</h3>
           {documents.map(function(doc) {
-            var icone = doc.type === 'facture' ? '🧾' : doc.type === 'quittance' ? '📋' : doc.type === 'contrat_bail' ? '📝' : doc.type === 'etat_lieux' ? '🏠' : doc.type === 'mise_en_demeure' ? '⚠️' : doc.type === 'preavis' ? '📤' : '📄';
+            var icone = doc.type === 'facture' ? '🧾' : doc.type === 'quittance' ? '📋' : doc.type === 'contrat_bail' ? '📝' : doc.type === 'etat_lieux' ? '🏠' : doc.type === 'mise_en_demeure' ? '⚠️' : doc.type === 'preavis' ? '<Send size={14} strokeWidth={1.5} />' : '<FileText size={14} strokeWidth={1.5} />';
             return (
               <div key={doc.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid #F5F5F5' }}>
                 <span style={{ fontSize: 24 }}>{icone}</span>
@@ -2326,7 +2335,7 @@ function OngletMessages() {
       <div>
         <div className="dash-page-header"><div><h1>Messages</h1><p>Partagez textes, photos et documents</p></div></div>
         <div className="dash-empty-state">
-          <span>💬</span>
+          <span><MessageCircle size={14} strokeWidth={1.5} /></span>
           <h3>Aucune conversation</h3>
           <p>{user && user.role === 'locataire' ? 'Reservez un logement pour contacter le proprietaire' : 'Les messages de vos locataires apparaitront ici'}</p>
         </div>
@@ -2589,7 +2598,7 @@ function OngletReclamations() {
 
       {!loading && reclamations.length === 0 && (
         <div className="dash-empty-state">
-          <span>✅</span><h3>Aucune reclamation</h3><p>Tout est en ordre !</p>
+          <span><CheckCircle size={14} strokeWidth={1.5} /></span><h3>Aucune reclamation</h3><p>Tout est en ordre !</p>
         </div>
       )}
 
@@ -2636,7 +2645,7 @@ function OngletReclamations() {
                   return (
                     <div key={t.id} style={{ display: 'flex', gap: 10, marginBottom: '10px' }}>
                       <div style={{ width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0, background: t.type === 'creation' ? '#E8F5E9' : t.type === 'statut_change' ? '#FFF3E0' : '#E3F2FD', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>
-                        {t.type === 'creation' ? '🔧' : t.type === 'statut_change' ? '🔄' : '💬'}
+                        {t.type === 'creation' ? '🔧' : t.type === 'statut_change' ? '🔄' : '<MessageCircle size={14} strokeWidth={1.5} />'}
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontSize: '13px', color: '#333' }}>{t.contenu}</div>
@@ -2702,9 +2711,9 @@ function OngletParametres(props) {
   }
 
   var menuItems = [
-    { id: 'profil', icon: '👤', titre: 'Mon profil', desc: 'Modifier mes informations personnelles' },
-    { id: 'mdp', icon: '🔐', titre: 'Mot de passe', desc: 'Changer mon mot de passe' },
-    { id: 'notifs', icon: '🔔', titre: 'Notifications', desc: 'Gerer mes preferences de notifications' },
+    { id: 'profil', icon: <UserCheck size={22} strokeWidth={1.5} />, titre: 'Mon profil', desc: 'Modifier mes informations personnelles' },
+    { id: 'mdp', icon: <Shield size={22} strokeWidth={1.5} />, titre: 'Mot de passe', desc: 'Changer mon mot de passe' },
+    { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: 'Notifications', desc: 'Gerer mes preferences de notifications' },
     { id: 'langue', icon: '🌐', titre: 'Langue', desc: 'Francais (Guinee)' }
   ];
 
@@ -2878,7 +2887,7 @@ function OngletMesLocations(props) {
 
       {locationsActives.length === 0 && (
         <div className="dash-empty-state">
-          <span>🏠</span>
+          <Home size={48} strokeWidth={1} color="#C8E6C9" />
           <h3>Aucune location active</h3>
           <p>Réservez un logement pour commencer</p>
           <Link to="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
@@ -2916,7 +2925,7 @@ function OngletMesLocations(props) {
                 </Link>
                 <button onClick={function() { if (setOnglet) setOnglet('/dashboard/documents'); }}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', fontSize: 13, fontWeight: 600, border: '0.5px solid #90CAF9', cursor: 'pointer' }}>
-                  📄 Documents
+                  <FileText size={14} strokeWidth={1.5} /> Documents
                 </button>
               </div>
             </div>
@@ -2969,11 +2978,11 @@ export default function Dashboard() {
     '/dashboard/locataires': '👥',
     '/dashboard/reservations': '📋',
     '/dashboard/paiements': '💳',
-    '/dashboard/documents': '📄',
+    '/dashboard/documents': '<FileText size={14} strokeWidth={1.5} />',
     '/dashboard/alertes': '🔔',
-    '/dashboard/messages': '💬',
+    '/dashboard/messages': '<MessageCircle size={14} strokeWidth={1.5} />',
     '/dashboard/reclamations': '🔧',
-    '/dashboard/preavis': '📤',
+    '/dashboard/preavis': '<Send size={14} strokeWidth={1.5} />',
     '/dashboard/parametres': '⚙️',
     '/dashboard/mes-locations': '🏠'
   };
@@ -3012,7 +3021,7 @@ useEffect(function() {
       // G + R → Réservations
       if (e.key === 'r') { setOnglet('/dashboard/reservations'); toast('📅 Réservations',      { duration: 800 }); }
       // G + M → Messages
-      if (e.key === 'm') { setOnglet('/dashboard/messages');     toast('💬 Messages',          { duration: 800 }); }
+      if (e.key === 'm') { setOnglet('/dashboard/messages');     toast('<MessageCircle size={14} strokeWidth={1.5} /> Messages',          { duration: 800 }); }
       // G + P → Paiements
       if (e.key === 'p') { setOnglet('/dashboard/paiements');    toast('💳 Paiements',         { duration: 800 }); }
       // G + H → Accueil (overview)
