@@ -227,7 +227,7 @@ function OngletOverview(props) {
             return (
               <div key={i} className="alerte-item-dash" style={{ background: bg }}>
                 <span style={{ fontSize: 22 }}>
-                  {a.type === 'loyer_retard' ? '⚠️' : a.type === 'bail_bientot' ? '📋' : '🔧'}
+                  {a.type === 'loyer_retard' ? <AlertTriangle size={20} strokeWidth={1.5} /> : a.type === 'bail_bientot' ? <FileText size={20} strokeWidth={1.5} /> : <Wrench size={20} strokeWidth={1.5} />}
                 </span>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>{a.titre}</div>
@@ -409,7 +409,7 @@ function OngletBiens(props) {
         Cette action va <b>terminer la location en cours</b> et remettre le bien en "Disponible" immédiatement, sans délai de préavis.
       </p>
       <div style={{ background: '#FFEBEE', borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 12, color: '#B71C1C' }}>
-        ⚠️ Le locataire sera notifié. Cette action est irréversible.
+        <span style={{display:'flex',alignItems:'center',gap:6}}><AlertTriangle size={14} strokeWidth={1.5} /> Le locataire sera notifié. Cette action est irréversible.</span>
       </div>
       <div className="modal-actions">
         <button
@@ -521,7 +521,7 @@ function OngletBiens(props) {
                 <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
                   {preavisActif ? (
                     <div style={{ background: '#FFEBEE', color: '#B71C1C', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
-                      ⚠️ Préavis envoyé
+                      <span style={{display:'flex',alignItems:'center',gap:4}}><AlertCircle size={12} strokeWidth={1.5}/> Préavis envoyé</span>
                     </div>
                   ) : estOccupe ? (
                     <div style={{ background: '#E8F5E9', color: '#1B5E20', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
@@ -782,14 +782,14 @@ function OngletReservations(props) {
       en_attente:         { label: 'Candidature envoyée',     couleur: '#F5A623', bg: '#FFF8E1', action: 'Suivre ma candidature',   urgent: true  },
       dossier_requis:     { label: '📁 Dossier demandé',           couleur: '#1565C0', bg: '#E3F2FD', action: 'Soumettre mon dossier',   urgent: true  },
       en_examen:          { label: '🔍 Dossier en cours d\'examen', couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Voir l\'avancement',      urgent: false },
-      acceptee:           { label: '<CheckCircle size={14} strokeWidth={1.5} /> Candidature acceptée',       couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Démarrer les échanges',  urgent: true  },
+      acceptee:           { label: 'Candidature acceptée',       couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Démarrer les échanges',  urgent: true  },
       echanges:           { label: '<MessageCircle size={14} strokeWidth={1.5} /> En discussion',             couleur: '#1565C0', bg: '#E3F2FD', action: 'Voir la discussion',     urgent: false },
       caution_requise:    { label: '<Lock size={14} strokeWidth={1.5} /> Caution à payer',           couleur: '#E65100', bg: '#FFF3E0', action: 'Payer la caution',       urgent: true  },
       caution_payee:      { label: '🛡️ Caution versée',            couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir l\'avancement',      urgent: false },
       bail_en_cours:      { label: '📝 Bail à signer',             couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer le bail',        urgent: true  },
       bail_signe_proprio: { label: '✍️ À mon tour de signer',      couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer maintenant',     urgent: true  },
       confirmee:          { label: '<Key size={14} strokeWidth={1.5} /> Location active',           couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir le récapitulatif', urgent: false },
-      refusee:            { label: '<XCircle size={14} strokeWidth={1.5} /> Candidature non retenue',    couleur: '#B71C1C', bg: '#FFEBEE', action: null,                    urgent: false },
+      refusee:            { label: 'Candidature non retenue',    couleur: '#B71C1C', bg: '#FFEBEE', action: null,                    urgent: false },
     };
 
     return (
@@ -952,14 +952,14 @@ useEffect(function() {
     en_attente         : { label: '📩 Nouvelle candidature', couleur: '#E53935', urgent: true },
     dossier_requis     : { label: '⏳ Attente du dossier',           couleur: '#F5A623', urgent: false },
     en_examen          : { label: '📋 Dossier à examiner',           couleur: '#7B1FA2', urgent: true  },
-    acceptee           : { label: '<CheckCircle size={14} strokeWidth={1.5} /> Acceptée',                      couleur: '#1B6B3A', urgent: false },
+    acceptee           : { label: 'Acceptée',                      couleur: '#1B6B3A', urgent: false },
     echanges           : { label: '<MessageCircle size={14} strokeWidth={1.5} /> Discussion en cours',          couleur: '#1565C0', urgent: false },
     caution_requise    : { label: '⏳ Caution en attente',            couleur: '#F5A623', urgent: false },
-    caution_payee      : { label: '<CheckCircle size={14} strokeWidth={1.5} /> Caution reçue',                 couleur: '#1B6B3A', urgent: true  },
+    caution_payee      : { label: 'Caution reçue',                 couleur: '#1B6B3A', urgent: true  },
     bail_en_cours      : { label: '📝 Bail à signer',                couleur: '#7B1FA2', urgent: true  },
     bail_signe_proprio : { label: '⏳ Attente signature locataire',  couleur: '#F5A623', urgent: false },
     confirmee          : { label: '<Key size={14} strokeWidth={1.5} /> Location active',              couleur: '#1B6B3A', urgent: false },
-    refusee            : { label: '<XCircle size={14} strokeWidth={1.5} /> Refusée',                       couleur: '#888',    urgent: false },
+    refusee            : { label: 'Refusée',                       couleur: '#888',    urgent: false },
   };
 
   // ── VUE DÉTAIL ──────────────────────────────────────────────────
@@ -1038,7 +1038,7 @@ useEffect(function() {
               <button
                 onClick={function() { action('/decision', { decision: 'acceptee' }, 'Candidature acceptée ! Le locataire est notifié.'); }}
                 style={{ background: '#E8F5E9', color: '#1B5E20', border: '1px solid #A5D6A7', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-                <CheckCircle size={14} strokeWidth={1.5} /> Accepter directement (sans dossier)
+                <CheckCircle size={14} strokeWidth={1.5} /> <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><CheckCircle size={15} strokeWidth={1.5}/> Accepter directement (sans dossier)</span>
               </button>
               <div style={{ display: 'flex', gap: 10 }}>
                 <input
@@ -1053,7 +1053,7 @@ useEffect(function() {
                     action('/decision', { decision: 'refusee', motif: motifRefus }, 'Candidature refusée. Le locataire est notifié.');
                   }}
                   style={{ background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
-                  <XCircle size={14} strokeWidth={1.5} /> Refuser
+                  <XCircle size={14} strokeWidth={1.5} /> <span style={{display:'flex',alignItems:'center',gap:4}}><XCircle size={14} strokeWidth={1.5}/> Refuser</span>
                 </button>
               </div>
             </div>
@@ -1077,7 +1077,7 @@ useEffect(function() {
       ].map(function(d) {
         return (
           <div key={d.label} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0', borderBottom: '0.5px solid #F5F5F5' }}>
-            <span style={{ fontSize: 18, flexShrink: 0 }}>{d.ok ? '<CheckCircle size={14} strokeWidth={1.5} />' : '⏳'}</span>
+            <span style={{ flexShrink: 0, display:'flex', alignItems:'center' }}>{d.ok ? <CheckCircle size={18} strokeWidth={1.5} color="#1B6B3A"/> : <Clock size={18} strokeWidth={1.5} color="#888"/>}</span>
             <span style={{ fontSize: 13, color: d.ok ? '#1B2B22' : '#888', flex: 1 }}>{d.label}</span>
             {d.ok && d.url && (
               <a href={'https://werdhe-backend.onrender.com/reservations/' + r.id + '/document/' + (
@@ -1123,7 +1123,7 @@ useEffect(function() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <button onClick={function() { action('/decision', { decision: 'acceptee' }, 'Dossier validé ! Candidature acceptée.'); }}
         style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-        <CheckCircle size={14} strokeWidth={1.5} /> Valider le dossier — Accepter la candidature
+        <CheckCircle size={14} strokeWidth={1.5} /><span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><CheckCircle size={15} strokeWidth={1.5}/> Valider le dossier — Accepter la candidature</span>
       </button>
       <button onClick={function() { action('/decision', { decision: 'dossier_requis' }, 'Informations complémentaires demandées.'); }}
         style={{ background: '#E3F2FD', color: '#1565C0', border: '1px solid #90CAF9', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
@@ -1210,7 +1210,7 @@ useEffect(function() {
         {r.statut === 'caution_payee' && (
           <div>
             <div style={{ background: '#E8F5E9', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
-              <span><CheckCircle size={14} strokeWidth={1.5} /></span>
+              <CheckCircle size={32} strokeWidth={1.5} color="#1B6B3A" />
               <div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#1B5E20' }}>
                   Caution reçue : {new Intl.NumberFormat('fr-FR').format(loyer)} GNF
@@ -1271,7 +1271,7 @@ useEffect(function() {
               style={{ padding: 16, border: bailSigne ? '1.5px solid #1B6B3A' : '1.5px dashed #1B6B3A', background: bailSigne ? '#E8F5E9' : '#F0FBF0', borderRadius: 12, textAlign: 'center', cursor: bailSigne ? 'default' : 'pointer', marginBottom: 14 }}>
               {bailSigne ? (
                 <div>
-                  <div style={{ fontSize: 22, marginBottom: 4 }}><CheckCircle size={14} strokeWidth={1.5} /></div>
+                  <CheckCircle size={22} strokeWidth={1.5} color="#1B6B3A" style={{ marginBottom: 4 }} />
                   <div style={{ fontSize: 14, fontWeight: 700, color: '#1B6B3A' }}>Vous avez signé !</div>
                   <div style={{ fontSize: 12, color: '#2E7D32', marginTop: 4 }}>En attente de la signature du locataire...</div>
                 </div>
@@ -1329,7 +1329,7 @@ useEffect(function() {
         {/* ─ REFUSÉE ─ */}
         {r.statut === 'refusee' && (
           <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontSize: 36, marginBottom: 12 }}><XCircle size={14} strokeWidth={1.5} /></div>
+            <XCircle size={36} strokeWidth={1.5} color="#B71C1C" style={{ marginBottom: 12 }} />
             <div style={{ fontSize: 15, fontWeight: 700, color: '#B71C1C' }}>Demande refusée</div>
             <div style={{ fontSize: 13, color: '#666', marginTop: 8 }}>Le locataire a été notifié du refus.</div>
           </div>
@@ -1549,7 +1549,7 @@ function PaiementsProprietaire(props) {
             {PAY_MODES.map(function(p){return(<div key={p.id} onClick={function(){setSelectedMode(p.id);}} style={{display:'flex',alignItems:'center',gap:'12px',padding:'12px 14px',border:selectedMode===p.id?'2px solid #1B6B3A':'0.5px solid #E0E0E0',background:selectedMode===p.id?'#E8F5E9':'#fff',borderRadius:'12px',marginBottom:'8px',cursor:'pointer'}}><div style={{width:'40px',height:'40px',background:p.color||'#E8F5E9',borderRadius:'10px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:p.icon?'20px':'13px',fontWeight:'700',color:p.text||'#1B6B3A'}}>{p.icon||p.abbr}</div><div style={{flex:1}}><div style={{fontSize:'14px',fontWeight:'600'}}>{p.label}</div><div style={{fontSize:'11px',color:'#888'}}>{p.sub}</div></div><div style={{width:'22px',height:'22px',borderRadius:'50%',border:selectedMode===p.id?'none':'1.5px solid #E0E0E0',background:selectedMode===p.id?'#1B6B3A':'transparent',display:'flex',alignItems:'center',justifyContent:'center'}}>{selectedMode===p.id&&<span style={{color:'#fff',fontSize:'12px'}}>✓</span>}</div></div>);})}
             <button type="button" onClick={confirmerPaiement} disabled={processing} style={{width:'100%',background:processing?'#999':'#1B6B3A',color:'#fff',border:'none',borderRadius:'12px',padding:'14px',fontSize:'15px',fontWeight:'700',cursor:processing?'not-allowed':'pointer',marginTop:'6px'}}>{processing?'Traitement...':'Confirmer — '+GNF(modal.loyer)}</button>
           </div>):(<div style={{textAlign:'center',padding:'20px 0'}}>
-            <div style={{width:'70px',height:'70px',background:'#E8F5E9',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px',fontSize:'36px'}}><CheckCircle size={14} strokeWidth={1.5} /></div>
+            <div style={{width:'70px',height:'70px',background:'#E8F5E9',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px',fontSize:'36px'}}><CheckCircle size={36} strokeWidth={1.5} color="#1B6B3A"/></div>
             <div style={{fontSize:'20px',fontWeight:'700',color:'#1B6B3A',marginBottom:'8px'}}>Paiement enregistre !</div>
             <div style={{fontSize:'13px',color:'#666',marginBottom:'20px'}}>Quittance envoyee au locataire.</div>
             <div style={{display:'flex',gap:'10px'}}><button type="button" style={{flex:1,background:'#F0F4F1',color:'#1B6B3A',border:'0.5px solid #A5D6A7',borderRadius:'10px',padding:'12px',fontSize:'13px',cursor:'pointer',fontWeight:'600'}}>Voir quittance</button><button type="button" onClick={fermerModal} style={{flex:1,background:'#1B6B3A',color:'#fff',border:'none',borderRadius:'10px',padding:'12px',fontSize:'13px',cursor:'pointer',fontWeight:'700'}}>Retour</button></div>
@@ -1689,7 +1689,7 @@ function repondre(preavisId, reponse) {
     message:  messageReponse
   })
     .then(function() {
-      toast.success(reponse === 'accepte' ? 'Préavis accepté <CheckCircle size={14} strokeWidth={1.5} />' : 'Demande de renouvellement envoyée 🔄');
+      toast.success(reponse === 'accepte' ? 'Préavis accepté !' : 'Demande de renouvellement envoyée !');
       setReponseModal(null);
       setMessageReponse('');
       setPreavisRecus(function(prev) { return prev.filter(function(p) { return p.id !== preavisId; }); });
@@ -1803,7 +1803,7 @@ function repondre(preavisId, reponse) {
         <div style={{ background: '#fff', borderRadius: 16, padding: 24, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
           <div style={{ textAlign: 'center', marginBottom: 20 }}>
             <div style={{ width: 64, height: 64, background: estProprietaire ? '#FFF3E0' : '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', fontSize: 32 }}>
-              {estProprietaire ? '<Send size={14} strokeWidth={1.5} />' : '<CheckCircle size={14} strokeWidth={1.5} />'}
+              {estProprietaire ? <Send size={32} strokeWidth={1.5}/> : <CheckCircle size={32} strokeWidth={1.5}/>}
             </div>
             <div style={{ fontSize: 20, fontWeight: 700, color: estProprietaire ? '#C62828' : '#1B6B3A', marginBottom: 8 }}>
               {estProprietaire ? 'Préavis officiel envoyé' : 'Préavis envoyé !'}
@@ -1864,7 +1864,7 @@ function repondre(preavisId, reponse) {
       {/* ── CONFIRMATION AVANT ENVOI ─────────────────────────── */}
       {step === 'confirm' && (
         <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>⚠️ Confirmer l'envoi du préavis</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}><span style={{display:'flex',alignItems:'center',gap:6}}><AlertTriangle size={15} strokeWidth={1.5}/> Confirmer l'envoi du préavis</span></div>
           <div style={{ background: '#FFEBEE', borderRadius: 10, padding: 14, marginBottom: 16, fontSize: 13, color: '#B71C1C', fontWeight: 600 }}>
             Action officielle et irréversible. Le destinataire recevra un email + une notification sur la plateforme.
           </div>
@@ -1955,7 +1955,7 @@ function repondre(preavisId, reponse) {
                   onClick={function() { repondre(p.id, 'accepte'); }}
                   disabled={reponseLoading}
                   style={{ padding: 12, borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-                  <CheckCircle size={14} strokeWidth={1.5} /> Accepter le départ
+                  <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><CheckCircle size={14} strokeWidth={1.5}/> Accepter le départ</span>
                 </button>
               </div>
               <button onClick={function() { setReponseModal(null); setMessageReponse(''); }}
@@ -2103,7 +2103,7 @@ function OngletAlertes() {
       </div>
       {total === 0 && (
         <div className="dash-empty-state">
-          <span><CheckCircle size={14} strokeWidth={1.5} /></span><h3>Aucune alerte</h3><p>Tout est en ordre !</p>
+          <CheckCircle size={48} strokeWidth={1} color="#C8E6C9"/><h3>Aucune alerte</h3>heckCircle size={14} strokeWidth={1.5} /><p>Tout est en ordre !</p>
         </div>
       )}
       {data.alertes.map(function(a) {
@@ -2112,7 +2112,7 @@ function OngletAlertes() {
         return (
           <div key={a.id} className="alerte-card-proto" style={{ borderLeft: '5px solid ' + borderColor }}>
             <div className="alerte-card-icon">
-              {a.type === 'loyer_retard' ? '⚠️' : a.type === 'bail_bientot' ? '📋' : '🔔'}
+              {a.type === 'loyer_retard' ? <AlertTriangle size={20} strokeWidth={1.5} /> : a.type === 'bail_bientot' ? <FileText size={20} strokeWidth={1.5} /> : <Bell size={20} strokeWidth={1.5} />}
             </div>
             <div className="alerte-card-body">
               <div className="alerte-card-title">{a.titre}</div>
@@ -2246,7 +2246,7 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
         <div className="dash-white-card" style={{ marginTop: 16 }}>
           <h3 style={{ marginBottom: 14 }}>Historique des documents</h3>
           {documents.map(function(doc) {
-            var icone = doc.type === 'facture' ? '🧾' : doc.type === 'quittance' ? '📋' : doc.type === 'contrat_bail' ? '📝' : doc.type === 'etat_lieux' ? '🏠' : doc.type === 'mise_en_demeure' ? '⚠️' : doc.type === 'preavis' ? '<Send size={14} strokeWidth={1.5} />' : '<FileText size={14} strokeWidth={1.5} />';
+             var icone = <FileText size={22} strokeWidth={1.5} color="#1B6B3A"/>;
             return (
               <div key={doc.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid #F5F5F5' }}>
                 <span style={{ fontSize: 24 }}>{icone}</span>
@@ -2598,7 +2598,7 @@ function OngletReclamations() {
 
       {!loading && reclamations.length === 0 && (
         <div className="dash-empty-state">
-          <span><CheckCircle size={14} strokeWidth={1.5} /></span><h3>Aucune reclamation</h3><p>Tout est en ordre !</p>
+          <CheckCircle size={48} strokeWidth={1} color="#C8E6C9"/><h3>Aucune réclamation</h3><p>Tout est en ordre !</p>
         </div>
       )}
 
@@ -2772,7 +2772,7 @@ function OngletParametres(props) {
         <button
           onClick={function() { window.location.href = '/admin'; }}
           style={{ background: '#1B2B22', color: '#fff', border: 'none', borderRadius: 12, padding: '14px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-          ⚙️ Panneau administrateur
+          <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><Settings size={16} strokeWidth={1.5}/> Panneau administrateur</span>
         </button>
       )}
           <button onClick={function() { auth.logout(); }}
@@ -2983,7 +2983,7 @@ export default function Dashboard() {
     '/dashboard/messages': '<MessageCircle size={14} strokeWidth={1.5} />',
     '/dashboard/reclamations': '🔧',
     '/dashboard/preavis': '<Send size={14} strokeWidth={1.5} />',
-    '/dashboard/parametres': '⚙️',
+    '/dashboard/parametres': '',
     '/dashboard/mes-locations': '🏠'
   };
 
