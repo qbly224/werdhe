@@ -44,7 +44,7 @@ var DOCS_TYPES = [
   { icon: '📜', titre: 'Mise en demeure', desc: 'Pour loyer impaye', color: '#B71C1C', type: 'mise_en_demeure' },
   { icon: <TrendingUp size={24} strokeWidth={1.5} />, titre: 'Rapport financier', desc: "Revenus du mois ou de l'annee", color: '#4A148C', type: 'rapport_financier' },
   { icon: '🔏', titre: 'Caution / Depot', desc: 'Contrat de caution solidaire', color: '#00695C', type: 'caution' },
-  { icon: '<Send size={14} strokeWidth={1.5} />', titre: 'Preavis de depart', desc: 'Lettre de preavis locataire', color: '#37474F', type: 'preavis' }
+  { icon: '📤', titre: 'Preavis de depart', desc: 'Lettre de preavis locataire', color: '#37474F', type: 'preavis' }
 ];
 
 // ================================================
@@ -62,7 +62,7 @@ function UpgradeBanner({ fonctionnalite, planRequis }) {
   };
   return (
     <div style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', borderRadius: 14, padding: 18, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-      <div style={{ fontSize: 28, flexShrink: 0 }}><Lock size={14} strokeWidth={1.5} /></div>
+      <div style={{ flexShrink: 0, display:'flex', alignItems:'center' }}><Lock size={28} strokeWidth={1.5} /></div>
       <div style={{ flex: 1 }}>
         <div style={{ color: '#fff', fontWeight: 700, fontSize: 14, marginBottom: 4 }}>
           Fonctionnalité réservée au plan {planRequis || 'Pro'}
@@ -780,15 +780,15 @@ function OngletReservations(props) {
 
     var statutsLoc = {
       en_attente:         { label: 'Candidature envoyée',     couleur: '#F5A623', bg: '#FFF8E1', action: 'Suivre ma candidature',   urgent: true  },
-      dossier_requis:     { label: '📁 Dossier demandé',           couleur: '#1565C0', bg: '#E3F2FD', action: 'Soumettre mon dossier',   urgent: true  },
-      en_examen:          { label: '🔍 Dossier en cours d\'examen', couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Voir l\'avancement',      urgent: false },
+      dossier_requis:     { label: 'Dossier demandé',           couleur: '#1565C0', bg: '#E3F2FD', action: 'Soumettre mon dossier',   urgent: true  },
+      en_examen:          { label: 'Dossier en cours d\'examen', couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Voir l\'avancement',      urgent: false },
       acceptee:           { label: 'Candidature acceptée',       couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Démarrer les échanges',  urgent: true  },
-      echanges:           { label: '<MessageCircle size={14} strokeWidth={1.5} /> En discussion',             couleur: '#1565C0', bg: '#E3F2FD', action: 'Voir la discussion',     urgent: false },
-      caution_requise:    { label: '<Lock size={14} strokeWidth={1.5} /> Caution à payer',           couleur: '#E65100', bg: '#FFF3E0', action: 'Payer la caution',       urgent: true  },
-      caution_payee:      { label: '🛡️ Caution versée',            couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir l\'avancement',      urgent: false },
-      bail_en_cours:      { label: '📝 Bail à signer',             couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer le bail',        urgent: true  },
-      bail_signe_proprio: { label: '✍️ À mon tour de signer',      couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer maintenant',     urgent: true  },
-      confirmee:          { label: '<Key size={14} strokeWidth={1.5} /> Location active',           couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir le récapitulatif', urgent: false },
+      echanges:           { label: 'En discussion',             couleur: '#1565C0', bg: '#E3F2FD', action: 'Voir la discussion',     urgent: false },
+      caution_requise:    { label: 'Caution à payer',           couleur: '#E65100', bg: '#FFF3E0', action: 'Payer la caution',       urgent: true  },
+      caution_payee:      { label: 'Caution versée',            couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir l\'avancement',      urgent: false },
+      bail_en_cours:      { label: 'Bail à signer',             couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer le bail',        urgent: true  },
+      bail_signe_proprio: { label: 'À mon tour de signer',      couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer maintenant',     urgent: true  },
+      confirmee:          { label: 'Location active',           couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir le récapitulatif', urgent: false },
       refusee:            { label: 'Candidature non retenue',    couleur: '#B71C1C', bg: '#FFEBEE', action: null,                    urgent: false },
     };
 
@@ -950,15 +950,15 @@ useEffect(function() {
 
   var cfgStatuts = {
     en_attente         : { label: '📩 Nouvelle candidature', couleur: '#E53935', urgent: true },
-    dossier_requis     : { label: '⏳ Attente du dossier',           couleur: '#F5A623', urgent: false },
-    en_examen          : { label: '📋 Dossier à examiner',           couleur: '#7B1FA2', urgent: true  },
+    dossier_requis     : { label: 'Attente du dossier',           couleur: '#F5A623', urgent: false },
+    en_examen          : { label: 'Dossier à examiner',           couleur: '#7B1FA2', urgent: true  },
     acceptee           : { label: 'Acceptée',                      couleur: '#1B6B3A', urgent: false },
-    echanges           : { label: '<MessageCircle size={14} strokeWidth={1.5} /> Discussion en cours',          couleur: '#1565C0', urgent: false },
-    caution_requise    : { label: '⏳ Caution en attente',            couleur: '#F5A623', urgent: false },
+    echanges           : { label: 'En discussion',         couleur: '#1565C0', urgent: false },
+    caution_requise    : { label: 'Caution en attente',            couleur: '#F5A623', urgent: false },
     caution_payee      : { label: 'Caution reçue',                 couleur: '#1B6B3A', urgent: true  },
-    bail_en_cours      : { label: '📝 Bail à signer',                couleur: '#7B1FA2', urgent: true  },
-    bail_signe_proprio : { label: '⏳ Attente signature locataire',  couleur: '#F5A623', urgent: false },
-    confirmee          : { label: '<Key size={14} strokeWidth={1.5} /> Location active',              couleur: '#1B6B3A', urgent: false },
+    bail_en_cours      : { label: 'Bail à signer',                couleur: '#7B1FA2', urgent: true  },
+    bail_signe_proprio : { label: 'Attente signature locataire',  couleur: '#F5A623', urgent: false },
+    confirmee          : { label: 'Location active',              couleur: '#1B6B3A', urgent: false },
     refusee            : { label: 'Refusée',                       couleur: '#888',    urgent: false },
   };
 
@@ -1038,7 +1038,7 @@ useEffect(function() {
               <button
                 onClick={function() { action('/decision', { decision: 'acceptee' }, 'Candidature acceptée ! Le locataire est notifié.'); }}
                 style={{ background: '#E8F5E9', color: '#1B5E20', border: '1px solid #A5D6A7', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-                <CheckCircle size={14} strokeWidth={1.5} /> <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><CheckCircle size={15} strokeWidth={1.5}/> Accepter directement (sans dossier)</span>
+                <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><CheckCircle size={15} strokeWidth={1.5}/> Accepter directement (sans dossier)</span>
               </button>
               <div style={{ display: 'flex', gap: 10 }}>
                 <input
@@ -1053,7 +1053,7 @@ useEffect(function() {
                     action('/decision', { decision: 'refusee', motif: motifRefus }, 'Candidature refusée. Le locataire est notifié.');
                   }}
                   style={{ background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
-                  <XCircle size={14} strokeWidth={1.5} /> <span style={{display:'flex',alignItems:'center',gap:4}}><XCircle size={14} strokeWidth={1.5}/> Refuser</span>
+                  <span style={{display:'flex',alignItems:'center',gap:4}}><XCircle size={14} strokeWidth={1.5}/> Refuser</span>
                 </button>
               </div>
             </div>
@@ -1123,7 +1123,7 @@ useEffect(function() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <button onClick={function() { action('/decision', { decision: 'acceptee' }, 'Dossier validé ! Candidature acceptée.'); }}
         style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-        <CheckCircle size={14} strokeWidth={1.5} /><span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><CheckCircle size={15} strokeWidth={1.5}/> Valider le dossier — Accepter la candidature</span>
+        <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><CheckCircle size={15} strokeWidth={1.5}/> Valider le dossier — Accepter la candidature</span>
       </button>
       <button onClick={function() { action('/decision', { decision: 'dossier_requis' }, 'Informations complémentaires demandées.'); }}
         style={{ background: '#E3F2FD', color: '#1565C0', border: '1px solid #90CAF9', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
