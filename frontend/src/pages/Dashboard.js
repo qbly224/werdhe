@@ -1487,7 +1487,18 @@ function PaiementsProprietaire(props) {
     var bl = stats.logements.map(function(l) {
       var dp = stats.paiements.find(function(p) { return String(p.logement_id) === String(l.id) && p.statut === 'complete'; });
       var ea = stats.paiements.find(function(p) { return String(p.logement_id) === String(l.id) && p.statut === 'en_attente'; });
-      return { id: l.id, nom: l.titre, locataire: '—', quartier: l.ville, loyer: Number(l.prix_mensuel), statut: l.statut === 'loue' ? (dp ? 'paye' : ea ? 'en_retard' : 'impaye') : 'impaye', jours: ea ? 5 : 0, icon: <Home size={24} strokeWidth={1.5} /> };
+      var resaActive = stats.reservations.find(function(r) { return r.logement_id === l.id && r.statut === 'confirmee'; });
+return {
+  id:            l.id,
+  nom:           l.titre,
+  locataire:     resaActive ? (resaActive.locataire_prenom + ' ' + resaActive.locataire_nom) : '—',
+  reservation_id: resaActive ? resaActive.id : null,
+  quartier:      l.ville,
+  loyer:         Number(l.prix_mensuel),
+  statut:        l.statut === 'loue' ? (dp ? 'paye' : ea ? 'en_retard' : 'impaye') : 'impaye',
+  jours:         ea ? 5 : 0,
+  icon:          <Home size={24} strokeWidth={1.5} />
+};
     });
     if (bl.length === 0) bl = [
       { id: '1', nom: 'Villa Ratoma', locataire: 'Mamadou Diallo', quartier: 'Ratoma', loyer: 2500000, statut: 'en_retard', jours: 12, icon: <Home size={24} strokeWidth={1.5} /> },
@@ -1500,9 +1511,39 @@ function PaiementsProprietaire(props) {
   function ouvrirModal(b) { setModal(b); setSelectedMode('om'); setProcessing(false); setDone(false); }
   function fermerModal() { setModal(null); setDone(false); }
   function confirmerPaiement() {
-    setProcessing(true);
-    setTimeout(function() { setProcessing(false); setDone(true); setBiensList(function(prev) { return prev.map(function(b) { return b.id === modal.id ? Object.assign({}, b, { statut: 'paye', jours: 0 }) : b; }); }); }, 2000);
-  }
+  if (!modal) return;
+  setProcessing(true);
+  api.post('/paiements', {
+    reservation_id: modal.reservation_id,
+    montant:        modal.loyer,
+    mode_paiement:  selectedMode,
+    statut:         'complete'
+  })
+  .then(function() {
+    setProcessing(false);
+    setDone(true);
+    // Mettre à jour localement
+    setBiensList(function(prev) {
+      return prev.map(function(b) {
+        return b.id === modal.id
+          ? Object.assign({}, b, { statut: 'paye', jours: 0 })
+          : b;
+      });
+    });
+    // Rafraîchir le dashboard global
+    setTimeout(function() {
+      window.dispatchEvent(new CustomEvent('werdhe:refresh'));
+    }, 500);
+  })
+  .catch(function(err) {
+    setProcessing(false);
+    var msg = err.response && err.response.data
+      ? err.response.data.erreur
+      : 'Erreur lors du paiement';
+    toast.error(msg);
+    console.error('[Paiement]', err);
+  });
+}
   var totalAttendu = biensList.reduce(function(s, b) { return s + b.loyer; }, 0);
   var totalPercu = biensList.filter(function(b) { return b.statut === 'paye'; }).reduce(function(s, b) { return s + b.loyer; }, 0);
   var totalImpaye = biensList.filter(function(b) { return b.statut !== 'paye'; }).reduce(function(s, b) { return s + b.loyer; }, 0);
