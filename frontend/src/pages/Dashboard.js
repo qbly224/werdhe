@@ -38,13 +38,13 @@ var GNF = function(n) {
 // TYPES DE DOCUMENTS disponibles
 // ================================================
 var DOCS_TYPES = [
-  { icon: '📝', titre: 'Nouveau bail', desc: 'Generer un contrat de location', color: '#1B6B3A', type: 'contrat_bail' },
-  { icon: '🧾', titre: 'Quittance de loyer', desc: 'Generer une quittance officielle', color: '#1565C0', type: 'quittance' },
-  { icon: '📋', titre: 'Etat des lieux', desc: 'Entree ou sortie du locataire', color: '#E65100', type: 'etat_lieux' },
-  { icon: '📜', titre: 'Mise en demeure', desc: 'Pour loyer impaye', color: '#B71C1C', type: 'mise_en_demeure' },
-  { icon: <TrendingUp size={24} strokeWidth={1.5} />, titre: 'Rapport financier', desc: "Revenus du mois ou de l'annee", color: '#4A148C', type: 'rapport_financier' },
-  { icon: '🔏', titre: 'Caution / Depot', desc: 'Contrat de caution solidaire', color: '#00695C', type: 'caution' },
-  { icon: '📤', titre: 'Preavis de depart', desc: 'Lettre de preavis locataire', color: '#37474F', type: 'preavis' }
+  { icon: <FileSignature size={32} strokeWidth={1.5} color="#1B6B3A"/>, titre: 'Nouveau bail',       desc: 'Generer un contrat de location',   color: '#1B6B3A', type: 'contrat_bail'     },
+  { icon: <Receipt       size={32} strokeWidth={1.5} color="#1565C0"/>, titre: 'Quittance de loyer', desc: 'Generer une quittance officielle',  color: '#1565C0', type: 'quittance'        },
+  { icon: <FileText      size={32} strokeWidth={1.5} color="#E65100"/>, titre: 'Etat des lieux',     desc: 'Entree ou sortie du locataire',     color: '#E65100', type: 'etat_lieux'       },
+  { icon: <AlertCircle   size={32} strokeWidth={1.5} color="#B71C1C"/>, titre: 'Mise en demeure',    desc: 'Pour loyer impaye',                 color: '#B71C1C', type: 'mise_en_demeure'  },
+  { icon: <TrendingUp    size={32} strokeWidth={1.5} color="#4A148C"/>, titre: 'Rapport financier',  desc: "Revenus du mois ou de l'annee",    color: '#4A148C', type: 'rapport_financier' },
+  { icon: <Shield        size={32} strokeWidth={1.5} color="#00695C"/>, titre: 'Caution / Depot',    desc: 'Contrat de caution solidaire',      color: '#00695C', type: 'caution'          },
+  { icon: <Send          size={32} strokeWidth={1.5} color="#37474F"/>, titre: 'Preavis de depart',  desc: 'Lettre de preavis locataire',       color: '#37474F', type: 'preavis'          },
 ];
 
 // ================================================
@@ -375,7 +375,7 @@ function OngletBiens(props) {
                 </Link>
                 <button onClick={function() { if (setOnglet) setOnglet('/dashboard/documents'); }}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', fontSize: 13, fontWeight: 600, border: '0.5px solid #90CAF9', cursor: 'pointer' }}>
-                  <FileText size={14} strokeWidth={1.5} /> Documents
+                  <span style={{display:'flex',alignItems:'center',gap:5}}><FileText size={14} strokeWidth={1.5}/> Documents</span>
                 </button>
               </div>
             </div>
@@ -561,7 +561,7 @@ function OngletBiens(props) {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                   <button onClick={function() { if (setOnglet) setOnglet('/dashboard/messages'); }}
                     style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#E8F5E9', color: '#1B5E20', border: '0.5px solid #A5D6A7', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                    <MessageCircle size={14} strokeWidth={1.5} /> Messagerie
+                    <span style={{display:'flex',alignItems:'center',gap:5}}><MessageCircle size={14} strokeWidth={1.5}/> Messagerie</span>
                   </button>
                   <button onClick={function() { if (setOnglet) setOnglet('/dashboard/documents'); }}
                     style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', border: '0.5px solid #90CAF9', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
@@ -570,7 +570,7 @@ function OngletBiens(props) {
                   {!preavisActif && (
                     <button onClick={function() { if (setOnglet) setOnglet('/dashboard/preavis'); }}
                       style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                      <Send size={14} strokeWidth={1.5} /> Préavis
+                      <span style={{display:'flex',alignItems:'center',gap:5}}><Send size={14} strokeWidth={1.5}/> Préavis</span>
                     </button>
                   )}
                   {preavisActif && (
@@ -1788,7 +1788,7 @@ function repondre(preavisId, reponse) {
     <div>
       <div className="dash-page-header">
         <div>
-          <h1><Send size={14} strokeWidth={1.5} /> Préavis de départ</h1>
+          <span style={{display:'flex',alignItems:'center',gap:5}}><Send size={14} strokeWidth={1.5}/> Préavis de départ</span>
           <p>{estProprietaire ? 'Notifier un locataire' : 'Notifier votre propriétaire'}</p>
         </div>
         {step !== 'form' && (
@@ -2973,18 +2973,18 @@ export default function Dashboard() {
   '/dashboard/mes-locations': t('mes_locations'),
 };
   var pageIcon = {
-    '/dashboard': '📊',
-    '/dashboard/biens': '🏠',
-    '/dashboard/locataires': '👥',
-    '/dashboard/reservations': '📋',
-    '/dashboard/paiements': '💳',
-    '/dashboard/documents': '<FileText size={14} strokeWidth={1.5} />',
-    '/dashboard/alertes': '🔔',
-    '/dashboard/messages': '<MessageCircle size={14} strokeWidth={1.5} />',
-    '/dashboard/reclamations': '🔧',
-    '/dashboard/preavis': '<Send size={14} strokeWidth={1.5} />',
-    '/dashboard/parametres': '',
-    '/dashboard/mes-locations': '🏠'
+    '/dashboard':              '',
+    '/dashboard/biens':        '',
+    '/dashboard/locataires':   '',
+    '/dashboard/reservations': '',
+    '/dashboard/paiements':    '',
+    '/dashboard/documents':    '',
+    '/dashboard/alertes':      '',
+    '/dashboard/messages':     '',
+    '/dashboard/reclamations': '',
+    '/dashboard/preavis':      '',
+    '/dashboard/parametres':   '',
+    '/dashboard/mes-locations': '',
   };
 
   // Détecter le resize
@@ -3148,7 +3148,7 @@ function chargerDonnees() {
              <Menu size={22} strokeWidth={1.5} />
             </button>
             <div className="dash-header-title">
-              <h1>{pageIcon[onglet] || '📊'} {pageTitle[onglet] || 'Tableau de bord'}</h1>
+              <h1>{pageTitle[onglet] || 'Tableau de bord'}</h1>
               <p>{new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
             </div>
           {!isMobile && <RechercheGlobale stats={stats} onNavigate={setOnglet} />}
