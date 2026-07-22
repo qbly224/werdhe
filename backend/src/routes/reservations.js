@@ -202,6 +202,16 @@ router.patch('/:id/signer-bail', verifierToken, async (req, res) => {
       // Locataire signe en dernier → location confirmée
       nouveauStatut = 'confirmee';
 
+      // Mettre le logement en "loué" automatiquement
+await db.query(
+  `UPDATE logements SET statut = 'loue'
+   WHERE id = (SELECT logement_id FROM reservations WHERE id = $1)`,
+  [id]
+).catch(function(err) {
+  console.warn('[Sync] Logement statut non mis à jour:', err.message);
+});
+console.log('[Sync] Logement mis à loué ✅');
+
       // Vérifier si le locataire mérite le badge après 3 locations
 var nbLocations = await db.query(
   `SELECT COUNT(*) FROM reservations
@@ -616,6 +626,16 @@ router.patch('/:id/signer-bail', verifierToken, async (req, res) => {
     } else {
       // Le locataire signe → location officiellement confirmée
       nouveauStatut = 'confirmee';
+
+      // Mettre le logement en "loué" automatiquement
+await db.query(
+  `UPDATE logements SET statut = 'loue'
+   WHERE id = (SELECT logement_id FROM reservations WHERE id = $1)`,
+  [id]
+).catch(function(err) {
+  console.warn('[Sync] Logement statut non mis à jour:', err.message);
+});
+console.log('[Sync] Logement mis à loué ✅');
 
       // Marquer le logement comme loué
       await db.query(
