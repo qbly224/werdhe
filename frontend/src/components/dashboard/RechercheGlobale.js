@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { useState, useEffect, useRef } from 'react';
+import { Search, Home, CalendarCheck, MessageCircle, CreditCard, FileText, Bell, Wrench, Send, Settings, LayoutDashboard } from 'lucide-react';
 
 export default function RechercheGlobale({ stats, onNavigate }) {
   var [query, setQuery]       = useState('');
@@ -49,20 +50,20 @@ export default function RechercheGlobale({ stats, onNavigate }) {
 
     // Raccourcis onglets
     var onglets = [
-      { mots: ['biens', 'logements', 'propriete'],  icon: '🏠', titre: 'Mes biens',       action: '/dashboard/biens' },
-      { mots: ['reservation', 'demande', 'locataire'], icon: '📅', titre: 'Réservations',    action: '/dashboard/reservations' },
-      { mots: ['paiement', 'loyer', 'argent'],      icon: '💳', titre: 'Paiements',        action: '/dashboard/paiements' },
-      { mots: ['document', 'bail', 'contrat'],      icon: '📄', titre: 'Documents',         action: '/dashboard/documents' },
-      { mots: ['message', 'chat'],                  icon: '💬', titre: 'Messages',          action: '/dashboard/messages' },
-      { mots: ['reclamation', 'panne', 'probleme'], icon: '🔧', titre: 'Réclamations',      action: '/dashboard/reclamations' },
-      { mots: ['preavis', 'depart', 'quitter'],     icon: '📤', titre: 'Préavis',           action: '/dashboard/preavis' },
-      { mots: ['parametre', 'profil', 'compte'],    icon: '⚙️', titre: 'Paramètres',        action: '/dashboard/parametres' },
-      { mots: ['alerte', 'notification'],           icon: '🔔', titre: 'Alertes',           action: '/dashboard/alertes' },
+      { mots: ['biens', 'logements', 'propriete'],     iconeEl: <Home          size={18} strokeWidth={1.5}/>, titre: 'Mes biens',           action: '/dashboard/biens'        },
+      { mots: ['reservation', 'candidature', 'demande'], iconeEl: <CalendarCheck size={18} strokeWidth={1.5}/>, titre: 'Candidatures',        action: '/dashboard/reservations' },
+      { mots: ['paiement', 'loyer', 'argent'],         iconeEl: <CreditCard    size={18} strokeWidth={1.5}/>, titre: 'Paiements',           action: '/dashboard/paiements'    },
+      { mots: ['document', 'bail', 'contrat'],         iconeEl: <FileText      size={18} strokeWidth={1.5}/>, titre: 'Documents',           action: '/dashboard/documents'    },
+      { mots: ['message', 'chat'],                     iconeEl: <MessageCircle size={18} strokeWidth={1.5}/>, titre: 'Messages',            action: '/dashboard/messages'     },
+      { mots: ['reclamation', 'panne', 'probleme'],    iconeEl: <Wrench        size={18} strokeWidth={1.5}/>, titre: 'Réclamations',        action: '/dashboard/reclamations' },
+      { mots: ['preavis', 'depart', 'quitter'],        iconeEl: <Send          size={18} strokeWidth={1.5}/>, titre: 'Préavis',             action: '/dashboard/preavis'      },
+      { mots: ['parametre', 'profil', 'compte'],       iconeEl: <Settings      size={18} strokeWidth={1.5}/>, titre: 'Paramètres',          action: '/dashboard/parametres'   },
+      { mots: ['alerte', 'notification'],              iconeEl: <Bell          size={18} strokeWidth={1.5}/>, titre: 'Alertes',             action: '/dashboard/alertes'      },
     ];
 
     onglets.forEach(function(o) {
       if (o.mots.some(function(m) { return m.includes(q); })) {
-        res.push({ type: 'navigation', icon: o.icon, titre: o.titre, sous: 'Aller vers ' + o.titre, action: o.action });
+       res.push({ type: 'navigation', icon: o.iconeEl, titre: o.titre, sous: 'Aller vers ' + o.titre, action: o.action });
       }
     });
 
@@ -114,9 +115,9 @@ export default function RechercheGlobale({ stats, onNavigate }) {
           <div style={{ padding: '16px' }}>
             <div style={{ fontSize: 12, color: '#aaa', marginBottom: 8 }}>Raccourcis rapides</div>
             {[
-              { icon: '🏠', titre: 'Mes biens',    action: '/dashboard/biens' },
-              { icon: '📅', titre: 'Réservations', action: '/dashboard/reservations' },
-              { icon: '💬', titre: 'Messages',     action: '/dashboard/messages' },
+              { icon: <Home          size={20} strokeWidth={1.5} color="#1B6B3A"/>, titre: 'Mes biens',             action: '/dashboard/biens'        },
+              { icon: <CalendarCheck size={20} strokeWidth={1.5} color="#1565C0"/>, titre: 'Candidatures reçues',   action: '/dashboard/reservations' },
+              { icon: <MessageCircle size={20} strokeWidth={1.5} color="#7B1FA2"/>, titre: 'Messages',              action: '/dashboard/messages'     },
             ].map(function(r) {
               return (
                 <div key={r.action} onClick={function() { onNavigate(r.action); setVisible(false); setQuery(''); }}
@@ -139,8 +140,8 @@ export default function RechercheGlobale({ stats, onNavigate }) {
               style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', cursor: 'pointer', borderBottom: '0.5px solid #F5F5F5' }}
               onMouseEnter={function(e) { e.currentTarget.style.background = '#F8F8F8'; }}
               onMouseLeave={function(e) { e.currentTarget.style.background = 'transparent'; }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: typeColors[r.type] || '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
-                {r.icon}
+              <div style={{ width: 36, height: 36, borderRadius: 10, background: typeColors[r.type] || '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+               {r.icon}
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 14, fontWeight: 600, color: '#1B2B22' }}>{r.titre}</div>
