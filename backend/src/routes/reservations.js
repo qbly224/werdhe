@@ -475,14 +475,17 @@ router.post('/:id/dossier', verifierToken, uploadDossier.fields([
     var urls = {};
 
     // Uploader chaque fichier sur Cloudinary
-    var isImage = file.mimetype.startsWith('image/');
-var result  = await cloudinary.uploader.upload(dataUri, {
-  folder:        'werdhe/dossiers',
-  resource_type: isImage ? 'image' : 'raw',
-  type:          'upload',
-  access_mode:   'public',
-  public_id:     'doc_' + champ + '_' + id + '_' + Date.now()
-});
+    var fichier = req.files[champ][0];
+    var isImage = fichier.mimetype.startsWith('image/');
+    var buffer  = fichier.buffer.toString('base64');
+    var dataUri = 'data:' + fichier.mimetype + ';base64,' + buffer;
+    var result  = await cloudinary.uploader.upload(dataUri, {
+      folder:        'werdhe/dossiers',
+      resource_type: isImage ? 'image' : 'raw',
+      type:          'upload',
+      access_mode:   'public',
+      public_id:     'doc_' + champ + '_' + id + '_' + Date.now()
+    });
 
 // Pour les fichiers raw, construire l'URL publique manuellement
 var fileUrl = result.secure_url;
