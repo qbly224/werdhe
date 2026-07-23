@@ -1229,7 +1229,7 @@ useEffect(function() {
                 'Adresse complète du logement',
                 'Loyer mensuel : ' + new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF',
                 'Date de début et durée du bail',
-                'Caution versée : ' + new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF <CheckCircle size={14} strokeWidth={1.5} />',
+                'Caution versée : ' + new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF ✓',
               ].map(function(item) {
                 return (
                   <div key={item} style={{ display: 'flex', gap: 8, padding: '5px 0', fontSize: 13, color: '#555' }}>
@@ -1258,7 +1258,7 @@ useEffect(function() {
                 ['Loyer', new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF/mois'],
                 ['Début', r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A'],
                 ['Durée', r.duree_mois ? r.duree_mois + ' mois' : 'N/A'],
-                ['Caution', new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF <CheckCircle size={14} strokeWidth={1.5} />'],
+                ['Caution', new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF ✓'],
               ].map(function(row) {
                 return (
                   <div key={row[0]} style={{ fontSize: 11, color: '#666' }}>
@@ -1928,7 +1928,7 @@ function repondre(preavisId, reponse) {
               style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer' }}>← Modifier</button>
             <button onClick={envoyer} disabled={loading}
               style={{ flex: 2, background: loading ? '#999' : (estProprietaire ? '#C62828' : '#1B6B3A'), color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
-              {loading ? '⏳ Envoi en cours...' : '<Send size={14} strokeWidth={1.5} /> Envoyer le préavis officiel'}
+              {loading ? '⏳ Envoi en cours...' : <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><Send size={14} strokeWidth={1.5}/> Envoyer le préavis officiel</span>}
             </button>
           </div>
         </div>
@@ -2144,7 +2144,7 @@ function OngletAlertes() {
       </div>
       {total === 0 && (
         <div className="dash-empty-state">
-          <CheckCircle size={48} strokeWidth={1} color="#C8E6C9"/><h3>Aucune alerte</h3>heckCircle size={14} strokeWidth={1.5} /><p>Tout est en ordre !</p>
+          <CheckCircle size={48} strokeWidth={1} color="#C8E6C9"/><h3>Aucune alerte</h3><p>Tout est en ordre !</p>
         </div>
       )}
       {data.alertes.map(function(a) {
