@@ -471,30 +471,39 @@ router.post('/:id/dossier', verifierToken, uploadDossier.fields([
       return res.status(403).json({ erreur: 'Non autorisé' });
     }
 
-    const { cloudinary } = require('../services/cloudinaryService');
+   const { cloudinary } = require('../services/cloudinaryService');
     var urls = {};
 
     // Uploader chaque fichier sur Cloudinary
-    var fichier = req.files[champ][0];
-    var isImage = fichier.mimetype.startsWith('image/');
-    var buffer  = fichier.buffer.toString('base64');
-    var dataUri = 'data:' + fichier.mimetype + ';base64,' + buffer;
-    var result  = await cloudinary.uploader.upload(dataUri, {
-      folder:        'werdhe/dossiers',
-      resource_type: isImage ? 'image' : 'raw',
-      type:          'upload',
-      access_mode:   'public',
-      public_id:     'doc_' + champ + '_' + id + '_' + Date.now()
-    });
+    var champs = ['cni', 'emploi', 'paie', 'garant'];
+    for (var i = 0; i < champs.length; i++) {
+      var champ = champs[i];
+      if (!req.files || !req.files[champ] || !req.files[champ][0]) continue;
 
-// Pour les fichiers raw, construire l'URL publique manuellement
-var fileUrl = result.secure_url;
-if (!isImage) {
-  // S'assurer que l'URL est accessible sans authentification
-  fileUrl = result.secure_url.replace('/raw/upload/', '/raw/upload/fl_attachment/');
-}
-urls['doc_' + champ + '_url'] = result.secure_url;
+      var fichier = req.files[champ][0];
+      var isImage = fichier.mimetype.startsWith('image/');
+      var buffer  = fichier.buffer.toString('base64');
+      var dataUri = 'data:' + fichier.mimetype + ';base64,' + buffer;
 
+      try {
+        var uploadResult = await cloudinary.uploader.upload(dataUri, {
+          folder:        'werdhe/dossiers',
+          resource_type: isImage ? 'image' : 'raw',
+          type:          'upload',
+          access_mode:   'public',
+          public_id:     'doc_' + champ + '_' + id + '_' + Date.now()
+        });
+        var fileUrl = uploadResult.secure_url;
+        if (!isImage) {
+          fileUrl = fileUrl.replace('/raw/upload/', '/raw/upload/fl_attachment/');
+        }
+        urls['doc_' + champ + '_url'] = fileUrl;
+        console.log('[Dossier] Upload', champ, ':', fileUrl);
+      } catch (uploadErr) {
+        console.warn('[Dossier] Upload', champ, 'échoué:', uploadErr.message);
+      }
+    }
+    
     // Mettre à jour le statut et les URLs en base
     await db.query(
       `UPDATE reservations SET
