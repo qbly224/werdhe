@@ -1388,7 +1388,7 @@ useEffect(function() {
                 </div>
                 <div style={{ fontSize: 12, color: '#555' }}>🏠 {r.logement_titre}</div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6B3A', marginTop: 3 }}>
-                  {new Intl.NumberFormat('fr-FR').format(r.prix_mensuel || 0)} GNF/mois
+                  {new Intl.NumberFormat('fr-FR').format(r.prix_mensuel || r.montant_total || 0)} GNF/mois
                 </div>
               </div>
               <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: cfg.urgent ? '#FFEBEE' : '#E8F5E9', color: cfg.couleur, flexShrink: 0, marginLeft: 10 }}>

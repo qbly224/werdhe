@@ -50,7 +50,6 @@ export default function Reserver() {
       duree_mois: parseInt(duree),
       message_locataire: message,
       type_location: 'longue_duree',
-      montant_total: logement && logement.prix_mensuel
     })
       .then(function(res) {
         var resa = res.data.reservation || res.data;

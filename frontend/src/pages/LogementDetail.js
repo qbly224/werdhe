@@ -167,7 +167,7 @@ export default function LogementDetail() {
                     to={'/logements/' + logement.id + '/reserver'}
                     className="btn btn-primary btn-full-detail"
                   >
-                    Reserver
+                    Candidater →
                   </Link>
                 )}
                 {logement.statut === 'disponible' && !user && (
@@ -175,7 +175,7 @@ export default function LogementDetail() {
                     to="/login"
                     className="btn btn-secondary btn-full-detail"
                   >
-                    Connectez-vous pour reserver
+                    Connectez-vous pour postuler
                   </Link>
                 )}
                 {logement.statut !== 'disponible' && (
