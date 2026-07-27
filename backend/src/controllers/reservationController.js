@@ -60,7 +60,7 @@ const creerReservation = async (req, res) => {
     }
     let montant_total = l.prix_mensuel; 
     // Toujours 1 mois de loyer
-    
+
     // 6. Déterminer le type de location
     const typeLocation = type_location ||
       (date_fin ? 'courte_duree' : 'longue_duree');
@@ -101,19 +101,23 @@ const creerReservation = async (req, res) => {
 const getMesReservations = async (req, res) => {
   try {
     const result = await db.query(
-      `SELECT 
+      `SELECT
         r.*,
-        l.titre as logement_titre,
-        l.adresse as logement_adresse,
-        l.ville as logement_ville,
+        l.titre          as logement_titre,
+        l.adresse        as logement_adresse,
+        l.ville          as logement_ville,
         l.prix_mensuel,
-        u.nom as proprietaire_nom,
-        u.prenom as proprietaire_prenom,
-        u.telephone as proprietaire_telephone
+        l.id             as logement_id,
+        l.proprietaire_id,
+        u.nom            as locataire_nom,
+        u.prenom         as locataire_prenom,
+        u.telephone      as locataire_telephone,
+        u.email          as locataire_email,
+        u.id             as locataire_id
        FROM reservations r
        JOIN logements l ON r.logement_id = l.id
-       JOIN users u ON l.proprietaire_id = u.id
-       WHERE r.locataire_id = $1
+       JOIN users u ON r.locataire_id = u.id
+       WHERE l.proprietaire_id = $1
        ORDER BY r.created_at DESC`,
       [req.user.id]
     );
