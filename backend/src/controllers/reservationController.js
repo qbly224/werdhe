@@ -144,10 +144,14 @@ const getReservationsProprietaire = async (req, res) => {
         l.titre as logement_titre,
         l.adresse as logement_adresse,
         l.ville as logement_ville,
+        l.prix_mensuel,
+        l.id as logement_id,
+        l.proprietaire_id,
         u.nom as locataire_nom,
         u.prenom as locataire_prenom,
         u.telephone as locataire_telephone,
-        u.email as locataire_email
+        u.email as locataire_email,
+        u.id as locataire_id
        FROM reservations r
        JOIN logements l ON r.logement_id = l.id
        JOIN users u ON r.locataire_id = u.id
