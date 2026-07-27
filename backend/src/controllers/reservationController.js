@@ -50,25 +50,17 @@ const creerReservation = async (req, res) => {
     }
 
     // 5. Calculer le montant total
-    // Priorité : date_fin > duree_mois > 1 mois par défaut
-    let montant_total = l.prix_mensuel;
+    // montant_total = loyer mensuel (pas multiplié par la durée)
+    // La durée est stockée séparément dans duree_mois
     let duree_calculee = duree_mois || 1;
-
     if (date_fin) {
-      // Si date de fin fournie → calculer la durée exacte
       const debut = new Date(date_debut);
-      const fin = new Date(date_fin);
-      duree_calculee = Math.ceil(
-        (fin - debut) / (1000 * 60 * 60 * 24 * 30)
-      );
-      montant_total = l.prix_mensuel * (duree_calculee > 0
-        ? duree_calculee : 1);
-    } else if (duree_mois) {
-      // Si durée en mois fournie → calculer sur cette base
-      montant_total = l.prix_mensuel * duree_mois;
+      const fin   = new Date(date_fin);
+      duree_calculee = Math.ceil((fin - debut) / (1000 * 60 * 60 * 24 * 30));
     }
-    // Sinon → 1 mois par défaut (longue durée indéterminée)
-
+    let montant_total = l.prix_mensuel; 
+    // Toujours 1 mois de loyer
+    
     // 6. Déterminer le type de location
     const typeLocation = type_location ||
       (date_fin ? 'courte_duree' : 'longue_duree');
