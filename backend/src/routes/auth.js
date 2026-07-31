@@ -163,11 +163,45 @@ router.post('/telephone/envoyer-otp', async (req, res) => {
 
     console.log('[OTP] Code pour', tel, ':', code);
 
-    res.json({
-      message:   'Code OTP généré',
-      telephone: tel,
-      code_dev:  code
+// Chercher si l'utilisateur a un email enregistré
+var userExistant = await db.query(
+  'SELECT email FROM users WHERE telephone = $1',
+  [tel]
+);
+
+if (userExistant.rows.length > 0 && userExistant.rows[0].email && process.env.RESEND_API_KEY) {
+  try {
+    const { Resend } = require('resend');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    await resend.emails.send({
+      from:    'Werdhe <no-reply@werdhe.com>',
+      to:      userExistant.rows[0].email,
+      subject: '🔐 Votre code de connexion Werdhe',
+      html: `
+        <div style="font-family:sans-serif;max-width:400px;margin:0 auto">
+          <div style="background:#1B6B3A;padding:20px;border-radius:12px 12px 0 0">
+            <h2 style="color:#fff;margin:0">🏠 Werdhe</h2>
+          </div>
+          <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
+            <p>Votre code de connexion :</p>
+            <div style="background:#F0FBF0;border:2px solid #1B6B3A;border-radius:12px;padding:20px;text-align:center;margin:16px 0">
+              <div style="font-size:36px;font-weight:800;color:#1B6B3A;letter-spacing:8px">${code}</div>
+            </div>
+            <p style="color:#888;font-size:12px">Ce code expire dans <b>10 minutes</b>. Ne le partagez avec personne.</p>
+          </div>
+        </div>
+      `
     });
+    console.log('[OTP] Email envoyé à', userExistant.rows[0].email);
+  } catch (emailErr) {
+    console.warn('[OTP] Email non envoyé:', emailErr.message);
+  }
+}
+
+res.json({
+  message:   'Code OTP envoyé',
+  telephone: tel
+});
   } catch (err) {
     console.error('[OTP envoyer]', err.message);
     res.status(500).json({ erreur: err.message });
