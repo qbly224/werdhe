@@ -52,12 +52,8 @@ export default function LoginTelephone() {
         setEtape('otp');
         setTimer(60);
         // Mode dev : afficher le code automatiquement
-        if (res.data.code_dev) {
-          setCodeDevMode(res.data.code_dev);
-          toast('Code dev : ' + res.data.code_dev, { icon: '🔑', duration: 10000 });
-          var digits = res.data.code_dev.split('');
-          setOtp(digits);
-        }
+        // Le code est maintenant envoyé par email
+         toast.success('Code envoyé par email !');
       })
       .catch(function(err) {
         toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur envoi');

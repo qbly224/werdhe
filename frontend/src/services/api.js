@@ -1,7 +1,7 @@
 import axios from 'axios';
 import toast from 'react-hot-toast'; 
 
-var API_URL = process.env.REACT_APP_API_URL || 'https://werdhe-backend.onrender.com';
+var API_URL = process.env.REACT_APP_API_URL || 'https://api.werdhe.com';
 
 var api = axios.create({
   baseURL: API_URL,
