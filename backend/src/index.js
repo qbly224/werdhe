@@ -68,7 +68,19 @@ const PORT = process.env.PORT || 3000;
 // ── CORS — DOIT ÊTRE EN PREMIER ──────────────────────────────────
 app.use(cors({
   origin: function(origin, callback) {
-    callback(null, true); // Accepter toutes les origines
+  var allowed = [
+    'https://werdhe.com',
+    'https://www.werdhe.com',
+    'http://localhost:3000',
+    'http://localhost:3001'
+  ];
+  if (!origin || allowed.indexOf(origin) !== -1) {
+    callback(null, true);
+  } else {
+    callback(null, true); // Accepter pour l'instant
+  }
+    
+    // Accepter toutes les origines
   },
   methods:      ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
