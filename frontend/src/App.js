@@ -20,6 +20,7 @@ import ResetPassword from './pages/ResetPassword';
 import Admin from './pages/Admin';
 import Pricing from './pages/Pricing';
 import LoginTelephone from './pages/LoginTelephone';
+import LandingPage from './pages/LandingPage';
 
 function RoutePrivee(props) {
   var auth = useAuth();
@@ -34,7 +35,8 @@ function App() {
       <BrowserRouter>
         <Toaster position="top-right" />
         <Routes>
-          <Route path="/" element={<Accueil />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/accueil" element={<Accueil />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/otp" element={<OTP />} />
