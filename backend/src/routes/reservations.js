@@ -9,6 +9,7 @@ const {
   traiterReservation,
   annulerReservation
 } = require('../controllers/reservationController');
+const { envoyerNotification } = require('./push');
 
 // Toutes les routes réservations sont protégées
 // Un utilisateur doit être connecté pour réserver
@@ -392,6 +393,11 @@ router.patch('/:id/decision', verifierToken, async (req, res) => {
       });
     }
 
+    // Envoyer une notification push au locataire
+    if (titreNotif) {
+      envoyerNotification(r.locataire_id, titreNotif, descNotif, '/dashboard/reservations');
+    }
+
     res.json({ message: 'Décision enregistrée', statut: nouveauStatut });
 
   } catch (err) {
@@ -503,7 +509,7 @@ router.post('/:id/dossier', verifierToken, uploadDossier.fields([
         console.warn('[Dossier] Upload', champ, 'échoué:', uploadErr.message);
       }
     }
-    
+
     // Mettre à jour le statut et les URLs en base
     await db.query(
       `UPDATE reservations SET

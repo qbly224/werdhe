@@ -87,6 +87,9 @@ app.use(cors({
   credentials:  true
 }));
 
+const { router: pushRoutes } = require('./routes/push');
+app.use('/push', pushRoutes);
+
 // Compresser toutes les réponses (gzip)
 app.use(compression());
 
