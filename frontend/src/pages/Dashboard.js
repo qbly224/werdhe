@@ -27,6 +27,7 @@ import {
   LogOut, UserCheck, Award, AlertCircle
 } from 'lucide-react';
 import Onboarding from '../components/Onboarding';
+import { activerNotificationsPush, estAbonne, desactiverNotifications } from '../services/pushService';
 
 // ================================================
 // UTILITAIRE — Formater les montants en GNF
@@ -2717,6 +2718,44 @@ function OngletReclamations() {
   );
 }
 
+function PushToggle() {
+  var [abonne, setAbonne] = useState(false);
+  var [loading, setLoading] = useState(false);
+
+  useEffect(function() {
+    estAbonne().then(setAbonne);
+  }, []);
+
+  function toggle() {
+    setLoading(true);
+    if (abonne) {
+      desactiverNotifications()
+        .then(function() { setAbonne(false); toast.success('Notifications désactivées'); })
+        .finally(function() { setLoading(false); });
+    } else {
+      activerNotificationsPush()
+        .then(function(ok) {
+          if (ok) { setAbonne(true); toast.success('Notifications activées ! 🔔'); }
+          else toast.error('Permission refusée ou non supporté');
+        })
+        .finally(function() { setLoading(false); });
+    }
+  }
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderBottom: '1px solid #f0f0f0', marginBottom: 8 }}>
+      <div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>Notifications push</div>
+        <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>Alertes même quand l'app est fermée</div>
+      </div>
+      <button onClick={toggle} disabled={loading}
+        style={{ padding: '8px 16px', borderRadius: 20, border: 'none', background: abonne ? '#1B6B3A' : '#F0F0F0', color: abonne ? '#fff' : '#888', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+        {loading ? '...' : abonne ? '🔔 Activées' : '🔕 Désactivées'}
+      </button>
+    </div>
+  );
+}
+
 // ================================================
 // ONGLET : Parametres
 // ================================================
@@ -2863,6 +2902,7 @@ function OngletParametres(props) {
       {section === 'notifs' && (
         <div className="dash-form-card" style={{ maxWidth: 480 }}>
           <h3>Preferences de notifications</h3>
+          <PushToggle />
           {[
             { key: 'email', label: 'Notifications par email' },
             { key: 'sms', label: 'Notifications par SMS' },
