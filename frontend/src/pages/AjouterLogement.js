@@ -123,6 +123,7 @@ const AjouterLogement = () => {
 
   // ID du logement créé (pour upload photos)
   const [logementCree, setLogementCree] = useState(null);
+  const [photosAjoutees, setPhotosAjoutees] = useState([]);
 
   // Localisation
   const [regions, setRegions] = useState([]);
@@ -582,32 +583,49 @@ const AjouterLogement = () => {
               <div className="photos-etape-header">
                 <span>📸</span>
                 <div>
-                  <h2>Ajoutez des photos</h2>
-                  <p>Les photos augmentent vos chances de trouver un locataire</p>
+                  <h2>Ajoutez des photos <span style={{ color: '#E53935', fontSize: 14 }}>*</span></h2>
+                  <p>Au moins 1 photo requise · Les logements avec photos reçoivent 3× plus de candidatures</p>
                 </div>
               </div>
 
               <PhotoUpload
                 logementId={logementCree.id}
                 photosInitiales={[]}
-                onUpdate={() => {}}
+                onUpdate={function(nouvPhotos) {
+                  setPhotosAjoutees(nouvPhotos);
+                }}
               />
 
               <div className="form-actions" style={{marginTop: '24px'}}>
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => navigate('/dashboard')}
-                >
-                  Passer cette étape
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => navigate('/dashboard')}
-                >
-                  ✅ Terminer la publication
-                </button>
+                {photosAjoutees.length === 0 && (
+  <div style={{ background: '#FFF8E1', border: '1px solid #FFE082', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#7B4F00', display: 'flex', alignItems: 'center', gap: 8 }}>
+    <span>⚠️</span> Ajoutez au moins une photo pour publier votre logement.
+  </div>
+)}
+<button
+  type="button"
+  className="btn btn-secondary"
+  onClick={function() { navigate('/dashboard'); }}
+  style={{ opacity: 0.6, fontSize: 12 }}
+>
+  Terminer sans photo (déconseillé)
+</button>
+<button
+  type="button"
+  className="btn btn-primary"
+  disabled={photosAjoutees.length === 0}
+  onClick={function() {
+    if (photosAjoutees.length === 0) {
+      toast.error('Ajoutez au moins une photo avant de publier !');
+      return;
+    }
+    navigate('/dashboard');
+    toast.success('Logement publié avec ' + photosAjoutees.length + ' photo(s) !');
+  }}
+  style={{ opacity: photosAjoutees.length === 0 ? 0.5 : 1 }}
+>
+  {photosAjoutees.length === 0 ? '📷 Ajoutez une photo d\'abord' : '✅ Publier — ' + photosAjoutees.length + ' photo(s)'}
+</button>
               </div>
             </div>
           )}
