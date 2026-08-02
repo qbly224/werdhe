@@ -39,7 +39,7 @@ router.post('/inscription', valider('inscription'), async (req, res) => {
     await audit.log(user.id, 'inscription', { email: user.email, role: user.role }, req.ip);
 
     var token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role, nom: user.nom, prenom: user.prenom, plan: user.plan || 'gratuit' },
+      { id: user.id, email: user.email, role: user.role, nom: user.nom, prenom: user.prenom, plan: user.plan || 'gratuit', onboarding_termine: user.onboarding_termine || false },
       process.env.JWT_SECRET,
       { expiresIn: '30d' }
     );
@@ -47,7 +47,7 @@ router.post('/inscription', valider('inscription'), async (req, res) => {
     res.status(201).json({
       message: 'Compte créé !',
       token,
-      user: { id: user.id, nom: user.nom, prenom: user.prenom, email: user.email, role: user.role, telephone: user.telephone, plan: user.plan || 'gratuit' }
+      user: { id: user.id, nom: user.nom, prenom: user.prenom, email: user.email, role: user.role, telephone: user.telephone, plan: user.plan || 'gratuit', onboarding_termine: user.onboarding_termine || false }
     });
   } catch (err) {
     console.error('[POST /inscription]', err.message);
@@ -80,7 +80,7 @@ router.post('/connexion', valider('connexion'), async (req, res) => {
     }
 
     var token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role, nom: user.nom, prenom: user.prenom, plan: user.plan || 'gratuit' },
+      { id: user.id, email: user.email, role: user.role, nom: user.nom, prenom: user.prenom, plan: user.plan || 'gratuit', onboarding_termine: user.onboarding_termine || false },
       process.env.JWT_SECRET,
       { expiresIn: '30d' }
     );
@@ -91,7 +91,7 @@ await audit.log(user.id, 'connexion', { email: user.email, role: user.role }, re
     res.json({
       message: 'Connexion réussie',
       token,
-      user: { id: user.id, nom: user.nom, prenom: user.prenom, email: user.email, role: user.role, telephone: user.telephone, plan: user.plan || 'gratuit' }
+      user: { id: user.id, nom: user.nom, prenom: user.prenom, email: user.email, role: user.role, telephone: user.telephone, plan: user.plan || 'gratuit', onboarding_termine: user.onboarding_termine || false }
     });
   } catch (err) {
     console.error('[POST /connexion]', err.message);
@@ -359,4 +359,16 @@ router.post('/register', async (req, res) => {
   }
 });
 
+// Marquer l'onboarding comme terminé
+router.patch('/onboarding-termine', verifierToken, async (req, res) => {
+  try {
+    await db.query(
+      'UPDATE users SET onboarding_termine = TRUE WHERE id = $1',
+      [req.user.id]
+    );
+    res.json({ message: 'Onboarding terminé' });
+  } catch (err) {
+    res.status(500).json({ erreur: err.message });
+  }
+});
 module.exports = router;
