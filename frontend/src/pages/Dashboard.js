@@ -26,6 +26,7 @@ import {
   FileSignature, BedDouble, Bath, Maximize2,
   LogOut, UserCheck, Award, AlertCircle
 } from 'lucide-react';
+import Onboarding from '../components/Onboarding';
 
 // ================================================
 // UTILITAIRE — Formater les montants en GNF
@@ -2993,6 +2994,7 @@ export default function Dashboard() {
   var [alertes, setAlertes] = useState([]);
   var [stats, setStats] = useState({ logements: [], reservations: [], paiements: [] });
   var [monPlan, setMonPlan] = useState({ plan: 'gratuit', droits: { max_biens: 2, mobile_money: false, documents_pdf: false }, nb_biens: 0 });
+  var [showOnboarding, setShowOnboarding] = useState(false);
 
   var premierChargement = useRef(true);
   var { darkMode, toggle: toggleDarkMode } = useDarkMode();
@@ -3050,6 +3052,10 @@ useEffect(function() {
 
   // ── Écouter les événements de refresh ────────────────────────
   function handleRefresh() { chargerDonnees(); }
+  // Afficher l'onboarding si premier login
+  if (user && !user.onboarding_termine) {
+    setShowOnboarding(true);
+  }
   window.addEventListener('werdhe:refresh', handleRefresh);
 
   // ── Raccourcis clavier ──────────────
@@ -3171,6 +3177,9 @@ function chargerDonnees() {
   <div
     className="sidebar-overlay"
     onClick={function() { setSidebarOpen(false); }} />
+)}
+{showOnboarding && (
+  <Onboarding onTermine={function() { setShowOnboarding(false); }} />
 )}
 {isMobile && sidebarOpen && (
   <div
