@@ -93,6 +93,11 @@ app.use('/push', pushRoutes);
 const rapportsRoutes = require('./routes/rapports');
 app.use('/rapports', rapportsRoutes);
 
+const renouvellements = require('./routes/renouvellements');
+app.use('/renouvellements', renouvellements);
+
+const passport = require('./config/passport');
+app.use(passport.initialize());
 // Compresser toutes les réponses (gzip)
 app.use(compression());
 

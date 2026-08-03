@@ -7,7 +7,7 @@ const jwt      = require('jsonwebtoken');
 const bcrypt   = require('bcrypt');
 const crypto   = require('crypto');
 const db       = require('../database');
-
+const passport = require('../config/passport');
 // ─── INSCRIPTION ──────────────────────────────────────────────────
 router.post('/inscription', valider('inscription'), async (req, res) => {
   try {
@@ -461,4 +461,47 @@ router.get('/profil-public/:id', async (req, res) => {
     res.status(500).json({ erreur: err.message });
   }
 });
+// ─── GOOGLE OAUTH ─────────────────────────────────────────────────
+
+// Initier la connexion Google
+router.get('/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+// Callback après authentification Google
+router.get('/google/callback',
+  passport.authenticate('google', { session: false, failureRedirect: 'https://werdhe.com/login?error=google' }),
+  async function(req, res) {
+    try {
+      var user = req.user;
+
+      // Générer le JWT
+      var token = jwt.sign(
+        {
+          id:                 user.id,
+          email:              user.email,
+          role:               user.role,
+          nom:                user.nom,
+          prenom:             user.prenom,
+          plan:               user.plan || 'gratuit',
+          onboarding_termine: user.onboarding_termine || false
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
+      // Rediriger vers le frontend avec le token
+      res.redirect(
+        'https://werdhe.com/auth/callback?token=' + token +
+        '&nom=' + encodeURIComponent(user.nom || '') +
+        '&prenom=' + encodeURIComponent(user.prenom || '') +
+        '&role=' + (user.role || 'locataire')
+      );
+
+    } catch (err) {
+      console.error('[Google OAuth callback]', err.message);
+      res.redirect('https://werdhe.com/login?error=serveur');
+    }
+  }
+);
 module.exports = router;
