@@ -285,6 +285,9 @@ function OngletBiens(props) {
   var [showLiberer, setShowLiberer] = useState(null);
   var [formEdit, setFormEdit]       = useState({});
   var [reservationsActives, setReservationsActives] = useState([]);
+  var [showRenouv, setShowRenouv]       = useState(null);
+  var [renouvForm, setRenouvForm]       = useState({ duree: '12', prix: '', message: '' });
+  var [renouvLoading, setRenouvLoading] = useState(false);
 
   // Charger les réservations pour avoir les infos locataires
   useEffect(function() {
@@ -585,10 +588,50 @@ function OngletBiens(props) {
   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 8 }}>
     {/* ... boutons existants Messagerie, Documents, Préavis ... */}
     <button
+      onClick={function() { proposerRenouvellement(b); }}
+      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', border: '0.5px solid #90CAF9', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+      <RefreshCw size={13} strokeWidth={1.5} /> Renouveler
+    </button>
+    <button
       onClick={function() { setShowLiberer(b.id); }}
       style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#FFEBEE', color: '#C62828', border: '0.5px solid #FFCDD2', fontSize: 12, fontWeight: 600, cursor: 'pointer', gridColumn: '1 / -1' }}>
       ⚡ Libérer immédiatement
     </button>
+  </div>
+)}
+
+{showRenouv && (
+  <div className="modal-overlay">
+    <div className="modal-box">
+      <h3 style={{ color: '#1565C0' }}>🔄 Proposer un renouvellement</h3>
+      <p style={{ fontSize: 13, color: '#555', marginBottom: 16 }}>
+        Logement : <b>{showRenouv.nom}</b>
+      </p>
+      <div className="form-group">
+        <label>Durée du renouvellement *</label>
+        <select value={renouvForm.duree} onChange={function(e) { setRenouvForm(Object.assign({}, renouvForm, { duree: e.target.value })); }}>
+          {['3','6','12','18','24'].map(function(d) { return <option key={d} value={d}>{d} mois</option>; })}
+        </select>
+      </div>
+      <div className="form-group">
+        <label>Nouveau loyer mensuel (GNF) — laisser vide pour conserver le même</label>
+        <input type="number" placeholder={showRenouv.loyer} value={renouvForm.prix}
+          onChange={function(e) { setRenouvForm(Object.assign({}, renouvForm, { prix: e.target.value })); }} />
+      </div>
+      <div className="form-group">
+        <label>Message au locataire (optionnel)</label>
+        <textarea value={renouvForm.message} onChange={function(e) { setRenouvForm(Object.assign({}, renouvForm, { message: e.target.value })); }}
+          placeholder="Ex: Renouvellement aux mêmes conditions..." rows="2"
+          style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 13, resize: 'none', fontFamily: 'inherit', outline: 'none' }} />
+      </div>
+      <div className="modal-actions">
+        <button onClick={envoyerRenouvellement} disabled={renouvLoading}
+          style={{ background: '#1565C0', color: '#fff', border: 'none', borderRadius: 10, padding: '11px 20px', fontWeight: 700, cursor: 'pointer', flex: 1 }}>
+          {renouvLoading ? '⏳ Envoi...' : '🔄 Envoyer la proposition'}
+        </button>
+        <button className="btn-outline-green" onClick={function() { setShowRenouv(null); }}>Annuler</button>
+      </div>
+    </div>
   </div>
 )}
                 </div>
@@ -611,6 +654,29 @@ function OngletBiens(props) {
       </div>
     </div>
   );
+}
+
+function proposerRenouvellement(bien) {
+  if (!bien.reservation_id) { toast.error('Aucune réservation active'); return; }
+  setShowRenouv(bien);
+  setRenouvForm({ duree: '12', prix: String(bien.loyer || ''), message: '' });
+}
+
+function envoyerRenouvellement() {
+  if (!showRenouv) return;
+  setRenouvLoading(true);
+  api.post('/renouvellements', {
+    reservation_id:      showRenouv.reservation_id,
+    nouvelle_duree_mois: parseInt(renouvForm.duree),
+    nouveau_prix:        renouvForm.prix ? Number(renouvForm.prix) : null,
+    message:             renouvForm.message || null
+  })
+    .then(function() {
+      toast.success('Proposition de renouvellement envoyée !');
+      setShowRenouv(null);
+    })
+    .catch(function(err) { toast.error(err.response?.data?.erreur || 'Erreur'); })
+    .finally(function() { setRenouvLoading(false); });
 }
 
 // ================================================
@@ -1679,6 +1745,24 @@ function PaiementsLocataire(props) {
 // ================================================
 
 function OngletPreavis(props) {
+  var [renouvellements, setRenouvellements] = useState([]);
+
+useEffect(function() {
+  if (user && user.role === 'locataire') {
+    api.get('/renouvellements/en-attente')
+      .then(function(res) { setRenouvellements(res.data.renouvellements || []); })
+      .catch(console.error);
+  }
+}, [user]);
+
+function repondreRenouvellement(id, reponse) {
+  api.patch('/renouvellements/' + id + '/repondre', { reponse: reponse })
+    .then(function() {
+      toast.success(reponse === 'accepte' ? '✅ Renouvellement accepté !' : 'Renouvellement refusé');
+      setRenouvellements(function(prev) { return prev.filter(function(r) { return r.id !== id; }); });
+    })
+    .catch(function(err) { toast.error(err.response?.data?.erreur || 'Erreur'); });
+}
   var user      = props.user;
   var setOnglet = props.setOnglet;
   var estProprietaire = user && (user.role === 'proprietaire' || user.role === 'les_deux');
@@ -1771,7 +1855,6 @@ function repondre(preavisId, reponse) {
     })
     .finally(function() { setLoading(false); });
   }
-
   function telechargerPDF() {
     // Générer et télécharger le document préavis
     api.get('/documents?type=preavis')
@@ -1798,7 +1881,7 @@ function repondre(preavisId, reponse) {
             h1{color:#1B6B3A}.box{background:#FFF8E1;border:1px solid #FFE082;border-radius:8px;padding:16px;margin:16px 0}
             .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #FFE082;font-size:14px}</style></head>
             <body>
-              <h1>🏠 Werdhe — Préavis de départ</h1>
+              <h1>🏠 Werdhe - Préavis de départ</h1>
               <p>Date : ${new Date().toLocaleDateString('fr-FR')}</p>
               <div class="box">
                 <div class="row"><span>Motif</span><b>${motif}</b></div>
@@ -1822,14 +1905,55 @@ function repondre(preavisId, reponse) {
       })
       .catch(function() { toast.error('Erreur téléchargement'); });
   }
-
   function contacter() {
     if (setOnglet) setOnglet('/dashboard/messages');
     else window.location.href = '/dashboard/messages';
   }
-
   return (
     <div>
+      {/* ── PROPOSITIONS DE RENOUVELLEMENT (locataire) ── */}
+      {renouvellements.length > 0 && (
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: '#1565C0', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <RefreshCw size={16} strokeWidth={1.5} /> Proposition(s) de renouvellement ({renouvellements.length})
+          </div>
+          {renouvellements.map(function(rn) {
+            return (
+              <div key={rn.id} style={{ background: '#fff', borderRadius: 14, padding: 18, marginBottom: 12, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid #1565C0' }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>
+                  🔄 {rn.logement_titre}
+                </div>
+                <div style={{ background: '#E3F2FD', borderRadius: 10, padding: 12, marginBottom: 14 }}>
+                  {[
+                    ['Proposé par', rn.prop_prenom + ' ' + rn.prop_nom],
+                    ['Durée', rn.nouvelle_duree_mois + ' mois supplémentaires'],
+                    ['Nouveau loyer', rn.nouveau_prix ? new Intl.NumberFormat('fr-FR').format(rn.nouveau_prix) + ' GNF/mois' : 'Inchangé'],
+                    ['Reçu le', new Date(rn.created_at).toLocaleDateString('fr-FR')],
+                  ].map(function(row) {
+                    return (
+                      <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0', borderBottom: '0.5px solid #BBDEFB' }}>
+                        <span style={{ color: '#888' }}>{row[0]}</span>
+                        <span style={{ fontWeight: 600, color: '#1565C0' }}>{row[1]}</span>
+                      </div>
+                    );
+                  })}
+                  {rn.message && <div style={{ fontSize: 12, color: '#666', marginTop: 8, fontStyle: 'italic' }}>"{rn.message}"</div>}
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  <button onClick={function() { repondreRenouvellement(rn.id, 'refuse'); }}
+                    style={{ padding: 12, borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#888', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                    ❌ Refuser
+                  </button>
+                  <button onClick={function() { repondreRenouvellement(rn.id, 'accepte'); }}
+                    style={{ padding: 12, borderRadius: 10, border: 'none', background: '#1565C0', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                    ✅ Accepter
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
       <div className="dash-page-header">
         <div>
           <span style={{display:'flex',alignItems:'center',gap:5}}><Send size={14} strokeWidth={1.5}/> Préavis de départ</span>
