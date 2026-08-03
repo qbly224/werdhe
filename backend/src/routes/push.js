@@ -5,11 +5,16 @@ const webpush    = require('web-push');
 const verifierToken = require('../middleware/auth');
 
 // Configurer web-push
-webpush.setVapidDetails(
-  process.env.VAPID_EMAIL || 'mailto:contact@werdhe.com',
-  process.env.VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
-);
+if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+  webpush.setVapidDetails(
+    process.env.VAPID_EMAIL || 'mailto:contact@werdhe.com',
+    process.env.VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  );
+  console.log('[Push] VAPID configuré ✅');
+} else {
+  console.warn('[Push] Clés VAPID manquantes — notifications push désactivées');
+}
 
 // ─── RETOURNER LA CLÉ PUBLIQUE ────────────────────────────────────
 router.get('/vapid-public-key', function(req, res) {
