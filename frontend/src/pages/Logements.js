@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import MapView from '../components/MapView';
 
 var GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 
@@ -16,6 +17,7 @@ export default function Logements() {
   var [total, setTotal]           = useState(0);
   var [page, setPage]             = useState(1);
   var [showFiltres, setShowFiltres] = useState(false);
+  var [vueMode, setVueMode] = useState('liste'); // 'liste' ou 'carte'
 
   // Filtres
   var [search, setSearch]         = useState('');
@@ -74,6 +76,21 @@ export default function Logements() {
         </div>
         <Link to="/dashboard" style={{ color: 'rgba(255,255,255,0.8)', textDecoration: 'none', fontSize: 13 }}>Mon espace</Link>
       </div>
+      {/* Toggle vue liste / carte */}
+<div style={{ display: 'flex', gap: 6, background: '#F0F0F0', borderRadius: 10, padding: 4 }}>
+  <button
+    onClick={function() { setVueMode('liste'); }}
+    style={{ padding: '7px 14px', borderRadius: 7, border: 'none', background: vueMode === 'liste' ? '#1B6B3A' : 'transparent', color: vueMode === 'liste' ? '#fff' : '#888', fontSize: 13, fontWeight: vueMode === 'liste' ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, transition: 'all .2s' }}>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    Liste
+  </button>
+  <button
+    onClick={function() { setVueMode('carte'); }}
+    style={{ padding: '7px 14px', borderRadius: 7, border: 'none', background: vueMode === 'carte' ? '#1B6B3A' : 'transparent', color: vueMode === 'carte' ? '#fff' : '#888', fontSize: 13, fontWeight: vueMode === 'carte' ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, transition: 'all .2s' }}>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+    Carte
+  </button>
+</div>
 
       {/* BARRE DE RECHERCHE */}
       <div style={{ background: '#fff', padding: '14px 16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
@@ -209,6 +226,16 @@ export default function Logements() {
           </div>
         )}
 
+        {vueMode === 'carte' && (
+          <div style={{ marginTop: 16 }}>
+            <MapView
+              logements={logements}
+              onSelectLogement={function(l) { window.location.href = '/logements/' + l.id; }}
+            />
+          </div>
+        )}
+
+        {vueMode === 'liste' && (
         <div style={{ display: 'grid',gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))' , gap: 16 }}>
           {logements.map(function(l) {
             return (
@@ -274,7 +301,7 @@ export default function Logements() {
             );
           })}
         </div>
-
+        )}
         {/* PAGINATION */}
         {total > 12 && (
           <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 24 }}>
