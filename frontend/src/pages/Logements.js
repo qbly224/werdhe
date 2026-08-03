@@ -66,7 +66,7 @@ export default function Logements() {
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
 
       {/* HEADER */}
-      <div style={{ background: '#1B6B3A', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ background: 'linear-gradient(135deg, #1B6B3A 0%, #134F2B 100%)', padding: '28px 24px', boxShadow: '0 4px 20px rgba(27,107,58,0.3)', display: 'flex', alignItems: 'center', gap: 12 }}>
         <button onClick={function() { navigate(-1); }} style={{ background: 'none', border: 'none', color: '#fff', fontSize: 22, cursor: 'pointer', padding: 0 }}>←</button>
         <div style={{ flex: 1 }}>
           <div style={{ color: '#fff', fontWeight: 700, fontSize: 17 }}>Logements disponibles</div>
@@ -215,8 +215,8 @@ export default function Logements() {
               <div key={l.id}
                 onClick={function() { navigate('/logements/' + l.id); }}
                 style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.07)', cursor: 'pointer', transition: 'transform .2s, box-shadow .2s' }}
-                onMouseEnter={function(e) { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)'; }}
-                onMouseLeave={function(e) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.07)'; }}>
+                onMouseEnter={function(e) { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.12)'; }}
+                onMouseLeave={function(e) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.07)'; }}>
 
                 {/* Photo / placeholder */}
                  <div style={{ height: 180, position: 'relative', background: '#E8F5E9', overflow: 'hidden',display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48, position: 'relative' }}>

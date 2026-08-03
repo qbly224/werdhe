@@ -3202,7 +3202,10 @@ function chargerDonnees() {
   if (loading) {
     return (
       <div className="dashboard-wrapper">
-        <div className="dash-loading">Chargement de votre espace...</div>
+        <div className="dash-loading">
+          <div style={{ width: 40, height: 40, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+          Chargement...
+        </div>
       </div>
     );
   }
@@ -3277,7 +3280,12 @@ function chargerDonnees() {
     );
   })}
 </div>}
-            {!isMobile && <div className="dash-om-badge">Orange Money connecté</div>}
+            {!isMobile && (
+              <div className="dash-om-badge" style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+               <div style={{ width: 6, height: 6, background: '#fff', borderRadius: '50%', opacity: 0.9 }} />
+               Orange Money
+              </div>
+            )}
             <button
               onClick={toggleDarkMode}
               title={darkMode ? 'Mode clair' : 'Mode sombre'}
