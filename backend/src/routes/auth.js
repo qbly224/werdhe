@@ -1,7 +1,8 @@
 const { valider } = require('../middleware/valider');
 const audit = require('../services/auditService');
-const express  = require('express');
-const router   = express.Router();
+const express       = require('express');
+const router        = require('express').Router();
+const verifierToken = require('../middleware/auth');
 const jwt      = require('jsonwebtoken');
 const bcrypt   = require('bcrypt');
 const crypto   = require('crypto');
