@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import Onboarding from '../components/Onboarding';
 import { activerNotificationsPush, estAbonne, desactiverNotifications } from '../services/pushService';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts';
 
 // ================================================
 // UTILITAIRE — Formater les montants en GNF
@@ -3018,6 +3019,209 @@ function OngletMesLocations(props) {
   );
 }
 
+// ════════════════════════════════════════════════════════════════
+// ONGLET : Rapports financiers
+// ════════════════════════════════════════════════════════════════
+function OngletRapports(props) {
+  var user = props.user;
+  var [data, setData]         = useState(null);
+  var [loading, setLoading]   = useState(true);
+  var [periode, setPeriode]   = useState('12mois');
+
+  useEffect(function() {
+    api.get('/rapports/financier')
+      .then(function(res) { setData(res.data); })
+      .catch(function(err) { console.error('[Rapports]', err.message); })
+      .finally(function() { setLoading(false); });
+  }, []);
+
+  function exportCSV() {
+    if (!data) return;
+    var lignes = [
+      ['Mois', 'Revenus GNF', 'Paiements', 'Impayés GNF'],
+      ...data.evolution.map(function(m) {
+        return [m.mois_label, m.revenus, m.nb_paiements, m.impayes];
+      })
+    ];
+    var csv     = lignes.map(function(l) { return l.join(','); }).join('\n');
+    var blob    = new Blob([csv], { type: 'text/csv' });
+    var url     = URL.createObjectURL(blob);
+    var a       = document.createElement('a');
+    a.href      = url;
+    a.download  = 'werdhe-rapport-' + new Date().toISOString().slice(0,7) + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('Export CSV téléchargé !');
+  }
+
+  if (loading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 60, gap: 12 }}>
+      <div style={{ width: 32, height: 32, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      <span style={{ color: '#888' }}>Chargement des données...</span>
+    </div>
+  );
+
+  if (!data) return (
+    <div className="dash-empty-state">
+      <TrendingUp size={48} strokeWidth={1} color="#E0E0E0" />
+      <h3>Aucune donnée financière</h3>
+      <p>Les données apparaîtront dès que vous aurez des paiements enregistrés.</p>
+    </div>
+  );
+
+  var r = data.resume;
+
+  return (
+    <div>
+      <div className="dash-page-header">
+        <div>
+          <h1>Rapports financiers</h1>
+          <p>Vue complète de vos revenus locatifs</p>
+        </div>
+        <button onClick={exportCSV} className="btn-outline-green" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Download size={14} strokeWidth={1.5} /> Exporter CSV
+        </button>
+      </div>
+
+      {/* KPIs */}
+      <div className="stats-grid-4" style={{ marginBottom: 24 }}>
+        {[
+          { label: 'Encaissé ce mois',    val: GNF(r.encaisse) + ' GNF',    icon: <Banknote size={22} strokeWidth={1.5}/>,  color: '#1B6B3A', bg: '#E8F5E9' },
+          { label: 'En attente',          val: GNF(r.en_attente) + ' GNF',  icon: <Clock size={22} strokeWidth={1.5}/>,     color: '#E65100', bg: '#FFF3E0' },
+          { label: 'Total annuel',        val: GNF(r.total_annuel) + ' GNF', icon: <TrendingUp size={22} strokeWidth={1.5}/>, color: '#1565C0', bg: '#E3F2FD' },
+          { label: 'Paiements ce mois',   val: r.nb_paiements + ' reçus',    icon: <Receipt size={22} strokeWidth={1.5}/>,   color: '#7B1FA2', bg: '#F3E5F5' },
+        ].map(function(s, i) {
+          return (
+            <div key={i} className="stat-card-colored" style={{ background: s.bg, borderLeft: '4px solid ' + s.color }}>
+              <div style={{ color: s.color, marginBottom: 10 }}>{s.icon}</div>
+              <div className="stat-card-val" style={{ color: s.color }}>{s.val}</div>
+              <div className="stat-card-label">{s.label}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Graphique revenus 12 mois */}
+      <div style={{ background: '#fff', borderRadius: 16, padding: 24, marginBottom: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+          <h3 style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', margin: 0 }}>Évolution des revenus</h3>
+          <span style={{ fontSize: 12, color: '#888' }}>12 derniers mois</span>
+        </div>
+        {data.evolution.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>Aucune donnée</div>
+        ) : (
+          <ResponsiveContainer width="100%" height={240}>
+            <AreaChart data={data.evolution} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+              <defs>
+                <linearGradient id="colorRevenus" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#1B6B3A" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="#1B6B3A" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorImpayes" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#E53935" stopOpacity={0.1} />
+                  <stop offset="95%" stopColor="#E53935" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" />
+              <XAxis dataKey="mois_label" tick={{ fontSize: 11, fill: '#888' }} />
+              <YAxis tick={{ fontSize: 11, fill: '#888' }} tickFormatter={function(v) { return new Intl.NumberFormat('fr-FR', { notation: 'compact' }).format(v); }} />
+              <Tooltip formatter={function(v, n) { return [new Intl.NumberFormat('fr-FR').format(v) + ' GNF', n === 'revenus' ? 'Encaissé' : 'Impayés']; }} labelStyle={{ fontWeight: 700 }} />
+              <Area type="monotone" dataKey="revenus" stroke="#1B6B3A" strokeWidth={2.5} fill="url(#colorRevenus)" dot={false} />
+              <Area type="monotone" dataKey="impayes" stroke="#E53935" strokeWidth={1.5} fill="url(#colorImpayes)" dot={false} strokeDasharray="4 4" />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
+        <div style={{ display: 'flex', gap: 20, marginTop: 12, justifyContent: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#555' }}>
+            <div style={{ width: 24, height: 3, background: '#1B6B3A', borderRadius: 2 }} /> Revenus encaissés
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#555' }}>
+            <div style={{ width: 24, height: 2, background: '#E53935', borderRadius: 2, borderTop: '2px dashed #E53935' }} /> Impayés
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+
+        {/* Taux d'occupation */}
+        <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>Taux d'occupation</h3>
+          {data.occupation.length === 0 ? (
+            <div style={{ color: '#888', fontSize: 13 }}>Aucune donnée</div>
+          ) : (
+            <ResponsiveContainer width="100%" height={180}>
+              <BarChart data={data.occupation} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
+                <XAxis dataKey="mois_label" tick={{ fontSize: 10, fill: '#888' }} />
+                <YAxis tick={{ fontSize: 10, fill: '#888' }} domain={[0, 100]} tickFormatter={function(v) { return v + '%'; }} />
+                <Tooltip formatter={function(v) { return [v + '%', 'Occupation']; }} />
+                <Bar dataKey={function(d) { return d.total_biens > 0 ? Math.round(d.biens_loues / d.total_biens * 100) : 0; }}
+                  name="occupation" fill="#1B6B3A" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+
+        {/* Revenus par bien */}
+        <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>Revenus par bien</h3>
+          {data.par_bien.length === 0 && (
+            <div style={{ color: '#888', fontSize: 13 }}>Aucun logement</div>
+          )}
+          {data.par_bien.map(function(b, i) {
+            var max = Math.max.apply(null, data.par_bien.map(function(x) { return Number(x.total_encaisse); }));
+            var pct = max > 0 ? Math.round(Number(b.total_encaisse) / max * 100) : 0;
+            return (
+              <div key={b.id} style={{ marginBottom: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 12 }}>
+                  <span style={{ color: '#555', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' }}>{b.titre}</span>
+                  <span style={{ fontWeight: 700, color: '#1B6B3A', flexShrink: 0 }}>{GNF(b.total_encaisse)} GNF</span>
+                </div>
+                <div style={{ background: '#F0F0F0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
+                  <div style={{ background: 'linear-gradient(90deg, #1B6B3A, #34A853)', width: pct + '%', height: '100%', borderRadius: 4, transition: 'width .5s' }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Historique paiements */}
+      <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>Historique des paiements</h3>
+        {data.paiements.length === 0 && (
+          <div style={{ color: '#888', fontSize: 13, textAlign: 'center', padding: 20 }}>Aucun paiement enregistré</div>
+        )}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {data.paiements.map(function(p, i) {
+            var cfg = p.statut === 'complete'
+              ? { label: 'Payé', color: '#1B6B3A', bg: '#E8F5E9' }
+              : p.statut === 'en_attente'
+              ? { label: 'En attente', color: '#E65100', bg: '#FFF3E0' }
+              : { label: p.statut, color: '#888', bg: '#F5F5F5' };
+            return (
+              <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', borderRadius: 10, background: i % 2 === 0 ? '#FAFAFA' : '#fff', border: '0.5px solid #F0F0F0' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>
+                    {p.locataire_prenom} {p.locataire_nom}
+                  </div>
+                  <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
+                    {p.logement_titre} · {new Date(p.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                    {p.mode_paiement && ' · ' + p.mode_paiement}
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: cfg.color }}>{GNF(p.montant)} GNF</div>
+                  <span style={{ background: cfg.bg, color: cfg.color, borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{cfg.label}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
 // ================================================
 // COMPOSANT PRINCIPAL : Dashboard
 // ================================================
@@ -3054,6 +3258,7 @@ export default function Dashboard() {
   '/dashboard/preavis':      t('preavis'),
   '/dashboard/parametres':   t('parametres'),
   '/dashboard/mes-locations': t('mes_locations'),
+  '/dashboard/rapports':      t('Rapports financiers'),
 };
   var pageIcon = {
     '/dashboard':              '',
@@ -3068,6 +3273,7 @@ export default function Dashboard() {
     '/dashboard/preavis':      '',
     '/dashboard/parametres':   '',
     '/dashboard/mes-locations': '',
+    '/dashboard/rapports': '',
   };
 
   // Détecter le resize
@@ -3196,6 +3402,7 @@ function chargerDonnees() {
     if (onglet === '/dashboard/reclamations') return <OngletReclamations />;
     if (onglet === '/dashboard/parametres') return <OngletParametres user={user} />;
     if (onglet === '/dashboard/mes-locations') return <OngletMesLocations stats={stats} setOnglet={setOnglet} />;
+    if (onglet === '/dashboard/rapports') return <OngletRapports user={user} />;
     return <OngletOverview stats={stats} user={user} alertes={alertes} />;
   }
 

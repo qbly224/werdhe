@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Home, Users, CalendarCheck,
   CreditCard, FileText, Bell, MessageCircle,
-  Wrench, Send, Settings
+  Wrench, Send, Settings, TrendingUp
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
@@ -19,6 +19,7 @@ var NAV_PROPRIETAIRE = [
   { path: '/dashboard/reclamations', icon: <Wrench          size={20} strokeWidth={1.5} />, label: 'Réclamations'  },
   { path: '/dashboard/preavis',      icon: <Send            size={20} strokeWidth={1.5} />, label: 'Préavis'        },
   { path: '/dashboard/parametres',   icon: <Settings        size={20} strokeWidth={1.5} />, label: 'Paramètres'    },
+  { path: '/dashboard/rapports',     icon: <TrendingUp      size={20} strokeWidth={1.5} />, label: 'Rapports' },
 ];
 
 // Navigation locataire
