@@ -151,14 +151,18 @@ export default function LogementDetail() {
                   {prix} GNF
                   <small>/mois</small>
                 </div>
-
+                
                 <div className="proprio-box">
-                  <div className="proprio-avatar">
-                    {propPrenom.charAt(0)}{propNom.charAt(0)}
-                  </div>
-                  <div>
-                    <strong>{propPrenom} {propNom}</strong>
-                    <p>{propTel}</p>
+                 <div className="proprio-avatar">
+                  {propPrenom.charAt(0)}{propNom.charAt(0)}
+                 </div>
+                 <div>
+                  <Link
+                    to={'/proprietaire/' + (logement.proprietaire_id || '')}
+                    style={{ color: '#1B6B3A', textDecoration: 'none', fontWeight: 700, fontSize: 14 }}>
+                    {propPrenom} {propNom} →
+                    </Link>
+                    <p style={{ margin: '2px 0 0', fontSize: 13, color: '#888' }}>{propTel}</p>
                   </div>
                 </div>
 

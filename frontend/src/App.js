@@ -21,6 +21,7 @@ import Admin from './pages/Admin';
 import Pricing from './pages/Pricing';
 import LoginTelephone from './pages/LoginTelephone';
 import LandingPage from './pages/LandingPage';
+import ProfilPublic from './pages/ProfilPublic';
 
 function RoutePrivee(props) {
   var auth = useAuth();
@@ -54,6 +55,7 @@ function App() {
           <Route path="/admin" element={<RoutePrivee><Admin /></RoutePrivee>} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/login-telephone" element={<LoginTelephone />} />
+          <Route path="/proprietaire/:id" element={<ProfilPublic />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
