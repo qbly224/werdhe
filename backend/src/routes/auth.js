@@ -371,4 +371,93 @@ router.patch('/onboarding-termine', verifierToken, async (req, res) => {
     res.status(500).json({ erreur: err.message });
   }
 });
+
+// ─── PROFIL PUBLIC D'UN PROPRIÉTAIRE ─────────────────────────────
+router.get('/profil-public/:id', async (req, res) => {
+  try {
+    var { id } = req.params;
+
+    // Infos du propriétaire
+    var userResult = await db.query(
+      `SELECT
+         id, nom, prenom, role,
+         note_moyenne, nb_notations,
+         locataire_verifie, plan,
+         created_at
+       FROM users
+       WHERE id = $1
+         AND role IN ('proprietaire', 'les_deux')
+         AND (suspendu IS NULL OR suspendu = FALSE)`,
+      [id]
+    );
+
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ erreur: 'Propriétaire non trouvé' });
+    }
+
+    var user = userResult.rows[0];
+
+    // Ses logements publiés
+    var logementsResult = await db.query(
+      `SELECT id, titre, ville, adresse, prix_mensuel,
+              nb_chambres, superficie, categorie, statut, photos
+       FROM logements
+       WHERE proprietaire_id = $1
+         AND statut IN ('disponible', 'loue')
+       ORDER BY created_at DESC
+       LIMIT 12`,
+      [id]
+    );
+
+    // Ses notations publiques
+    var notationsResult = await db.query(
+      `SELECT n.note, n.commentaire, n.created_at,
+              u.prenom as auteur_prenom, u.nom as auteur_nom
+       FROM notations n
+       JOIN users u ON n.auteur_id = u.id
+       WHERE n.cible_id = $1
+         AND n.type = 'locataire_note_proprio'
+         AND n.commentaire IS NOT NULL
+       ORDER BY n.created_at DESC
+       LIMIT 6`,
+      [id]
+    );
+
+    // Stats
+    var statsResult = await db.query(
+      `SELECT
+         COUNT(DISTINCT r.id) FILTER (WHERE r.statut = 'confirmee') as locations_actives,
+         COUNT(DISTINCT r.id) FILTER (WHERE r.statut = 'terminee')  as locations_terminees,
+         COUNT(DISTINCT l.id) as total_logements
+       FROM logements l
+       LEFT JOIN reservations r ON r.logement_id = l.id
+       WHERE l.proprietaire_id = $1`,
+      [id]
+    );
+
+    var moisDepuis = Math.floor(
+      (Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24 * 30)
+    );
+
+    res.json({
+      proprietaire: {
+        id:               user.id,
+        nom:              user.prenom + ' ' + user.nom.charAt(0) + '.',
+        note_moyenne:     user.note_moyenne || 0,
+        nb_notations:     user.nb_notations || 0,
+        plan:             user.plan,
+        membre_depuis:    moisDepuis + ' mois',
+        locations_actives:   parseInt(statsResult.rows[0].locations_actives) || 0,
+        locations_terminees: parseInt(statsResult.rows[0].locations_terminees) || 0,
+        total_logements:     parseInt(statsResult.rows[0].total_logements) || 0,
+      },
+      logements:  logementsResult.rows,
+      notations:  notationsResult.rows,
+    });
+
+  } catch (err) {
+    console.error('[GET /profil-public/:id]', err.message);
+    res.status(500).json({ erreur: err.message });
+  }
+});
 module.exports = router;

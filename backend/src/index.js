@@ -90,6 +90,9 @@ app.use(cors({
 const { router: pushRoutes } = require('./routes/push');
 app.use('/push', pushRoutes);
 
+const rapportsRoutes = require('./routes/rapports');
+app.use('/rapports', rapportsRoutes);
+
 // Compresser toutes les réponses (gzip)
 app.use(compression());
 
