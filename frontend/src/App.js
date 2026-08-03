@@ -22,6 +22,7 @@ import Pricing from './pages/Pricing';
 import LoginTelephone from './pages/LoginTelephone';
 import LandingPage from './pages/LandingPage';
 import ProfilPublic from './pages/ProfilPublic';
+import AuthCallback from './pages/AuthCallback';
 
 function RoutePrivee(props) {
   var auth = useAuth();
@@ -56,6 +57,7 @@ function App() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/login-telephone" element={<LoginTelephone />} />
           <Route path="/proprietaire/:id" element={<ProfilPublic />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
