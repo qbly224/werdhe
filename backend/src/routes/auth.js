@@ -88,7 +88,62 @@ router.post('/connexion', valider('connexion'), async (req, res) => {
 
     // Logger la connexion
 await audit.log(user.id, 'connexion', { email: user.email, role: user.role }, req.ip);
+    // Si compte admin → envoyer OTP avant de donner le JWT
+if (user.role === 'admin') {
+  var codeOTP = Math.floor(100000 + Math.random() * 900000).toString();
+  var expireAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
+  // Supprimer anciens OTP
+  await db.query('DELETE FROM otp_admin WHERE user_id = $1', [user.id]);
+
+  // Sauvegarder le nouvel OTP
+  await db.query(
+    'INSERT INTO otp_admin (user_id, code, expire_at, ip_address) VALUES ($1, $2, $3, $4)',
+    [user.id, codeOTP, expireAt, req.ip]
+  );
+
+  // Envoyer par email
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const { Resend } = require('resend');
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      await resend.emails.send({
+        from:    'Werdhe <no-reply@werdhe.com>',
+        to:      user.email,
+        subject: '🔐 Code de vérification Admin — Werdhe',
+        html: `
+          <div style="font-family:sans-serif;max-width:400px;margin:0 auto">
+            <div style="background:#1B2B22;padding:20px;border-radius:12px 12px 0 0">
+              <h2 style="color:#F5A623;margin:0">🔐 Werdhe Admin</h2>
+            </div>
+            <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
+              <p>Tentative de connexion admin depuis <b>${req.ip}</b></p>
+              <div style="background:#1B2B22;border-radius:12px;padding:20px;text-align:center;margin:16px 0">
+                <div style="font-size:40px;font-weight:900;color:#F5A623;letter-spacing:10px;font-family:monospace">
+                  ${codeOTP}
+                </div>
+              </div>
+              <p style="color:#888;font-size:12px">
+                ⚠️ Ce code expire dans <b>10 minutes</b>.<br/>
+                Si ce n'est pas vous, changez votre mot de passe immédiatement.
+              </p>
+            </div>
+          </div>
+        `
+      });
+    } catch (e) {
+      console.warn('[2FA Admin] Email non envoyé:', e.message);
+    }
+  }
+
+  console.log('[2FA Admin] Code pour', user.email, ':', codeOTP);
+
+  return res.json({
+    requires_2fa: true,
+    user_id:      user.id,
+    message:      'Code 2FA envoyé à ' + user.email
+  });
+}
     res.json({
       message: 'Connexion réussie',
       token,
@@ -504,4 +559,85 @@ router.get('/google/callback',
     }
   }
 );
+// ─── VÉRIFIER LE CODE 2FA ADMIN ──────────────────────────────────
+router.post('/admin/verifier-2fa', async (req, res) => {
+  try {
+    var { user_id, code } = req.body;
+    if (!user_id || !code) {
+      return res.status(400).json({ erreur: 'user_id et code requis' });
+    }
+
+    var otpResult = await db.query(
+      `SELECT * FROM otp_admin
+       WHERE user_id = $1
+         AND code = $2
+         AND utilise = FALSE
+         AND expire_at > NOW()
+       LIMIT 1`,
+      [user_id, code]
+    );
+
+    if (otpResult.rows.length === 0) {
+      return res.status(400).json({ erreur: 'Code invalide ou expiré' });
+    }
+
+    // Marquer comme utilisé
+    await db.query(
+      'UPDATE otp_admin SET utilise = TRUE WHERE id = $1',
+      [otpResult.rows[0].id]
+    );
+
+    // Récupérer l'admin
+    var userResult = await db.query(
+      'SELECT * FROM users WHERE id = $1 AND role = $2',
+      [user_id, 'admin']
+    );
+
+    if (userResult.rows.length === 0) {
+      return res.status(403).json({ erreur: 'Compte admin non trouvé' });
+    }
+
+    var user = userResult.rows[0];
+
+    // Générer le JWT
+    var token = jwt.sign(
+      {
+        id:                 user.id,
+        email:              user.email,
+        role:               user.role,
+        nom:                user.nom,
+        prenom:             user.prenom,
+        plan:               user.plan || 'agence',
+        onboarding_termine: true,
+        admin_2fa_verified: true
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    // Logger la connexion
+    await db.query(
+      `INSERT INTO logs_audit (user_id, action, details)
+       VALUES ($1, 'admin_login_2fa', $2)`,
+      [user.id, JSON.stringify({ ip: otpResult.rows[0].ip_address })]
+    ).catch(console.warn);
+
+    res.json({
+      message: 'Connexion admin réussie',
+      token,
+      user: {
+        id:     user.id,
+        nom:    user.nom,
+        prenom: user.prenom,
+        email:  user.email,
+        role:   user.role,
+        plan:   user.plan || 'agence'
+      }
+    });
+
+  } catch (err) {
+    console.error('[POST /auth/admin/verifier-2fa]', err.message);
+    res.status(500).json({ erreur: err.message });
+  }
+});
 module.exports = router;
