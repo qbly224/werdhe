@@ -36,14 +36,11 @@ function RoutePrivee(props) {
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Toaster position="top-right" />
-         <HelmetProvider>
-          <AuthProvider>
-           <BrowserRouter>
-           <Toaster position="top-right" />
-        <Routes>
+    <HelmetProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Toaster position="top-right" />
+          <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/accueil" element={<Accueil />} />
           <Route path="/login" element={<Login />} />
@@ -69,11 +66,9 @@ function App() {
           <Route path="/cgu" element={<CGU />} />
           <Route path="/confidentialite" element={<Confidentialite />} />
         </Routes>
-         </BrowserRouter>
-    </AuthProvider>
-  </HelmetProvider>
-      </BrowserRouter>
-    </AuthProvider>
+        </BrowserRouter>
+      </AuthProvider>
+    </HelmetProvider>
   );
 }
 
