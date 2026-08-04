@@ -24,6 +24,8 @@ import ProfilPublic from './pages/ProfilPublic';
 import AuthCallback from './pages/AuthCallback';
 import Login2FA from './pages/Login2FA';
 import { HelmetProvider } from 'react-helmet-async';
+import CGU from './pages/CGU';
+import Confidentialite from './pages/Confidentialite';
 
 function RoutePrivee(props) {
   var auth = useAuth();
@@ -64,6 +66,8 @@ function App() {
           <Route path="/proprietaire/:id" element={<ProfilPublic />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/admin/2fa" element={<Login2FA />} />
+          <Route path="/cgu" element={<CGU />} />
+          <Route path="/confidentialite" element={<Confidentialite />} />
         </Routes>
          </BrowserRouter>
     </AuthProvider>

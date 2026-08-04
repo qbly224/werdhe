@@ -429,7 +429,7 @@ export default function LandingPage() {
 
             {[
               { titre: 'Plateforme', liens: [['Logements disponibles', '/logements'], ['Tarifs', '/pricing'], ['Se connecter', '/login'], ['Créer un compte', '/inscription']] },
-              { titre: 'Assistance', liens: [['Contact', 'mailto:contact@werdhe.com'], ['Conditions d\'utilisation', '#'], ['Politique de confidentialité', '#']] },
+              { titre: 'Assistance', liens: [['Contact', 'mailto:contact@werdhe.com'], ['Conditions d\'utilisation', '/cgu'], ['Politique de confidentialité', '/confidentialite']] },
             ].map(function(col) {
               return (
                 <div key={col.titre}>
