@@ -23,6 +23,7 @@ import LandingPage from './pages/LandingPage';
 import ProfilPublic from './pages/ProfilPublic';
 import AuthCallback from './pages/AuthCallback';
 import Login2FA from './pages/Login2FA';
+import { HelmetProvider } from 'react-helmet-async';
 
 function RoutePrivee(props) {
   var auth = useAuth();
@@ -36,6 +37,10 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Toaster position="top-right" />
+         <HelmetProvider>
+          <AuthProvider>
+           <BrowserRouter>
+           <Toaster position="top-right" />
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/accueil" element={<Accueil />} />
@@ -60,6 +65,9 @@ function App() {
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/admin/2fa" element={<Login2FA />} />
         </Routes>
+         </BrowserRouter>
+    </AuthProvider>
+  </HelmetProvider>
       </BrowserRouter>
     </AuthProvider>
   );

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
@@ -51,6 +52,34 @@ export default function LogementDetail() {
 
   return (
     <div>
+      <SEO
+        titre={logement ? logement.titre + ' à ' + logement.ville : 'Logement disponible'}
+        description={logement ? logement.titre + ' à ' + logement.ville + ', Guinée. ' + new Intl.NumberFormat('fr-FR').format(logement.prix_mensuel) + ' GNF/mois. Candidatez sur Werdhe.' : ''}
+        image={logement && logement.photos && logement.photos[0] ? logement.photos[0] : undefined}
+        url={'https://werdhe.com/logements/' + (logement ? logement.id : '')}
+        type="article"
+      />
+      {logement && (
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "RealEstateListing",
+          "name": logement.titre,
+          "description": logement.description || logement.titre + ' à ' + logement.ville,
+          "url": 'https://werdhe.com/logements/' + logement.id,
+          "image": logement.photos && logement.photos[0] ? logement.photos[0] : undefined,
+          "offers": {
+            "@type": "Offer",
+            "price": logement.prix_mensuel,
+            "priceCurrency": "GNF",
+            "availability": logement.statut === 'disponible' ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": logement.ville,
+            "addressCountry": "GN"
+          }
+        })}</script>
+      )}
       <Navbar />
       <div className="detail-page">
         <div className="container">

@@ -6,6 +6,7 @@ import {
   ChevronRight, Check, Star, MapPin, ArrowRight,
   Building2, Key, TrendingUp, Banknote, Menu, X
 } from 'lucide-react';
+import SEO from '../components/SEO';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
 
@@ -118,7 +119,11 @@ export default function LandingPage() {
 
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: '#F7F8F7', color: '#1B2B22', overflowX: 'hidden' }}>
-
+      <SEO
+        titre="Location immobilière en Guinée sans intermédiaire"
+        description="Trouvez ou louez un logement en Guinée facilement. Werdhe connecte propriétaires et locataires directement. 100% gratuit pour les locataires."
+        url="https://werdhe.com"
+      />
       {/* ─── NAVBAR ─────────────────────────────────────────────── */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(247,248,247,0.92)', backdropFilter: 'blur(8px)', borderBottom: '0.5px solid rgba(27,107,58,0.12)', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

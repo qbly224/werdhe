@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import MapView from '../components/MapView';
+import SEO from '../components/SEO';
 
 var GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 

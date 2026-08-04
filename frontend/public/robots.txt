@@ -1,3 +1,18 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Disallow:
+User-agent: *
+Allow: /
+Allow: /logements
+Allow: /logements/*
+Allow: /pricing
+Allow: /proprietaire/*
+
+Disallow: /dashboard
+Disallow: /dashboard/*
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /reservation/*
+Disallow: /auth/*
+
+Sitemap: https://werdhe.com/sitemap.xml
