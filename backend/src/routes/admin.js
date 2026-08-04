@@ -17,91 +17,135 @@ function verifierAdmin(req, res, next) {
 // ════════════════════════════════════════════════════════
 router.get('/stats', verifierToken, verifierAdmin, async (req, res) => {
   try {
-    var [users, logements, reservations, paiements, signalements, inscriptionsParMois, logementsParMois, villesActives] = await Promise.all([
+    var [
+      users, logements, reservations,
+      paiements, alertes, evolution,
+      abonnements, logsRecents
+    ] = await Promise.all([
+
+      // Stats users
       db.query(`
         SELECT
-          COUNT(*) as total,
-          COUNT(CASE WHEN role='proprietaire' THEN 1 END) as proprio,
-          COUNT(CASE WHEN role='locataire' THEN 1 END) as locataire,
-          COUNT(CASE WHEN suspendu = TRUE THEN 1 END) as suspendus,
-          COUNT(CASE WHEN verifie = TRUE THEN 1 END) as verifies
-        FROM users
+          COUNT(*) as total_users,
+          COUNT(*) FILTER (WHERE role = 'proprietaire' OR role = 'les_deux') as total_proprietaires,
+          COUNT(*) FILTER (WHERE role = 'locataire') as total_locataires,
+          COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '7 days') as nouveaux_7j,
+          COUNT(*) FILTER (WHERE suspendu = TRUE) as suspendus
+        FROM users WHERE role != 'admin'
       `),
+
+      // Stats logements
       db.query(`
         SELECT
-          COUNT(*) as total,
-          COUNT(CASE WHEN statut='loue' THEN 1 END) as loues,
-          COUNT(CASE WHEN statut='disponible' THEN 1 END) as disponibles,
-          COUNT(CASE WHEN masque = TRUE THEN 1 END) as masques,
-          COUNT(CASE WHEN verifie = TRUE THEN 1 END) as verifies
+          COUNT(*) as total_logements,
+          COUNT(*) FILTER (WHERE statut = 'loue') as logements_loues,
+          COUNT(*) FILTER (WHERE statut = 'disponible') as logements_disponibles,
+          COUNT(*) FILTER (WHERE verifie = TRUE) as logements_verifies,
+          COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '7 days') as nouveaux_7j
         FROM logements
       `),
+
+      // Stats réservations
       db.query(`
         SELECT
-          COUNT(*) as total,
-          COUNT(CASE WHEN statut='confirmee' THEN 1 END) as confirmees,
-          COUNT(CASE WHEN statut='en_attente' THEN 1 END) as en_attente,
-          COUNT(CASE WHEN statut='refusee' THEN 1 END) as refusees
+          COUNT(*) as total_reservations,
+          COUNT(*) FILTER (WHERE statut = 'confirmee') as total_confirmees,
+          COUNT(*) FILTER (WHERE statut = 'en_attente') as en_attente,
+          COUNT(*) FILTER (WHERE statut = 'refusee') as refusees,
+          COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '7 days') as nouvelles_7j
         FROM reservations
       `),
+
+      // Stats paiements et revenus plateforme
       db.query(`
         SELECT
-          COUNT(*) as total,
-          COALESCE(SUM(montant), 0) as volume,
-          COUNT(CASE WHEN mode_paiement='orange_money' THEN 1 END) as orange_money,
-          COUNT(CASE WHEN mode_paiement='mtn_momo' THEN 1 END) as mtn_momo,
-          COUNT(CASE WHEN mode_paiement='especes' THEN 1 END) as especes
-        FROM paiements
-        WHERE statut = 'complete'
+          COALESCE(SUM(montant_commission), 0) as revenus_plateforme,
+          COALESCE(SUM(montant_commission) FILTER (WHERE statut = 'encaissee'), 0) as revenus_encaisses,
+          COUNT(*) as nb_commissions,
+          COALESCE(SUM(montant_loyer), 0) as volume_total
+        FROM commissions
+        WHERE created_at >= NOW() - INTERVAL '30 days'
       `),
-      db.query("SELECT COUNT(*) as total, COUNT(CASE WHEN statut='ouvert' THEN 1 END) as ouverts FROM signalements"),
-      // Inscriptions des 6 derniers mois
+
+      // Alertes actives
+      db.query(`
+        SELECT COUNT(*) as total_alertes,
+          COUNT(*) FILTER (WHERE priorite = 'haute') as alertes_hautes,
+          COUNT(*) FILTER (WHERE lu = FALSE) as non_lues
+        FROM alertes
+      `),
+
+      // Évolution inscriptions 6 mois
       db.query(`
         SELECT
-          TO_CHAR(DATE_TRUNC('month', created_at), 'Mon YYYY') as mois,
-          COUNT(*) as total
+          TO_CHAR(DATE_TRUNC('month', created_at), 'Mon YY') as mois,
+          TO_CHAR(DATE_TRUNC('month', created_at), 'YYYY-MM') as mois_key,
+          COUNT(*) as nb_users,
+          COUNT(*) FILTER (WHERE role = 'proprietaire' OR role = 'les_deux') as nb_proprios,
+          COUNT(*) FILTER (WHERE role = 'locataire') as nb_locataires
         FROM users
         WHERE created_at >= NOW() - INTERVAL '6 months'
+          AND role != 'admin'
         GROUP BY DATE_TRUNC('month', created_at)
         ORDER BY DATE_TRUNC('month', created_at) ASC
       `),
-      // Logements publiés par mois
+
+      // Abonnements actifs
       db.query(`
         SELECT
-          TO_CHAR(DATE_TRUNC('month', created_at), 'Mon YYYY') as mois,
-          COUNT(*) as total
-        FROM logements
-        WHERE created_at >= NOW() - INTERVAL '6 months'
-        GROUP BY DATE_TRUNC('month', created_at)
-        ORDER BY DATE_TRUNC('month', created_at) ASC
+          COUNT(*) FILTER (WHERE plan = 'pro' AND statut = 'actif') as nb_pro,
+          COUNT(*) FILTER (WHERE plan = 'agence' AND statut = 'actif') as nb_agence,
+          COUNT(*) FILTER (WHERE plan = 'gratuit') as nb_gratuit,
+          COUNT(*) FILTER (WHERE statut = 'essai') as nb_essai
+        FROM abonnements
       `),
-      // Villes les plus actives
+
+      // 10 derniers logs d'audit
       db.query(`
-        SELECT ville, COUNT(*) as total
-        FROM logements
-        WHERE ville IS NOT NULL
-        GROUP BY ville
-        ORDER BY total DESC
-        LIMIT 5
+        SELECT l.*, u.nom, u.prenom, u.email
+        FROM logs_audit l
+        LEFT JOIN users u ON l.user_id = u.id
+        ORDER BY l.created_at DESC
+        LIMIT 10
       `),
     ]);
 
     res.json({
-      users:               users.rows[0],
-      logements:           logements.rows[0],
-      reservations:        reservations.rows[0],
-      paiements:           paiements.rows[0],
-      signalements:        signalements.rows[0],
-      inscriptions_mois:   inscriptionsParMois.rows,
-      logements_mois:      logementsParMois.rows,
-      villes_actives:      villesActives.rows,
+      total_users:          Number(users.rows[0].total_users),
+      total_proprietaires:  Number(users.rows[0].total_proprietaires),
+      total_locataires:     Number(users.rows[0].total_locataires),
+      nouveaux_users_7j:    Number(users.rows[0].nouveaux_7j),
+      users_suspendus:      Number(users.rows[0].suspendus),
+      total_logements:      Number(logements.rows[0].total_logements),
+      logements_loues:      Number(logements.rows[0].logements_loues),
+      logements_disponibles: Number(logements.rows[0].logements_disponibles),
+      logements_verifies:   Number(logements.rows[0].logements_verifies),
+      nouveaux_logements_7j: Number(logements.rows[0].nouveaux_7j),
+      total_reservations:   Number(reservations.rows[0].total_reservations),
+      total_confirmees:     Number(reservations.rows[0].total_confirmees),
+      reservations_attente: Number(reservations.rows[0].en_attente),
+      reservations_refusees: Number(reservations.rows[0].refusees),
+      nouvelles_resas_7j:   Number(reservations.rows[0].nouvelles_7j),
+      revenus_plateforme:   Number(paiements.rows[0].revenus_plateforme),
+      revenus_encaisses:    Number(paiements.rows[0].revenus_encaisses),
+      volume_total:         Number(paiements.rows[0].volume_total),
+      total_alertes:        Number(alertes.rows[0].total_alertes),
+      alertes_hautes:       Number(alertes.rows[0].alertes_hautes),
+      abonnements: {
+        pro:     Number(abonnements.rows[0].nb_pro),
+        agence:  Number(abonnements.rows[0].nb_agence),
+        gratuit: Number(abonnements.rows[0].nb_gratuit),
+        essai:   Number(abonnements.rows[0].nb_essai),
+      },
+      evolution:   evolution.rows,
+      logs_recents: logsRecents.rows,
     });
+
   } catch (err) {
-    console.error('Admin stats:', err.message);
-    res.status(500).json({ erreur: 'Erreur serveur' });
+    console.error('[GET /admin/stats]', err.message);
+    res.status(500).json({ erreur: err.message });
   }
 });
-
 // ════════════════════════════════════════════════════════
 // UTILISATEURS
 // ════════════════════════════════════════════════════════
@@ -542,5 +586,76 @@ router.get('/revenus', verifierToken, verifierAdmin, async (req, res) => {
     res.status(500).json({ erreur: err.message });
   }
 });
+// ─── GESTION CODES PROMO ──────────────────────────────────────────
+router.get('/codes-promo', verifierToken, verifierAdmin, async (req, res) => {
+  try {
+    var result = await db.query(
+      'SELECT * FROM codes_promo ORDER BY created_at DESC'
+    );
+    res.json({ codes: result.rows });
+  } catch (err) {
+    res.status(500).json({ erreur: err.message });
+  }
+});
 
+router.post('/codes-promo', verifierToken, verifierAdmin, async (req, res) => {
+  try {
+    var { code, reduction_pct, plan_cible, nb_utilisations_max, expire_at } = req.body;
+    var result = await db.query(
+      `INSERT INTO codes_promo (code, reduction_pct, plan_cible, nb_utilisations_max, expire_at)
+       VALUES (UPPER($1), $2, $3, $4, $5) RETURNING *`,
+      [code, reduction_pct, plan_cible || 'pro', nb_utilisations_max || 100, expire_at || null]
+    );
+    res.status(201).json({ message: 'Code créé !', code: result.rows[0] });
+  } catch (err) {
+    res.status(500).json({ erreur: err.message });
+  }
+});
+
+router.patch('/codes-promo/:id/toggle', verifierToken, verifierAdmin, async (req, res) => {
+  try {
+    var result = await db.query(
+      'UPDATE codes_promo SET actif = NOT actif WHERE id = $1 RETURNING actif',
+      [req.params.id]
+    );
+    res.json({ actif: result.rows[0].actif });
+  } catch (err) {
+    res.status(500).json({ erreur: err.message });
+  }
+});
+
+// ─── LOGS D'AUDIT ─────────────────────────────────────────────────
+router.get('/logs', verifierToken, verifierAdmin, async (req, res) => {
+  try {
+    var result = await db.query(
+      `SELECT l.*, u.nom, u.prenom, u.email, u.role
+       FROM logs_audit l
+       LEFT JOIN users u ON l.user_id = u.id
+       ORDER BY l.created_at DESC
+       LIMIT 50`
+    );
+    res.json({ logs: result.rows });
+  } catch (err) {
+    res.status(500).json({ erreur: err.message });
+  }
+});
+
+// ─── CHANGER LE PLAN D'UN USER ────────────────────────────────────
+router.patch('/users/:id/plan', verifierToken, verifierAdmin, async (req, res) => {
+  try {
+    var { plan } = req.body;
+    if (!['gratuit', 'pro', 'agence'].includes(plan)) {
+      return res.status(400).json({ erreur: 'Plan invalide' });
+    }
+    await db.query('UPDATE users SET plan = $1 WHERE id = $2', [plan, req.params.id]);
+    await db.query(`
+      INSERT INTO abonnements (user_id, plan, statut)
+      VALUES ($1, $2, 'actif')
+      ON CONFLICT (user_id) DO UPDATE SET plan = $2, statut = 'actif'
+    `, [req.params.id, plan]).catch(console.warn);
+    res.json({ message: 'Plan mis à jour !' });
+  } catch (err) {
+    res.status(500).json({ erreur: err.message });
+  }
+});
 module.exports = router;
