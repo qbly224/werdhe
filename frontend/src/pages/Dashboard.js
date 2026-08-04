@@ -3202,9 +3202,19 @@ function OngletRapports(props) {
           <h1>Rapports financiers</h1>
           <p>Vue complète de vos revenus locatifs</p>
         </div>
-        <button onClick={exportCSV} className="btn-outline-green" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <Download size={14} strokeWidth={1.5} /> Exporter CSV
-        </button>
+        <div style={{ display: 'flex', gap: 8 }}>
+  <button onClick={exportCSV} className="btn-outline-green" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+    <Download size={14} strokeWidth={1.5} /> CSV
+  </button>
+  <button
+    onClick={function() {
+      var token = localStorage.getItem('token');
+      window.open('https://api.werdhe.com/rapports/financier/pdf?token=' + token, '_blank');
+    }}
+    style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, border: 'none', background: '#B71C1C', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+    <FileText size={14} strokeWidth={1.5} /> Export PDF
+  </button>
+</div>
       </div>
 
       {/* KPIs */}
