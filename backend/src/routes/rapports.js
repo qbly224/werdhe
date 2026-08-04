@@ -352,4 +352,48 @@ router.get('/financier/pdf', verifierToken, async (req, res) => {
     }
   }
 });
+// ─── SITEMAP.XML ─────────────────────────────────────────────────
+router.get('/sitemap', async (req, res) => {
+  try {
+    var logements = await db.query(
+      `SELECT id, updated_at FROM logements
+       WHERE statut = 'disponible'
+       ORDER BY updated_at DESC
+       LIMIT 1000`
+    );
+
+    var urls = [
+      { loc: 'https://werdhe.com/',         changefreq: 'daily',   priority: '1.0' },
+      { loc: 'https://werdhe.com/logements', changefreq: 'hourly',  priority: '0.9' },
+      { loc: 'https://werdhe.com/pricing',   changefreq: 'monthly', priority: '0.7' },
+    ];
+
+    logements.rows.forEach(function(l) {
+      urls.push({
+        loc:        'https://werdhe.com/logements/' + l.id,
+        changefreq: 'weekly',
+        priority:   '0.8',
+        lastmod:    new Date(l.updated_at || l.created_at).toISOString().slice(0, 10)
+      });
+    });
+
+    var xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+    urls.forEach(function(u) {
+      xml += '  <url>\n';
+      xml += '    <loc>' + u.loc + '</loc>\n';
+      if (u.lastmod) xml += '    <lastmod>' + u.lastmod + '</lastmod>\n';
+      xml += '    <changefreq>' + u.changefreq + '</changefreq>\n';
+      xml += '    <priority>' + u.priority + '</priority>\n';
+      xml += '  </url>\n';
+    });
+    xml += '</urlset>';
+
+    res.setHeader('Content-Type', 'application/xml');
+    res.send(xml);
+
+  } catch (err) {
+    res.status(500).send('Erreur génération sitemap');
+  }
+});
 module.exports = router;

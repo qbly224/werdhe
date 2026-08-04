@@ -173,6 +173,28 @@ app.get('/test-db', async (req, res) => {
   }
 });
 
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    var logements = await db.query(
+      `SELECT id, updated_at FROM logements WHERE statut = 'disponible' LIMIT 1000`
+    );
+    var xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+    [
+      { loc: 'https://werdhe.com/',         priority: '1.0', changefreq: 'daily'  },
+      { loc: 'https://werdhe.com/logements', priority: '0.9', changefreq: 'hourly' },
+      { loc: 'https://werdhe.com/pricing',   priority: '0.7', changefreq: 'monthly'},
+    ].forEach(function(u) {
+      xml += `  <url><loc>${u.loc}</loc><changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>\n`;
+    });
+    logements.rows.forEach(function(l) {
+      xml += `  <url><loc>https://werdhe.com/logements/${l.id}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>\n`;
+    });
+    xml += '</urlset>';
+    res.setHeader('Content-Type', 'application/xml');
+    res.send(xml);
+  } catch (err) { res.status(500).send('Erreur'); }
+});
+
 // ── Démarrage ────────────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log('✅ Serveur démarré sur le port ' + PORT);
