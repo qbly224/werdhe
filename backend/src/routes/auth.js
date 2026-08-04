@@ -640,4 +640,37 @@ router.post('/admin/verifier-2fa', async (req, res) => {
     res.status(500).json({ erreur: err.message });
   }
 });
+// ─── FORMULAIRE DE CONTACT ────────────────────────────────────────
+router.post('/contact', async (req, res) => {
+  try {
+    var { nom, email, sujet, message } = req.body;
+    if (!nom || !email || !message) {
+      return res.status(400).json({ erreur: 'Champs obligatoires manquants' });
+    }
+    if (process.env.RESEND_API_KEY) {
+      const { Resend } = require('resend');
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      await resend.emails.send({
+        from:    'Werdhe <no-reply@werdhe.com>',
+        to:      'contact@werdhe.com',
+        replyTo: email,
+        subject: '[Contact Werdhe] ' + (sujet || 'Nouveau message'),
+        html: `
+          <div style="font-family:sans-serif;max-width:500px">
+            <h2 style="color:#1B2B22">Nouveau message de contact</h2>
+            <p><b>Nom :</b> ${nom}</p>
+            <p><b>Email :</b> ${email}</p>
+            <p><b>Sujet :</b> ${sujet || 'Non précisé'}</p>
+            <hr/>
+            <p><b>Message :</b></p>
+            <p style="background:#F7F8F7;padding:14px;border-radius:8px;line-height:1.6">${message}</p>
+          </div>
+        `
+      });
+    }
+    res.json({ message: 'Message envoyé !' });
+  } catch (err) {
+    res.status(500).json({ erreur: err.message });
+  }
+});
 module.exports = router;
