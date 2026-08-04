@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
-
 import Accueil from './pages/Accueil';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -23,6 +22,7 @@ import LoginTelephone from './pages/LoginTelephone';
 import LandingPage from './pages/LandingPage';
 import ProfilPublic from './pages/ProfilPublic';
 import AuthCallback from './pages/AuthCallback';
+import Login2FA from './pages/Login2FA';
 
 function RoutePrivee(props) {
   var auth = useAuth();
@@ -58,6 +58,7 @@ function App() {
           <Route path="/login-telephone" element={<LoginTelephone />} />
           <Route path="/proprietaire/:id" element={<ProfilPublic />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/admin/2fa" element={<Login2FA />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -33,6 +33,20 @@ export default function Login() {
         email: email,
         mot_de_passe: password
       });
+
+      // Si admin → rediriger vers page 2FA
+      if (res.data.requires_2fa) {
+        toast('Code 2FA envoyé à votre email 🔐', { icon: '📧' });
+        navigate('/admin/2fa', {
+          state: {
+            user_id: res.data.user_id,
+            email:   email
+          }
+        });
+        return;
+      }
+
+      // Connexion normale
       login(res.data.user, res.data.token);
       toast.success('Bon retour ' + res.data.user.prenom + ' !');
       navigate('/dashboard');
