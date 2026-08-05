@@ -24,7 +24,7 @@ import {
   Banknote, TrendingUp, Receipt, Shield,
   ChevronRight, ChevronLeft, Info, Zap,
   FileSignature, BedDouble, Bath, Maximize2,
-  LogOut, UserCheck, Award, AlertCircle
+  LogOut, UserCheck, Award, AlertCircle, Gift
 } from 'lucide-react';
 import Onboarding from '../components/Onboarding';
 import { activerNotificationsPush, estAbonne, desactiverNotifications } from '../services/pushService';
@@ -196,10 +196,18 @@ function OngletOverview(props) {
     { label: 'Biens occupes', value: biensOccupes + '/' + stats.logements.length, sub: biensLibres + ' bien(s) libre(s)', color: '#1565C0', bg: '#E3F2FD', icon: <Home size={24} strokeWidth={1.5} /> },
     { label: 'Loyer en retard', value: alertes.filter(function(a) { return a.type === 'loyer_retard'; }).length + ' locataire(s)', sub: 'A relancer', color: '#B71C1C', bg: '#FFEBEE', icon: <AlertTriangle size={24} strokeWidth={1.5} /> },
     { label: "Taux d'occupation", value: tauxOccup + '%', sub: 'Performance du mois', color: '#E65100', bg: '#FFF3E0', icon: <TrendingUp size={24} strokeWidth={1.5} /> }
-  ] : [
-    { label: 'Mes reservations', value: String(stats.reservations.length), sub: 'Total', color: '#1565C0', bg: '#E3F2FD', icon: <CalendarCheck size={24} strokeWidth={1.5} /> },
-    { label: 'Paiements effectues', value: String(stats.paiements.filter(function(p) { return p.statut === 'complete'; }).length), sub: 'Ce mois', color: '#1B6B3A', bg: '#E8F5E9', icon: <Banknote size={24} strokeWidth={1.5} /> }
+  ] : (function() {
+  var locActive   = stats.reservations.filter(function(r) { return r.statut === 'confirmee'; });
+  var candidatures = stats.reservations.filter(function(r) { return r.statut !== 'confirmee' && r.statut !== 'terminee'; });
+  var paiementsOk  = stats.paiements.filter(function(p) { return p.statut === 'complete'; });
+  var totalPaye    = paiementsOk.reduce(function(s, p) { return s + Number(p.montant); }, 0);
+  return [
+    { label: 'Locations actives',   value: String(locActive.length),    sub: 'En cours',           color: '#1B6B3A', bg: '#E8F5E9', icon: <Home size={24} strokeWidth={1.5}/> },
+    { label: 'Candidatures',        value: String(candidatures.length), sub: 'En attente/examen',  color: '#1565C0', bg: '#E3F2FD', icon: <CalendarCheck size={24} strokeWidth={1.5}/> },
+    { label: 'Loyers payés',        value: String(paiementsOk.length),  sub: 'Total',              color: '#7B1FA2', bg: '#F3E5F5', icon: <CreditCard size={24} strokeWidth={1.5}/> },
+    { label: 'Total versé',         value: GNF(totalPaye) + ' GNF',     sub: 'Depuis le début',    color: '#E65100', bg: '#FFF3E0', icon: <Banknote size={24} strokeWidth={1.5}/> },
   ];
+})();
 
   return (
     <div>
@@ -216,6 +224,163 @@ function OngletOverview(props) {
         })}
       </div>
 
+      {/* Vue locataire enrichie */}
+{user && user.role === 'locataire' && (function() {
+  var locActive = stats.reservations.filter(function(r) { return r.statut === 'confirmee'; });
+  if (locActive.length === 0) return (
+    <div className="dash-empty-state" style={{ marginTop: 20 }}>
+      <Home size={48} strokeWidth={1} color="#C8E6C9" />
+      <h3>Aucune location active</h3>
+      <p>Trouvez votre prochain logement sur Werdhe</p>
+      <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>
+        🔍 Chercher un logement
+      </Link>
+    </div>
+  );
+
+  return locActive.map(function(r) {
+    var dateDebut   = r.date_debut ? new Date(r.date_debut) : null;
+    var dateFin     = r.date_fin   ? new Date(r.date_fin)   : null;
+    var maintenant  = new Date();
+    var moisEcoules = dateDebut ? Math.floor((maintenant - dateDebut) / (1000 * 60 * 60 * 24 * 30)) : 0;
+    var dureeTotal  = r.duree_mois || 12;
+    var pctProgres  = Math.min(100, Math.round(moisEcoules / dureeTotal * 100));
+    var prochainLoyer = dateDebut ? new Date(dateDebut.getFullYear(), dateDebut.getMonth() + moisEcoules + 1, dateDebut.getDate()) : null;
+    var joursAvant  = prochainLoyer ? Math.ceil((prochainLoyer - maintenant) / (1000 * 60 * 60 * 24)) : null;
+    var photo       = r.photos && r.photos.length > 0 ? r.photos[0] : null;
+
+    return (
+      <div key={r.id} style={{ marginTop: 20 }}>
+        {/* Carte location active */}
+        <div style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginBottom: 16 }}>
+          {/* Photo / bannière */}
+          <div style={{ height: 120, background: photo ? 'none' : 'linear-gradient(135deg, #1B6B3A, #2D9E5F)', position: 'relative', overflow: 'hidden' }}>
+            {photo
+              ? <img src={photo} alt={r.logement_titre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontSize: 48 }}>🏠</div>
+            }
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.6))', display: 'flex', alignItems: 'flex-end', padding: '14px 18px' }}>
+              <div>
+                <div style={{ color: '#fff', fontWeight: 800, fontSize: 18, marginBottom: 2 }}>{r.logement_titre}</div>
+                <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13, display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <MapPin size={12} strokeWidth={1.5} /> {r.logement_adresse}, {r.logement_ville}
+                </div>
+              </div>
+            </div>
+            <div style={{ position: 'absolute', top: 12, right: 12, background: '#1B6B3A', color: '#fff', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
+              ✅ Location active
+            </div>
+          </div>
+
+          <div style={{ padding: '18px 20px' }}>
+            {/* Loyer + progression */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+              <div>
+                <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Loyer mensuel</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: '#1B6B3A' }}>
+                  {GNF(r.prix_mensuel)} <span style={{ fontSize: 13, fontWeight: 400, color: '#888' }}>GNF/mois</span>
+                </div>
+              </div>
+              {joursAvant !== null && (
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Prochain loyer dans</div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: joursAvant <= 5 ? '#E53935' : joursAvant <= 10 ? '#E65100' : '#1B2B22' }}>
+                    {joursAvant > 0 ? joursAvant + ' jours' : 'Aujourd\'hui'}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Barre de progression bail */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#888', marginBottom: 6 }}>
+                <span>Durée du bail</span>
+                <span>{moisEcoules} / {dureeTotal} mois ({pctProgres}%)</span>
+              </div>
+              <div style={{ background: '#F0F0F0', borderRadius: 6, height: 8, overflow: 'hidden' }}>
+                <div style={{ background: 'linear-gradient(90deg, #1B6B3A, #34A853)', width: pctProgres + '%', height: '100%', borderRadius: 6, transition: 'width .5s' }} />
+              </div>
+              {dateDebut && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#aaa', marginTop: 4 }}>
+                  <span>{dateDebut.toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' })}</span>
+                  {dateFin && <span>{dateFin.toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' })}</span>}
+                </div>
+              )}
+            </div>
+
+            {/* Infos propriétaire */}
+            <div style={{ background: '#F7F8F7', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 36, height: 36, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 700 }}>
+                  {(r.prop_prenom || '').charAt(0)}{(r.prop_nom || '').charAt(0)}
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{r.prop_prenom} {r.prop_nom}</div>
+                  <div style={{ fontSize: 11, color: '#888' }}>Propriétaire</div>
+                </div>
+              </div>
+              <a href={'tel:' + r.prop_telephone}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#E8F5E9', color: '#1B5E20', borderRadius: 8, padding: '7px 12px', textDecoration: 'none', fontSize: 12, fontWeight: 700 }}>
+                <Phone size={12} strokeWidth={2} /> Appeler
+              </a>
+            </div>
+
+            {/* Actions rapides */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+              {[
+                { icon: <FileText size={18} strokeWidth={1.5} />,       label: 'Documents',    color: '#1565C0', action: function() { if(setOnglet) setOnglet('/dashboard/documents'); } },
+                { icon: <MessageCircle size={18} strokeWidth={1.5} />,  label: 'Messages',     color: '#7B1FA2', action: function() { if(setOnglet) setOnglet('/dashboard/messages'); } },
+                { icon: <CreditCard size={18} strokeWidth={1.5} />,     label: 'Paiements',    color: '#E65100', action: function() { if(setOnglet) setOnglet('/dashboard/paiements'); } },
+                { icon: <Send size={18} strokeWidth={1.5} />,           label: 'Préavis',      color: '#B71C1C', action: function() { if(setOnglet) setOnglet('/dashboard/preavis'); } },
+              ].map(function(a, i) {
+                return (
+                  <button key={i} onClick={a.action}
+                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '12px 8px', borderRadius: 10, border: '0.5px solid #E8E8E8', background: '#fff', cursor: 'pointer', color: a.color, transition: 'all .2s' }}
+                    onMouseEnter={function(e) { e.currentTarget.style.background = a.color + '10'; }}
+                    onMouseLeave={function(e) { e.currentTarget.style.background = '#fff'; }}>
+                    {a.icon}
+                    <span style={{ fontSize: 10, fontWeight: 600 }}>{a.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Historique paiements récents */}
+        {stats.paiements.length > 0 && (
+          <div style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+              <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: 0 }}>Historique des paiements</h3>
+              <button onClick={function() { if(setOnglet) setOnglet('/dashboard/paiements'); }}
+                style={{ background: 'none', border: 'none', color: '#1B6B3A', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                Voir tout →
+              </button>
+            </div>
+            {stats.paiements.slice(0, 4).map(function(p, i) {
+              var cfg = p.statut === 'complete' ? { color: '#1B6B3A', bg: '#E8F5E9', label: 'Payé' }
+                : { color: '#E65100', bg: '#FFF3E0', label: 'En attente' };
+              return (
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < stats.paiements.slice(0,4).length - 1 ? '0.5px solid #F5F5F5' : 'none' }}>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>
+                      Loyer — {new Date(p.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+                    </div>
+                    {p.mode_paiement && <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>Via {p.mode_paiement}</div>}
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: cfg.color }}>{GNF(p.montant)} GNF</div>
+                    <span style={{ background: cfg.bg, color: cfg.color, borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 700 }}>{cfg.label}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  });
+})()}
       <div className="dash-two-cols">
         <div className="dash-white-card">
           <div className="dash-card-head">
