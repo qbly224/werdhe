@@ -19,24 +19,32 @@ router.post('/', verifierToken, creerReservation);
 router.get('/mes-reservations', verifierToken, async (req, res) => {
   try {
     var result = await db.query(
-      `SELECT r.*,
-         l.titre  as logement_titre,
-         l.ville  as logement_ville,
-         l.adresse as logement_adresse,
-         l.prix_mensuel,
-         l.id     as logement_id,
-         l.proprietaire_id,
-         u.nom    as prop_nom,
-         u.prenom as prop_prenom,
-         u.telephone as prop_telephone,
-         u.email  as prop_email
-       FROM reservations r
-       JOIN logements l ON r.logement_id = l.id
-       JOIN users u ON l.proprietaire_id = u.id
-       WHERE r.locataire_id = $1
-       ORDER BY r.created_at DESC`,
-      [req.user.id]
-    );
+  `SELECT r.*,
+     l.titre       as logement_titre,
+     l.ville       as logement_ville,
+     l.adresse     as logement_adresse,
+     l.prix_mensuel,
+     l.nb_chambres,
+     l.superficie,
+     l.photos,
+     l.categorie,
+     l.id          as logement_id,
+     l.proprietaire_id,
+     u.nom         as prop_nom,
+     u.prenom      as prop_prenom,
+     u.telephone   as prop_telephone,
+     u.email       as prop_email,
+     -- Dernier paiement
+     (SELECT MAX(p.created_at) FROM paiements p WHERE p.reservation_id = r.id AND p.statut = 'complete') as dernier_paiement,
+     -- Nombre de paiements effectués
+     (SELECT COUNT(*) FROM paiements p WHERE p.reservation_id = r.id AND p.statut = 'complete') as nb_paiements
+   FROM reservations r
+   JOIN logements l ON r.logement_id = l.id
+   JOIN users u ON l.proprietaire_id = u.id
+   WHERE r.locataire_id = $1
+   ORDER BY r.created_at DESC`,
+  [req.user.id]
+);
     res.json({ reservations: result.rows });
   } catch (err) {
     console.error('[GET /mes-reservations]', err.message);

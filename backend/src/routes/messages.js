@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const db            = require('../database');
 const verifierToken = require('../middleware/auth');
 const {
   envoyerMessage, getConversations,
@@ -10,12 +11,115 @@ const {
 router.get('/conversations', verifierToken, getConversations);
 
 // Voir les messages avec un interlocuteur
-router.get('/:interlocuteur_id', verifierToken, getMessages);
+router.get('/:interlocuteurId', verifierToken, async (req, res) => {
+  try {
+    var { interlocuteurId } = req.params;
+
+    // Marquer les messages reçus comme lus
+    await db.query(
+      `UPDATE messages SET lu = TRUE, lu_at = NOW()
+       WHERE expedition_id = $1 AND destinataire_id = $2 AND lu = FALSE`,
+      [interlocuteurId, req.user.id]
+    );
+
+    var result = await db.query(
+      `SELECT m.*,
+         r.contenu as reply_contenu_msg,
+         u_reply.prenom as reply_auteur
+       FROM messages m
+       LEFT JOIN messages r ON m.reply_to = r.id
+       LEFT JOIN users u_reply ON r.expedition_id = u_reply.id
+       WHERE (m.expedition_id = $1 AND m.destinataire_id = $2)
+          OR (m.expedition_id = $2 AND m.destinataire_id = $1)
+       ORDER BY m.created_at ASC
+       LIMIT 100`,
+      [req.user.id, interlocuteurId]
+    );
+
+    res.json({ messages: result.rows });
+  } catch (err) {
+    console.error('[GET /messages/:id]', err.message);
+    res.status(500).json({ erreur: err.message });
+  }
+});
 
 // Envoyer un message (texte ou fichier)
 router.post('/', verifierToken, uploadMessage.single('fichier'), envoyerMessage);
+// Dans le POST /, après la récupération des données :
+var { destinataire_id, contenu, reply_to } = req.body;
+
+// Dans l'INSERT, ajoute reply_to :
+`INSERT INTO messages
+   (expedition_id, destinataire_id, contenu, type, reply_to)
+ VALUES ($1, $2, $3, $4, $5)
+ RETURNING *`,
+[req.user.id, destinataire_id, contenu, 'texte', reply_to || null]
 
 // Compter les non lus
 router.get('/non-lus/count', verifierToken, getNonLus);
+
+// ─── MARQUER COMME LU ────────────────────────────────────────────
+router.patch('/lus/:interlocuteurId', verifierToken, async (req, res) => {
+  try {
+    await db.query(
+      `UPDATE messages SET lu = TRUE, lu_at = NOW()
+       WHERE expedition_id = $1 AND destinataire_id = $2 AND lu = FALSE`,
+      [req.params.interlocuteurId, req.user.id]
+    );
+    res.json({ message: 'Messages marqués comme lus' });
+  } catch (err) {
+    res.status(500).json({ erreur: err.message });
+  }
+});
+
+// ─── RÉAGIR À UN MESSAGE ─────────────────────────────────────────
+router.post('/:id/reaction', verifierToken, async (req, res) => {
+  try {
+    var { emoji } = req.body;
+    if (!emoji) return res.status(400).json({ erreur: 'Emoji requis' });
+
+    // Toggle : si déjà réagi avec ce même emoji → supprimer
+    var existing = await db.query(
+      'SELECT id FROM message_reactions WHERE message_id = $1 AND user_id = $2',
+      [req.params.id, req.user.id]
+    );
+
+    if (existing.rows.length > 0) {
+      await db.query(
+        'DELETE FROM message_reactions WHERE message_id = $1 AND user_id = $2',
+        [req.params.id, req.user.id]
+      );
+      return res.json({ message: 'Réaction supprimée' });
+    }
+
+    await db.query(
+      `INSERT INTO message_reactions (message_id, user_id, emoji)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (message_id, user_id) DO UPDATE SET emoji = $3`,
+      [req.params.id, req.user.id, emoji]
+    );
+
+    res.status(201).json({ message: 'Réaction ajoutée' });
+  } catch (err) {
+    res.status(500).json({ erreur: err.message });
+  }
+});
+
+// ─── RÉACTIONS D'UN MESSAGE ───────────────────────────────────────
+router.get('/:id/reactions', verifierToken, async (req, res) => {
+  try {
+    var result = await db.query(
+      `SELECT emoji, COUNT(*) as nb,
+         BOOL_OR(user_id = $2) as ma_reaction
+       FROM message_reactions
+       WHERE message_id = $1
+       GROUP BY emoji`,
+      [req.params.id, req.user.id]
+    );
+    res.json({ reactions: result.rows });
+  } catch (err) {
+    res.status(500).json({ erreur: err.message });
+  }
+});
 
 module.exports = router;
