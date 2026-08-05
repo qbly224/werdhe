@@ -27,6 +27,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import CGU from './pages/CGU';
 import Confidentialite from './pages/Confidentialite';
 import Contact from './pages/Contact';
+import NotFound from './pages/NotFound';
 
 function RoutePrivee(props) {
   var auth = useAuth();
@@ -67,6 +68,7 @@ function App() {
           <Route path="/cgu" element={<CGU />} />
           <Route path="/confidentialite" element={<Confidentialite />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
         </BrowserRouter>
       </AuthProvider>
