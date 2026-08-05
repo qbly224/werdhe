@@ -2776,8 +2776,7 @@ function OngletMessages() {
                       )}
                       <div
                         className={'msg-bubble ' + (estMoi ? 'msg-bubble-sent' : 'msg-bubble-received')}
-                        onDoubleClick={function() { setReplyTo(m); }}
-                        onContextMenu={function(e) { e.preventDefault(); setShowEmojis(showEmojis === m.id ? null : m.id); }}>
+                        onDoubleClick={function() { setReplyTo(m); }}>
                         {m.type === 'photo' && m.fichier_url && (
                           <img src={m.fichier_url} alt="photo" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px', cursor: 'pointer', marginBottom: m.contenu ? '8px' : '0' }} onClick={function() { window.open(m.fichier_url, '_blank'); }} />
                         )}
@@ -2799,6 +2798,14 @@ function OngletMessages() {
                           )}
                         </div>
                       </div>
+                      {/* Bouton réaction */}
+                      <button
+                        onClick={function() { setShowEmojis(showEmojis === m.id ? null : m.id); }}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, opacity: 0.4, padding: '2px 6px', marginTop: 2 }}
+                        onMouseEnter={function(e) { e.currentTarget.style.opacity = '1'; }}
+                        onMouseLeave={function(e) { e.currentTarget.style.opacity = '0.4'; }}>
+                        😊
+                      </button>
                       {/* Réactions emoji */}
                       {showEmojis === m.id && (
                         <div style={{ background: '#fff', borderRadius: 20, padding: '6px 10px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', display: 'flex', gap: 6, marginTop: 4, zIndex: 10 }}>
