@@ -2614,6 +2614,13 @@ function OngletMessages() {
   var [message, setMessage] = useState('');
   var [loading, setLoading] = useState(true);
   var [fichier, setFichier] = useState(null);
+  var [replyTo, setReplyTo]         = useState(null);
+  var [recherche, setRecherche]     = useState('');
+  var [showEmojis, setShowEmojis]   = useState(null);
+  var [isTyping, setIsTyping]       = useState(false);
+  var typingTimeout                 = useRef(null);
+  var messagesEndRef                = useRef(null);
+  var EMOJIS_RAPIDES = ['👍', '❤️', '😂', '😮', '😢', '🙏'];
 
   useEffect(function() {
     api.get('/messages/conversations')
@@ -2624,6 +2631,12 @@ function OngletMessages() {
       })
       .finally(function() { setLoading(false); });
   }, []);
+
+  useEffect(function() {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   function chargerMessages(interlocuteurId) {
     setConvActive(interlocuteurId);
@@ -2641,12 +2654,14 @@ function OngletMessages() {
     formData.append('destinataire_id', convActive);
     if (message.trim()) formData.append('contenu', message);
     if (fichier) formData.append('fichier', fichier);
+    if (replyTo) formData.append('reply_to', replyTo.id); 
 
     api.post('/messages', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
       .then(function(res) {
         setMessages(function(prev) { return prev.concat(res.data.data); });
         setMessage('');
         setFichier(null);
+        setReplyTo(null); 
         toast.success('Message envoye !');
       })
       .catch(function() { toast.error('Erreur envoi'); });
@@ -2684,7 +2699,18 @@ function OngletMessages() {
           <div style={{ padding: '14px 16px', borderBottom: '1px solid #f0f0f0', fontWeight: 700, fontSize: 13, color: '#1B2B22' }}>
             Conversations ({conversations.length})
           </div>
-          {conversations.map(function(c) {
+          <div style={{ padding: '8px 12px', borderBottom: '0.5px solid #F0F0F0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#F7F8F7', borderRadius: 10, padding: '7px 12px' }}>
+              <Search size={14} strokeWidth={1.5} color="#888" />
+              <input type="text" placeholder="Rechercher..." value={recherche}
+                onChange={function(e) { setRecherche(e.target.value); }}
+                style={{ border: 'none', background: 'transparent', outline: 'none', fontSize: 13, flex: 1, color: '#1B2B22' }} />
+            </div>
+          </div>
+          {conversations.filter(function(c) {
+            if (!recherche) return true;
+            return ((c.prenom || '') + ' ' + (c.nom || '') + ' ' + (c.contenu || '')).toLowerCase().includes(recherche.toLowerCase());
+          }).map(function(c) {
             var initiales = ((c.prenom || '').charAt(0) + (c.nom || '').charAt(0)).toUpperCase();
             var nonLus = parseInt(c.non_lus) || 0;
             return (
@@ -2736,14 +2762,22 @@ function OngletMessages() {
                   </div>
                 )}
               </div>
-
               <div className="messages-chat-body">
                 {messages.length === 0 && <div style={{ textAlign: 'center', color: '#ccc', fontSize: 13, padding: '40px 20px' }}>Demarrez la conversation...</div>}
                 {messages.map(function(m) {
                   var estMoi = m.expedition_id === (user && user.id);
                   return (
                     <div key={m.id} style={{ display: 'flex', flexDirection: 'column', alignItems: estMoi ? 'flex-end' : 'flex-start' }}>
-                      <div className={'msg-bubble ' + (estMoi ? 'msg-bubble-sent' : 'msg-bubble-received')}>
+                      {/* Message cité */}
+                      {m.reply_contenu && (
+                        <div style={{ background: 'rgba(0,0,0,0.06)', borderRadius: 8, padding: '4px 10px', marginBottom: 4, fontSize: 12, color: '#888', borderLeft: '3px solid #1B6B3A', maxWidth: '60%' }}>
+                          {m.reply_contenu.slice(0, 60)}{m.reply_contenu.length > 60 ? '...' : ''}
+                        </div>
+                      )}
+                      <div
+                        className={'msg-bubble ' + (estMoi ? 'msg-bubble-sent' : 'msg-bubble-received')}
+                        onDoubleClick={function() { setReplyTo(m); }}
+                        onContextMenu={function(e) { e.preventDefault(); setShowEmojis(showEmojis === m.id ? null : m.id); }}>
                         {m.type === 'photo' && m.fichier_url && (
                           <img src={m.fichier_url} alt="photo" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px', cursor: 'pointer', marginBottom: m.contenu ? '8px' : '0' }} onClick={function() { window.open(m.fichier_url, '_blank'); }} />
                         )}
@@ -2754,15 +2788,54 @@ function OngletMessages() {
                           </a>
                         )}
                         {m.contenu && <div>{m.contenu}</div>}
-                        <div style={{ fontSize: '10px', marginTop: '4px', opacity: '0.7', textAlign: 'right' }}>
-                          {new Date(m.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                          <span style={{ fontSize: 10, opacity: 0.7 }}>
+                            {new Date(m.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                          {estMoi && (
+                            <span style={{ fontSize: 11, opacity: m.lu ? 1 : 0.4, color: estMoi ? 'rgba(255,255,255,0.9)' : '#1B6B3A' }}>
+                              {m.lu ? '✓✓' : '✓'}
+                            </span>
+                          )}
                         </div>
                       </div>
+                      {/* Réactions emoji */}
+                      {showEmojis === m.id && (
+                        <div style={{ background: '#fff', borderRadius: 20, padding: '6px 10px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', display: 'flex', gap: 6, marginTop: 4, zIndex: 10 }}>
+                          {EMOJIS_RAPIDES.map(function(emoji) {
+                            return (
+                              <button key={emoji}
+                                onClick={function() {
+                                  api.post('/messages/' + m.id + '/reaction', { emoji: emoji })
+                                    .then(function() { setShowEmojis(null); chargerMessages(convActive); });
+                                }}
+                                style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', padding: '2px 4px', borderRadius: 8 }}>
+                                {emoji}
+                              </button>
+                            );
+                          })}
+                          <button onClick={function() { setShowEmojis(null); }}
+                            style={{ background: 'none', border: 'none', fontSize: 14, cursor: 'pointer', color: '#aaa' }}>×</button>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
+                <div ref={messagesEndRef} /> 
               </div>
-
+{/* Barre de réponse */}
+              {replyTo && (
+                <div style={{ padding: '8px 14px', background: '#F0FBF0', borderTop: '1px solid #E0E0E0', display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ flex: 1, borderLeft: '3px solid #1B6B3A', paddingLeft: 10 }}>
+                    <div style={{ fontSize: 11, color: '#1B6B3A', fontWeight: 700, marginBottom: 2 }}>Répondre à</div>
+                    <div style={{ fontSize: 13, color: '#555', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {replyTo.contenu ? replyTo.contenu.slice(0, 60) : '📎 Fichier'}
+                    </div>
+                  </div>
+                  <button onClick={function() { setReplyTo(null); }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#aaa', fontSize: 18 }}>×</button>
+                </div>
+              )}
               {fichier && (
                 <div style={{ padding: '8px 16px', background: '#E8F5E9', borderTop: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span style={{ fontSize: '13px', color: '#1B5E20' }}>{fichier.type.startsWith('image/') ? '📷' : '📎'} {fichier.name}</span>
