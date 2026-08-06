@@ -2798,18 +2798,7 @@ function OngletMessages() {
                             </span>
                           )}
                         </div>
-                      </div>
-                      {m.reactions && m.reactions.length > 0 && (
-                        <div style={{ display: 'flex', gap: 4, marginTop: 4, flexWrap: 'wrap' }}>
-                          {m.reactions.map(function(r, ri) {
-                            return (
-                              <span key={ri} style={{ background: '#fff', border: '0.5px solid #E0E0E0', borderRadius: 20, padding: '2px 8px', fontSize: 14, boxShadow: '0 1px 4px rgba(0,0,0,0.1)' }}>
-                                {r.emoji} {r.nb > 1 && <span style={{ fontSize: 11, color: '#888' }}>{r.nb}</span>}
-                              </span>
-                            );
-                          })}
-                        </div>
-                      )}
+                     </div>
                       </div>
                       {/* Bouton réaction */}
                       <button
@@ -2819,7 +2808,7 @@ function OngletMessages() {
                         onMouseLeave={function(e) { e.currentTarget.style.opacity = '0.5'; }}>
                         😊
                       </button>
-                      {/* Réactions affichées */}
+                      {/* Réactions */}
                       {m.reactions && m.reactions.length > 0 && (
                         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 4 }}>
                           {m.reactions.map(function(r, ri) {
