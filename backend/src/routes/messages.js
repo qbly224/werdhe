@@ -45,15 +45,6 @@ router.get('/:interlocuteurId', verifierToken, async (req, res) => {
 
 // Envoyer un message (texte ou fichier)
 router.post('/', verifierToken, uploadMessage.single('fichier'), envoyerMessage);
-// Dans le POST /, après la récupération des données :
-var { destinataire_id, contenu, reply_to } = req.body;
-
-// Dans l'INSERT, ajoute reply_to :
-`INSERT INTO messages
-   (expedition_id, destinataire_id, contenu, type, reply_to)
- VALUES ($1, $2, $3, $4, $5)
- RETURNING *`,
-[req.user.id, destinataire_id, contenu, 'texte', reply_to || null]
 
 // Compter les non lus
 router.get('/non-lus/count', verifierToken, getNonLus);
