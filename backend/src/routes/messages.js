@@ -25,12 +25,24 @@ router.get('/:interlocuteurId', verifierToken, async (req, res) => {
     var result = await db.query(
       `SELECT m.*,
          r.contenu as reply_contenu_msg,
-         u_reply.prenom as reply_auteur
+         u_reply.prenom as reply_auteur,
+         COALESCE(
+           JSON_AGG(
+             JSON_BUILD_OBJECT('emoji', mr.emoji, 'nb', mr.nb)
+           ) FILTER (WHERE mr.emoji IS NOT NULL),
+           '[]'
+         ) as reactions
        FROM messages m
        LEFT JOIN messages r ON m.reply_to = r.id
        LEFT JOIN users u_reply ON r.expedition_id = u_reply.id
+       LEFT JOIN (
+         SELECT message_id, emoji, COUNT(*) as nb
+         FROM message_reactions
+         GROUP BY message_id, emoji
+       ) mr ON mr.message_id = m.id
        WHERE (m.expedition_id = $1 AND m.destinataire_id = $2)
           OR (m.expedition_id = $2 AND m.destinataire_id = $1)
+       GROUP BY m.id, r.contenu, u_reply.prenom
        ORDER BY m.created_at ASC
        LIMIT 100`,
       [req.user.id, interlocuteurId]
