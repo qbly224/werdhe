@@ -2800,9 +2800,11 @@ function OngletMessages() {
                       </div>
                       {/* Bouton réaction */}
                       <button
-                        onClick={function(e) { e.stopPropagation(); setShowEmojis(showEmojis === m.id ? null : m.id); }}
-                        style={{ background: '#fff', border: '0.5px solid #E0E0E0', borderRadius: 20, cursor: 'pointer', fontSize: 14, padding: '3px 10px', marginTop: 4, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
-                        😊 Réagir
+                        onMouseDown={function(e) { e.preventDefault(); e.stopPropagation(); setShowEmojis(showEmojis === m.id ? null : m.id); }}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, padding: '2px 4px', marginTop: 2, opacity: 0.5 }}
+                        onMouseEnter={function(e) { e.currentTarget.style.opacity = '1'; }}
+                        onMouseLeave={function(e) { e.currentTarget.style.opacity = '0.5'; }}>
+                        😊
                       </button>
                       {/* Réactions emoji */}
                       {showEmojis === m.id && (
@@ -2810,7 +2812,8 @@ function OngletMessages() {
                           {EMOJIS_RAPIDES.map(function(emoji) {
                             return (
                               <button key={emoji}
-                               onClick={function(e) {
+                               onMouseDown={function(e) {
+                                  e.preventDefault();
                                   e.stopPropagation();
                                   api.post('/messages/' + m.id + '/reaction', { emoji: emoji })
                                     .then(function() { setShowEmojis(null); chargerMessages(convActive); });
