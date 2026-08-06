@@ -28,6 +28,7 @@ import CGU from './pages/CGU';
 import Confidentialite from './pages/Confidentialite';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
+import APropos from './pages/APropos';
 
 function RoutePrivee(props) {
   var auth = useAuth();
@@ -68,6 +69,7 @@ function App() {
           <Route path="/cgu" element={<CGU />} />
           <Route path="/confidentialite" element={<Confidentialite />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/a-propos" element={<APropos />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         </BrowserRouter>

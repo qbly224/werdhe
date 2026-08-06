@@ -428,7 +428,7 @@ export default function LandingPage() {
             </div>
 
             {[
-              { titre: 'Plateforme', liens: [['Logements disponibles', '/logements'], ['Tarifs', '/pricing'], ['Se connecter', '/login'], ['Créer un compte', '/inscription']] },
+              { titre: 'Plateforme', liens: [['Logements disponibles', '/logements'], ['Tarifs', '/pricing'], ['À propos', '/a-propos'], ['Se connecter', '/login'], ['Créer un compte', '/inscription']] },
               { titre: 'Assistance', liens: [['Contact', '/contact'], ['Conditions d\'utilisation', '/cgu'], ['Politique de confidentialité', '/confidentialite']] },
             ].map(function(col) {
               return (
