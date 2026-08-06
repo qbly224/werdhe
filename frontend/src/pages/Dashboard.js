@@ -2767,77 +2767,78 @@ function OngletMessages() {
                 {messages.map(function(m) {
                   var estMoi = m.expedition_id === (user && user.id);
                   return (
-                    <div key={m.id} style={{ display: 'flex', flexDirection: 'column', alignItems: estMoi ? 'flex-end' : 'flex-start' }}>
-                      {/* Message cité */}
+                    <div key={m.id} style={{ display: 'flex', flexDirection: 'column', alignItems: estMoi ? 'flex-end' : 'flex-start', marginBottom: 8 }}>
+
+                      {/* Citation reply */}
                       {m.reply_contenu && (
                         <div style={{ background: 'rgba(0,0,0,0.06)', borderRadius: 8, padding: '4px 10px', marginBottom: 4, fontSize: 12, color: '#888', borderLeft: '3px solid #1B6B3A', maxWidth: '60%' }}>
                           {m.reply_contenu.slice(0, 60)}{m.reply_contenu.length > 60 ? '...' : ''}
                         </div>
                       )}
-                      <div style={{ position: 'relative' }}>
+
+                      {/* Bulle */}
                       <div
                         className={'msg-bubble ' + (estMoi ? 'msg-bubble-sent' : 'msg-bubble-received')}
-                        onDoubleClick={function() { setReplyTo(m); }}>
+                        onDoubleClick={function() { setReplyTo(m); }}
+                        style={{ maxWidth: '70%' }}>
                         {m.type === 'photo' && m.fichier_url && (
-                          <img src={m.fichier_url} alt="photo" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '8px', cursor: 'pointer', marginBottom: m.contenu ? '8px' : '0' }} onClick={function() { window.open(m.fichier_url, '_blank'); }} />
+                          <img src={m.fichier_url} alt="photo" style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 8, cursor: 'pointer' }} onClick={function() { window.open(m.fichier_url, '_blank'); }} />
                         )}
                         {m.type === 'document' && m.fichier_url && (
                           <a href={m.fichier_url} target="_blank" rel="noreferrer"
-                            style={{ display: 'flex', alignItems: 'center', gap: 8, color: estMoi ? '#fff' : '#1B6B3A', textDecoration: 'none', padding: '8px', background: estMoi ? 'rgba(255,255,255,0.15)' : '#f0f0f0', borderRadius: '8px', fontSize: '13px' }}>
+                            style={{ display: 'flex', alignItems: 'center', gap: 8, color: estMoi ? '#fff' : '#1B6B3A', textDecoration: 'none', padding: '8px', background: estMoi ? 'rgba(255,255,255,0.15)' : '#f0f0f0', borderRadius: 8, fontSize: 13 }}>
                             <span>📎</span><span>{m.fichier_nom || 'Document'}</span>
                           </a>
                         )}
                         {m.contenu && <div>{m.contenu}</div>}
-                       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 4, marginTop: 4 }}>
                           <span style={{ fontSize: 10, opacity: 0.7 }}>
                             {new Date(m.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                           </span>
                           {estMoi && (
-                            <span style={{ fontSize: 11, opacity: m.lu ? 1 : 0.4, color: estMoi ? 'rgba(255,255,255,0.9)' : '#1B6B3A' }}>
+                            <span style={{ fontSize: 11, opacity: m.lu ? 1 : 0.4, color: 'rgba(255,255,255,0.9)' }}>
                               {m.lu ? '✓✓' : '✓'}
                             </span>
                           )}
                         </div>
-                     </div>
                       </div>
-                      {/* Bouton réaction */}
-                      <button
-                        onMouseDown={function(e) { e.preventDefault(); e.stopPropagation(); setShowEmojis(showEmojis === m.id ? null : m.id); }}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, padding: '2px 4px', marginTop: 2, opacity: 0.5 }}
-                        onMouseEnter={function(e) { e.currentTarget.style.opacity = '1'; }}
-                        onMouseLeave={function(e) { e.currentTarget.style.opacity = '0.5'; }}>
-                        😊
-                      </button>
-                      {/* Réactions */}
-                      {m.reactions && m.reactions.length > 0 && (
-                        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 4 }}>
-                          {m.reactions.map(function(r, ri) {
-                            return (
-                              <span key={ri} style={{ background: '#fff', border: '0.5px solid #E0E0E0', borderRadius: 20, padding: '2px 8px', fontSize: 13, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
-                                {r.emoji} {r.nb > 1 && <span style={{ fontSize: 11, color: '#888' }}>{r.nb}</span>}
-                              </span>
-                            );
-                          })}
-                        </div>
-                      )}
-                      {/* Réactions emoji */}
+
+                      {/* Réactions + bouton */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
+                        {m.reactions && Array.isArray(m.reactions) && m.reactions.filter(function(r) { return r.emoji; }).map(function(r, ri) {
+                          return (
+                            <span key={ri} style={{ background: '#fff', border: '0.5px solid #E0E0E0', borderRadius: 20, padding: '1px 7px', fontSize: 13, boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}>
+                              {r.emoji}{r.nb > 1 ? ' ' + r.nb : ''}
+                            </span>
+                          );
+                        })}
+                        <button
+                          onMouseDown={function(e) { e.preventDefault(); e.stopPropagation(); setShowEmojis(showEmojis === m.id ? null : m.id); }}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, padding: '1px 4px', opacity: 0.35 }}
+                          onMouseEnter={function(e) { e.currentTarget.style.opacity = '1'; }}
+                          onMouseLeave={function(e) { e.currentTarget.style.opacity = '0.35'; }}>
+                          😊
+                        </button>
+                      </div>
+
+                      {/* Sélecteur emojis */}
                       {showEmojis === m.id && (
-                        <div style={{ background: '#fff', borderRadius: 20, padding: '6px 10px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', display: 'flex', gap: 6, marginTop: 4, zIndex: 10 }}>
+                        <div style={{ background: '#fff', borderRadius: 20, padding: '6px 10px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', display: 'flex', gap: 6, marginTop: 2, zIndex: 10 }}>
                           {EMOJIS_RAPIDES.map(function(emoji) {
                             return (
                               <button key={emoji}
-                               onMouseDown={function(e) {
+                                onMouseDown={function(e) {
                                   e.preventDefault();
                                   e.stopPropagation();
                                   api.post('/messages/' + m.id + '/reaction', { emoji: emoji })
                                     .then(function() { setShowEmojis(null); chargerMessages(convActive); });
                                 }}
-                                style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', padding: '2px 4px', borderRadius: 8 }}>
+                                style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', padding: '2px 4px' }}>
                                 {emoji}
                               </button>
                             );
                           })}
-                          <button onClick={function() { setShowEmojis(null); }}
+                          <button onMouseDown={function(e) { e.preventDefault(); setShowEmojis(null); }}
                             style={{ background: 'none', border: 'none', fontSize: 14, cursor: 'pointer', color: '#aaa' }}>×</button>
                         </div>
                       )}
