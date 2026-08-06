@@ -2774,6 +2774,7 @@ function OngletMessages() {
                           {m.reply_contenu.slice(0, 60)}{m.reply_contenu.length > 60 ? '...' : ''}
                         </div>
                       )}
+                      <div style={{ position: 'relative', display: 'inline-block', maxWidth: '70%' }}>
                       <div
                         className={'msg-bubble ' + (estMoi ? 'msg-bubble-sent' : 'msg-bubble-received')}
                         onDoubleClick={function() { setReplyTo(m); }}>
@@ -2797,6 +2798,19 @@ function OngletMessages() {
                             </span>
                           )}
                         </div>
+                      </div>
+                      {/* Réactions sur la bulle */}
+                      {m.reactions && m.reactions.length > 0 && (
+                        <div style={{ position: 'absolute', bottom: -10, right: estMoi ? 'auto' : -10, left: estMoi ? -10 : 'auto', display: 'flex', gap: 2 }}>
+                          {m.reactions.map(function(r, ri) {
+                            return (
+                              <span key={ri} style={{ background: '#fff', border: '0.5px solid #E0E0E0', borderRadius: 20, padding: '1px 6px', fontSize: 13, boxShadow: '0 1px 4px rgba(0,0,0,0.12)', lineHeight: 1.6 }}>
+                                {r.emoji}{r.nb > 1 ? <span style={{ fontSize: 10, color: '#888', marginLeft: 2 }}>{r.nb}</span> : null}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      )}
                       </div>
                       {/* Bouton réaction */}
                       <button
