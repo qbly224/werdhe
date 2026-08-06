@@ -2806,6 +2806,18 @@ function OngletMessages() {
                         onMouseLeave={function(e) { e.currentTarget.style.opacity = '0.5'; }}>
                         😊
                       </button>
+                      {/* Réactions affichées */}
+                      {m.reactions && m.reactions.length > 0 && (
+                        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 4 }}>
+                          {m.reactions.map(function(r, ri) {
+                            return (
+                              <span key={ri} style={{ background: '#fff', border: '0.5px solid #E0E0E0', borderRadius: 20, padding: '2px 8px', fontSize: 13, boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+                                {r.emoji} {r.nb > 1 && <span style={{ fontSize: 11, color: '#888' }}>{r.nb}</span>}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      )}
                       {/* Réactions emoji */}
                       {showEmojis === m.id && (
                         <div style={{ background: '#fff', borderRadius: 20, padding: '6px 10px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', display: 'flex', gap: 6, marginTop: 4, zIndex: 10 }}>
