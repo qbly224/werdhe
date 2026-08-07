@@ -675,7 +675,7 @@ router.get('/stats/live', verifierToken, verifierAdmin, async (req, res) => {
         UNION ALL
         SELECT 'paiement', montant::text || ' GNF', created_at FROM paiements
         ORDER BY created_at DESC
-        LIMIT 15
+        LIMIT 5
       `),
 
       // Alertes critiques
