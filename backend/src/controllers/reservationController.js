@@ -83,6 +83,12 @@ const creerReservation = async (req, res) => {
         typeLocation
       ]
     );
+    // Notifier le propriétaire par email
+    emailService.emailNouvelleCandidature(
+      { prenom: l.prop_prenom, nom: l.prop_nom, email: l.prop_email },
+      { prenom: req.user.prenom, nom: req.user.nom, email: req.user.email, telephone: req.user.telephone },
+      { titre: l.titre, ville: l.ville }
+    ).catch(console.warn);
 
     res.status(201).json({
       message: typeLocation === 'longue_duree'
@@ -96,14 +102,6 @@ const creerReservation = async (req, res) => {
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 };
-// Notifier le propriétaire
-if (proprio && proprio.email) {
-  emailService.emailNouvelleCandidature(
-    proprio,
-    { prenom: req.user.prenom, nom: req.user.nom, email: req.user.email, telephone: req.user.telephone },
-    l
-  ).catch(console.warn);
-}
 // ================================
 // VOIR MES RÉSERVATIONS (locataire)
 // ================================
