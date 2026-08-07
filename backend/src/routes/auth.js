@@ -675,4 +675,53 @@ router.post('/contact', async (req, res) => {
     res.status(500).json({ erreur: err.message });
   }
 });
+// ─── SCORE DE CONFIANCE ──────────────────────────────────────────
+router.get('/mon-score', verifierToken, async (req, res) => {
+  try {
+    const { calculerScore, labelScore, CRITERES } = require('../services/scoreService');
+
+    var score   = await calculerScore(req.user.id);
+    var label   = labelScore(score);
+
+    // Récupérer les détails
+    var user    = await db.query(
+      'SELECT score_confiance, score_details FROM users WHERE id = $1',
+      [req.user.id]
+    );
+    var details = user.rows[0].score_details || {};
+
+    // Construire la liste des critères avec statut
+    var criteres = Object.keys(CRITERES).map(function(key) {
+      return {
+        key:      key,
+        label:    CRITERES[key].label,
+        points:   CRITERES[key].points,
+        atteint:  details[key] === true,
+      };
+    });
+
+    res.json({
+      score:    score,
+      label:    label.label,
+      couleur:  label.couleur,
+      bg:       label.bg,
+      emoji:    label.emoji,
+      criteres: criteres,
+    });
+  } catch (err) {
+    res.status(500).json({ erreur: err.message });
+  }
+});
+
+// ─── SCORE D'UN LOCATAIRE (pour propriétaire) ────────────────────
+router.get('/score/:userId', verifierToken, async (req, res) => {
+  try {
+    const { calculerScore, labelScore } = require('../services/scoreService');
+    var score  = await calculerScore(req.params.userId);
+    var label  = labelScore(score);
+    res.json({ score, ...label });
+  } catch (err) {
+    res.status(500).json({ erreur: err.message });
+  }
+});
 module.exports = router;

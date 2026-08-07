@@ -11,6 +11,7 @@ const {
 } = require('../controllers/reservationController');
 const { envoyerNotification } = require('./push');
 const emailService = require('../services/emailService');
+const { calculerScore } = require('../services/scoreService');
 // Toutes les routes réservations sont protégées
 // Un utilisateur doit être connecté pour réserver
 
@@ -666,6 +667,8 @@ router.patch('/:id/signer-bail', verifierToken, async (req, res) => {
     } else {
       // Le locataire signe → location officiellement confirmée
       nouveauStatut = 'confirmee';
+      // Recalculer le score du locataire
+    calculerScore(r.locataire_id).catch(console.warn);
 
       // Mettre le logement en "loué" automatiquement
 await db.query(
