@@ -29,6 +29,10 @@ export default function Admin() {
   var [logsAudit, setLogsAudit]     = useState([]);
   var [showPromoForm, setShowPromoForm] = useState(false);
   var [promoForm, setPromoForm]     = useState({ code: '', reduction_pct: 20, nb_utilisations_max: 100 });
+  var [liveData, setLiveData]         = useState(null);
+  var [lastUpdate, setLastUpdate]     = useState(null);
+  var [autoRefresh, setAutoRefresh]   = useState(true);
+  var [countdown, setCountdown]       = useState(30);
 
   useEffect(function() {
     if (user && user.role !== 'admin') {
@@ -41,6 +45,35 @@ export default function Admin() {
     intervalRef.current = setInterval(charger, 30000);
     return function() { clearInterval(intervalRef.current); };
   }, [user]);
+
+  useEffect(function() {
+  function chargerLive() {
+    api.get('/admin/stats/live')
+      .then(function(res) {
+        setLiveData(res.data);
+        setLastUpdate(new Date());
+        setCountdown(30);
+      })
+      .catch(console.error);
+  }
+
+  chargerLive();
+
+  var intervalRefresh  = null;
+  var intervalCountdown = null;
+
+  if (autoRefresh) {
+    intervalRefresh = setInterval(chargerLive, 30000);
+    intervalCountdown = setInterval(function() {
+      setCountdown(function(c) { return c <= 1 ? 30 : c - 1; });
+    }, 1000);
+  }
+
+  return function() {
+    clearInterval(intervalRefresh);
+    clearInterval(intervalCountdown);
+  };
+}, [autoRefresh]);
 
   function charger() {
     Promise.all([
@@ -190,7 +223,98 @@ var NAV = [
       })}
     </div>
   </div>
+  {/* ─── BARRE TEMPS RÉEL ─────────────────────────────────────── */}
+<div style={{ background: '#fff', borderRadius: 14, padding: '14px 20px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+    <div style={{ width: 10, height: 10, background: autoRefresh ? '#1B6B3A' : '#aaa', borderRadius: '50%', animation: autoRefresh ? 'pulse 2s ease infinite' : 'none' }} />
+    <span style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>
+      {autoRefresh ? 'Temps réel actif' : 'Pause'}
+    </span>
+    {lastUpdate && (
+      <span style={{ fontSize: 12, color: '#888' }}>
+        · Mis à jour à {lastUpdate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+      </span>
+    )}
+    {autoRefresh && (
+      <span style={{ fontSize: 12, color: '#888' }}>
+        · Rafraîchissement dans <span style={{ color: countdown <= 10 ? '#E53935' : '#1B6B3A', fontWeight: 700 }}>{countdown}s</span>
+      </span>
+    )}
+  </div>
+  <button onClick={function() { setAutoRefresh(!autoRefresh); }}
+    style={{ padding: '6px 14px', borderRadius: 20, border: '1px solid #E0E0E0', background: autoRefresh ? '#FFEBEE' : '#E8F5E9', color: autoRefresh ? '#B71C1C' : '#1B6B3A', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+    {autoRefresh ? '⏸ Pause' : '▶ Reprendre'}
+  </button>
+</div>
 
+{/* ─── ALERTES CRITIQUES ───────────────────────────────────── */}
+{liveData && liveData.alertes_critiques > 0 && (
+  <div style={{ background: '#FFEBEE', border: '1px solid #FFCDD2', borderRadius: 12, padding: '14px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
+    <span style={{ fontSize: 24 }}>🚨</span>
+    <div>
+      <div style={{ fontSize: 14, fontWeight: 700, color: '#B71C1C' }}>
+        {liveData.alertes_critiques} paiement(s) en retard depuis plus de 5 jours
+      </div>
+      <div style={{ fontSize: 12, color: '#E53935' }}>Action requise — vérifiez les paiements en attente</div>
+    </div>
+  </div>
+)}
+
+{/* ─── KPIs AUJOURD'HUI ────────────────────────────────────── */}
+{liveData && (
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 16 }}>
+    {[
+      { label: "Inscriptions aujourd'hui", val: liveData.inscriptions_aujourdhui, icon: '👥', color: '#1B6B3A', bg: '#E8F5E9' },
+      { label: "Candidatures aujourd'hui", val: liveData.candidatures_aujourdhui, icon: '📅', color: '#1565C0', bg: '#E3F2FD' },
+      { label: "Paiements aujourd'hui",    val: liveData.paiements_aujourdhui.nb, icon: '💳', color: '#7B1FA2', bg: '#F3E5F5' },
+      { label: "Volume aujourd'hui",       val: new Intl.NumberFormat('fr-FR').format(liveData.paiements_aujourdhui.total) + ' GNF', icon: '💰', color: '#E65100', bg: '#FFF3E0' },
+    ].map(function(k, i) {
+      return (
+        <div key={i} style={{ background: k.bg, borderRadius: 12, padding: '14px 16px', borderLeft: '4px solid ' + k.color }}>
+          <div style={{ fontSize: 22, marginBottom: 6 }}>{k.icon}</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: k.color }}>{k.val}</div>
+          <div style={{ fontSize: 11, color: '#555', marginTop: 4 }}>{k.label}</div>
+        </div>
+      );
+    })}
+  </div>
+)}
+
+{/* ─── ACTIVITÉ EN TEMPS RÉEL ──────────────────────────────── */}
+{liveData && liveData.activite && liveData.activite.length > 0 && (
+  <div style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+    <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+      <span>⚡</span> Activité récente
+    </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+      {liveData.activite.map(function(a, i) {
+        var cfg = {
+          inscription: { icon: '👤', color: '#1B6B3A', bg: '#E8F5E9', label: 'Inscription' },
+          candidature: { icon: '📅', color: '#1565C0', bg: '#E3F2FD', label: 'Candidature' },
+          logement:    { icon: '🏠', color: '#7B1FA2', bg: '#F3E5F5', label: 'Logement'    },
+          paiement:    { icon: '💰', color: '#E65100', bg: '#FFF3E0', label: 'Paiement'    },
+        }[a.type] || { icon: '•', color: '#888', bg: '#F5F5F5', label: a.type };
+
+        return (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: i < liveData.activite.length - 1 ? '0.5px solid #F5F5F5' : 'none' }}>
+            <div style={{ width: 32, height: 32, background: cfg.bg, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>
+              {cfg.icon}
+            </div>
+            <div style={{ flex: 1 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: cfg.color, marginRight: 8 }}>{cfg.label}</span>
+              <span style={{ fontSize: 13, color: '#1B2B22' }}>{a.detail}</span>
+            </div>
+            <div style={{ fontSize: 11, color: '#aaa', flexShrink: 0 }}>
+              {new Date(a.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}
+              {' '}
+              {new Date(a.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)}
         {/* ═══ VUE D'ENSEMBLE ═══════════════════════════════════ */}
         {onglet === 'stats' && stats && (
           <div>
