@@ -56,14 +56,14 @@ router.get('/stats', verifierToken, verifierAdmin, async (req, res) => {
         FROM reservations
       `),
 
-      // Stats paiements et revenus plateforme
+      // Stats paiements (depuis la table paiements directement)
       db.query(`
         SELECT
-          COALESCE(SUM(montant_commission), 0) as revenus_plateforme,
-          COALESCE(SUM(montant_commission) FILTER (WHERE statut = 'encaissee'), 0) as revenus_encaisses,
-          COUNT(*) as nb_commissions,
-          COALESCE(SUM(montant_loyer), 0) as volume_total
-        FROM commissions
+          COALESCE(SUM(montant) FILTER (WHERE statut = 'complete'), 0) as revenus_plateforme,
+          COALESCE(SUM(montant) FILTER (WHERE statut = 'complete'), 0) as revenus_encaisses,
+          COUNT(*) FILTER (WHERE statut = 'complete') as nb_commissions,
+          COALESCE(SUM(montant), 0) as volume_total
+        FROM paiements
         WHERE created_at >= NOW() - INTERVAL '30 days'
       `),
 
