@@ -539,14 +539,14 @@ router.get('/revenus', verifierToken, verifierAdmin, async (req, res) => {
   try {
     var [commissions, abonnements, evolution] = await Promise.all([
 
-      // Total commissions
+      // Total paiements
       db.query(`
         SELECT
           COUNT(*) as nb_commissions,
-          COALESCE(SUM(montant_commission), 0) as total_commissions,
-          COALESCE(SUM(CASE WHEN statut = 'encaissee' THEN montant_commission END), 0) as encaisse,
-          COALESCE(SUM(CASE WHEN statut = 'due' THEN montant_commission END), 0) as en_attente
-        FROM commissions
+          COALESCE(SUM(montant), 0) as total_commissions,
+          COALESCE(SUM(CASE WHEN statut = 'complete' THEN montant END), 0) as encaisse,
+          COALESCE(SUM(CASE WHEN statut = 'en_attente' THEN montant END), 0) as en_attente
+        FROM paiements
         WHERE created_at >= NOW() - INTERVAL '30 days'
       `),
 
@@ -568,7 +568,7 @@ router.get('/revenus', verifierToken, verifierAdmin, async (req, res) => {
           DATE_TRUNC('month', created_at) as mois,
           COALESCE(SUM(montant_commission), 0) as commissions,
           COUNT(*) as nb_paiements
-        FROM commissions
+        FROM paiements
         WHERE created_at >= NOW() - INTERVAL '6 months'
         GROUP BY DATE_TRUNC('month', created_at)
         ORDER BY mois ASC
