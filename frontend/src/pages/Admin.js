@@ -223,6 +223,8 @@ var NAV = [
       })}
     </div>
   </div>
+  {onglet === 'stats' && (
+  <div>
   {/* ─── BARRE TEMPS RÉEL ─────────────────────────────────────── */}
 <div style={{ background: '#fff', borderRadius: 14, padding: '14px 20px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -313,6 +315,8 @@ var NAV = [
         );
       })}
     </div>
+  </div>
+  )}
   </div>
 )}
         {/* ═══ VUE D'ENSEMBLE ═══════════════════════════════════ */}
