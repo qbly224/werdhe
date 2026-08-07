@@ -173,7 +173,8 @@ router.get('/users', verifierToken, verifierAdmin, async (req, res) => {
     var result = await db.query(
       `SELECT
          u.id, u.nom, u.prenom, u.email, u.telephone, u.role,
-         u.suspendu, u.verifie, u.created_at,
+         u.suspendu, u.locataire_verifie as verifie, u.plan,
+         u.note_moyenne, u.nb_notations, u.created_at,
          COUNT(DISTINCT l.id) as nb_logements,
          COUNT(DISTINCT r.id) as nb_reservations
        FROM users u
