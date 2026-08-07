@@ -1092,7 +1092,32 @@ function OngletReservations(props) {
   // ── PROPRIÉTAIRE : liste + détail inline (pas de navigation) ──────
   return <OngletReservationsProprio stats={stats} recharger={recharger} user={user} />;
 }
+function ScoreLocataire({ locataireId }) {
+  var [score, setScore] = useState(null);
 
+  useEffect(function() {
+    if (!locataireId) return;
+    api.get('/auth/score/' + locataireId)
+      .then(function(res) { setScore(res.data); })
+      .catch(console.error);
+  }, [locataireId]);
+
+  if (!score) return null;
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: score.bg, borderRadius: 10, padding: '10px 14px', marginBottom: 14 }}>
+      <div style={{ textAlign: 'center', flexShrink: 0 }}>
+        <div style={{ fontSize: 20, fontWeight: 800, color: score.couleur }}>{score.score}</div>
+        <div style={{ fontSize: 9, color: '#888' }}>/ 100</div>
+      </div>
+      <div style={{ width: 1, height: 32, background: 'rgba(0,0,0,0.1)' }} />
+      <div>
+        <div style={{ fontSize: 12, color: '#888', marginBottom: 2 }}>Score de confiance</div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: score.couleur }}>{score.emoji} {score.label}</div>
+      </div>
+    </div>
+  );
+}
 // ─── Séparé pour garder le code propre ────────────────────────────
 function OngletReservationsProprio(props) {
   var stats = props.stats;
@@ -1293,6 +1318,10 @@ useEffect(function() {
             </div>
           </div>
         )}
+        {/* Score du locataire */}
+{selectionne && (
+  <ScoreLocataire locataireId={selectionne.locataire_id} />
+)}
 
         {/* ─ EXAMINER LE DOSSIER ─ */}
 {r.statut === 'en_examen' && (
@@ -3156,8 +3185,12 @@ function OngletParametres(props) {
   var [notifs, setNotifs] = useState({ email: true, sms: true, loyers: true, bails: true, pannes: false });
   var [langue, setLangue] = useState('fr');
   var [saving, setSaving] = useState(false);
-  
-
+  var [scoreData, setScoreData] = useState(null);
+  useEffect(function() {
+    api.get('/auth/mon-score')
+      .then(function(res) { setScoreData(res.data); })
+      .catch(console.error);
+  }, []);
   function saveProfil(e) {
     e.preventDefault();
     setSaving(true);
@@ -3182,7 +3215,8 @@ function OngletParametres(props) {
     { id: 'profil', icon: <UserCheck size={22} strokeWidth={1.5} />, titre: 'Mon profil', desc: 'Modifier mes informations personnelles' },
     { id: 'mdp', icon: <Shield size={22} strokeWidth={1.5} />, titre: 'Mot de passe', desc: 'Changer mon mot de passe' },
     { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: 'Notifications', desc: 'Gerer mes preferences de notifications' },
-    { id: 'langue', icon: '🌐', titre: 'Langue', desc: 'Francais (Guinee)' }
+    { id: 'langue', icon: '🌐', titre: 'Langue', desc: 'Francais (Guinee)' },
+    { id: 'score', icon: <Star size={22} strokeWidth={1.5} />, titre: 'Score de confiance', desc: 'Votre réputation sur Werdhe' },
   ];
 
   return (
@@ -3331,6 +3365,56 @@ function OngletParametres(props) {
             <button className="btn-green" onClick={function() { toast.success('Langue sauvegardee !'); setSection(null); }}>Sauvegarder</button>
             <button className="btn-outline-green" onClick={function() { setSection(null); }}>Annuler</button>
           </div>
+        </div>
+      )}
+      {section === 'score' && scoreData && (
+        <div className="dash-form-card" style={{ maxWidth: 560 }}>
+          <h3>⭐ Mon score de confiance</h3>
+          <div style={{ textAlign: 'center', padding: '24px 0', marginBottom: 20 }}>
+            <div style={{ position: 'relative', width: 120, height: 120, margin: '0 auto 16px' }}>
+              <svg width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="52" fill="none" stroke="#F0F0F0" strokeWidth="10" />
+                <circle cx="60" cy="60" r="52" fill="none" stroke={scoreData.couleur} strokeWidth="10"
+                  strokeDasharray={`${scoreData.score * 3.27} 327`}
+                  strokeLinecap="round" transform="rotate(-90 60 60)" />
+              </svg>
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ fontSize: 28, fontWeight: 900, color: scoreData.couleur }}>{scoreData.score}</div>
+                <div style={{ fontSize: 10, color: '#888' }}>/ 100</div>
+              </div>
+            </div>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: scoreData.bg, borderRadius: 20, padding: '5px 14px' }}>
+              <span>{scoreData.emoji}</span>
+              <span style={{ fontSize: 14, fontWeight: 700, color: scoreData.couleur }}>{scoreData.label}</span>
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
+            {scoreData.criteres && scoreData.criteres.map(function(c, i) {
+              return (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', borderRadius: 10, background: c.atteint ? '#F0FBF0' : '#F9F9F9', border: '0.5px solid ' + (c.atteint ? '#A5D6A7' : '#E0E0E0') }}>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: c.atteint ? '#1B6B3A' : '#E0E0E0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    {c.atteint
+                      ? <CheckCircle size={16} strokeWidth={2.5} color="#fff" />
+                      : <span style={{ fontSize: 11, fontWeight: 800, color: '#888' }}>+{c.points}</span>
+                    }
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: c.atteint ? '#1B2B22' : '#888' }}>{c.label}</div>
+                  </div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: c.atteint ? '#1B6B3A' : '#aaa' }}>
+                    {c.atteint ? '+' + c.points : '0'} pts
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ background: '#FFF8E1', borderRadius: 10, padding: '12px 16px', fontSize: 13, color: '#7B4F00', marginBottom: 14 }}>
+            💡 Améliorez votre score en complétant votre profil, payant à temps et recevant de bonnes notes.
+          </div>
+          <button className="btn-outline-green" style={{ width: '100%' }}
+            onClick={function() { setSection(null); }}>
+            ← Retour
+          </button>
         </div>
       )}
     </div>
