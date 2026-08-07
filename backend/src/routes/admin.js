@@ -658,4 +658,70 @@ router.patch('/users/:id/plan', verifierToken, verifierAdmin, async (req, res) =
     res.status(500).json({ erreur: err.message });
   }
 });
+// ─── STATS TEMPS RÉEL ────────────────────────────────────────────
+router.get('/stats/live', verifierToken, verifierAdmin, async (req, res) => {
+  try {
+    var [activite, alertesCritiques, inscriptionsAujourdhui, paiementsAujourdhui, candidaturesAujourdhui] = await Promise.all([
+
+      // 10 dernières actions toutes tables confondues
+      db.query(`
+        SELECT 'inscription' as type, prenom || ' ' || nom as detail, created_at
+        FROM users WHERE role != 'admin'
+        UNION ALL
+        SELECT 'candidature', l.titre, r.created_at
+        FROM reservations r JOIN logements l ON r.logement_id = l.id
+        UNION ALL
+        SELECT 'logement', titre, created_at FROM logements
+        UNION ALL
+        SELECT 'paiement', montant::text || ' GNF', created_at FROM paiements
+        ORDER BY created_at DESC
+        LIMIT 15
+      `),
+
+      // Alertes critiques
+      db.query(`
+        SELECT COUNT(*) as nb
+        FROM paiements p
+        JOIN reservations r ON p.reservation_id = r.id
+        WHERE p.statut = 'en_attente'
+          AND p.created_at < NOW() - INTERVAL '5 days'
+      `),
+
+      // Inscriptions aujourd'hui
+      db.query(`
+        SELECT COUNT(*) as nb FROM users
+        WHERE DATE(created_at) = CURRENT_DATE AND role != 'admin'
+      `),
+
+      // Paiements aujourd'hui
+      db.query(`
+        SELECT COUNT(*) as nb, COALESCE(SUM(montant), 0) as total
+        FROM paiements
+        WHERE DATE(created_at) = CURRENT_DATE AND statut = 'complete'
+      `),
+
+      // Candidatures aujourd'hui
+      db.query(`
+        SELECT COUNT(*) as nb FROM reservations
+        WHERE DATE(created_at) = CURRENT_DATE
+      `),
+    ]);
+
+    res.json({
+      timestamp:              new Date().toISOString(),
+      activite:               activite.rows,
+      alertes_critiques:      Number(alertesCritiques.rows[0].nb),
+      inscriptions_aujourdhui: Number(inscriptionsAujourdhui.rows[0].nb),
+      paiements_aujourdhui:   {
+        nb:    Number(paiementsAujourdhui.rows[0].nb),
+        total: Number(paiementsAujourdhui.rows[0].total),
+      },
+      candidatures_aujourdhui: Number(candidaturesAujourdhui.rows[0].nb),
+    });
+
+  } catch (err) {
+    console.error('[GET /admin/stats/live]', err.message);
+    res.status(500).json({ erreur: err.message });
+  }
+});
 module.exports = router;
