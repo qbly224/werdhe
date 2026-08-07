@@ -48,6 +48,7 @@ function App() {
           <Route path="/accueil" element={<Accueil />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/inscription" element={<Register />} />
           <Route path="/otp" element={<OTP />} />
           <Route path="/onboarding/proprietaire" element={<OnboardingProprietaire />} />
           <Route path="/onboarding/locataire" element={<OnboardingLocataire />} />
