@@ -1,4 +1,5 @@
 const db = require('../database');
+const emailService = require('../services/emailService');
 
 // ================================
 // CRÉER UNE RÉSERVATION
@@ -95,6 +96,14 @@ const creerReservation = async (req, res) => {
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 };
+// Notifier le propriétaire
+if (proprio && proprio.email) {
+  emailService.emailNouvelleCandidature(
+    proprio,
+    { prenom: req.user.prenom, nom: req.user.nom, email: req.user.email, telephone: req.user.telephone },
+    l
+  ).catch(console.warn);
+}
 // ================================
 // VOIR MES RÉSERVATIONS (locataire)
 // ================================

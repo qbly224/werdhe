@@ -58,6 +58,15 @@ router.get('/:interlocuteurId', verifierToken, async (req, res) => {
 // Envoyer un message (texte ou fichier)
 router.post('/', verifierToken, uploadMessage.single('fichier'), envoyerMessage);
 
+// Email si destinataire pas connecté récemment
+if (result.rows[0] && destinataire && destinataire.email) {
+  emailService.emailNouveauMessage(
+    destinataire,
+    { prenom: req.user.prenom, nom: req.user.nom },
+    contenu || 'Fichier joint'
+  ).catch(console.warn);
+}
+
 // Compter les non lus
 router.get('/non-lus/count', verifierToken, getNonLus);
 

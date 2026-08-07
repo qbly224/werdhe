@@ -10,7 +10,7 @@ const {
   annulerReservation
 } = require('../controllers/reservationController');
 const { envoyerNotification } = require('./push');
-
+const emailService = require('../services/emailService');
 // Toutes les routes réservations sont protégées
 // Un utilisateur doit être connecté pour réserver
 
@@ -405,6 +405,20 @@ router.patch('/:id/decision', verifierToken, async (req, res) => {
     if (titreNotif) {
       envoyerNotification(r.locataire_id, titreNotif, descNotif, '/dashboard/reservations');
     }
+
+    if (statut === 'acceptee') {
+       emailService.emailCandidatureAcceptee(
+        { prenom: r.locataire_prenom, email: r.locataire_email },
+        { prenom: r.prop_prenom, nom: r.prop_nom },
+        { titre: r.logement_titre, ville: r.logement_ville, prix_mensuel: r.prix_mensuel }
+      ).catch(console.warn);
+   } else if (statut === 'refusee') {
+     emailService.emailCandidatureRefusee(
+      { prenom: r.locataire_prenom, email: r.locataire_email },
+      { titre: r.logement_titre },
+      motif_refus || null
+    ).catch(console.warn);
+   }
 
     res.json({ message: 'Décision enregistrée', statut: nouveauStatut });
 

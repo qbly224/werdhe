@@ -8,6 +8,7 @@ const bcrypt   = require('bcrypt');
 const crypto   = require('crypto');
 const db       = require('../database');
 const passport = require('../config/passport');
+const emailService = require('../services/emailService');
 // ─── INSCRIPTION ──────────────────────────────────────────────────
 router.post('/inscription', valider('inscription'), async (req, res) => {
   try {
@@ -28,7 +29,8 @@ router.post('/inscription', valider('inscription'), async (req, res) => {
       [nom, prenom || '', email, hash, role || 'locataire', telephone || null]
     );
     var user = result.rows[0];
-
+// Email de bienvenue
+emailService.emailBienvenue(user).catch(console.warn);
     // Créer abonnement gratuit si proprio
     if (['proprietaire', 'les_deux'].includes(user.role)) {
       await db.query(

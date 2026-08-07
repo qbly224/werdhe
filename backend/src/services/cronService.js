@@ -1,6 +1,7 @@
 const cron      = require('node-cron');
 const db        = require('../database');
 const { Resend } = require('resend');
+const emailService = require('./emailService');
 
 var resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -70,6 +71,13 @@ cron.schedule('0 8 * * *', async function() {
          WHERE r.id = '${r.reservation_id}'`,
         []
       );
+
+      // Email de rappel au locataire
+emailService.emailRappelLoyer(
+  { prenom: r.locataire_prenom, email: r.locataire_email },
+  { titre: r.logement_titre },
+  r.prix_mensuel
+).catch(console.warn);
 
       console.log('[CRON] Rappel envoyé à ' + r.loc_email);
     }
@@ -161,6 +169,13 @@ cron.schedule('0 9 * * *', async function() {
         [r.proprietaire_id, r.id, r.logement_titre + ' — ' + r.loc_prenom + ' ' + r.loc_nom + ' · Expire le ' + dateFin]
       );
     }
+
+    emailService.emailBailExpirant(
+  { prenom: r.locataire_prenom, email: r.locataire_email },
+  { prenom: r.prop_prenom, telephone: r.prop_telephone, email: r.prop_email },
+  { titre: r.logement_titre },
+  r.date_fin
+).catch(console.warn);
 
     console.log('[CRON] ' + result.rows.length + ' renouvellement(s) notifié(s)');
   } catch (err) {
