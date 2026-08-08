@@ -69,6 +69,19 @@ export default function Logements() {
 
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
+      {/* Navbar */}
+      <nav style={{ background: 'rgba(247,248,247,0.96)', backdropFilter: 'blur(8px)', borderBottom: '0.5px solid rgba(27,107,58,0.1)', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
+          <div style={{ width: 30, height: 30, background: '#1B6B3A', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Home size={15} color="#fff" strokeWidth={2} />
+          </div>
+          <span style={{ fontWeight: 800, fontSize: 16, color: '#1B2B22' }}>Werdhe</span>
+        </Link>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <Link to="/login" style={{ padding: '7px 14px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>Connexion</Link>
+          <Link to="/dashboard" style={{ padding: '7px 14px', borderRadius: 8, background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>Dashboard</Link>
+        </div>
+      </nav>
 
       {/* HEADER */}
       <div style={{ background: 'linear-gradient(135deg, #1B2B22 0%, #1B6B3A 100%)', padding: '28px 24px 20px', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
@@ -334,10 +347,7 @@ export default function Logements() {
                       <ArrowRight size={13} strokeWidth={2.5} /> Candidater
                     </button>
                   </div>
-                    <div style={{ background: '#1B6B3A', color: '#fff', borderRadius: 8, padding: '6px 14px', fontSize: 12, fontWeight: 700 }}>
-                      Candidater →
                     </div>
-                  </div>
                 </div>
               </div>
             );
