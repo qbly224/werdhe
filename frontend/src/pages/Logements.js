@@ -28,6 +28,7 @@ export default function Logements() {
   var [prixMax, setPrixMax]       = useState('');
   var [nbChambres, setNbChambres] = useState('');
   var [superficieMin, setSuperficieMin] = useState('');
+  var [tri, setTri] = useState('recent');
 
   var nbFiltresActifs = [ville, categorie, prixMin, prixMax, nbChambres, superficieMin].filter(Boolean).length;
 
@@ -69,14 +70,23 @@ export default function Logements() {
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
 
       {/* HEADER */}
-      <div style={{ background: 'linear-gradient(135deg, #1B6B3A 0%, #134F2B 100%)', padding: '28px 24px', boxShadow: '0 4px 20px rgba(27,107,58,0.3)', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <button onClick={function() { navigate(-1); }} style={{ background: 'none', border: 'none', color: '#fff', fontSize: 22, cursor: 'pointer', padding: 0 }}>←</button>
-        <div style={{ flex: 1 }}>
-          <div style={{ color: '#fff', fontWeight: 700, fontSize: 17 }}>Logements disponibles</div>
-          <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 12 }}>{total} logement(s) trouvé(s)</div>
-        </div>
-        <Link to="/dashboard" style={{ color: 'rgba(255,255,255,0.8)', textDecoration: 'none', fontSize: 13 }}>Mon espace</Link>
-      </div>
+      <div style={{ background: 'linear-gradient(135deg, #1B2B22 0%, #1B6B3A 100%)', padding: '28px 24px 20px', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
+  <div style={{ maxWidth: 900, margin: '0 auto' }}>
+    <h1 style={{ color: '#fff', fontSize: 'clamp(22px,4vw,30px)', fontWeight: 900, margin: '0 0 6px', letterSpacing: -0.5 }}>
+      🏠 Logements disponibles en Guinée
+    </h1>
+    <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 14, margin: 0 }}>
+      {total} logement(s) trouvé(s) · Sans intermédiaire
+    </p>
+  </div>
+</div>
+      {/* Sélecteur de tri */}
+<select value={tri} onChange={function(e) { setTri(e.target.value); }}
+  style={{ padding: '8px 14px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', fontSize: 13, color: '#555', cursor: 'pointer', outline: 'none' }}>
+  <option value="recent">Plus récent</option>
+  <option value="prix_asc">Prix croissant</option>
+  <option value="prix_desc">Prix décroissant</option>
+</select>
       {/* Toggle vue liste / carte */}
 <div style={{ display: 'flex', gap: 6, background: '#F0F0F0', borderRadius: 10, padding: 4 }}>
   <button
@@ -235,10 +245,17 @@ export default function Logements() {
             />
           </div>
         )}
-
         {vueMode === 'liste' && (
-        <div style={{ display: 'grid',gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))' , gap: 16 }}>
-          {logements.map(function(l) {
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))', gap: 16 }}>
+  {logements
+    .slice()
+    .sort(function(a, b) {
+      if (tri === 'prix_asc')  return Number(a.prix_mensuel) - Number(b.prix_mensuel);
+      if (tri === 'prix_desc') return Number(b.prix_mensuel) - Number(a.prix_mensuel);
+      return new Date(b.created_at) - new Date(a.created_at);
+    })
+    .map(function(l) {
+    var estNouveau = (new Date() - new Date(l.created_at)) < 7 * 24 * 60 * 60 * 1000;
             return (
               <div key={l.id}
                 onClick={function() { navigate('/logements/' + l.id); }}
@@ -268,6 +285,11 @@ export default function Logements() {
                   <div style={{ position: 'absolute', top: 10, right: 10, background: '#1B6B3A', color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
                     Disponible
                   </div>
+                  {estNouveau && (
+  <div style={{ position: 'absolute', top: 10, left: 10, background: '#F5A623', color: '#1B2B22', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 800 }}>
+    ✨ Nouveau
+  </div>
+)}
                   {l.categorie && (
                     <div style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(0,0,0,0.5)', color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11 }}>
                       {l.categorie}
@@ -281,18 +303,36 @@ export default function Logements() {
                   <div style={{ fontSize: 18, fontWeight: 800, color: '#1B6B3A', marginBottom: 10 }}>{GNF(l.prix_mensuel)}<span style={{ fontSize: 12, fontWeight: 400, color: '#888' }}>/mois</span></div>
 
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
-                    {l.nb_chambres && <span style={{ background: '#F5F5F5', color: '#555', padding: '3px 8px', borderRadius: 6, fontSize: 11 }}>🛏️ {l.nb_chambres} ch.</span>}
-                    {l.nb_salles_bain && <span style={{ background: '#F5F5F5', color: '#555', padding: '3px 8px', borderRadius: 6, fontSize: 11 }}>🚿 {l.nb_salles_bain} SdB</span>}
-                    {l.superficie && <span style={{ background: '#F5F5F5', color: '#555', padding: '3px 8px', borderRadius: 6, fontSize: 11 }}>📐 {l.superficie}m²</span>}
+                    {l.nb_chambres && (
+                      <span style={{ background: '#F5F5F5', color: '#555', padding: '3px 8px', borderRadius: 6, fontSize: 11, display: 'flex', alignItems: 'center', gap: 3 }}>
+                        <BedDouble size={11} strokeWidth={1.5} /> {l.nb_chambres} ch.
+                      </span>
+                    )}
+                    {l.nb_salles_bain && (
+                      <span style={{ background: '#F5F5F5', color: '#555', padding: '3px 8px', borderRadius: 6, fontSize: 11, display: 'flex', alignItems: 'center', gap: 3 }}>
+                        <Bath size={11} strokeWidth={1.5} /> {l.nb_salles_bain} SdB
+                      </span>
+                    )}
+                    {l.superficie && (
+                      <span style={{ background: '#F5F5F5', color: '#555', padding: '3px 8px', borderRadius: 6, fontSize: 11, display: 'flex', alignItems: 'center', gap: 3 }}>
+                        <Maximize2 size={11} strokeWidth={1.5} /> {l.superficie}m²
+                      </span>
+                    )}
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <div style={{ width: 24, height: 24, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 10, fontWeight: 700 }}>
-                        {(l.prop_prenom || 'P').charAt(0)}{(l.prop_nom || 'R').charAt(0)}
-                      </div>
-                      <span style={{ fontSize: 11, color: '#888' }}>{l.prop_prenom} {l.prop_nom}</span>
-                    </div>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                      onClick={function(e) { e.stopPropagation(); navigate('/logements/' + l.id); }}
+                      style={{ flex: 1, padding: '9px', borderRadius: 10, border: '1.5px solid #1B6B3A', background: 'transparent', color: '#1B6B3A', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                      Voir
+                    </button>
+                    <button
+                      onClick={function(e) { e.stopPropagation(); navigate('/logements/' + l.id + '/reserver'); }}
+                      style={{ flex: 2, padding: '9px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                      <ArrowRight size={13} strokeWidth={2.5} /> Candidater
+                    </button>
+                  </div>
                     <div style={{ background: '#1B6B3A', color: '#fff', borderRadius: 8, padding: '6px 14px', fontSize: 12, fontWeight: 700 }}>
                       Candidater →
                     </div>
