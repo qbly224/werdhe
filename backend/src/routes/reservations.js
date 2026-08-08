@@ -703,5 +703,83 @@ console.log('[Sync] Logement mis à loué ✅');
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 });
+// ─── HISTORIQUE COMPLET LOCATAIRE ────────────────────────────────
+router.get('/historique', verifierToken, async (req, res) => {
+  try {
+    var [locations, paiements, notations, stats] = await Promise.all([
 
+      // Toutes les locations (actives + terminées)
+      db.query(`
+        SELECT r.*,
+          l.titre as logement_titre,
+          l.ville as logement_ville,
+          l.adresse as logement_adresse,
+          l.prix_mensuel,
+          l.photos,
+          l.categorie,
+          l.nb_chambres,
+          l.superficie,
+          u.prenom as prop_prenom,
+          u.nom as prop_nom,
+          u.telephone as prop_telephone,
+          u.note_moyenne as prop_note
+        FROM reservations r
+        JOIN logements l ON r.logement_id = l.id
+        JOIN users u ON l.proprietaire_id = u.id
+        WHERE r.locataire_id = $1
+        ORDER BY r.created_at DESC
+      `, [req.user.id]),
+
+      // Tous les paiements
+      db.query(`
+        SELECT p.*,
+          l.titre as logement_titre
+        FROM paiements p
+        JOIN reservations r ON p.reservation_id = r.id
+        JOIN logements l ON r.logement_id = l.id
+        WHERE r.locataire_id = $1
+        ORDER BY p.created_at DESC
+      `, [req.user.id]),
+
+      // Notations données et reçues
+      db.query(`
+        SELECT n.*,
+          u.prenom as auteur_prenom, u.nom as auteur_nom,
+          l.titre as logement_titre
+        FROM notations n
+        JOIN users u ON n.auteur_id = u.id
+        JOIN reservations r ON n.reservation_id = r.id
+        JOIN logements l ON r.logement_id = l.id
+        WHERE n.cible_id = $1 OR n.auteur_id = $1
+        ORDER BY n.created_at DESC
+      `, [req.user.id]),
+
+      // Stats globales
+      db.query(`
+        SELECT
+          COUNT(DISTINCT r.id)                                          as nb_locations_total,
+          COUNT(DISTINCT r.id) FILTER (WHERE r.statut = 'confirmee')   as nb_actives,
+          COUNT(DISTINCT r.id) FILTER (WHERE r.statut = 'terminee')    as nb_terminees,
+          COALESCE(SUM(p.montant) FILTER (WHERE p.statut = 'complete'), 0) as total_paye,
+          COUNT(DISTINCT p.id) FILTER (WHERE p.statut = 'complete')    as nb_paiements,
+          COALESCE(AVG(n.note) FILTER (WHERE n.cible_id = $1), 0)      as note_moyenne_recue
+        FROM reservations r
+        LEFT JOIN paiements p ON p.reservation_id = r.id
+        LEFT JOIN notations n ON n.reservation_id = r.id
+        WHERE r.locataire_id = $1
+      `, [req.user.id]),
+    ]);
+
+    res.json({
+      locations:  locations.rows,
+      paiements:  paiements.rows,
+      notations:  notations.rows,
+      stats:      stats.rows[0],
+    });
+
+  } catch (err) {
+    console.error('[GET /reservations/historique]', err.message);
+    res.status(500).json({ erreur: err.message });
+  }
+});
 module.exports = router;
