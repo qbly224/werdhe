@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Home, Users, CalendarCheck,
   CreditCard, FileText, Bell, MessageCircle,
-  Wrench, Send, Settings, TrendingUp
+  Wrench, Send, Settings, TrendingUp, Clock 
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
@@ -33,6 +33,7 @@ var NAV_LOCATAIRE = [
   { path: '/dashboard/reclamations',  icon: <Wrench          size={20} strokeWidth={1.5} />, label: 'Réclamations'   },
   { path: '/dashboard/preavis',       icon: <Send            size={20} strokeWidth={1.5} />, label: 'Préavis'         },
   { path: '/dashboard/parametres',    icon: <Settings        size={20} strokeWidth={1.5} />, label: 'Paramètres'     },
+  { path: '/dashboard/historique', icon: <Clock size={20} strokeWidth={1.5} />, label: 'Mon historique' },
 ];
 
 export default function Sidebar(props) {

@@ -3702,6 +3702,234 @@ function OngletRapports(props) {
     </div>
   );
 }
+// ════════════════════════════════════════════════════════════════
+// ONGLET : Historique locataire
+// ════════════════════════════════════════════════════════════════
+function OngletHistorique(props) {
+  var user = props.user;
+  var [data, setData]         = useState(null);
+  var [loading, setLoading]   = useState(true);
+  var [ongletLocal, setOngletLocal] = useState('locations');
+
+  useEffect(function() {
+    api.get('/reservations/historique')
+      .then(function(res) { setData(res.data); })
+      .catch(console.error)
+      .finally(function() { setLoading(false); });
+  }, []);
+
+  if (loading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 60, gap: 12 }}>
+      <div style={{ width: 32, height: 32, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      <span style={{ color: '#888' }}>Chargement de votre historique...</span>
+    </div>
+  );
+
+  if (!data) return null;
+
+  var s           = data.stats;
+  var GNFf        = function(n) { return new Intl.NumberFormat('fr-FR').format(Number(n)); };
+  var noteLocataire = Number(s.note_moyenne_recue);
+  var badge = Number(s.nb_terminees) >= 3 ? '🏅 Locataire expérimenté'
+            : Number(s.nb_terminees) >= 1 ? '✅ Locataire vérifié'
+            : '🆕 Nouveau locataire';
+
+  return (
+    <div>
+      <div className="dash-page-header">
+        <div>
+          <h1>Mon historique</h1>
+          <p>Toutes vos locations et paiements</p>
+        </div>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#E8F5E9', borderRadius: 20, padding: '6px 14px', fontSize: 13, fontWeight: 700, color: '#1B5E20' }}>
+          {badge}
+        </div>
+      </div>
+
+      {/* KPIs */}
+      <div className="stats-grid-4" style={{ marginBottom: 24 }}>
+        {[
+          { label: 'Locations totales',  val: s.nb_locations_total,                      icon: <Home size={22} strokeWidth={1.5}/>,        color: '#1B6B3A', bg: '#E8F5E9' },
+          { label: 'Locations actives',  val: s.nb_actives,                               icon: <CheckCircle size={22} strokeWidth={1.5}/>,  color: '#1565C0', bg: '#E3F2FD' },
+          { label: 'Total payé',         val: GNFf(s.total_paye) + ' GNF',               icon: <Banknote size={22} strokeWidth={1.5}/>,     color: '#7B1FA2', bg: '#F3E5F5' },
+          { label: 'Note reçue',         val: noteLocataire > 0 ? noteLocataire.toFixed(1) + '/5' : 'Pas encore', icon: <Star size={22} strokeWidth={1.5}/>, color: '#F5A623', bg: '#FFF8E1' },
+        ].map(function(k, i) {
+          return (
+            <div key={i} className="stat-card-colored" style={{ background: k.bg, borderLeft: '4px solid ' + k.color }}>
+              <div style={{ color: k.color, marginBottom: 8 }}>{k.icon}</div>
+              <div className="stat-card-val" style={{ color: k.color, fontSize: 18 }}>{k.val}</div>
+              <div className="stat-card-label">{k.label}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Onglets locaux */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+        {[
+          { id: 'locations', label: 'Locations (' + data.locations.length + ')' },
+          { id: 'paiements', label: 'Paiements (' + data.paiements.length + ')' },
+          { id: 'notations', label: 'Avis (' + data.notations.length + ')' },
+        ].map(function(t) {
+          return (
+            <button key={t.id} onClick={function() { setOngletLocal(t.id); }}
+              style={{ padding: '8px 16px', borderRadius: 20, border: 'none', background: ongletLocal === t.id ? '#1B6B3A' : '#F0F0F0', color: ongletLocal === t.id ? '#fff' : '#555', fontSize: 13, fontWeight: ongletLocal === t.id ? 700 : 500, cursor: 'pointer', transition: 'all .2s' }}>
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ─── LOCATIONS ───────────────────────────────────────────── */}
+      {ongletLocal === 'locations' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {data.locations.length === 0 && (
+            <div className="dash-empty-state">
+              <Home size={48} strokeWidth={1} color="#C8E6C9" />
+              <h3>Aucune location</h3>
+              <p>Vos locations apparaîtront ici</p>
+            </div>
+          )}
+          {data.locations.map(function(r) {
+            var photo = r.photos && r.photos.length > 0 ? r.photos[0] : null;
+            var statuts = {
+              confirmee:  { label: 'Active',      color: '#1B6B3A', bg: '#E8F5E9' },
+              terminee:   { label: 'Terminée',    color: '#888',    bg: '#F5F5F5' },
+              en_attente: { label: 'En attente',  color: '#E65100', bg: '#FFF3E0' },
+              refusee:    { label: 'Refusée',     color: '#B71C1C', bg: '#FFEBEE' },
+            };
+            var cfg = statuts[r.statut] || { label: r.statut, color: '#888', bg: '#F5F5F5' };
+
+            return (
+              <div key={r.id} style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', border: r.statut === 'confirmee' ? '1.5px solid #A5D6A7' : '1px solid #F0F0F0' }}>
+                <div style={{ display: 'flex', gap: 0 }}>
+                  {/* Photo */}
+                  <div style={{ width: 100, height: 100, background: photo ? 'none' : 'linear-gradient(135deg,#E8F5E9,#C8E6C9)', flexShrink: 0, overflow: 'hidden' }}>
+                    {photo
+                      ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 32 }}>🏠</div>
+                    }
+                  </div>
+
+                  {/* Infos */}
+                  <div style={{ flex: 1, padding: '14px 16px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
+                      <div>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22' }}>{r.logement_titre}</div>
+                        <div style={{ fontSize: 12, color: '#888', display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
+                          <MapPin size={11} strokeWidth={1.5} /> {r.logement_adresse}, {r.logement_ville}
+                        </div>
+                      </div>
+                      <span style={{ background: cfg.bg, color: cfg.color, borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
+                        {cfg.label}
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 16, fontSize: 12, color: '#555' }}>
+                      <span style={{ fontWeight: 700, color: '#1B6B3A' }}>{GNFf(r.prix_mensuel)} GNF/mois</span>
+                      {r.date_debut && <span>Depuis {new Date(r.date_debut).toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' })}</span>}
+                      {r.nb_chambres && <span>🛏 {r.nb_chambres} ch.</span>}
+                    </div>
+
+                    <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>
+                      Propriétaire : {r.prop_prenom} {r.prop_nom}
+                      {r.prop_telephone && <span> · <a href={'tel:' + r.prop_telephone} style={{ color: '#1B6B3A', textDecoration: 'none' }}>{r.prop_telephone}</a></span>}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ─── PAIEMENTS ───────────────────────────────────────────── */}
+      {ongletLocal === 'paiements' && (
+        <div style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          {data.paiements.length === 0 && (
+            <div className="dash-empty-state">
+              <Banknote size={48} strokeWidth={1} color="#C8E6C9" />
+              <h3>Aucun paiement</h3>
+              <p>Vos paiements apparaîtront ici</p>
+            </div>
+          )}
+          {data.paiements.map(function(p, i) {
+            var cfg = p.statut === 'complete'
+              ? { label: 'Payé', color: '#1B6B3A', bg: '#E8F5E9' }
+              : { label: 'En attente', color: '#E65100', bg: '#FFF3E0' };
+            return (
+              <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 18px', borderBottom: i < data.paiements.length - 1 ? '0.5px solid #F5F5F5' : 'none', background: i % 2 === 0 ? '#fff' : '#FAFAFA' }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>
+                    {p.logement_titre}
+                  </div>
+                  <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
+                    {new Date(p.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                    {p.mode_paiement && <span> · {p.mode_paiement}</span>}
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: cfg.color }}>{GNFf(p.montant)} GNF</div>
+                  <span style={{ background: cfg.bg, color: cfg.color, borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{cfg.label}</span>
+                </div>
+              </div>
+            );
+          })}
+
+          {data.paiements.length > 0 && (
+            <div style={{ padding: '14px 18px', background: '#1B2B22', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>Total payé</span>
+              <span style={{ fontSize: 18, fontWeight: 900, color: '#F5A623' }}>{GNFf(s.total_paye)} GNF</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ─── NOTATIONS ───────────────────────────────────────────── */}
+      {ongletLocal === 'notations' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {data.notations.length === 0 && (
+            <div className="dash-empty-state">
+              <Star size={48} strokeWidth={1} color="#C8E6C9" />
+              <h3>Aucun avis</h3>
+              <p>Les avis apparaîtront après vos locations</p>
+            </div>
+          )}
+          {data.notations.map(function(n, i) {
+            var estRecu = n.cible_id === (user && user.id);
+            return (
+              <div key={n.id} style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderLeft: '4px solid ' + (estRecu ? '#1B6B3A' : '#1565C0') }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: estRecu ? '#1B6B3A' : '#1565C0', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                      {estRecu ? '⭐ Avis reçu' : '✍️ Avis donné'}
+                    </div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22', marginTop: 2 }}>
+                      {n.auteur_prenom} {n.auteur_nom} · {n.logement_titre}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: 2 }}>
+                    {[1,2,3,4,5].map(function(s) {
+                      return <Star key={s} size={14} strokeWidth={1.5} fill={s <= n.note ? '#F5A623' : 'transparent'} color="#F5A623" />;
+                    })}
+                  </div>
+                </div>
+                {n.commentaire && (
+                  <p style={{ fontSize: 13, color: '#555', lineHeight: 1.6, margin: 0, fontStyle: 'italic' }}>
+                    "{n.commentaire}"
+                  </p>
+                )}
+                <div style={{ fontSize: 11, color: '#aaa', marginTop: 8 }}>
+                  {new Date(n.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 // ================================================
 // COMPOSANT PRINCIPAL : Dashboard
 // ================================================
@@ -3767,6 +3995,7 @@ function installerApp() {
   '/dashboard/parametres':   t('parametres'),
   '/dashboard/mes-locations': t('mes_locations'),
   '/dashboard/rapports':      t('Rapports financiers'),
+  '/dashboard/historique': t('Mon historique'),
 };
   var pageIcon = {
     '/dashboard':              '',
@@ -3922,6 +4151,7 @@ function chargerDonnees() {
     if (onglet === '/dashboard/parametres') return <OngletParametres user={user} />;
     if (onglet === '/dashboard/mes-locations') return <OngletMesLocations stats={stats} setOnglet={setOnglet} />;
     if (onglet === '/dashboard/rapports') return <OngletRapports user={user} />;
+    if (onglet === '/dashboard/historique') return <OngletHistorique user={user} />;
     return <OngletOverview stats={stats} user={user} alertes={alertes} />;
   }
 
@@ -4094,6 +4324,7 @@ function chargerDonnees() {
       { path: '/dashboard/mes-locations', icon: <Home            size={22} strokeWidth={1.5} />, label: 'Locations' },
       { path: '/dashboard/messages',      icon: <MessageCircle   size={22} strokeWidth={1.5} />, label: 'Messages'  },
       { path: '/dashboard/paiements',     icon: <CreditCard      size={22} strokeWidth={1.5} />, label: 'Paiements' },
+      { path: '/dashboard/historique', icon: <Clock size={22} strokeWidth={1.5} />, label: 'Historique' },
       { path: '/dashboard/parametres',    icon: <Settings        size={22} strokeWidth={1.5} />, label: 'Profil'    },
     ] : [
       { path: '/dashboard',               icon: <LayoutDashboard size={22} strokeWidth={1.5} />, label: 'Accueil'   },
