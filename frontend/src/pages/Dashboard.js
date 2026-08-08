@@ -171,268 +171,370 @@ function NotifPanel(props) {
     </div>
   );
 }
+// ════════════════════════════════════════════════════════════════
+// OVERVIEW LOCATAIRE
+// ════════════════════════════════════════════════════════════════
+function OngletOverviewLocataire(props) {
+  var stats    = props.stats;
+  var user     = props.user;
+  var setOnglet = props.setOnglet;
+  var alertes  = props.alertes || [];
 
-// ================================================
-// ONGLET : Vue d'ensemble (tableau de bord principal)
-// ================================================
-function OngletOverview(props) {
-  var stats = props.stats;
-  var user = props.user;
-  var alertes = props.alertes;
-
-  var totalLoyers = stats.logements
-    .filter(function(b) { return b.statut === 'loue'; })
-    .reduce(function(s, b) { return s + Number(b.prix_mensuel); }, 0);
-  var biensOccupes = stats.logements.filter(function(b) { return b.statut === 'loue'; }).length;
-  var biensLibres = stats.logements.filter(function(b) { return b.statut === 'disponible'; }).length;
-  var loiersPercus = stats.paiements
-    .filter(function(p) { return p.statut === 'complete'; })
-    .reduce(function(s, p) { return s + Number(p.montant); }, 0);
-  var tauxOccup = stats.logements.length > 0
-    ? Math.round(biensOccupes / stats.logements.length * 100) : 0;
-
-  var statsCards = user && user.role !== 'locataire' ? [
-    { label: 'Revenus du mois', value: GNF(loiersPercus), sub: 'Encaisses ce mois', color: '#1B6B3A', bg: '#E8F5E9', icon: <Home size={24} strokeWidth={1.5} /> },
-    { label: 'Biens occupes', value: biensOccupes + '/' + stats.logements.length, sub: biensLibres + ' bien(s) libre(s)', color: '#1565C0', bg: '#E3F2FD', icon: <Home size={24} strokeWidth={1.5} /> },
-    { label: 'Loyer en retard', value: alertes.filter(function(a) { return a.type === 'loyer_retard'; }).length + ' locataire(s)', sub: 'A relancer', color: '#B71C1C', bg: '#FFEBEE', icon: <AlertTriangle size={24} strokeWidth={1.5} /> },
-    { label: "Taux d'occupation", value: tauxOccup + '%', sub: 'Performance du mois', color: '#E65100', bg: '#FFF3E0', icon: <TrendingUp size={24} strokeWidth={1.5} /> }
-  ] : (function() {
-  var locActive   = stats.reservations.filter(function(r) { return r.statut === 'confirmee'; });
-  var candidatures = stats.reservations.filter(function(r) { return r.statut !== 'confirmee' && r.statut !== 'terminee'; });
-  var paiementsOk  = stats.paiements.filter(function(p) { return p.statut === 'complete'; });
-  var totalPaye    = paiementsOk.reduce(function(s, p) { return s + Number(p.montant); }, 0);
-  return [
-    { label: 'Locations actives',   value: String(locActive.length),    sub: 'En cours',           color: '#1B6B3A', bg: '#E8F5E9', icon: <Home size={24} strokeWidth={1.5}/> },
-    { label: 'Candidatures',        value: String(candidatures.length), sub: 'En attente/examen',  color: '#1565C0', bg: '#E3F2FD', icon: <CalendarCheck size={24} strokeWidth={1.5}/> },
-    { label: 'Loyers payés',        value: String(paiementsOk.length),  sub: 'Total',              color: '#7B1FA2', bg: '#F3E5F5', icon: <CreditCard size={24} strokeWidth={1.5}/> },
-    { label: 'Total versé',         value: GNF(totalPaye) + ' GNF',     sub: 'Depuis le début',    color: '#E65100', bg: '#FFF3E0', icon: <Banknote size={24} strokeWidth={1.5}/> },
-  ];
-})();
+  var locationsActives  = (stats.reservations || []).filter(function(r) { return r.statut === 'confirmee'; });
+  var candidatures      = (stats.reservations || []).filter(function(r) { return r.statut !== 'confirmee' && r.statut !== 'terminee'; });
+  var paiementsOk       = (stats.paiements   || []).filter(function(p) { return p.statut === 'complete'; });
+  var totalPaye         = paiementsOk.reduce(function(s, p) { return s + Number(p.montant); }, 0);
 
   return (
     <div>
-      <div className="stats-grid-4">
-        {statsCards.map(function(s, i) {
+      {/* KPIs */}
+      <div className="stats-grid-4" style={{ marginBottom: 24 }}>
+        {[
+          { label: 'Locations actives',  val: String(locationsActives.length),         icon: <Home size={22} strokeWidth={1.5}/>,         color: '#1B6B3A', bg: '#E8F5E9' },
+          { label: 'Candidatures',       val: String(candidatures.length),              icon: <CalendarCheck size={22} strokeWidth={1.5}/>, color: '#1565C0', bg: '#E3F2FD' },
+          { label: 'Loyers payés',       val: String(paiementsOk.length),               icon: <CreditCard size={22} strokeWidth={1.5}/>,    color: '#7B1FA2', bg: '#F3E5F5' },
+          { label: 'Total versé',        val: GNF(totalPaye) + ' GNF',                 icon: <Banknote size={22} strokeWidth={1.5}/>,      color: '#E65100', bg: '#FFF3E0' },
+        ].map(function(s, i) {
           return (
             <div key={i} className="stat-card-colored" style={{ background: s.bg, borderLeft: '4px solid ' + s.color }}>
-              <div className="stat-card-icon">{s.icon}</div>
-              <div className="stat-card-val" style={{ color: s.color }}>{s.value}</div>
+              <div style={{ color: s.color, marginBottom: 8 }}>{s.icon}</div>
+              <div className="stat-card-val" style={{ color: s.color, fontSize: 18 }}>{s.val}</div>
               <div className="stat-card-label">{s.label}</div>
-              <div className="stat-card-sub">{s.sub}</div>
             </div>
           );
         })}
       </div>
 
-      {/* Vue locataire enrichie */}
-{user && user.role === 'locataire' && (function() {
-  var locActive = stats.reservations.filter(function(r) { return r.statut === 'confirmee'; });
-  if (locActive.length === 0) return (
-    <div className="dash-empty-state" style={{ marginTop: 20 }}>
-      <Home size={48} strokeWidth={1} color="#C8E6C9" />
-      <h3>Aucune location active</h3>
-      <p>Trouvez votre prochain logement sur Werdhe</p>
-      <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>
-        🔍 Chercher un logement
-      </Link>
+      {/* Location active */}
+      {locationsActives.length > 0 ? (
+        locationsActives.map(function(r) {
+          var photo = r.photos && r.photos.length > 0 ? r.photos[0] : null;
+          var dateDebut = r.date_debut ? new Date(r.date_debut) : null;
+          var moisEcoules = dateDebut ? Math.floor((new Date() - dateDebut) / (1000 * 60 * 60 * 24 * 30)) : 0;
+          var duree = r.duree_mois || 12;
+          var pct   = Math.min(100, Math.round(moisEcoules / duree * 100));
+
+          return (
+            <div key={r.id} style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginBottom: 16, border: '1.5px solid #A5D6A7' }}>
+              <div style={{ height: 100, background: photo ? 'none' : 'linear-gradient(135deg,#1B6B3A,#2D9E5F)', overflow: 'hidden', position: 'relative' }}>
+                {photo
+                  ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontSize: 40 }}>🏠</div>
+                }
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.55))', display: 'flex', alignItems: 'flex-end', padding: '10px 14px' }}>
+                  <div>
+                    <div style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>{r.logement_titre}</div>
+                    <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 12 }}>{r.logement_adresse}, {r.logement_ville}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ padding: '14px 18px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <div>
+                    <div style={{ fontSize: 11, color: '#888' }}>Loyer mensuel</div>
+                    <div style={{ fontSize: 18, fontWeight: 800, color: '#1B6B3A' }}>{GNF(r.prix_mensuel)} <span style={{ fontSize: 12, color: '#888', fontWeight: 400 }}>GNF</span></div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 11, color: '#888' }}>Durée du bail</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{moisEcoules}/{duree} mois</div>
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: 12 }}>
+                  <div style={{ background: '#F0F0F0', borderRadius: 6, height: 6, overflow: 'hidden' }}>
+                    <div style={{ background: 'linear-gradient(90deg,#1B6B3A,#34A853)', width: pct + '%', height: '100%', borderRadius: 6 }} />
+                  </div>
+                  <div style={{ fontSize: 10, color: '#888', marginTop: 3 }}>Progression : {pct}%</div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8 }}>
+                  {[
+                    { icon: <FileText size={16} strokeWidth={1.5}/>,      label: 'Docs',      path: '/dashboard/documents'    },
+                    { icon: <MessageCircle size={16} strokeWidth={1.5}/>, label: 'Messages',  path: '/dashboard/messages'     },
+                    { icon: <CreditCard size={16} strokeWidth={1.5}/>,    label: 'Paiements', path: '/dashboard/paiements'    },
+                    { icon: <Clock size={16} strokeWidth={1.5}/>,         label: 'Historique',path: '/dashboard/historique'   },
+                  ].map(function(a, i) {
+                    return (
+                      <button key={i} onClick={function() { if(setOnglet) setOnglet(a.path); }}
+                        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '10px 6px', borderRadius: 10, border: '0.5px solid #E8E8E8', background: '#fff', cursor: 'pointer', color: '#1B6B3A', fontSize: 10, fontWeight: 600, transition: 'all .2s' }}
+                        onMouseEnter={function(e) { e.currentTarget.style.background = '#E8F5E9'; }}
+                        onMouseLeave={function(e) { e.currentTarget.style.background = '#fff'; }}>
+                        {a.icon}
+                        {a.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          );
+        })
+      ) : (
+        <div className="dash-empty-state">
+          <Home size={48} strokeWidth={1} color="#C8E6C9" />
+          <h3>Aucune location active</h3>
+          <p>Trouvez votre prochain logement sur Werdhe</p>
+          <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>🔍 Chercher un logement</Link>
+        </div>
+      )}
+    </div>
+  );
+}
+// ================================================
+// ONGLET : Vue d'ensemble (tableau de bord principal)
+// ================================================
+function OngletOverview(props) {
+  var user     = props.user;
+  var setOnglet = props.setOnglet;
+  var estProprio = user && (user.role === 'proprietaire' || user.role === 'les_deux');
+
+  // Locataire → renvoyer vers le dashboard locataire existant
+  if (!estProprio) return <OngletOverviewLocataire {...props} />;
+
+  var [overview, setOverview] = useState(null);
+  var [loading, setLoading]   = useState(true);
+
+  useEffect(function() {
+    api.get('/rapports/overview')
+      .then(function(res) { setOverview(res.data); })
+      .catch(console.error)
+      .finally(function() { setLoading(false); });
+  }, []);
+
+  if (loading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 60, gap: 12 }}>
+      <div style={{ width: 32, height: 32, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
     </div>
   );
 
-  return locActive.map(function(r) {
-    var dateDebut   = r.date_debut ? new Date(r.date_debut) : null;
-    var dateFin     = r.date_fin   ? new Date(r.date_fin)   : null;
-    var maintenant  = new Date();
-    var moisEcoules = dateDebut ? Math.floor((maintenant - dateDebut) / (1000 * 60 * 60 * 24 * 30)) : 0;
-    var dureeTotal  = r.duree_mois || 12;
-    var pctProgres  = Math.min(100, Math.round(moisEcoules / dureeTotal * 100));
-    var prochainLoyer = dateDebut ? new Date(dateDebut.getFullYear(), dateDebut.getMonth() + moisEcoules + 1, dateDebut.getDate()) : null;
-    var joursAvant  = prochainLoyer ? Math.ceil((prochainLoyer - maintenant) / (1000 * 60 * 60 * 24)) : null;
-    var photo       = r.photos && r.photos.length > 0 ? r.photos[0] : null;
+  if (!overview) return null;
 
-    return (
-      <div key={r.id} style={{ marginTop: 20 }}>
-        {/* Carte location active */}
-        <div style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginBottom: 16 }}>
-          {/* Photo / bannière */}
-          <div style={{ height: 120, background: photo ? 'none' : 'linear-gradient(135deg, #1B6B3A, #2D9E5F)', position: 'relative', overflow: 'hidden' }}>
-            {photo
-              ? <img src={photo} alt={r.logement_titre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontSize: 48 }}>🏠</div>
-            }
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.6))', display: 'flex', alignItems: 'flex-end', padding: '14px 18px' }}>
-              <div>
-                <div style={{ color: '#fff', fontWeight: 800, fontSize: 18, marginBottom: 2 }}>{r.logement_titre}</div>
-                <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13, display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <MapPin size={12} strokeWidth={1.5} /> {r.logement_adresse}, {r.logement_ville}
-                </div>
-              </div>
+  var k = overview.kpis;
+
+  return (
+    <div>
+      {/* ─── KPIs ──────────────────────────────────────────────── */}
+      <div className="stats-grid-4" style={{ marginBottom: 20 }}>
+        {[
+          {
+            label: 'Revenus du mois',
+            val:   GNF(k.revenus_mois) + ' GNF',
+            sub:   k.tendance_revenus > 0 ? '↑ +' + k.tendance_revenus + '% vs mois dernier'
+                 : k.tendance_revenus < 0 ? '↓ ' + k.tendance_revenus + '% vs mois dernier'
+                 : 'Stable vs mois dernier',
+            subColor: k.tendance_revenus > 0 ? '#1B6B3A' : k.tendance_revenus < 0 ? '#E53935' : '#888',
+            icon:  <Banknote size={22} strokeWidth={1.5}/>, color: '#1B6B3A', bg: '#E8F5E9'
+          },
+          {
+            label: 'Taux d\'occupation',
+            val:   k.taux_occupation + '%',
+            sub:   k.biens_loues + '/' + k.total_biens + ' biens occupés',
+            subColor: '#888',
+            icon:  <Home size={22} strokeWidth={1.5}/>, color: '#1565C0', bg: '#E3F2FD'
+          },
+          {
+            label: 'Candidatures',
+            val:   String(k.candidatures_attente),
+            sub:   k.nouvelles_candidatures_7j + ' nouvelles cette semaine',
+            subColor: k.nouvelles_candidatures_7j > 0 ? '#E65100' : '#888',
+            icon:  <CalendarCheck size={22} strokeWidth={1.5}/>, color: '#7B1FA2', bg: '#F3E5F5'
+          },
+          {
+            label: 'Biens gérés',
+            val:   String(k.total_biens),
+            sub:   k.biens_loues + ' loués · ' + (k.total_biens - k.biens_loues) + ' libres',
+            subColor: '#888',
+            icon:  <Building2 size={22} strokeWidth={1.5}/>, color: '#E65100', bg: '#FFF3E0'
+          },
+        ].map(function(s, i) {
+          return (
+            <div key={i} className="stat-card-colored" style={{ background: s.bg, borderLeft: '4px solid ' + s.color }}>
+              <div style={{ color: s.color, marginBottom: 8 }}>{s.icon}</div>
+              <div className="stat-card-val" style={{ color: s.color, fontSize: 18 }}>{s.val}</div>
+              <div className="stat-card-label">{s.label}</div>
+              <div style={{ fontSize: 11, color: s.subColor, marginTop: 4, fontWeight: 600 }}>{s.sub}</div>
             </div>
-            <div style={{ position: 'absolute', top: 12, right: 12, background: '#1B6B3A', color: '#fff', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
-              ✅ Location active
-            </div>
+          );
+        })}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+
+        {/* ─── GRAPHIQUE REVENUS 6 MOIS ──────────────────────── */}
+        <div style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', margin: 0 }}>Revenus 6 mois</h3>
+            <button onClick={function() { if(setOnglet) setOnglet('/dashboard/rapports'); }}
+              style={{ background: 'none', border: 'none', color: '#1B6B3A', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
+              Voir tout →
+            </button>
           </div>
-
-          <div style={{ padding: '18px 20px' }}>
-            {/* Loyer + progression */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
-              <div>
-                <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Loyer mensuel</div>
-                <div style={{ fontSize: 22, fontWeight: 800, color: '#1B6B3A' }}>
-                  {GNF(r.prix_mensuel)} <span style={{ fontSize: 13, fontWeight: 400, color: '#888' }}>GNF/mois</span>
-                </div>
-              </div>
-              {joursAvant !== null && (
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Prochain loyer dans</div>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: joursAvant <= 5 ? '#E53935' : joursAvant <= 10 ? '#E65100' : '#1B2B22' }}>
-                    {joursAvant > 0 ? joursAvant + ' jours' : 'Aujourd\'hui'}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Barre de progression bail */}
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#888', marginBottom: 6 }}>
-                <span>Durée du bail</span>
-                <span>{moisEcoules} / {dureeTotal} mois ({pctProgres}%)</span>
-              </div>
-              <div style={{ background: '#F0F0F0', borderRadius: 6, height: 8, overflow: 'hidden' }}>
-                <div style={{ background: 'linear-gradient(90deg, #1B6B3A, #34A853)', width: pctProgres + '%', height: '100%', borderRadius: 6, transition: 'width .5s' }} />
-              </div>
-              {dateDebut && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#aaa', marginTop: 4 }}>
-                  <span>{dateDebut.toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' })}</span>
-                  {dateFin && <span>{dateFin.toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' })}</span>}
-                </div>
-              )}
-            </div>
-
-            {/* Infos propriétaire */}
-            <div style={{ background: '#F7F8F7', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 36, height: 36, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 700 }}>
-                  {(r.prop_prenom || '').charAt(0)}{(r.prop_nom || '').charAt(0)}
-                </div>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{r.prop_prenom} {r.prop_nom}</div>
-                  <div style={{ fontSize: 11, color: '#888' }}>Propriétaire</div>
-                </div>
-              </div>
-              <a href={'tel:' + r.prop_telephone}
-                style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#E8F5E9', color: '#1B5E20', borderRadius: 8, padding: '7px 12px', textDecoration: 'none', fontSize: 12, fontWeight: 700 }}>
-                <Phone size={12} strokeWidth={2} /> Appeler
-              </a>
-            </div>
-
-            {/* Actions rapides */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
-              {[
-                { icon: <FileText size={18} strokeWidth={1.5} />,       label: 'Documents',    color: '#1565C0', action: function() { if(setOnglet) setOnglet('/dashboard/documents'); } },
-                { icon: <MessageCircle size={18} strokeWidth={1.5} />,  label: 'Messages',     color: '#7B1FA2', action: function() { if(setOnglet) setOnglet('/dashboard/messages'); } },
-                { icon: <CreditCard size={18} strokeWidth={1.5} />,     label: 'Paiements',    color: '#E65100', action: function() { if(setOnglet) setOnglet('/dashboard/paiements'); } },
-                { icon: <Send size={18} strokeWidth={1.5} />,           label: 'Préavis',      color: '#B71C1C', action: function() { if(setOnglet) setOnglet('/dashboard/preavis'); } },
-              ].map(function(a, i) {
+          {overview.revenus6mois.length === 0 ? (
+            <div style={{ textAlign: 'center', color: '#ccc', padding: '20px', fontSize: 13 }}>Aucune donnée</div>
+          ) : (
+            <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end', height: 80 }}>
+              {overview.revenus6mois.map(function(m, i) {
+                var max = Math.max.apply(null, overview.revenus6mois.map(function(x) { return Number(x.revenus); }));
+                var pct = max > 0 ? Number(m.revenus) / max : 0;
                 return (
-                  <button key={i} onClick={a.action}
-                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, padding: '12px 8px', borderRadius: 10, border: '0.5px solid #E8E8E8', background: '#fff', cursor: 'pointer', color: a.color, transition: 'all .2s' }}
-                    onMouseEnter={function(e) { e.currentTarget.style.background = a.color + '10'; }}
-                    onMouseLeave={function(e) { e.currentTarget.style.background = '#fff'; }}>
-                    {a.icon}
-                    <span style={{ fontSize: 10, fontWeight: 600 }}>{a.label}</span>
-                  </button>
+                  <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                    <div style={{ fontSize: 9, color: '#1B6B3A', fontWeight: 700, opacity: pct > 0 ? 1 : 0 }}>
+                      {pct > 0 ? new Intl.NumberFormat('fr-FR', { notation: 'compact' }).format(Number(m.revenus)) : ''}
+                    </div>
+                    <div style={{ width: '100%', background: pct > 0 ? '#1B6B3A' : '#F0F0F0', borderRadius: '4px 4px 0 0', height: Math.max(4, Math.round(pct * 60)) + 'px', transition: 'height .5s' }} />
+                    <div style={{ fontSize: 9, color: '#888' }}>{m.mois}</div>
+                  </div>
                 );
               })}
             </div>
-          </div>
+          )}
         </div>
 
-        {/* Historique paiements récents */}
-        {stats.paiements.length > 0 && (
-          <div style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-              <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: 0 }}>Historique des paiements</h3>
-              <button onClick={function() { if(setOnglet) setOnglet('/dashboard/paiements'); }}
-                style={{ background: 'none', border: 'none', color: '#1B6B3A', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-                Voir tout →
-              </button>
+        {/* ─── ALERTES + ÉVÉNEMENTS ──────────────────────────── */}
+        <div style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+            <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', margin: 0 }}>À faire</h3>
+            <button onClick={function() { if(setOnglet) setOnglet('/dashboard/alertes'); }}
+              style={{ background: 'none', border: 'none', color: '#1B6B3A', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
+              Tout voir →
+            </button>
+          </div>
+
+          {overview.alertes.length === 0 && overview.evenements.length === 0 && (
+            <div style={{ textAlign: 'center', color: '#ccc', fontSize: 13, padding: '12px 0' }}>
+              <CheckCircle size={28} strokeWidth={1} color="#C8E6C9" style={{ display: 'block', margin: '0 auto 8px' }} />
+              Tout est en ordre !
             </div>
-            {stats.paiements.slice(0, 4).map(function(p, i) {
-              var cfg = p.statut === 'complete' ? { color: '#1B6B3A', bg: '#E8F5E9', label: 'Payé' }
-                : { color: '#E65100', bg: '#FFF3E0', label: 'En attente' };
-              return (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < stats.paiements.slice(0,4).length - 1 ? '0.5px solid #F5F5F5' : 'none' }}>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>
-                      Loyer — {new Date(p.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
-                    </div>
-                    {p.mode_paiement && <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>Via {p.mode_paiement}</div>}
+          )}
+
+          {overview.alertes.slice(0, 3).map(function(a, i) {
+            return (
+              <div key={i} style={{ display: 'flex', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #F5F5F5', alignItems: 'flex-start' }}>
+                <div style={{ width: 8, height: 8, background: a.priorite === 'haute' ? '#E53935' : '#F5A623', borderRadius: '50%', marginTop: 4, flexShrink: 0 }} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22' }}>{a.titre}</div>
+                  <div style={{ fontSize: 11, color: '#888', marginTop: 1 }}>{a.description && a.description.slice(0, 50)}{a.description && a.description.length > 50 ? '...' : ''}</div>
+                </div>
+              </div>
+            );
+          })}
+
+          {overview.evenements.map(function(e, i) {
+            var joursRestants = Math.ceil((new Date(e.date_evenement) - new Date()) / (1000 * 60 * 60 * 24));
+            return (
+              <div key={'ev' + i} style={{ display: 'flex', gap: 10, padding: '8px 0', alignItems: 'center' }}>
+                <div style={{ width: 8, height: 8, background: '#1565C0', borderRadius: '50%', flexShrink: 0 }} />
+                <div style={{ flex: 1, fontSize: 12, color: '#1B2B22' }}>
+                  Bail expire — {e.logement_titre}
+                  <span style={{ color: joursRestants <= 15 ? '#E53935' : '#888', fontWeight: 700, marginLeft: 6 }}>
+                    dans {joursRestants}j
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ─── MES BIENS ─────────────────────────────────────────── */}
+      <div style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', margin: 0 }}>Mes biens</h3>
+          <button onClick={function() { if(setOnglet) setOnglet('/dashboard/biens'); }}
+            style={{ background: 'none', border: 'none', color: '#1B6B3A', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
+            Gérer →
+          </button>
+        </div>
+        {overview.biens.length === 0 && (
+          <div style={{ textAlign: 'center', padding: 20 }}>
+            <Home size={36} strokeWidth={1} color="#C8E6C9" style={{ marginBottom: 8 }} />
+            <div style={{ fontSize: 13, color: '#888', marginBottom: 12 }}>Aucun bien publié</div>
+            <button onClick={function() { if(setOnglet) setOnglet('/dashboard/biens'); }}
+              style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '9px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+              + Ajouter un bien
+            </button>
+          </div>
+        )}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {overview.biens.map(function(b, i) {
+            var estLoue = b.statut === 'loue';
+            var photo   = b.photos && b.photos.length > 0 ? b.photos[0] : null;
+            return (
+              <div key={b.id} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '10px 12px', borderRadius: 12, background: '#F7F8F7' }}>
+                <div style={{ width: 46, height: 46, borderRadius: 10, overflow: 'hidden', background: '#E8F5E9', flexShrink: 0 }}>
+                  {photo
+                    ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Home size={20} strokeWidth={1.5} color="#A5D6A7" /></div>
+                  }
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{b.titre}</div>
+                  <div style={{ fontSize: 11, color: '#888', marginTop: 1 }}>
+                    {GNF(b.prix_mensuel)} GNF/mois · {b.ville}
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 14, fontWeight: 800, color: cfg.color }}>{GNF(p.montant)} GNF</div>
-                    <span style={{ background: cfg.bg, color: cfg.color, borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 700 }}>{cfg.label}</span>
+                  {estLoue && b.loc_prenom && (
+                    <div style={{ fontSize: 11, color: '#1B6B3A', marginTop: 1 }}>
+                      Locataire : {b.loc_prenom} {b.loc_nom}
+                    </div>
+                  )}
+                </div>
+                <span style={{ background: estLoue ? '#E8F5E9' : '#FFF8E1', color: estLoue ? '#1B5E20' : '#7B4F00', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
+                  {estLoue ? 'Loué' : 'Libre'}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ─── DERNIÈRES CANDIDATURES ────────────────────────────── */}
+      {overview.candidatures.length > 0 && (
+        <div style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+            <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', margin: 0 }}>Dernières candidatures</h3>
+            <button onClick={function() { if(setOnglet) setOnglet('/dashboard/reservations'); }}
+              style={{ background: 'none', border: 'none', color: '#1B6B3A', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
+              Toutes voir →
+            </button>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {overview.candidatures.map(function(r, i) {
+              var cfgStatuts = {
+                en_attente:  { label: 'Nouvelle',  color: '#E65100', bg: '#FFF3E0' },
+                dossier_requis: { label: 'Dossier demandé', color: '#1565C0', bg: '#E3F2FD' },
+                en_examen:   { label: 'En examen', color: '#7B1FA2', bg: '#F3E5F5' },
+                acceptee:    { label: 'Acceptée',  color: '#1B6B3A', bg: '#E8F5E9' },
+                refusee:     { label: 'Refusée',   color: '#888',    bg: '#F5F5F5' },
+              };
+              var cfg = cfgStatuts[r.statut] || { label: r.statut, color: '#888', bg: '#F5F5F5' };
+              return (
+                <div key={r.id} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '10px 12px', borderRadius: 12, background: '#F7F8F7', cursor: 'pointer' }}
+                  onClick={function() { if(setOnglet) setOnglet('/dashboard/reservations'); }}>
+                  <div style={{ width: 36, height: 36, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
+                    {(r.loc_prenom || '').charAt(0)}{(r.loc_nom || '').charAt(0)}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>{r.loc_prenom} {r.loc_nom}</div>
+                    <div style={{ fontSize: 11, color: '#888' }}>{r.logement_titre} · {GNF(r.prix_mensuel)} GNF/mois</div>
+                  </div>
+                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                    <span style={{ background: cfg.bg, color: cfg.color, borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, display: 'block', marginBottom: 4 }}>
+                      {cfg.label}
+                    </span>
+                    {r.score_confiance > 0 && (
+                      <span style={{ fontSize: 10, color: '#888' }}>Score : {r.score_confiance}/100</span>
+                    )}
                   </div>
                 </div>
               );
             })}
           </div>
-        )}
-      </div>
-    );
-  });
-})()}
-      <div className="dash-two-cols">
-        <div className="dash-white-card">
-          <div className="dash-card-head">
-            <h3>Alertes actives</h3>
-            <span className="dash-badge-red">{alertes.length}</span>
-          </div>
-          {alertes.length === 0 && (
-            <p style={{ color: '#888', fontSize: 13 }}>Aucune alerte. Tout est en ordre !</p>
-          )}
-          {alertes.slice(0, 3).map(function(a, i) {
-            var bg = a.type === 'loyer_retard' ? '#FFEBEE' : a.type === 'bail_bientot' ? '#FFF3E0' : '#E3F2FD';
-            return (
-              <div key={i} className="alerte-item-dash" style={{ background: bg }}>
-                <span style={{ fontSize: 22 }}>
-                  {a.type === 'loyer_retard' ? <AlertTriangle size={20} strokeWidth={1.5} /> : a.type === 'bail_bientot' ? <FileText size={20} strokeWidth={1.5} /> : <Wrench size={20} strokeWidth={1.5} />}
-                </span>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>{a.titre}</div>
-                  <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{a.description}</div>
-                </div>
-              </div>
-            );
-          })}
         </div>
-
-        <div className="dash-white-card">
-          <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700, color: '#1B2B22' }}>Mes biens</h3>
-          {stats.logements.length === 0 && (
-            <p style={{ color: '#888', fontSize: 13 }}>Aucun bien enregistre.</p>
-          )}
-          {stats.logements.slice(0, 4).map(function(b, i) {
-            return (
-              <div key={i} className="bien-list-item">
-                <div className="bien-list-left">
-                  <Home size={22} strokeWidth={1.5} />
-                  <div>
-                    <div className="bien-list-info-title">{b.titre}</div>
-                    <div className="bien-list-info-sub">{GNF(b.prix_mensuel)}/mois</div>
-                  </div>
-                </div>
-                <span className={b.statut === 'loue' ? 'badge-occupe' : 'badge-libre'}>
-                  {b.statut === 'loue' ? 'Occupe' : 'Libre'}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      )}
     </div>
   );
 }
-
 // ================================================
 // ONGLET : Mes biens
 // ================================================
