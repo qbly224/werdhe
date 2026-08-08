@@ -396,4 +396,139 @@ router.get('/sitemap', async (req, res) => {
     res.status(500).send('Erreur génération sitemap');
   }
 });
+// ─── OVERVIEW PROPRIÉTAIRE ────────────────────────────────────────
+router.get('/overview', verifierToken, async (req, res) => {
+  try {
+    var userId = req.user.id;
+
+    var [kpis, biens, candidatures, alertes, evenements, revenus6mois] = await Promise.all([
+
+      // KPIs du mois vs mois précédent
+      db.query(`
+        SELECT
+          COALESCE(SUM(p.montant) FILTER (
+            WHERE p.statut = 'complete'
+            AND DATE_TRUNC('month', p.created_at) = DATE_TRUNC('month', NOW())
+          ), 0) as revenus_mois,
+          COALESCE(SUM(p.montant) FILTER (
+            WHERE p.statut = 'complete'
+            AND DATE_TRUNC('month', p.created_at) = DATE_TRUNC('month', NOW() - INTERVAL '1 month')
+          ), 0) as revenus_mois_precedent,
+          COUNT(DISTINCT l.id) as total_biens,
+          COUNT(DISTINCT l.id) FILTER (WHERE l.statut = 'loue') as biens_loues,
+          COUNT(DISTINCT r.id) FILTER (WHERE r.statut = 'en_attente') as candidatures_attente,
+          COUNT(DISTINCT r.id) FILTER (
+            WHERE r.statut = 'en_attente'
+            AND r.created_at >= NOW() - INTERVAL '7 days'
+          ) as nouvelles_candidatures_7j
+        FROM logements l
+        LEFT JOIN reservations r ON r.logement_id = l.id
+        LEFT JOIN paiements p ON p.reservation_id = r.id
+        WHERE l.proprietaire_id = $1
+      `, [userId]),
+
+      // Biens avec statut locataire
+      db.query(`
+        SELECT l.*,
+          u.prenom as loc_prenom, u.nom as loc_nom,
+          u.telephone as loc_telephone,
+          r.id as reservation_id, r.statut as reservation_statut,
+          r.date_fin,
+          COALESCE(
+            (SELECT MAX(p.created_at) FROM paiements p WHERE p.reservation_id = r.id AND p.statut = 'complete'),
+            NULL
+          ) as dernier_paiement
+        FROM logements l
+        LEFT JOIN reservations r ON r.logement_id = l.id AND r.statut = 'confirmee'
+        LEFT JOIN users u ON r.locataire_id = u.id
+        WHERE l.proprietaire_id = $1
+        ORDER BY l.created_at DESC
+        LIMIT 8
+      `, [userId]),
+
+      // Dernières candidatures
+      db.query(`
+        SELECT r.*,
+          l.titre as logement_titre, l.prix_mensuel,
+          u.prenom as loc_prenom, u.nom as loc_nom,
+          u.telephone as loc_telephone, u.email as loc_email,
+          u.score_confiance
+        FROM reservations r
+        JOIN logements l ON r.logement_id = l.id
+        JOIN users u ON r.locataire_id = u.id
+        WHERE l.proprietaire_id = $1
+        ORDER BY r.created_at DESC
+        LIMIT 5
+      `, [userId]),
+
+      // Alertes non lues
+      db.query(`
+        SELECT * FROM alertes
+        WHERE proprietaire_id = $1 AND lu = FALSE
+        ORDER BY created_at DESC
+        LIMIT 5
+      `, [userId]),
+
+      // Prochains événements (baux expirant, loyers à venir)
+      db.query(`
+        SELECT
+          'bail_expire' as type,
+          l.titre as logement_titre,
+          r.date_fin as date_evenement,
+          u.prenom as loc_prenom
+        FROM reservations r
+        JOIN logements l ON r.logement_id = l.id
+        JOIN users u ON r.locataire_id = u.id
+        WHERE l.proprietaire_id = $1
+          AND r.statut = 'confirmee'
+          AND r.date_fin IS NOT NULL
+          AND r.date_fin BETWEEN NOW() AND NOW() + INTERVAL '60 days'
+        ORDER BY r.date_fin ASC
+        LIMIT 3
+      `, [userId]),
+
+      // Revenus 6 mois
+      db.query(`
+        SELECT
+          TO_CHAR(DATE_TRUNC('month', p.created_at), 'Mon') as mois,
+          COALESCE(SUM(p.montant) FILTER (WHERE p.statut = 'complete'), 0) as revenus
+        FROM paiements p
+        JOIN reservations r ON p.reservation_id = r.id
+        JOIN logements l ON r.logement_id = l.id
+        WHERE l.proprietaire_id = $1
+          AND p.created_at >= NOW() - INTERVAL '6 months'
+        GROUP BY DATE_TRUNC('month', p.created_at)
+        ORDER BY DATE_TRUNC('month', p.created_at) ASC
+      `, [userId]),
+    ]);
+
+    var k = kpis.rows[0];
+    var tendanceRevenus = Number(k.revenus_mois_precedent) > 0
+      ? Math.round((Number(k.revenus_mois) - Number(k.revenus_mois_precedent)) / Number(k.revenus_mois_precedent) * 100)
+      : 0;
+
+    res.json({
+      kpis: {
+        revenus_mois:             Number(k.revenus_mois),
+        revenus_mois_precedent:   Number(k.revenus_mois_precedent),
+        tendance_revenus:         tendanceRevenus,
+        total_biens:              Number(k.total_biens),
+        biens_loues:              Number(k.biens_loues),
+        taux_occupation:          Number(k.total_biens) > 0
+          ? Math.round(Number(k.biens_loues) / Number(k.total_biens) * 100) : 0,
+        candidatures_attente:     Number(k.candidatures_attente),
+        nouvelles_candidatures_7j: Number(k.nouvelles_candidatures_7j),
+      },
+      biens:        biens.rows,
+      candidatures: candidatures.rows,
+      alertes:      alertes.rows,
+      evenements:   evenements.rows,
+      revenus6mois: revenus6mois.rows,
+    });
+
+  } catch (err) {
+    console.error('[GET /rapports/overview]', err.message);
+    res.status(500).json({ erreur: err.message });
+  }
+});
 module.exports = router;
