@@ -3719,6 +3719,34 @@ export default function Dashboard() {
   var [stats, setStats] = useState({ logements: [], reservations: [], paiements: [] });
   var [monPlan, setMonPlan] = useState({ plan: 'gratuit', droits: { max_biens: 2, mobile_money: false, documents_pdf: false }, nb_biens: 0 });
   var [showOnboarding, setShowOnboarding] = useState(false);
+  var [enLigne, setEnLigne] = useState(navigator.onLine);
+  var [installPrompt, setInstallPrompt] = useState(null);
+  var [showInstall, setShowInstall]     = useState(false);
+
+useEffect(function() {
+  function handler(e) {
+    e.preventDefault();
+    setInstallPrompt(e);
+    // Montrer la bannière si pas déjà installée
+    if (!window.matchMedia('(display-mode: standalone)').matches) {
+      setShowInstall(true);
+    }
+  }
+  window.addEventListener('beforeinstallprompt', handler);
+  return function() { window.removeEventListener('beforeinstallprompt', handler); };
+}, []);
+
+function installerApp() {
+  if (!installPrompt) return;
+  installPrompt.prompt();
+  installPrompt.userChoice.then(function(result) {
+    if (result.outcome === 'accepted') {
+      toast.success('Werdhe installé sur votre écran d\'accueil ! 🏠');
+    }
+    setShowInstall(false);
+    setInstallPrompt(null);
+  });
+}
 
   var premierChargement = useRef(true);
   var { darkMode, toggle: toggleDarkMode } = useDarkMode();
@@ -3766,6 +3794,17 @@ useEffect(function() {
   }
   window.addEventListener('resize', handleResize);
   return function() { window.removeEventListener('resize', handleResize); };
+}, []);
+
+useEffect(function() {
+  function handleOnline()  { setEnLigne(true);  toast.success('Connexion rétablie ✅'); }
+  function handleOffline() { setEnLigne(false); toast.error('Connexion perdue 📡');    }
+  window.addEventListener('online',  handleOnline);
+  window.addEventListener('offline', handleOffline);
+  return function() {
+    window.removeEventListener('online',  handleOnline);
+    window.removeEventListener('offline', handleOffline);
+  };
 }, []);
 
  useEffect(function() {
@@ -3911,6 +3950,26 @@ function chargerDonnees() {
 {showOnboarding && (
   <Onboarding onTermine={function() { setShowOnboarding(false); }} />
 )}
+{/* Bannière installation PWA */}
+{showInstall && (
+  <div style={{ position: 'fixed', bottom: isMobile ? 70 : 20, left: '50%', transform: 'translateX(-50%)', background: '#1B2B22', color: '#fff', borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.25)', zIndex: 9999, maxWidth: 380, width: 'calc(100% - 32px)' }}>
+    <div style={{ fontSize: 28, flexShrink: 0 }}>🏠</div>
+    <div style={{ flex: 1 }}>
+      <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 3 }}>Installer Werdhe</div>
+      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>Accès rapide depuis votre écran d'accueil</div>
+    </div>
+    <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+      <button onClick={function() { setShowInstall(false); }}
+        style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', borderRadius: 8, padding: '6px 10px', fontSize: 12, cursor: 'pointer' }}>
+        Plus tard
+      </button>
+      <button onClick={installerApp}
+        style={{ background: '#F5A623', border: 'none', color: '#1B2B22', borderRadius: 8, padding: '6px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+        Installer
+      </button>
+    </div>
+  </div>
+)}
 {isMobile && sidebarOpen && (
   <div
     onClick={function() { setSidebarOpen(false); }}
@@ -3932,6 +3991,12 @@ function chargerDonnees() {
               <p>{new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
             </div>
           {!isMobile && <RechercheGlobale stats={stats} onNavigate={setOnglet} />}
+          {!enLigne && (
+  <div style={{ background: '#E53935', color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20, display: 'flex', alignItems: 'center', gap: 5 }}>
+    <div style={{ width: 6, height: 6, background: '#fff', borderRadius: '50%', opacity: 0.8 }} />
+    Hors ligne
+  </div>
+)}
         </div>
           <div className="dash-header-right">
          {!isMobile && <div style={{ display: 'flex', gap: 4, background: 'rgba(0,0,0,0.15)' , borderRadius: 10, padding: 3 }}>

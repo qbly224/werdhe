@@ -10,3 +10,15 @@ root.render(
     <App />
   </React.StrictMode>
 );
+// Enregistrement du Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(function(reg) {
+        console.log('[SW] Enregistré :', reg.scope);
+      })
+      .catch(function(err) {
+        console.warn('[SW] Échec :', err.message);
+      });
+  });
+}

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Werdhe — Hors ligne</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #1B2B22 0%, #1B6B3A 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      color: #fff;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 40px; }
+    .logo-icon { width: 44px; height: 44px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+    .logo-text { font-size: 22px; font-weight: 800; }
+    .icon { font-size: 64px; margin-bottom: 20px; animation: pulse 2s ease infinite; }
+    h1 { font-size: clamp(22px, 5vw, 32px); font-weight: 800; margin-bottom: 12px; }
+    p  { font-size: 15px; color: rgba(255,255,255,0.65); line-height: 1.6; max-width: 380px; margin-bottom: 32px; }
+    .btn {
+      display: inline-block;
+      padding: 13px 28px;
+      border-radius: 12px;
+      background: #F5A623;
+      color: #1B2B22;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+      border: none;
+      margin-bottom: 12px;
+    }
+    .btn-outline {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 12px;
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      border: 1.5px solid rgba(255,255,255,0.2);
+    }
+    .status {
+      margin-top: 32px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 14px 20px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(0.92); }
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <div class="logo-icon">🏠</div>
+    <span class="logo-text">Werdhe</span>
+  </div>
+
+  <div class="icon">📡</div>
+  <h1>Vous êtes hors ligne</h1>
+  <p>Pas de connexion internet détectée. Vérifiez votre connexion et réessayez.</p>
+
+  <button class="btn" onclick="window.location.reload()">🔄 Réessayer</button>
+  <br/>
+  <a href="/" class="btn-outline">← Retour à l'accueil</a>
+
+  <div class="status" id="status">
+    Vérification de la connexion...
+  </div>
+
+  <script>
+    function checkOnline() {
+      var status = document.getElementById('status');
+      if (navigator.onLine) {
+        status.innerHTML = '✅ Connexion rétablie — <a href="/" style="color:#F5A623;text-decoration:none;font-weight:700;">Retourner sur Werdhe</a>';
+        status.style.background = 'rgba(27,107,58,0.3)';
+        status.style.color = '#A5D6A7';
+        setTimeout(function() { window.location.href = '/'; }, 2000);
+      } else {
+        status.textContent = '❌ Toujours hors ligne...';
+        status.style.background = 'rgba(229,57,53,0.2)';
+        status.style.color = 'rgba(255,255,255,0.6)';
+      }
+    }
+
+    window.addEventListener('online', function() {
+      checkOnline();
+    });
+
+    setInterval(checkOnline, 5000);
+    checkOnline();
+  </script>
+</body>
+</html>
