@@ -1,195 +1,188 @@
+/* eslint-disable */
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-import './auth.css';
+import { Eye, EyeOff, Mail, Lock, Home, ArrowRight, Phone } from 'lucide-react';
 
 export default function Login() {
-  const navigate = useNavigate();
-  const { login } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPwd, setShowPwd] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [erreur, setErreur] = useState('');
+  var navigate    = useNavigate();
+  var { login }   = useAuth();
+  var [email, setEmail]       = useState('');
+  var [password, setPassword] = useState('');
+  var [showPwd, setShowPwd]   = useState(false);
+  var [loading, setLoading]   = useState(false);
+  var [erreur, setErreur]     = useState('');
+  var [remember, setRemember] = useState(false);
+
+  var emailValide = email.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   function remplirTest(role) {
-    if (role === 'proprio') {
-      setEmail('mamadou@werdhe.com');
-      setPassword('motdepasse123');
-    } else {
-      setEmail('fatoumata@werdhe.com');
-      setPassword('motdepasse123');
-    }
+    if (role === 'proprio') { setEmail('mamadou@werdhe.com'); setPassword('motdepasse123'); }
+    else if (role === 'locataire') { setEmail('fatoumata@werdhe.com'); setPassword('motdepasse123'); }
+    else { setEmail('admin@werdhe.com'); setPassword('WerdheAdmin2026'); }
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!email || !password) { setErreur('Remplissez tous les champs'); return; }
     setLoading(true);
     setErreur('');
     try {
-      const res = await api.post('/auth/login', {
-        email: email,
-        mot_de_passe: password
-      });
-
-      // Si admin → rediriger vers page 2FA
+      var res = await api.post('/auth/login', { email, mot_de_passe: password });
       if (res.data.requires_2fa) {
         toast('Code 2FA envoyé à votre email 🔐', { icon: '📧' });
-        navigate('/admin/2fa', {
-          state: {
-            user_id: res.data.user_id,
-            email:   email
-          }
-        });
+        navigate('/admin/2fa', { state: { user_id: res.data.user_id, email } });
         return;
       }
-
-      // Connexion normale
       login(res.data.user, res.data.token);
-      toast.success('Bon retour ' + res.data.user.prenom + ' !');
+      toast.success('Bon retour ' + res.data.user.prenom + ' ! 👋');
       navigate('/dashboard');
     } catch (err) {
-      setErreur(err.response && err.response.data
-        ? err.response.data.erreur
-        : 'Email ou mot de passe incorrect');
-    } finally {
-      setLoading(false);
-    }
+      setErreur(err.response && err.response.data ? err.response.data.erreur : 'Email ou mot de passe incorrect');
+    } finally { setLoading(false); }
   }
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-
-        <div className="auth-header">
-          <div className="auth-logo">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-              <polyline points="9 22 9 12 15 12 15 22"/>
-            </svg>
+    <div style={{ minHeight: '100vh', display: 'flex', fontFamily: 'system-ui, sans-serif' }}>
+      {/* Panneau gauche */}
+      <div className="login-panel-left" style={{ flex: '0 0 45%', background: 'linear-gradient(135deg, #1B2B22 0%, #1B6B3A 60%, #2D9E5F 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: -80, right: -80, width: 300, height: 300, borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }} />
+        <div style={{ position: 'absolute', bottom: -60, left: -60, width: 250, height: 250, borderRadius: '50%', background: 'rgba(245,166,35,0.08)' }} />
+        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', maxWidth: 360 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'center', marginBottom: 48 }}>
+            <div style={{ width: 44, height: 44, background: 'rgba(255,255,255,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Home size={22} color="#fff" strokeWidth={2} />
+            </div>
+            <span style={{ fontWeight: 900, fontSize: 22, color: '#fff', letterSpacing: -0.5 }}>Werdhe</span>
           </div>
-          <h2>Bon retour sur Werdhe</h2>
-          <p>Proprietaire ou locataire, connectez-vous a votre espace</p>
+          <div style={{ fontSize: 64, marginBottom: 20 }}>🏡</div>
+          <h2 style={{ fontSize: 26, fontWeight: 800, color: '#fff', margin: '0 0 14px', lineHeight: 1.2 }}>La location immobilière en Guinée</h2>
+          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 36px' }}>Connectez propriétaires et locataires directement. Sans intermédiaire, sans frais cachés.</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            {[{ val: '1 200+', label: 'Logements' }, { val: '4 800+', label: 'Utilisateurs' }, { val: '100%', label: 'Gratuit locataire' }, { val: '5 min', label: 'Pour publier' }].map(function(s, i) {
+              return (
+                <div key={i} style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: '#F5A623' }}>{s.val}</div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 3 }}>{s.label}</div>
+                </div>
+              );
+            })}
+          </div>
         </div>
+      </div>
 
-        <button
-          className="auth-btn-outline"
-          style={{ marginBottom: '8px' }}
-          onClick={function() { window.location.href = 'https://api.werdhe.com/auth/google'; }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-          </svg>
-          Continuer avec Google
-        </button>
-        <button
-         onClick={function() { navigate('/login-telephone'); }}
-         style={{ width: '100%', padding: '13px', borderRadius: 12, border: '1.5px solid #E0E0E0', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontSize: 14, fontWeight: 600, color: '#1B2B22', cursor: 'pointer' }}>
-         <span>📞</span> Continuer par numéro de téléphone
-        </button>
+      {/* Panneau droit */}
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 24px', background: '#F7F8F7', overflowY: 'auto' }}>
+        <div style={{ width: '100%', maxWidth: 420 }}>
+          <div className="login-mobile-header" style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 32, justifyContent: 'center' }}>
+            <div style={{ width: 32, height: 32, background: '#1B6B3A', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Home size={16} color="#fff" strokeWidth={2} />
+            </div>
+            <span style={{ fontWeight: 800, fontSize: 18, color: '#1B2B22' }}>Werdhe</span>
+          </div>
 
-        <div className="auth-divider">
-          <span>ou par email</span>
-        </div>
+          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#1B2B22', margin: '0 0 6px', letterSpacing: -0.5 }}>Bon retour 👋</h1>
+          <p style={{ fontSize: 14, color: '#888', margin: '0 0 28px' }}>Connectez-vous à votre espace Werdhe</p>
 
-        {erreur && (
-          <div className="auth-erreur">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="8" x2="12" y2="12"/>
-              <line x1="12" y1="16" x2="12.01" y2="16"/>
+          <button onClick={function() { window.location.href = 'https://api.werdhe.com/auth/google'; }}
+            style={{ width: '100%', padding: '13px', borderRadius: 12, border: '1.5px solid #E0E0E0', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontSize: 14, fontWeight: 600, color: '#1B2B22', cursor: 'pointer', marginBottom: 8, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            {erreur}
-          </div>
-        )}
+            Continuer avec Google
+          </button>
 
-        <form onSubmit={handleSubmit}>
-          <div className="auth-field">
-            <label>Email</label>
-            <input
-              type="email"
-              placeholder="vous@email.com"
-              value={email}
-              onChange={function(e) { setEmail(e.target.value); }}
-              required
-            />
+          <Link to="/login-telephone" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '11px', borderRadius: 12, border: '1.5px solid #E0E0E0', background: '#fff', fontSize: 13, fontWeight: 600, color: '#1B2B22', textDecoration: 'none', marginBottom: 20, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+            <Phone size={16} strokeWidth={1.5} color="#555" /> Continuer par téléphone
+          </Link>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+            <div style={{ flex: 1, height: 0.5, background: '#E0E0E0' }} />
+            <span style={{ fontSize: 12, color: '#aaa' }}>ou par email</span>
+            <div style={{ flex: 1, height: 0.5, background: '#E0E0E0' }} />
           </div>
 
-          <div className="auth-field" style={{marginBottom:'6px'}}>
-            <label>Mot de passe</label>
-            <div className="auth-input-wrap">
-              <input
-                type={showPwd ? 'text' : 'password'}
-                placeholder="Votre mot de passe"
-                value={password}
-                onChange={function(e) { setPassword(e.target.value); }}
-                required
-                style={{paddingRight:'36px'}}
-              />
-              <span
-                className="auth-input-icon"
-                onClick={function() { setShowPwd(!showPwd); }}
-              >
-                {showPwd ? (
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-label="Masquer">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-                    <line x1="1" y1="1" x2="23" y2="23"/>
-                  </svg>
-                ) : (
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-label="Afficher">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                  </svg>
-                )}
-              </span>
+          {erreur && (
+            <div style={{ background: '#FFEBEE', border: '1px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: '#B71C1C' }}>
+              ⚠️ {erreur}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Adresse email</label>
+              <div style={{ position: 'relative' }}>
+                <Mail size={15} color="#aaa" strokeWidth={1.5} style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                <input type="email" placeholder="vous@email.com" value={email} autoComplete="email"
+                  onChange={function(e) { setEmail(e.target.value); setErreur(''); }}
+                  style={{ width: '100%', padding: '11px 12px 11px 38px', border: '1.5px solid ' + (email.length > 0 ? (emailValide ? '#1B6B3A' : '#E53935') : '#E0E0E0'), borderRadius: 10, fontSize: 14, outline: 'none', background: '#fff', boxSizing: 'border-box' }} />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: 8 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <label style={{ fontSize: 12, fontWeight: 600, color: '#555' }}>Mot de passe</label>
+                <Link to="/forgot-password" style={{ fontSize: 12, color: '#1B6B3A', textDecoration: 'none', fontWeight: 600 }}>Mot de passe oublié ?</Link>
+              </div>
+              <div style={{ position: 'relative' }}>
+                <Lock size={15} color="#aaa" strokeWidth={1.5} style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                <input type={showPwd ? 'text' : 'password'} placeholder="Votre mot de passe" value={password} autoComplete="current-password"
+                  onChange={function(e) { setPassword(e.target.value); setErreur(''); }}
+                  style={{ width: '100%', padding: '11px 40px 11px 38px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', background: '#fff', boxSizing: 'border-box' }} />
+                <button type="button" onClick={function() { setShowPwd(!showPwd); }}
+                  style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#aaa', padding: 0 }}>
+                  {showPwd ? <EyeOff size={16} strokeWidth={1.5} /> : <Eye size={16} strokeWidth={1.5} />}
+                </button>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
+              <input type="checkbox" id="remember" checked={remember} onChange={function(e) { setRemember(e.target.checked); }}
+                style={{ width: 16, height: 16, accentColor: '#1B6B3A', cursor: 'pointer' }} />
+              <label htmlFor="remember" style={{ fontSize: 13, color: '#555', cursor: 'pointer' }}>Se souvenir de moi</label>
+            </div>
+
+            <button type="submit" disabled={loading}
+              style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: loading ? '#aaa' : '#1B6B3A', color: '#fff', fontSize: 15, fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 16 }}>
+              {loading
+                ? <><div style={{ width: 18, height: 18, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Connexion...</>
+                : <>Se connecter <ArrowRight size={16} strokeWidth={2.5} /></>
+              }
+            </button>
+          </form>
+
+          <p style={{ textAlign: 'center', fontSize: 14, color: '#888', margin: '0 0 24px' }}>
+            Pas encore de compte ?{' '}
+            <Link to="/inscription" style={{ color: '#1B6B3A', fontWeight: 700, textDecoration: 'none' }}>Créer un compte gratuit</Link>
+          </p>
+
+          <div style={{ background: '#F0FBF0', border: '1px solid #A5D6A7', borderRadius: 12, padding: '14px 16px' }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#1B5E20', marginBottom: 10 }}>🧪 Comptes de démonstration</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
+              {[{ label: '🏠 Proprio', role: 'proprio' }, { label: '🔍 Locataire', role: 'locataire' }, { label: '⚙️ Admin', role: 'admin' }].map(function(t) {
+                return (
+                  <button key={t.role} onClick={function() { remplirTest(t.role); }}
+                    style={{ padding: '7px 6px', borderRadius: 8, border: '1px solid #A5D6A7', background: '#fff', color: '#1B5E20', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
+                    {t.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
-
-          <div style={{textAlign:'right', marginBottom:'14px'}}>
-            <Link to="/forgot-password" style={{fontSize:'12px', color:'#1B6B3A', textDecoration:'none'}}>
-              Mot de passe oublie ?
-            </Link>
-          </div>
-
-          <button
-            type="submit"
-            className="auth-btn-green"
-            style={{marginBottom:'12px'}}
-            disabled={loading}
-          >
-            {loading ? 'Connexion...' : 'Se connecter'}
-          </button>
-        </form>
-
-        <div className="auth-mm-grid">
-          <button
-            className="auth-mm-btn"
-            type="button"
-            onClick={function() { remplirTest('proprio'); }}
-          >
-            <div className="auth-mm-logo" style={{background:'#FF6600'}}>OM</div>
-            <div className="auth-mm-label">Orange Money</div>
-          </button>
-          <button
-            className="auth-mm-btn"
-            type="button"
-            onClick={function() { remplirTest('locataire'); }}
-          >
-            <div className="auth-mm-logo" style={{background:'#FFCC00', color:'#1B2B22'}}>MM</div>
-            <div className="auth-mm-label">MTN MoMo</div>
-          </button>
         </div>
-
-        <p className="auth-link-text">
-          Pas de compte ?{' '}
-          <Link to="/register">S'inscrire gratuitement</Link>
-        </p>
-
       </div>
+
+      <style>{`
+        @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        @media (max-width: 768px) { .login-panel-left { display: none !important; } }
+        @media (min-width: 769px) { .login-mobile-header { display: none !important; } }
+        input:focus { border-color: #1B6B3A !important; box-shadow: 0 0 0 3px rgba(27,107,58,0.08) !important; }
+      `}</style>
     </div>
   );
 }
