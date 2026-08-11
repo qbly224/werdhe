@@ -116,7 +116,8 @@ async function initierOrangeMoney(req, res) {
           amount: montant,
           return_url: process.env.FRONTEND_URL + '/dashboard',
           cancel_url: process.env.FRONTEND_URL + '/dashboard',
-          notif_url: process.env.BACKEND_URL + '/paiements/webhook/orange',
+          notif_url: process.env.BACKEND_URL + '/paiements/webhook/orange'
+            + (process.env.ORANGE_WEBHOOK_SECRET ? '?secret=' + process.env.ORANGE_WEBHOOK_SECRET : ''),
           lang: 'fr',
           reference: reference
         })
@@ -248,28 +249,27 @@ async function initierMTNMomo(req, res) {
 async function confirmerPaiement(req, res) {
   try {
     var { paiement_id } = req.params;
-    var { statut } = req.body;
 
+    // Seul le locataire propriétaire du paiement peut le confirmer (mode simulation),
+    // et uniquement vers 'complete' - pas de statut arbitraire venant du client.
     var result = await db.query(
       `UPDATE paiements
-       SET statut = $1, date_paiement = NOW()
-       WHERE id = $2
+       SET statut = 'complete', date_paiement = NOW()
+       WHERE id = $1 AND locataire_id = $2 AND statut = 'en_attente'
        RETURNING *`,
-      [statut || 'complete', paiement_id]
+      [paiement_id, req.user.id]
     );
 
     if (result.rows.length === 0) {
       return res.status(404).json({ erreur: 'Paiement non trouve' });
     }
 
-    if (statut === 'complete') {
-      var p = result.rows[0];
-      if (p.reservation_id) {
-        await db.query(
-          'UPDATE reservations SET statut = $1 WHERE id = $2',
-          ['confirmee', p.reservation_id]
-        );
-      }
+    var p = result.rows[0];
+    if (p.reservation_id) {
+      await db.query(
+        'UPDATE reservations SET statut = $1 WHERE id = $2',
+        ['confirmee', p.reservation_id]
+      );
     }
 
     res.json({ success: true, paiement: result.rows[0] });
@@ -283,8 +283,11 @@ async function confirmerPaiement(req, res) {
 // ================================================
 async function webhookOrange(req, res) {
   try {
+    if (process.env.ORANGE_WEBHOOK_SECRET && req.query.secret !== process.env.ORANGE_WEBHOOK_SECRET) {
+      return res.status(403).json({ erreur: 'Secret webhook invalide' });
+    }
+
     var { order_id, status, txnid } = req.body;
-    console.log('Webhook Orange:', req.body);
 
     if (status === 'SUCCESS') {
       await db.query(
@@ -306,7 +309,10 @@ async function webhookOrange(req, res) {
 // ================================================
 async function webhookMTN(req, res) {
   try {
-    console.log('Webhook MTN:', req.body);
+    if (process.env.MTN_WEBHOOK_SECRET && req.query.secret !== process.env.MTN_WEBHOOK_SECRET) {
+      return res.status(403).json({ erreur: 'Secret webhook invalide' });
+    }
+
     var { externalId, status } = req.body;
 
     if (status === 'SUCCESSFUL') {

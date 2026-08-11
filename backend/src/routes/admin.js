@@ -173,7 +173,7 @@ router.get('/users', verifierToken, verifierAdmin, async (req, res) => {
     var result = await db.query(
       `SELECT
          u.id, u.nom, u.prenom, u.email, u.telephone, u.role,
-         u.suspendu, u.locataire_verifie as verifie, u.plan,
+         u.suspendu, u.verifie, u.locataire_verifie, u.plan,
          u.note_moyenne, u.nb_notations, u.created_at,
          COUNT(DISTINCT l.id) as nb_logements,
          COUNT(DISTINCT r.id) as nb_reservations
@@ -441,7 +441,8 @@ router.get('/documents/:id/telecharger', verifierToken, verifierAdmin, async (re
 router.get('/signalements', verifierToken, verifierAdmin, async (req, res) => {
   try {
     var { statut } = req.query;
-    var conditions = statut && statut !== 'tous' ? [`s.statut = '${statut}'`] : ['1=1'];
+    var conditions = statut && statut !== 'tous' ? 's.statut = $1' : '1=1';
+    var params = statut && statut !== 'tous' ? [statut] : [];
 
     var result = await db.query(
       `SELECT s.*,
@@ -452,8 +453,9 @@ router.get('/signalements', verifierToken, verifierAdmin, async (req, res) => {
        FROM signalements s
        LEFT JOIN users u_sig ON s.signaleteur_id = u_sig.id
        LEFT JOIN users u_cib ON s.cible_id = u_cib.id
-       WHERE ${conditions.join(' AND ')}
-       ORDER BY s.created_at DESC`
+       WHERE ${conditions}
+       ORDER BY s.created_at DESC`,
+      params
     );
 
     res.json({ signalements: result.rows, total: result.rows.length });
