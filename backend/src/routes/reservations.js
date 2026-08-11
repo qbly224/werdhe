@@ -167,47 +167,6 @@ router.get('/:id/detail', verifierToken, async (req, res) => {
   }
 });
 
-// Propriétaire prend une décision sur une demande
-router.patch('/:id/decision', verifierToken, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { decision, motif } = req.body;
-
-    // Vérifier que c'est bien le propriétaire du logement
-    const check = await db.query(
-      `SELECT r.id FROM reservations r
-       JOIN logements l ON r.logement_id = l.id
-       WHERE r.id = $1 AND l.proprietaire_id = $2`,
-      [id, req.user.id]
-    );
-    if (check.rows.length === 0) {
-      return res.status(403).json({ erreur: 'Non autorisé' });
-    }
-
-    // Correspondance décision → statut en base
-    const correspondance = {
-      dossier_requis : 'dossier_requis',
-      acceptee       : 'acceptee',
-      echanges       : 'echanges',
-      refusee        : 'refusee',
-      bail_en_cours  : 'bail_en_cours',
-    };
-    const nouveauStatut = correspondance[decision] || decision;
-
-    await db.query(
-      `UPDATE reservations
-       SET statut = $1, motif_refus = $2, updated_at = NOW()
-       WHERE id = $3`,
-      [nouveauStatut, motif || null, id]
-    );
-
-    res.json({ message: 'Décision enregistrée', statut: nouveauStatut });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ erreur: 'Erreur serveur' });
-  }
-});
-
 // Locataire soumet son dossier (change statut en "en_examen")
 router.patch('/:id/soumettre-dossier', verifierToken, async (req, res) => {
   try {
@@ -224,33 +183,6 @@ router.patch('/:id/soumettre-dossier', verifierToken, async (req, res) => {
       ['en_examen', id]
     );
     res.json({ message: 'Dossier soumis', statut: 'en_examen' });
-  } catch (err) {
-    res.status(500).json({ erreur: 'Erreur serveur' });
-  }
-});
-
-// Locataire paie la caution
-router.patch('/:id/payer-caution', verifierToken, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { mode_paiement } = req.body;
-    const check = await db.query(
-      'SELECT id FROM reservations WHERE id = $1 AND locataire_id = $2',
-      [id, req.user.id]
-    );
-    if (check.rows.length === 0) {
-      return res.status(403).json({ erreur: 'Non autorisé' });
-    }
-    await db.query(
-      `UPDATE reservations
-       SET statut = 'caution_payee',
-           mode_paiement_caution = $1,
-           date_paiement_caution = NOW(),
-           updated_at = NOW()
-       WHERE id = $2`,
-      [mode_paiement, id]
-    );
-    res.json({ message: 'Caution enregistrée', statut: 'caution_payee' });
   } catch (err) {
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
@@ -285,36 +217,31 @@ router.patch('/:id/signer-bail', verifierToken, async (req, res) => {
       // Locataire signe en dernier → location confirmée
       nouveauStatut = 'confirmee';
 
-      // Mettre le logement en "loué" automatiquement
-await db.query(
-  `UPDATE logements SET statut = 'loue'
-   WHERE id = (SELECT logement_id FROM reservations WHERE id = $1)`,
-  [id]
-).catch(function(err) {
-  console.warn('[Sync] Logement statut non mis à jour:', err.message);
-});
-console.log('[Sync] Logement mis à loué ✅');
+      // Recalculer le score du locataire
+      calculerScore(r.locataire_id).catch(console.warn);
 
-      // Vérifier si le locataire mérite le badge après 3 locations
-var nbLocations = await db.query(
-  `SELECT COUNT(*) FROM reservations
-   WHERE locataire_id = $1 AND statut = 'confirmee'`,
-  [r.locataire_id]
-);
-if (parseInt(nbLocations.rows[0].count) >= 3) {
-  await db.query(
-    `UPDATE users SET locataire_verifie = TRUE,
-       nb_locations_terminees = $1
-     WHERE id = $2`,
-    [parseInt(nbLocations.rows[0].count), r.locataire_id]
-  );
-  console.log('[Badge] Locataire vérifié:', r.locataire_id);
-}
-      // Marquer le logement comme loué
+      // Mettre le logement en "loué" automatiquement
       await db.query(
         'UPDATE logements SET statut = $1 WHERE id = $2',
         ['loue', r.logement_id]
+      ).catch(function(err) {
+        console.warn('[Sync] Logement statut non mis à jour:', err.message);
+      });
+
+      // Vérifier si le locataire mérite le badge après 3 locations
+      var nbLocations = await db.query(
+        `SELECT COUNT(*) FROM reservations
+         WHERE locataire_id = $1 AND statut = 'confirmee'`,
+        [r.locataire_id]
       );
+      if (parseInt(nbLocations.rows[0].count) >= 3) {
+        await db.query(
+          `UPDATE users SET locataire_verifie = TRUE,
+             nb_locations_terminees = $1
+           WHERE id = $2`,
+          [parseInt(nbLocations.rows[0].count), r.locataire_id]
+        );
+      }
     }
 
     await db.query(
@@ -325,42 +252,6 @@ if (parseInt(nbLocations.rows[0].count) >= 3) {
     res.json({ message: 'Bail signé', statut: nouveauStatut });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ erreur: 'Erreur serveur' });
-  }
-});
-
-// Changer le statut (côté locataire uniquement pour certaines transitions)
-router.patch('/:id/statut', verifierToken, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { statut } = req.body;
-    const statutsPermisLocataire = ['caution_requise', 'echanges'];
-    const statutsPermisPropio    = ['bail_en_cours', 'echanges', 'confirmee'];
-
-    const resa = await db.query(
-      `SELECT r.*, l.proprietaire_id
-       FROM reservations r
-       JOIN logements l ON r.logement_id = l.id
-       WHERE r.id = $1`,
-      [id]
-    );
-    if (resa.rows.length === 0) return res.status(404).json({ erreur: 'Non trouvée' });
-
-    const r = resa.rows[0];
-    const estProprio   = req.user.id === r.proprietaire_id;
-    const estLocataire = req.user.id === r.locataire_id;
-
-    const permis = estProprio ? statutsPermisPropio : statutsPermisLocataire;
-    if (!permis.includes(statut)) {
-      return res.status(400).json({ erreur: 'Transition non autorisée' });
-    }
-
-    await db.query(
-      'UPDATE reservations SET statut = $1, updated_at = NOW() WHERE id = $2',
-      [statut, id]
-    );
-    res.json({ message: 'Statut mis à jour', statut });
-  } catch (err) {
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 });
@@ -418,9 +309,14 @@ router.patch('/:id/decision', verifierToken, async (req, res) => {
     const { decision, motif } = req.body;
 
     const check = await db.query(
-      `SELECT r.id, r.locataire_id, l.proprietaire_id, l.titre as logement_titre
+      `SELECT r.id, r.locataire_id, l.proprietaire_id, l.titre as logement_titre,
+              l.ville as logement_ville, l.prix_mensuel,
+              u_loc.prenom as locataire_prenom, u_loc.nom as locataire_nom, u_loc.email as locataire_email,
+              u_prop.prenom as prop_prenom, u_prop.nom as prop_nom
        FROM reservations r
        JOIN logements l ON r.logement_id = l.id
+       JOIN users u_loc ON r.locataire_id = u_loc.id
+       JOIN users u_prop ON l.proprietaire_id = u_prop.id
        WHERE r.id = $1 AND l.proprietaire_id = $2`,
       [id, req.user.id]
     );
@@ -480,17 +376,17 @@ router.patch('/:id/decision', verifierToken, async (req, res) => {
       envoyerNotification(r.locataire_id, titreNotif, descNotif, '/dashboard/reservations');
     }
 
-    if (statut === 'acceptee') {
+    if (decision === 'acceptee') {
        emailService.emailCandidatureAcceptee(
         { prenom: r.locataire_prenom, email: r.locataire_email },
         { prenom: r.prop_prenom, nom: r.prop_nom },
         { titre: r.logement_titre, ville: r.logement_ville, prix_mensuel: r.prix_mensuel }
       ).catch(console.warn);
-   } else if (statut === 'refusee') {
+   } else if (decision === 'refusee') {
      emailService.emailCandidatureRefusee(
       { prenom: r.locataire_prenom, email: r.locataire_email },
       { titre: r.logement_titre },
-      motif_refus || null
+      motif || null
     ).catch(console.warn);
    }
 
@@ -701,77 +597,6 @@ router.patch('/:id/payer-caution', verifierToken, async (req, res) => {
 
   } catch (err) {
     console.error('PATCH /reservations/:id/payer-caution', err.message);
-    res.status(500).json({ erreur: 'Erreur serveur' });
-  }
-});
-// ─── SIGNER LE BAIL ───────────────────────────────────────────────
-// Proprio signe en premier → statut bail_signe_proprio
-// Locataire signe en dernier → statut confirmee + logement loué
-router.patch('/:id/signer-bail', verifierToken, async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const resa = await db.query(
-      `SELECT r.*, l.proprietaire_id, r.logement_id
-       FROM reservations r
-       JOIN logements l ON r.logement_id = l.id
-       WHERE r.id = $1`,
-      [id]
-    );
-
-    if (resa.rows.length === 0) {
-      return res.status(404).json({ erreur: 'Réservation non trouvée' });
-    }
-
-    const r = resa.rows[0];
-    const estProprietaire = req.user.id === r.proprietaire_id;
-    const estLocataire    = req.user.id === r.locataire_id;
-
-    if (!estProprietaire && !estLocataire) {
-      return res.status(403).json({ erreur: 'Non autorisé' });
-    }
-
-    let nouveauStatut;
-
-    if (estProprietaire) {
-      // Le proprio signe → on attend la signature du locataire
-      nouveauStatut = 'bail_signe_proprio';
-    } else {
-      // Le locataire signe → location officiellement confirmée
-      nouveauStatut = 'confirmee';
-      // Recalculer le score du locataire
-    calculerScore(r.locataire_id).catch(console.warn);
-
-      // Mettre le logement en "loué" automatiquement
-await db.query(
-  `UPDATE logements SET statut = 'loue'
-   WHERE id = (SELECT logement_id FROM reservations WHERE id = $1)`,
-  [id]
-).catch(function(err) {
-  console.warn('[Sync] Logement statut non mis à jour:', err.message);
-});
-console.log('[Sync] Logement mis à loué ✅');
-
-      // Marquer le logement comme loué
-      await db.query(
-        "UPDATE logements SET statut = 'loue' WHERE id = $1",
-        [r.logement_id]
-      );
-    }
-
-    await db.query(
-      `UPDATE reservations
-       SET statut     = $1,
-           bail_signe = TRUE,
-           updated_at = NOW()
-       WHERE id = $2`,
-      [nouveauStatut, id]
-    );
-
-    res.json({ message: 'Bail signé', statut: nouveauStatut });
-
-  } catch (err) {
-    console.error('PATCH /reservations/:id/signer-bail', err.message);
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 });

@@ -59,7 +59,7 @@ emailService.emailBienvenue(user).catch(console.warn);
 });
 
 // ─── CONNEXION EMAIL ─────────────────────────────────────────────
-router.post('/connexion', valider('connexion'), async (req, res) => {
+async function connexionHandler(req, res) {
   try {
     var { email, mot_de_passe } = req.body;
     if (!email || !mot_de_passe) {
@@ -138,7 +138,9 @@ if (user.role === 'admin') {
     }
   }
 
-  console.log('[2FA Admin] Code pour', user.email, ':', codeOTP);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('[2FA Admin] Code pour', user.email, ':', codeOTP);
+  }
 
   return res.json({
     requires_2fa: true,
@@ -155,7 +157,8 @@ if (user.role === 'admin') {
     console.error('[POST /connexion]', err.message);
     res.status(500).json({ erreur: err.message });
   }
-});
+}
+router.post('/connexion', valider('connexion'), connexionHandler);
 
 // ─── PROFIL ───────────────────────────────────────────────────────
 router.get('/profil', require('../middleware/auth'), async (req, res) => {
@@ -219,7 +222,9 @@ router.post('/telephone/envoyer-otp', async (req, res) => {
       [tel, code, expireAt]
     );
 
-    console.log('[OTP] Code pour', tel, ':', code);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[OTP] Code pour', tel, ':', code);
+    }
 
 // Chercher si l'utilisateur a un email enregistré
 var userExistant = await db.query(
@@ -286,20 +291,23 @@ router.post('/telephone/verifier-otp', async (req, res) => {
       return res.status(400).json({ erreur: 'Code invalide ou expiré' });
     }
 
+    var userResult = await db.query('SELECT * FROM users WHERE telephone = $1', [tel]);
+    var user;
+
+    if (userResult.rows.length === 0 && !role) {
+      // Nouvel utilisateur : on ne consomme pas encore le code, il devra être
+      // resoumis avec nom/role pour finaliser l'inscription.
+      return res.status(200).json({ nouveau_utilisateur: true, telephone: tel });
+    }
+
     await db.query(
       'UPDATE otp_telephone SET utilise = TRUE WHERE id = $1',
       [otpResult.rows[0].id]
     );
 
-    var userResult = await db.query('SELECT * FROM users WHERE telephone = $1', [tel]);
-    var user;
-
     if (userResult.rows.length > 0) {
       user = userResult.rows[0];
     } else {
-      if (!role) {
-        return res.status(200).json({ nouveau_utilisateur: true, telephone: tel });
-      }
       var nouveauUser = await db.query(
         `INSERT INTO users (telephone, nom, prenom, role, mot_de_passe, email)
          VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
@@ -347,41 +355,8 @@ router.post('/telephone/verifier-otp', async (req, res) => {
   }
 });
 
-// Alias pour compatibilité avec le frontend
-router.post('/login', async (req, res) => {
-  req.url = '/connexion';
-  var { email, mot_de_passe } = req.body;
-  if (!email || !mot_de_passe) {
-    return res.status(400).json({ erreur: 'Email et mot de passe requis' });
-  }
-  try {
-    var result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
-    if (result.rows.length === 0) {
-      return res.status(401).json({ erreur: 'Email ou mot de passe incorrect' });
-    }
-    var user  = result.rows[0];
-    if (user.suspendu) {
-      return res.status(403).json({ erreur: 'Compte suspendu. Contactez le support.' });
-    }
-    var bcrypt = require('bcrypt');
-    var valid  = await bcrypt.compare(mot_de_passe, user.mot_de_passe);
-    if (!valid) {
-      return res.status(401).json({ erreur: 'Email ou mot de passe incorrect' });
-    }
-    var token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role, nom: user.nom, prenom: user.prenom, plan: user.plan || 'gratuit' },
-      process.env.JWT_SECRET,
-      { expiresIn: '30d' }
-    );
-    res.json({
-      message: 'Connexion réussie', token,
-      user: { id: user.id, nom: user.nom, prenom: user.prenom, email: user.email, role: user.role, telephone: user.telephone, plan: user.plan || 'gratuit' }
-    });
-  } catch (err) {
-    console.error('[POST /login]', err.message);
-    res.status(500).json({ erreur: err.message });
-  }
-});
+// Alias pour compatibilité avec le frontend — mêmes règles que /connexion (dont la 2FA admin)
+router.post('/login', valider('connexion'), connexionHandler);
 
 // Alias inscription
 router.post('/register', async (req, res) => {
@@ -649,6 +624,9 @@ router.post('/contact', async (req, res) => {
     if (!nom || !email || !message) {
       return res.status(400).json({ erreur: 'Champs obligatoires manquants' });
     }
+    var echapper = function(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    };
     if (process.env.RESEND_API_KEY) {
       const { Resend } = require('resend');
       const resend = new Resend(process.env.RESEND_API_KEY);
@@ -660,12 +638,12 @@ router.post('/contact', async (req, res) => {
         html: `
           <div style="font-family:sans-serif;max-width:500px">
             <h2 style="color:#1B2B22">Nouveau message de contact</h2>
-            <p><b>Nom :</b> ${nom}</p>
-            <p><b>Email :</b> ${email}</p>
-            <p><b>Sujet :</b> ${sujet || 'Non précisé'}</p>
+            <p><b>Nom :</b> ${echapper(nom)}</p>
+            <p><b>Email :</b> ${echapper(email)}</p>
+            <p><b>Sujet :</b> ${echapper(sujet || 'Non précisé')}</p>
             <hr/>
             <p><b>Message :</b></p>
-            <p style="background:#F7F8F7;padding:14px;border-radius:8px;line-height:1.6">${message}</p>
+            <p style="background:#F7F8F7;padding:14px;border-radius:8px;line-height:1.6">${echapper(message)}</p>
           </div>
         `
       });

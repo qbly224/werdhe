@@ -31,7 +31,10 @@ const creerReservation = async (req, res) => {
 
     // 3. Vérifier que le logement existe et est disponible
     const logement = await db.query(
-      'SELECT * FROM logements WHERE id = $1 AND statut = $2',
+      `SELECT l.*, u.prenom as prop_prenom, u.nom as prop_nom, u.email as prop_email
+       FROM logements l
+       JOIN users u ON l.proprietaire_id = u.id
+       WHERE l.id = $1 AND l.statut = $2`,
       [logement_id, 'disponible']
     );
 

@@ -312,6 +312,10 @@ const getFacture = async (req, res) => {
 
     const p = result.rows[0];
 
+    if (p.locataire_id !== req.user.id && p.proprietaire_id !== req.user.id) {
+      return res.status(403).json({ erreur: 'Accès refusé à cette facture' });
+    }
+
     const facture = {
       numero: p.numero_facture,
       date_emission: new Date(p.created_at).toLocaleDateString('fr-FR'),

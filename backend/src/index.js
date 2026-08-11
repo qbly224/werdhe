@@ -68,19 +68,17 @@ const PORT = process.env.PORT || 3000;
 // ── CORS — DOIT ÊTRE EN PREMIER ──────────────────────────────────
 app.use(cors({
   origin: function(origin, callback) {
-  var allowed = [
-    'https://werdhe.com',
-    'https://www.werdhe.com',
-    'http://localhost:3000',
-    'http://localhost:3001'
-  ];
-  if (!origin || allowed.indexOf(origin) !== -1) {
-    callback(null, true);
-  } else {
-    callback(null, true); // Accepter pour l'instant
-  }
-    
-    // Accepter toutes les origines
+    var allowed = [
+      'https://werdhe.com',
+      'https://www.werdhe.com',
+      'http://localhost:3000',
+      'http://localhost:3001'
+    ];
+    if (!origin || allowed.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Origine non autorisée par CORS'));
+    }
   },
   methods:      ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -108,6 +106,8 @@ app.use('/api', limiteurAPI);
 app.use('/auth/connexion',              limiteurConnexion);
 app.use('/auth/login',                  limiteurConnexion);
 app.use('/auth/telephone/envoyer-otp',  limiteurConnexion);
+app.use('/auth/telephone/verifier-otp', limiteurConnexion);
+app.use('/auth/admin/verifier-2fa',     limiteurConnexion);
 app.use(express.urlencoded({ extended: true }));
 
 // ── Routes ───────────────────────────────────────────────────────
