@@ -1,6 +1,6 @@
 const db = require('../database');
 const { genererDocument } = require('../services/documentService');
-
+var { envoyerPush } = require('../routes/push');
 // ================================
 // GÉNÉRER UN NUMÉRO DE FACTURE UNIQUE
 // ================================
@@ -217,6 +217,12 @@ const confirmerPaiementEspeces = async (req, res) => {
     console.error('Erreur confirmation paiement:', err.message);
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
+  envoyerPush(
+  locataireId,
+  '💰 Paiement confirmé',
+  'Votre loyer de ' + new Intl.NumberFormat('fr-FR').format(montant) + ' GNF a été enregistré.',
+  '/dashboard/paiements'
+).catch(console.warn);
 };
 
 // ================================

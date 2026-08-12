@@ -95,5 +95,39 @@ async function envoyerNotification(userId, titre, corps, url) {
     console.warn('[Push] Erreur globale:', err.message);
   }
 }
+// ─── FONCTION HELPER — Envoyer une notif push ─────────────────────
+async function envoyerPush(userId, titre, corps, url) {
+  try {
+    if (!process.env.VAPID_PUBLIC_KEY) return;
+    var subs = await db.query(
+      'SELECT endpoint, p256dh, auth FROM push_subscriptions WHERE user_id = $1',
+      [userId]
+    );
+    if (subs.rows.length === 0) return;
 
+    var payload = JSON.stringify({
+      titre: titre,
+      corps: corps,
+      url:   url || '/dashboard',
+    });
+
+    await Promise.all(subs.rows.map(function(s) {
+      return webpush.sendNotification(
+        { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
+        payload
+      ).catch(function(err) {
+        if (err.statusCode === 410) {
+          // Subscription expirée — supprimer
+          db.query('DELETE FROM push_subscriptions WHERE endpoint = $1', [s.endpoint]).catch(console.warn);
+        }
+      });
+    }));
+
+    console.log('[Push] ✅ Notification envoyée à user:', userId);
+  } catch (err) {
+    console.warn('[Push] Erreur:', err.message);
+  }
+}
+
+module.exports.envoyerPush = envoyerPush;
 module.exports = { router, envoyerNotification };

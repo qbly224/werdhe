@@ -14,7 +14,7 @@ const emailService = require('../services/emailService');
 const { calculerScore } = require('../services/scoreService');
 // Toutes les routes réservations sont protégées
 // Un utilisateur doit être connecté pour réserver
-
+var { envoyerPush } = require('./push');
 // Locataire
 router.post('/', verifierToken, creerReservation);
 // ─── HISTORIQUE COMPLET LOCATAIRE ────────────────────────────────
@@ -375,7 +375,13 @@ router.patch('/:id/decision', verifierToken, async (req, res) => {
     if (titreNotif) {
       envoyerNotification(r.locataire_id, titreNotif, descNotif, '/dashboard/reservations');
     }
-
+    envoyerPush(
+      r.locataire_id,
+      '✅ Candidature acceptée !',
+      'Votre candidature pour ' + r.logement_titre + ' a été acceptée !',
+      '/dashboard/reservations'
+    ).catch(console.warn);
+    
     if (decision === 'acceptee') {
        emailService.emailCandidatureAcceptee(
         { prenom: r.locataire_prenom, email: r.locataire_email },

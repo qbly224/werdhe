@@ -6,6 +6,7 @@ const {
   envoyerMessage, getConversations,
   getMessages, getNonLus, uploadMessage
 } = require('../controllers/messagesController');
+var { envoyerPush } = require('./push');
 
 // Voir toutes mes conversations
 router.get('/conversations', verifierToken, getConversations);
@@ -101,6 +102,20 @@ router.post('/:id/reaction', verifierToken, async (req, res) => {
       [req.params.id, req.user.id, emoji]
     );
 
+    // Push au destinataire
+if (destinataire_id) {
+  var expediteur = await db.query(
+    'SELECT prenom, nom FROM users WHERE id = $1',
+    [req.user.id]
+  );
+  var exp = expediteur.rows[0];
+  envoyerPush(
+    destinataire_id,
+    '💬 Nouveau message',
+    (exp ? exp.prenom + ' ' + exp.nom : 'Quelqu\'un') + ' vous a envoyé un message',
+    '/dashboard/messages'
+  ).catch(console.warn);
+}
     res.status(201).json({ message: 'Réaction ajoutée' });
   } catch (err) {
     res.status(500).json({ erreur: err.message });
