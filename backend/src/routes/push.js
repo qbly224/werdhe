@@ -128,6 +128,4 @@ async function envoyerPush(userId, titre, corps, url) {
     console.warn('[Push] Erreur:', err.message);
   }
 }
-
-module.exports.envoyerPush = envoyerPush;
-module.exports = { router, envoyerNotification };
+module.exports = { router, envoyerNotification, envoyerPush };
