@@ -3273,534 +3273,77 @@ function PushToggle() {
     </div>
   );
 }
-
-// ================================================
-// ONGLET : Parametres
-// ================================================
-function OngletParametres(props) {
-  var user = props.user;
-  var auth = useAuth();
-  var navigate = useNavigate();
-  var [section, setSection] = useState(null);
-  var [formProfil, setFormProfil] = useState({ prenom: user ? user.prenom : '', nom: user ? user.nom : '', email: user ? user.email : '', telephone: user ? user.telephone || '' : '' });
-  var [formMdp, setFormMdp] = useState({ ancien: '', nouveau: '', confirmer: '' });
-  var [notifs, setNotifs] = useState({ email: true, sms: true, loyers: true, bails: true, pannes: false });
-  var [langue, setLangue] = useState('fr');
-  var [saving, setSaving] = useState(false);
-  var [scoreData, setScoreData] = useState(null);
-  useEffect(function() {
-    api.get('/auth/mon-score')
-      .then(function(res) { setScoreData(res.data); })
-      .catch(console.error);
-  }, []);
-  function saveProfil(e) {
-    e.preventDefault();
-    setSaving(true);
-    api.put('/auth/profil', formProfil)
-      .then(function() { toast.success('Profil mis a jour !'); setSection(null); })
-      .catch(function() { toast.error('Erreur mise a jour'); })
-      .finally(function() { setSaving(false); });
-  }
-
-  function saveMdp(e) {
-    e.preventDefault();
-    if (formMdp.nouveau !== formMdp.confirmer) { toast.error('Les mots de passe ne correspondent pas'); return; }
-    if (formMdp.nouveau.length < 6) { toast.error('Minimum 6 caracteres'); return; }
-    setSaving(true);
-    api.put('/auth/changer-mot-de-passe', { ancien_mot_de_passe: formMdp.ancien, nouveau_mot_de_passe: formMdp.nouveau })
-      .then(function() { toast.success('Mot de passe change !'); setFormMdp({ ancien: '', nouveau: '', confirmer: '' }); setSection(null); })
-      .catch(function(err) { toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur'); })
-      .finally(function() { setSaving(false); });
-  }
-
-  var menuItems = [
-    { id: 'profil', icon: <UserCheck size={22} strokeWidth={1.5} />, titre: 'Mon profil', desc: 'Modifier mes informations personnelles' },
-    { id: 'mdp', icon: <Shield size={22} strokeWidth={1.5} />, titre: 'Mot de passe', desc: 'Changer mon mot de passe' },
-    { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: 'Notifications', desc: 'Gerer mes preferences de notifications' },
-    { id: 'langue', icon: '🌐', titre: 'Langue', desc: 'Francais (Guinee)' },
-    { id: 'score', icon: <Star size={22} strokeWidth={1.5} />, titre: 'Score de confiance', desc: 'Votre réputation sur Werdhe' },
-  ];
-
-  return (
-    <div>
-      <div className="dash-page-header">
-        <div><h1>Parametres</h1></div>
-        {section && <button className="btn-outline-green" onClick={function() { setSection(null); }}>Retour</button>}
-      </div>
-
-      {!section && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 560 }}>
-          <BadgeScore userId={user && user.id} />
-          {menuItems.map(function(item) {
-            return (
-              <div key={item.id} onClick={function() { setSection(item.id); }}
-                style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer', transition: 'all 0.15s' }}
-                onMouseEnter={function(e) { e.currentTarget.style.transform = 'translateX(4px)'; }}
-                onMouseLeave={function(e) { e.currentTarget.style.transform = 'translateX(0)'; }}>
-                <span style={{ fontSize: 28 }}>{item.icon}</span>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 15, fontWeight: 600, color: '#1B2B22' }}>{item.titre}</div>
-                  <div style={{ fontSize: 13, color: '#888' }}>{item.desc}</div>
-                </div>
-                <span style={{ fontSize: 18, color: '#ccc' }}>→</span>
-              </div>
-            );
-          })}
-
-          {/* Badge plan actuel */}
-<div style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginBottom: 12 }}>
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-    <div>
-      <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>Mon abonnement</div>
-      <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
-        {user && user.role !== 'locataire' ? 'Plan actuel' : 'Accès locataire gratuit'}
-      </div>
-    </div>
-    <div style={{ background: user && user.plan === 'pro' ? '#E8F5E9' : user && user.plan === 'agence' ? '#E3F2FD' : '#F5F5F5', color: user && user.plan === 'pro' ? '#1B6B3A' : user && user.plan === 'agence' ? '#1565C0' : '#888', borderRadius: 20, padding: '4px 14px', fontSize: 13, fontWeight: 700, textTransform: 'capitalize' }}>
-      {user && user.plan ? user.plan : 'Gratuit'}
-    </div>
-  </div>
-  {user && user.role !== 'locataire' && user.plan === 'gratuit' && (
-    <button onClick={function() { window.location.href = '/pricing'; }}
-      style={{ width: '100%', marginTop: 12, background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-      ⬆️ Passer au plan Pro — 14 jours gratuits
-    </button>
-  )}
-</div>
-          <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontSize: 12, color: '#888', marginBottom: 10, fontWeight: 600 }}>Informations du compte</div>
-            <div style={{ fontSize: 14, color: '#333', marginBottom: 4 }}>Email : {user && user.email}</div>
-            <div style={{ fontSize: 14, color: '#333' }}>Role : {user && user.role}</div>
-          </div>
-      {user && user.role === 'admin' && (
-        <button
-          onClick={function() { window.location.href = '/admin'; }}
-          style={{ background: '#1B2B22', color: '#fff', border: 'none', borderRadius: 12, padding: '14px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-          <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><Settings size={16} strokeWidth={1.5}/> Panneau administrateur</span>
-        </button>
-      )}
-          <button onClick={function() { auth.logout(); }}
-            style={{ background: '#FFEBEE', color: '#B71C1C', border: 'none', borderRadius: 12, padding: '14px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-            Se deconnecter
-          </button>
-        </div>
-      )}
-
-      {section === 'profil' && (
-        <div className="dash-form-card" style={{ maxWidth: 560 }}>
-          <h3>Modifier mon profil</h3>
-          <form onSubmit={saveProfil}>
-            <div className="form-row-2">
-              <div className="form-group"><label>Prenom</label><input type="text" value={formProfil.prenom} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { prenom: e.target.value })); }} required /></div>
-              <div className="form-group"><label>Nom</label><input type="text" value={formProfil.nom} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { nom: e.target.value })); }} required /></div>
-            </div>
-            <div className="form-group"><label>Email</label><input type="email" value={formProfil.email} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { email: e.target.value })); }} required /></div>
-            <div className="form-group"><label>Telephone</label><input type="tel" placeholder="+224 622 00 00 00" value={formProfil.telephone} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { telephone: e.target.value })); }} /></div>
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button type="submit" className="btn-green" disabled={saving}>{saving ? 'Sauvegarde...' : 'Sauvegarder'}</button>
-              <button type="button" className="btn-outline-green" onClick={function() { setSection(null); }}>Annuler</button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {section === 'mdp' && (
-        <div className="dash-form-card" style={{ maxWidth: 480 }}>
-          <h3>Changer le mot de passe</h3>
-          <form onSubmit={saveMdp}>
-            <div className="form-group"><label>Mot de passe actuel</label><input type="password" value={formMdp.ancien} onChange={function(e) { setFormMdp(Object.assign({}, formMdp, { ancien: e.target.value })); }} required /></div>
-            <div className="form-group"><label>Nouveau mot de passe</label><input type="password" placeholder="Minimum 6 caracteres" value={formMdp.nouveau} onChange={function(e) { setFormMdp(Object.assign({}, formMdp, { nouveau: e.target.value })); }} required /></div>
-            <div className="form-group"><label>Confirmer</label><input type="password" value={formMdp.confirmer} onChange={function(e) { setFormMdp(Object.assign({}, formMdp, { confirmer: e.target.value })); }} required /></div>
-            {formMdp.nouveau && formMdp.confirmer && formMdp.nouveau !== formMdp.confirmer && (
-              <div style={{ fontSize: 12, color: '#B71C1C', marginBottom: 10 }}>Les mots de passe ne correspondent pas</div>
-            )}
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button type="submit" className="btn-green" disabled={saving}>{saving ? 'Changement...' : 'Changer'}</button>
-              <button type="button" className="btn-outline-green" onClick={function() { setSection(null); }}>Annuler</button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {section === 'notifs' && (
-        <div className="dash-form-card" style={{ maxWidth: 480 }}>
-          <h3>Preferences de notifications</h3>
-          <PushToggle />
-          {[
-            { key: 'email', label: 'Notifications par email' },
-            { key: 'sms', label: 'Notifications par SMS' },
-            { key: 'loyers', label: 'Alertes loyers en retard' },
-            { key: 'bails', label: 'Alertes baux expirants' },
-            { key: 'pannes', label: 'Signalements de pannes' }
-          ].map(function(n) {
-            return (
-              <div key={n.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #f0f0f0' }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: '#1B2B22' }}>{n.label}</div>
-                <div onClick={function() { setNotifs(function(prev) { var next = Object.assign({}, prev); next[n.key] = !next[n.key]; return next; }); }}
-                  style={{ width: 44, height: 24, borderRadius: 12, cursor: 'pointer', background: notifs[n.key] ? '#1B6B3A' : '#e0e0e0', position: 'relative', transition: 'background 0.2s' }}>
-                  <div style={{ width: 18, height: 18, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3, left: notifs[n.key] ? 23 : 3, transition: 'left 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.2)' }} />
-                </div>
-              </div>
-            );
-          })}
-          <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-            <button className="btn-green" onClick={function() { toast.success('Preferences sauvegardees !'); setSection(null); }}>Sauvegarder</button>
-            <button className="btn-outline-green" onClick={function() { setSection(null); }}>Annuler</button>
-          </div>
-        </div>
-      )}
-
-      {section === 'langue' && (
-        <div className="dash-form-card" style={{ maxWidth: 480 }}>
-          <h3>Langue de l'interface</h3>
-          {[{ code: 'fr', label: 'Francais (Guinee)', flag: '🇬🇳' }, { code: 'fr-fr', label: 'Francais (France)', flag: '🇫🇷' }, { code: 'en', label: 'English', flag: '🇬🇧' }].map(function(l) {
-            return (
-              <div key={l.code} onClick={function() { setLangue(l.code); }}
-                style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 10, cursor: 'pointer', border: langue === l.code ? '2px solid #1B6B3A' : '1px solid #e0e0e0', background: langue === l.code ? '#E8F5E9' : '#fff', marginBottom: 8, transition: 'all 0.15s' }}>
-                <span style={{ fontSize: 24 }}>{l.flag}</span>
-                <span style={{ fontSize: 14, fontWeight: langue === l.code ? 600 : 400 }}>{l.label}</span>
-                {langue === l.code && <span style={{ marginLeft: 'auto', color: '#1B6B3A', fontWeight: 700 }}>✓</span>}
-              </div>
-            );
-          })}
-          <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-            <button className="btn-green" onClick={function() { toast.success('Langue sauvegardee !'); setSection(null); }}>Sauvegarder</button>
-            <button className="btn-outline-green" onClick={function() { setSection(null); }}>Annuler</button>
-          </div>
-        </div>
-      )}
-      {section === 'score' && scoreData && (
-        <div className="dash-form-card" style={{ maxWidth: 560 }}>
-          <h3>⭐ Mon score de confiance</h3>
-          <div style={{ textAlign: 'center', padding: '24px 0', marginBottom: 20 }}>
-            <div style={{ position: 'relative', width: 120, height: 120, margin: '0 auto 16px' }}>
-              <svg width="120" height="120" viewBox="0 0 120 120">
-                <circle cx="60" cy="60" r="52" fill="none" stroke="#F0F0F0" strokeWidth="10" />
-                <circle cx="60" cy="60" r="52" fill="none" stroke={scoreData.couleur} strokeWidth="10"
-                  strokeDasharray={`${scoreData.score * 3.27} 327`}
-                  strokeLinecap="round" transform="rotate(-90 60 60)" />
-              </svg>
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ fontSize: 28, fontWeight: 900, color: scoreData.couleur }}>{scoreData.score}</div>
-                <div style={{ fontSize: 10, color: '#888' }}>/ 100</div>
-              </div>
-            </div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: scoreData.bg, borderRadius: 20, padding: '5px 14px' }}>
-              <span>{scoreData.emoji}</span>
-              <span style={{ fontSize: 14, fontWeight: 700, color: scoreData.couleur }}>{scoreData.label}</span>
-            </div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
-            {scoreData.criteres && scoreData.criteres.map(function(c, i) {
-              return (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', borderRadius: 10, background: c.atteint ? '#F0FBF0' : '#F9F9F9', border: '0.5px solid ' + (c.atteint ? '#A5D6A7' : '#E0E0E0') }}>
-                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: c.atteint ? '#1B6B3A' : '#E0E0E0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    {c.atteint
-                      ? <CheckCircle size={16} strokeWidth={2.5} color="#fff" />
-                      : <span style={{ fontSize: 11, fontWeight: 800, color: '#888' }}>+{c.points}</span>
-                    }
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: c.atteint ? '#1B2B22' : '#888' }}>{c.label}</div>
-                  </div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: c.atteint ? '#1B6B3A' : '#aaa' }}>
-                    {c.atteint ? '+' + c.points : '0'} pts
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <div style={{ background: '#FFF8E1', borderRadius: 10, padding: '12px 16px', fontSize: 13, color: '#7B4F00', marginBottom: 14 }}>
-            💡 Améliorez votre score en complétant votre profil, payant à temps et recevant de bonnes notes.
-          </div>
-          <button className="btn-outline-green" style={{ width: '100%' }}
-            onClick={function() { setSection(null); }}>
-            ← Retour
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ================================================
-// ONGLET : Mes locations (locataire)
-// ================================================
-function OngletMesLocations(props) {
-  var stats    = props.stats;
-  var setOnglet = props.setOnglet;
-  var locationsActives = stats.reservations.filter(function(r) { return r.statut === 'confirmee'; });
-
-  return (
-    <div>
-      <div className="dash-page-header">
-        <div><h1>Mes locations</h1><p>{locationsActives.length} location(s) active(s)</p></div>
-        <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>
-          🔍 Chercher un logement
-        </Link>
-      </div>
-
-      {locationsActives.length === 0 && (
-        <div className="dash-empty-state">
-          <Home size={48} strokeWidth={1} color="#C8E6C9" />
-          <h3>Aucune location active</h3>
-          <p>Réservez un logement pour commencer</p>
-          <Link to="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
-            🔍 Trouver un logement
-          </Link>
-        </div>
-      )}
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-        {locationsActives.map(function(r) {
-          return (
-            <div key={r.id} style={{ background: '#fff', borderRadius: 16, padding: 18, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid #1B6B3A' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
-                <div style={{ width: 48, height: 48, background: '#E8F5E9', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>🏠</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{r.logement_titre}</div>
-                  <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>
-                    Depuis le {r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A'}
-                  </div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: '#1B6B3A', marginTop: 6 }}>
-                    {new Intl.NumberFormat('fr-FR').format(r.prix_mensuel || 0)} GNF/mois
-                    <span style={{ fontSize: 11, fontWeight: 400, color: '#888' }}> / mois</span>
-                  </div>
-                </div>
-                <div style={{ background: '#E8F5E9', color: '#1B5E20', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
-                  Active
-                </div>
-              </div>
-
-              {/* Boutons locataire */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                <Link to={'/reservation/' + r.id}
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E8F5E9', color: '#1B5E20', textDecoration: 'none', fontSize: 13, fontWeight: 600, border: '0.5px solid #A5D6A7' }}>
-                  📋 Détails
-                </Link>
-                <button onClick={function() { if (setOnglet) setOnglet('/dashboard/documents'); }}
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', fontSize: 13, fontWeight: 600, border: '0.5px solid #90CAF9', cursor: 'pointer' }}>
-                  <FileText size={14} strokeWidth={1.5} /> Documents
-                </button>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// ════════════════════════════════════════════════════════════════
-// ONGLET : Rapports financiers
-// ════════════════════════════════════════════════════════════════
-function OngletRapports(props) {
-  var user = props.user;
-  var [data, setData]         = useState(null);
+function BoutonNotifPush() {
+  var [abonne, setAbonne]     = useState(false);
   var [loading, setLoading]   = useState(true);
-  var [periode, setPeriode]   = useState('12mois');
 
   useEffect(function() {
-    api.get('/rapports/financier')
-      .then(function(res) { setData(res.data); })
-      .catch(function(err) { console.error('[Rapports]', err.message); })
-      .finally(function() { setLoading(false); });
+    import('../services/pushService').then(function(m) {
+      m.estAbonne().then(function(val) {
+        setAbonne(val);
+        setLoading(false);
+      });
+    });
   }, []);
 
-  function exportCSV() {
-    if (!data) return;
-    var lignes = [
-      ['Mois', 'Revenus GNF', 'Paiements', 'Impayés GNF'],
-      ...data.evolution.map(function(m) {
-        return [m.mois_label, m.revenus, m.nb_paiements, m.impayes];
-      })
-    ];
-    var csv     = lignes.map(function(l) { return l.join(','); }).join('\n');
-    var blob    = new Blob([csv], { type: 'text/csv' });
-    var url     = URL.createObjectURL(blob);
-    var a       = document.createElement('a');
-    a.href      = url;
-    a.download  = 'werdhe-rapport-' + new Date().toISOString().slice(0,7) + '.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success('Export CSV téléchargé !');
+  function toggleNotifs() {
+    setLoading(true);
+    import('../services/pushService').then(function(m) {
+      if (abonne) {
+        m.desactiverNotifications().then(function() {
+          setAbonne(false);
+          toast.success('Notifications désactivées');
+        }).catch(function() {
+          toast.error('Erreur désactivation');
+        }).finally(function() { setLoading(false); });
+      } else {
+        m.activerNotificationsPush().then(function() {
+          setAbonne(true);
+          toast.success('Notifications activées ✅');
+        }).catch(function() {
+          toast.error('Autorisez les notifications dans votre navigateur');
+        }).finally(function() { setLoading(false); });
+      }
+    });
   }
 
-  if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 60, gap: 12 }}>
-      <div style={{ width: 32, height: 32, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-      <span style={{ color: '#888' }}>Chargement des données...</span>
-    </div>
-  );
-
-  if (!data) return (
-    <div className="dash-empty-state">
-      <TrendingUp size={48} strokeWidth={1} color="#E0E0E0" />
-      <h3>Aucune donnée financière</h3>
-      <p>Les données apparaîtront dès que vous aurez des paiements enregistrés.</p>
-    </div>
-  );
-
-  var r = data.resume;
-
   return (
-    <div>
-      <div className="dash-page-header">
-        <div>
-          <h1>Rapports financiers</h1>
-          <p>Vue complète de vos revenus locatifs</p>
+    <div style={{ background: '#F7F8F7', borderRadius: 14, padding: '18px 20px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 16 }}>
+        <div style={{ width: 48, height: 48, background: abonne ? '#E8F5E9' : '#F5F5F5', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Bell size={24} strokeWidth={1.5} color={abonne ? '#1B6B3A' : '#888'} />
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-  <button onClick={exportCSV} className="btn-outline-green" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-    <Download size={14} strokeWidth={1.5} /> CSV
-  </button>
-  <button
-    onClick={function() {
-      var token = localStorage.getItem('token');
-      window.open('https://api.werdhe.com/rapports/financier/pdf?token=' + token, '_blank');
-    }}
-    style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, border: 'none', background: '#B71C1C', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-    <FileText size={14} strokeWidth={1.5} /> Export PDF
-  </button>
-</div>
+        <div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>
+            Notifications push {abonne ? '(Activées ✅)' : '(Désactivées)'}
+          </div>
+          <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
+            Candidatures, paiements, messages
+          </div>
+        </div>
       </div>
 
-      {/* KPIs */}
-      <div className="stats-grid-4" style={{ marginBottom: 24 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
         {[
-          { label: 'Encaissé ce mois',    val: GNF(r.encaisse) + ' GNF',    icon: <Banknote size={22} strokeWidth={1.5}/>,  color: '#1B6B3A', bg: '#E8F5E9' },
-          { label: 'En attente',          val: GNF(r.en_attente) + ' GNF',  icon: <Clock size={22} strokeWidth={1.5}/>,     color: '#E65100', bg: '#FFF3E0' },
-          { label: 'Total annuel',        val: GNF(r.total_annuel) + ' GNF', icon: <TrendingUp size={22} strokeWidth={1.5}/>, color: '#1565C0', bg: '#E3F2FD' },
-          { label: 'Paiements ce mois',   val: r.nb_paiements + ' reçus',    icon: <Receipt size={22} strokeWidth={1.5}/>,   color: '#7B1FA2', bg: '#F3E5F5' },
-        ].map(function(s, i) {
+          '📩 Nouvelle candidature reçue',
+          '✅ Candidature acceptée',
+          '💰 Paiement confirmé',
+          '💬 Nouveau message',
+          '⏰ Rappel de loyer',
+        ].map(function(item, i) {
           return (
-            <div key={i} className="stat-card-colored" style={{ background: s.bg, borderLeft: '4px solid ' + s.color }}>
-              <div style={{ color: s.color, marginBottom: 10 }}>{s.icon}</div>
-              <div className="stat-card-val" style={{ color: s.color }}>{s.val}</div>
-              <div className="stat-card-label">{s.label}</div>
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#555' }}>
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#1B6B3A', flexShrink: 0 }} />
+              {item}
             </div>
           );
         })}
       </div>
 
-      {/* Graphique revenus 12 mois */}
-      <div style={{ background: '#fff', borderRadius: 16, padding: 24, marginBottom: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <h3 style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', margin: 0 }}>Évolution des revenus</h3>
-          <span style={{ fontSize: 12, color: '#888' }}>12 derniers mois</span>
-        </div>
-        {data.evolution.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>Aucune donnée</div>
-        ) : (
-          <ResponsiveContainer width="100%" height={240}>
-            <AreaChart data={data.evolution} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
-              <defs>
-                <linearGradient id="colorRevenus" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#1B6B3A" stopOpacity={0.15} />
-                  <stop offset="95%" stopColor="#1B6B3A" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="colorImpayes" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#E53935" stopOpacity={0.1} />
-                  <stop offset="95%" stopColor="#E53935" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" />
-              <XAxis dataKey="mois_label" tick={{ fontSize: 11, fill: '#888' }} />
-              <YAxis tick={{ fontSize: 11, fill: '#888' }} tickFormatter={function(v) { return new Intl.NumberFormat('fr-FR', { notation: 'compact' }).format(v); }} />
-              <Tooltip formatter={function(v, n) { return [new Intl.NumberFormat('fr-FR').format(v) + ' GNF', n === 'revenus' ? 'Encaissé' : 'Impayés']; }} labelStyle={{ fontWeight: 700 }} />
-              <Area type="monotone" dataKey="revenus" stroke="#1B6B3A" strokeWidth={2.5} fill="url(#colorRevenus)" dot={false} />
-              <Area type="monotone" dataKey="impayes" stroke="#E53935" strokeWidth={1.5} fill="url(#colorImpayes)" dot={false} strokeDasharray="4 4" />
-            </AreaChart>
-          </ResponsiveContainer>
-        )}
-        <div style={{ display: 'flex', gap: 20, marginTop: 12, justifyContent: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#555' }}>
-            <div style={{ width: 24, height: 3, background: '#1B6B3A', borderRadius: 2 }} /> Revenus encaissés
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#555' }}>
-            <div style={{ width: 24, height: 2, background: '#E53935', borderRadius: 2, borderTop: '2px dashed #E53935' }} /> Impayés
-          </div>
-        </div>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
-
-        {/* Taux d'occupation */}
-        <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>Taux d'occupation</h3>
-          {data.occupation.length === 0 ? (
-            <div style={{ color: '#888', fontSize: 13 }}>Aucune donnée</div>
-          ) : (
-            <ResponsiveContainer width="100%" height={180}>
-              <BarChart data={data.occupation} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
-                <XAxis dataKey="mois_label" tick={{ fontSize: 10, fill: '#888' }} />
-                <YAxis tick={{ fontSize: 10, fill: '#888' }} domain={[0, 100]} tickFormatter={function(v) { return v + '%'; }} />
-                <Tooltip formatter={function(v) { return [v + '%', 'Occupation']; }} />
-                <Bar dataKey={function(d) { return d.total_biens > 0 ? Math.round(d.biens_loues / d.total_biens * 100) : 0; }}
-                  name="occupation" fill="#1B6B3A" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          )}
-        </div>
-
-        {/* Revenus par bien */}
-        <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>Revenus par bien</h3>
-          {data.par_bien.length === 0 && (
-            <div style={{ color: '#888', fontSize: 13 }}>Aucun logement</div>
-          )}
-          {data.par_bien.map(function(b, i) {
-            var max = Math.max.apply(null, data.par_bien.map(function(x) { return Number(x.total_encaisse); }));
-            var pct = max > 0 ? Math.round(Number(b.total_encaisse) / max * 100) : 0;
-            return (
-              <div key={b.id} style={{ marginBottom: 12 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 12 }}>
-                  <span style={{ color: '#555', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' }}>{b.titre}</span>
-                  <span style={{ fontWeight: 700, color: '#1B6B3A', flexShrink: 0 }}>{GNF(b.total_encaisse)} GNF</span>
-                </div>
-                <div style={{ background: '#F0F0F0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
-                  <div style={{ background: 'linear-gradient(90deg, #1B6B3A, #34A853)', width: pct + '%', height: '100%', borderRadius: 4, transition: 'width .5s' }} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Historique paiements */}
-      <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>Historique des paiements</h3>
-        {data.paiements.length === 0 && (
-          <div style={{ color: '#888', fontSize: 13, textAlign: 'center', padding: 20 }}>Aucun paiement enregistré</div>
-        )}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {data.paiements.map(function(p, i) {
-            var cfg = p.statut === 'complete'
-              ? { label: 'Payé', color: '#1B6B3A', bg: '#E8F5E9' }
-              : p.statut === 'en_attente'
-              ? { label: 'En attente', color: '#E65100', bg: '#FFF3E0' }
-              : { label: p.statut, color: '#888', bg: '#F5F5F5' };
-            return (
-              <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', borderRadius: 10, background: i % 2 === 0 ? '#FAFAFA' : '#fff', border: '0.5px solid #F0F0F0' }}>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>
-                    {p.locataire_prenom} {p.locataire_nom}
-                  </div>
-                  <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
-                    {p.logement_titre} · {new Date(p.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
-                    {p.mode_paiement && ' · ' + p.mode_paiement}
-                  </div>
-                </div>
-                <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: cfg.color }}>{GNF(p.montant)} GNF</div>
-                  <span style={{ background: cfg.bg, color: cfg.color, borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{cfg.label}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      <button onClick={toggleNotifs} disabled={loading}
+        style={{ width: '100%', padding: '12px', borderRadius: 12, border: 'none', background: loading ? '#aaa' : abonne ? '#FFEBEE' : '#1B6B3A', color: loading ? '#fff' : abonne ? '#B71C1C' : '#fff', fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
+        {loading ? '⏳ ...' : abonne ? '🔕 Désactiver les notifications' : '🔔 Activer les notifications'}
+      </button>
     </div>
   );
 }
@@ -4029,6 +3572,550 @@ function OngletHistorique(props) {
           })}
         </div>
       )}
+    </div>
+  );
+}
+// ════════════════════════════════════════════════════════════════
+// ONGLET : Rapports financiers
+// ════════════════════════════════════════════════════════════════
+function OngletRapports(props) {
+  var user = props.user;
+  var [data, setData]         = useState(null);
+  var [loading, setLoading]   = useState(true);
+  var [periode, setPeriode]   = useState('12mois');
+
+  useEffect(function() {
+    api.get('/rapports/financier')
+      .then(function(res) { setData(res.data); })
+      .catch(function(err) { console.error('[Rapports]', err.message); })
+      .finally(function() { setLoading(false); });
+  }, []);
+
+  function exportCSV() {
+    if (!data) return;
+    var lignes = [
+      ['Mois', 'Revenus GNF', 'Paiements', 'Impayés GNF'],
+      ...data.evolution.map(function(m) {
+        return [m.mois_label, m.revenus, m.nb_paiements, m.impayes];
+      })
+    ];
+    var csv     = lignes.map(function(l) { return l.join(','); }).join('\n');
+    var blob    = new Blob([csv], { type: 'text/csv' });
+    var url     = URL.createObjectURL(blob);
+    var a       = document.createElement('a');
+    a.href      = url;
+    a.download  = 'werdhe-rapport-' + new Date().toISOString().slice(0,7) + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('Export CSV téléchargé !');
+  }
+
+  if (loading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 60, gap: 12 }}>
+      <div style={{ width: 32, height: 32, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      <span style={{ color: '#888' }}>Chargement des données...</span>
+    </div>
+  );
+
+  if (!data) return (
+    <div className="dash-empty-state">
+      <TrendingUp size={48} strokeWidth={1} color="#E0E0E0" />
+      <h3>Aucune donnée financière</h3>
+      <p>Les données apparaîtront dès que vous aurez des paiements enregistrés.</p>
+    </div>
+  );
+
+  var r = data.resume;
+
+  return (
+    <div>
+      <div className="dash-page-header">
+        <div>
+          <h1>Rapports financiers</h1>
+          <p>Vue complète de vos revenus locatifs</p>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+  <button onClick={exportCSV} className="btn-outline-green" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+    <Download size={14} strokeWidth={1.5} /> CSV
+  </button>
+  <button
+    onClick={function() {
+      var token = localStorage.getItem('token');
+      window.open('https://api.werdhe.com/rapports/financier/pdf?token=' + token, '_blank');
+    }}
+    style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, border: 'none', background: '#B71C1C', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+    <FileText size={14} strokeWidth={1.5} /> Export PDF
+  </button>
+</div>
+      </div>
+
+      {/* KPIs */}
+      <div className="stats-grid-4" style={{ marginBottom: 24 }}>
+        {[
+          { label: 'Encaissé ce mois',    val: GNF(r.encaisse) + ' GNF',    icon: <Banknote size={22} strokeWidth={1.5}/>,  color: '#1B6B3A', bg: '#E8F5E9' },
+          { label: 'En attente',          val: GNF(r.en_attente) + ' GNF',  icon: <Clock size={22} strokeWidth={1.5}/>,     color: '#E65100', bg: '#FFF3E0' },
+          { label: 'Total annuel',        val: GNF(r.total_annuel) + ' GNF', icon: <TrendingUp size={22} strokeWidth={1.5}/>, color: '#1565C0', bg: '#E3F2FD' },
+          { label: 'Paiements ce mois',   val: r.nb_paiements + ' reçus',    icon: <Receipt size={22} strokeWidth={1.5}/>,   color: '#7B1FA2', bg: '#F3E5F5' },
+        ].map(function(s, i) {
+          return (
+            <div key={i} className="stat-card-colored" style={{ background: s.bg, borderLeft: '4px solid ' + s.color }}>
+              <div style={{ color: s.color, marginBottom: 10 }}>{s.icon}</div>
+              <div className="stat-card-val" style={{ color: s.color }}>{s.val}</div>
+              <div className="stat-card-label">{s.label}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Graphique revenus 12 mois */}
+      <div style={{ background: '#fff', borderRadius: 16, padding: 24, marginBottom: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+          <h3 style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', margin: 0 }}>Évolution des revenus</h3>
+          <span style={{ fontSize: 12, color: '#888' }}>12 derniers mois</span>
+        </div>
+        {data.evolution.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>Aucune donnée</div>
+        ) : (
+          <ResponsiveContainer width="100%" height={240}>
+            <AreaChart data={data.evolution} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+              <defs>
+                <linearGradient id="colorRevenus" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#1B6B3A" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="#1B6B3A" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorImpayes" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#E53935" stopOpacity={0.1} />
+                  <stop offset="95%" stopColor="#E53935" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" />
+              <XAxis dataKey="mois_label" tick={{ fontSize: 11, fill: '#888' }} />
+              <YAxis tick={{ fontSize: 11, fill: '#888' }} tickFormatter={function(v) { return new Intl.NumberFormat('fr-FR', { notation: 'compact' }).format(v); }} />
+              <Tooltip formatter={function(v, n) { return [new Intl.NumberFormat('fr-FR').format(v) + ' GNF', n === 'revenus' ? 'Encaissé' : 'Impayés']; }} labelStyle={{ fontWeight: 700 }} />
+              <Area type="monotone" dataKey="revenus" stroke="#1B6B3A" strokeWidth={2.5} fill="url(#colorRevenus)" dot={false} />
+              <Area type="monotone" dataKey="impayes" stroke="#E53935" strokeWidth={1.5} fill="url(#colorImpayes)" dot={false} strokeDasharray="4 4" />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
+        <div style={{ display: 'flex', gap: 20, marginTop: 12, justifyContent: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#555' }}>
+            <div style={{ width: 24, height: 3, background: '#1B6B3A', borderRadius: 2 }} /> Revenus encaissés
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#555' }}>
+            <div style={{ width: 24, height: 2, background: '#E53935', borderRadius: 2, borderTop: '2px dashed #E53935' }} /> Impayés
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+
+        {/* Taux d'occupation */}
+        <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>Taux d'occupation</h3>
+          {data.occupation.length === 0 ? (
+            <div style={{ color: '#888', fontSize: 13 }}>Aucune donnée</div>
+          ) : (
+            <ResponsiveContainer width="100%" height={180}>
+              <BarChart data={data.occupation} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
+                <XAxis dataKey="mois_label" tick={{ fontSize: 10, fill: '#888' }} />
+                <YAxis tick={{ fontSize: 10, fill: '#888' }} domain={[0, 100]} tickFormatter={function(v) { return v + '%'; }} />
+                <Tooltip formatter={function(v) { return [v + '%', 'Occupation']; }} />
+                <Bar dataKey={function(d) { return d.total_biens > 0 ? Math.round(d.biens_loues / d.total_biens * 100) : 0; }}
+                  name="occupation" fill="#1B6B3A" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+
+        {/* Revenus par bien */}
+        <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>Revenus par bien</h3>
+          {data.par_bien.length === 0 && (
+            <div style={{ color: '#888', fontSize: 13 }}>Aucun logement</div>
+          )}
+          {data.par_bien.map(function(b, i) {
+            var max = Math.max.apply(null, data.par_bien.map(function(x) { return Number(x.total_encaisse); }));
+            var pct = max > 0 ? Math.round(Number(b.total_encaisse) / max * 100) : 0;
+            return (
+              <div key={b.id} style={{ marginBottom: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 12 }}>
+                  <span style={{ color: '#555', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' }}>{b.titre}</span>
+                  <span style={{ fontWeight: 700, color: '#1B6B3A', flexShrink: 0 }}>{GNF(b.total_encaisse)} GNF</span>
+                </div>
+                <div style={{ background: '#F0F0F0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
+                  <div style={{ background: 'linear-gradient(90deg, #1B6B3A, #34A853)', width: pct + '%', height: '100%', borderRadius: 4, transition: 'width .5s' }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Historique paiements */}
+      <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>Historique des paiements</h3>
+        {data.paiements.length === 0 && (
+          <div style={{ color: '#888', fontSize: 13, textAlign: 'center', padding: 20 }}>Aucun paiement enregistré</div>
+        )}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {data.paiements.map(function(p, i) {
+            var cfg = p.statut === 'complete'
+              ? { label: 'Payé', color: '#1B6B3A', bg: '#E8F5E9' }
+              : p.statut === 'en_attente'
+              ? { label: 'En attente', color: '#E65100', bg: '#FFF3E0' }
+              : { label: p.statut, color: '#888', bg: '#F5F5F5' };
+            return (
+              <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', borderRadius: 10, background: i % 2 === 0 ? '#FAFAFA' : '#fff', border: '0.5px solid #F0F0F0' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>
+                    {p.locataire_prenom} {p.locataire_nom}
+                  </div>
+                  <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
+                    {p.logement_titre} · {new Date(p.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                    {p.mode_paiement && ' · ' + p.mode_paiement}
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: cfg.color }}>{GNF(p.montant)} GNF</div>
+                  <span style={{ background: cfg.bg, color: cfg.color, borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{cfg.label}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+// ================================================
+// ONGLET : Parametres
+// ================================================
+function OngletParametres(props) {
+  var user = props.user;
+  var auth = useAuth();
+  var navigate = useNavigate();
+  var [section, setSection] = useState(null);
+  var [formProfil, setFormProfil] = useState({ prenom: user ? user.prenom : '', nom: user ? user.nom : '', email: user ? user.email : '', telephone: user ? user.telephone || '' : '' });
+  var [formMdp, setFormMdp] = useState({ ancien: '', nouveau: '', confirmer: '' });
+  var [notifs, setNotifs] = useState({ email: true, sms: true, loyers: true, bails: true, pannes: false });
+  var [langue, setLangue] = useState('fr');
+  var [saving, setSaving] = useState(false);
+  var [scoreData, setScoreData] = useState(null);
+  useEffect(function() {
+    api.get('/auth/mon-score')
+      .then(function(res) { setScoreData(res.data); })
+      .catch(console.error);
+  }, []);
+  function saveProfil(e) {
+    e.preventDefault();
+    setSaving(true);
+    api.put('/auth/profil', formProfil)
+      .then(function() { toast.success('Profil mis a jour !'); setSection(null); })
+      .catch(function() { toast.error('Erreur mise a jour'); })
+      .finally(function() { setSaving(false); });
+  }
+
+  function saveMdp(e) {
+    e.preventDefault();
+    if (formMdp.nouveau !== formMdp.confirmer) { toast.error('Les mots de passe ne correspondent pas'); return; }
+    if (formMdp.nouveau.length < 6) { toast.error('Minimum 6 caracteres'); return; }
+    setSaving(true);
+    api.put('/auth/changer-mot-de-passe', { ancien_mot_de_passe: formMdp.ancien, nouveau_mot_de_passe: formMdp.nouveau })
+      .then(function() { toast.success('Mot de passe change !'); setFormMdp({ ancien: '', nouveau: '', confirmer: '' }); setSection(null); })
+      .catch(function(err) { toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur'); })
+      .finally(function() { setSaving(false); });
+  }
+
+  var menuItems = [
+    { id: 'profil', icon: <UserCheck size={22} strokeWidth={1.5} />, titre: 'Mon profil', desc: 'Modifier mes informations personnelles' },
+    { id: 'mdp', icon: <Shield size={22} strokeWidth={1.5} />, titre: 'Mot de passe', desc: 'Changer mon mot de passe' },
+    { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: 'Notifications', desc: 'Gerer mes preferences de notifications' },
+    { id: 'langue', icon: '🌐', titre: 'Langue', desc: 'Francais (Guinee)' },
+    { id: 'score', icon: <Star size={22} strokeWidth={1.5} />, titre: 'Score de confiance', desc: 'Votre réputation sur Werdhe' },
+    { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: 'Notifications', desc: 'Gérer mes préférences de notifications' },
+  ];
+
+  return (
+    <div>
+      <div className="dash-page-header">
+        <div><h1>Parametres</h1></div>
+        {section && <button className="btn-outline-green" onClick={function() { setSection(null); }}>Retour</button>}
+      </div>
+
+      {!section && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 560 }}>
+          <BadgeScore userId={user && user.id} />
+          {menuItems.map(function(item) {
+            return (
+              <div key={item.id} onClick={function() { setSection(item.id); }}
+                style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer', transition: 'all 0.15s' }}
+                onMouseEnter={function(e) { e.currentTarget.style.transform = 'translateX(4px)'; }}
+                onMouseLeave={function(e) { e.currentTarget.style.transform = 'translateX(0)'; }}>
+                <span style={{ fontSize: 28 }}>{item.icon}</span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: '#1B2B22' }}>{item.titre}</div>
+                  <div style={{ fontSize: 13, color: '#888' }}>{item.desc}</div>
+                </div>
+                <span style={{ fontSize: 18, color: '#ccc' }}>→</span>
+              </div>
+            );
+          })}
+
+          {/* Badge plan actuel */}
+<div style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginBottom: 12 }}>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div>
+      <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>Mon abonnement</div>
+      <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
+        {user && user.role !== 'locataire' ? 'Plan actuel' : 'Accès locataire gratuit'}
+      </div>
+    </div>
+    <div style={{ background: user && user.plan === 'pro' ? '#E8F5E9' : user && user.plan === 'agence' ? '#E3F2FD' : '#F5F5F5', color: user && user.plan === 'pro' ? '#1B6B3A' : user && user.plan === 'agence' ? '#1565C0' : '#888', borderRadius: 20, padding: '4px 14px', fontSize: 13, fontWeight: 700, textTransform: 'capitalize' }}>
+      {user && user.plan ? user.plan : 'Gratuit'}
+    </div>
+  </div>
+  {user && user.role !== 'locataire' && user.plan === 'gratuit' && (
+    <button onClick={function() { window.location.href = '/pricing'; }}
+      style={{ width: '100%', marginTop: 12, background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+      ⬆️ Passer au plan Pro — 14 jours gratuits
+    </button>
+  )}
+</div>
+          <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <div style={{ fontSize: 12, color: '#888', marginBottom: 10, fontWeight: 600 }}>Informations du compte</div>
+            <div style={{ fontSize: 14, color: '#333', marginBottom: 4 }}>Email : {user && user.email}</div>
+            <div style={{ fontSize: 14, color: '#333' }}>Role : {user && user.role}</div>
+          </div>
+      {user && user.role === 'admin' && (
+        <button
+          onClick={function() { window.location.href = '/admin'; }}
+          style={{ background: '#1B2B22', color: '#fff', border: 'none', borderRadius: 12, padding: '14px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+          <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><Settings size={16} strokeWidth={1.5}/> Panneau administrateur</span>
+        </button>
+      )}
+          <button onClick={function() { auth.logout(); }}
+            style={{ background: '#FFEBEE', color: '#B71C1C', border: 'none', borderRadius: 12, padding: '14px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+            Se deconnecter
+          </button>
+        </div>
+      )}
+
+      {section === 'profil' && (
+        <div className="dash-form-card" style={{ maxWidth: 560 }}>
+          <h3>Modifier mon profil</h3>
+          <form onSubmit={saveProfil}>
+            <div className="form-row-2">
+              <div className="form-group"><label>Prenom</label><input type="text" value={formProfil.prenom} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { prenom: e.target.value })); }} required /></div>
+              <div className="form-group"><label>Nom</label><input type="text" value={formProfil.nom} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { nom: e.target.value })); }} required /></div>
+            </div>
+            <div className="form-group"><label>Email</label><input type="email" value={formProfil.email} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { email: e.target.value })); }} required /></div>
+            <div className="form-group"><label>Telephone</label><input type="tel" placeholder="+224 622 00 00 00" value={formProfil.telephone} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { telephone: e.target.value })); }} /></div>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button type="submit" className="btn-green" disabled={saving}>{saving ? 'Sauvegarde...' : 'Sauvegarder'}</button>
+              <button type="button" className="btn-outline-green" onClick={function() { setSection(null); }}>Annuler</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {section === 'mdp' && (
+        <div className="dash-form-card" style={{ maxWidth: 480 }}>
+          <h3>Changer le mot de passe</h3>
+          <form onSubmit={saveMdp}>
+            <div className="form-group"><label>Mot de passe actuel</label><input type="password" value={formMdp.ancien} onChange={function(e) { setFormMdp(Object.assign({}, formMdp, { ancien: e.target.value })); }} required /></div>
+            <div className="form-group"><label>Nouveau mot de passe</label><input type="password" placeholder="Minimum 6 caracteres" value={formMdp.nouveau} onChange={function(e) { setFormMdp(Object.assign({}, formMdp, { nouveau: e.target.value })); }} required /></div>
+            <div className="form-group"><label>Confirmer</label><input type="password" value={formMdp.confirmer} onChange={function(e) { setFormMdp(Object.assign({}, formMdp, { confirmer: e.target.value })); }} required /></div>
+            {formMdp.nouveau && formMdp.confirmer && formMdp.nouveau !== formMdp.confirmer && (
+              <div style={{ fontSize: 12, color: '#B71C1C', marginBottom: 10 }}>Les mots de passe ne correspondent pas</div>
+            )}
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button type="submit" className="btn-green" disabled={saving}>{saving ? 'Changement...' : 'Changer'}</button>
+              <button type="button" className="btn-outline-green" onClick={function() { setSection(null); }}>Annuler</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {section === 'notifs' && (
+        <div className="dash-form-card" style={{ maxWidth: 480 }}>
+          <h3>Preferences de notifications</h3>
+          <PushToggle />
+          {[
+            { key: 'email', label: 'Notifications par email' },
+            { key: 'sms', label: 'Notifications par SMS' },
+            { key: 'loyers', label: 'Alertes loyers en retard' },
+            { key: 'bails', label: 'Alertes baux expirants' },
+            { key: 'pannes', label: 'Signalements de pannes' }
+          ].map(function(n) {
+            return (
+              <div key={n.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #f0f0f0' }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#1B2B22' }}>{n.label}</div>
+                <div onClick={function() { setNotifs(function(prev) { var next = Object.assign({}, prev); next[n.key] = !next[n.key]; return next; }); }}
+                  style={{ width: 44, height: 24, borderRadius: 12, cursor: 'pointer', background: notifs[n.key] ? '#1B6B3A' : '#e0e0e0', position: 'relative', transition: 'background 0.2s' }}>
+                  <div style={{ width: 18, height: 18, borderRadius: '50%', background: '#fff', position: 'absolute', top: 3, left: notifs[n.key] ? 23 : 3, transition: 'left 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.2)' }} />
+                </div>
+              </div>
+            );
+          })}
+          <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+            <button className="btn-green" onClick={function() { toast.success('Preferences sauvegardees !'); setSection(null); }}>Sauvegarder</button>
+            <button className="btn-outline-green" onClick={function() { setSection(null); }}>Annuler</button>
+          </div>
+        </div>
+        
+      )}
+      {section === 'notifs' && (
+  <div className="dash-form-card" style={{ maxWidth: 560 }}>
+    <h3>🔔 Notifications</h3>
+    <p style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>
+      Recevez des alertes en temps réel même quand Werdhe est fermé.
+    </p>
+    <BoutonNotifPush />
+    <button className="btn-outline-green" style={{ width: '100%', marginTop: 14 }}
+      onClick={function() { setSection(null); }}>
+      ← Retour
+    </button>
+  </div>
+)}
+
+      {section === 'langue' && (
+        <div className="dash-form-card" style={{ maxWidth: 480 }}>
+          <h3>Langue de l'interface</h3>
+          {[{ code: 'fr', label: 'Francais (Guinee)', flag: '🇬🇳' }, { code: 'fr-fr', label: 'Francais (France)', flag: '🇫🇷' }, { code: 'en', label: 'English', flag: '🇬🇧' }].map(function(l) {
+            return (
+              <div key={l.code} onClick={function() { setLangue(l.code); }}
+                style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 10, cursor: 'pointer', border: langue === l.code ? '2px solid #1B6B3A' : '1px solid #e0e0e0', background: langue === l.code ? '#E8F5E9' : '#fff', marginBottom: 8, transition: 'all 0.15s' }}>
+                <span style={{ fontSize: 24 }}>{l.flag}</span>
+                <span style={{ fontSize: 14, fontWeight: langue === l.code ? 600 : 400 }}>{l.label}</span>
+                {langue === l.code && <span style={{ marginLeft: 'auto', color: '#1B6B3A', fontWeight: 700 }}>✓</span>}
+              </div>
+            );
+          })}
+          <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+            <button className="btn-green" onClick={function() { toast.success('Langue sauvegardee !'); setSection(null); }}>Sauvegarder</button>
+            <button className="btn-outline-green" onClick={function() { setSection(null); }}>Annuler</button>
+          </div>
+        </div>
+      )}
+      {section === 'score' && scoreData && (
+        <div className="dash-form-card" style={{ maxWidth: 560 }}>
+          <h3>⭐ Mon score de confiance</h3>
+          <div style={{ textAlign: 'center', padding: '24px 0', marginBottom: 20 }}>
+            <div style={{ position: 'relative', width: 120, height: 120, margin: '0 auto 16px' }}>
+              <svg width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="52" fill="none" stroke="#F0F0F0" strokeWidth="10" />
+                <circle cx="60" cy="60" r="52" fill="none" stroke={scoreData.couleur} strokeWidth="10"
+                  strokeDasharray={`${scoreData.score * 3.27} 327`}
+                  strokeLinecap="round" transform="rotate(-90 60 60)" />
+              </svg>
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ fontSize: 28, fontWeight: 900, color: scoreData.couleur }}>{scoreData.score}</div>
+                <div style={{ fontSize: 10, color: '#888' }}>/ 100</div>
+              </div>
+            </div>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: scoreData.bg, borderRadius: 20, padding: '5px 14px' }}>
+              <span>{scoreData.emoji}</span>
+              <span style={{ fontSize: 14, fontWeight: 700, color: scoreData.couleur }}>{scoreData.label}</span>
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
+            {scoreData.criteres && scoreData.criteres.map(function(c, i) {
+              return (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', borderRadius: 10, background: c.atteint ? '#F0FBF0' : '#F9F9F9', border: '0.5px solid ' + (c.atteint ? '#A5D6A7' : '#E0E0E0') }}>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: c.atteint ? '#1B6B3A' : '#E0E0E0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    {c.atteint
+                      ? <CheckCircle size={16} strokeWidth={2.5} color="#fff" />
+                      : <span style={{ fontSize: 11, fontWeight: 800, color: '#888' }}>+{c.points}</span>
+                    }
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: c.atteint ? '#1B2B22' : '#888' }}>{c.label}</div>
+                  </div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: c.atteint ? '#1B6B3A' : '#aaa' }}>
+                    {c.atteint ? '+' + c.points : '0'} pts
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ background: '#FFF8E1', borderRadius: 10, padding: '12px 16px', fontSize: 13, color: '#7B4F00', marginBottom: 14 }}>
+            💡 Améliorez votre score en complétant votre profil, payant à temps et recevant de bonnes notes.
+          </div>
+          <button className="btn-outline-green" style={{ width: '100%' }}
+            onClick={function() { setSection(null); }}>
+            ← Retour
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ================================================
+// ONGLET : Mes locations (locataire)
+// ================================================
+function OngletMesLocations(props) {
+  var stats    = props.stats;
+  var setOnglet = props.setOnglet;
+  var locationsActives = stats.reservations.filter(function(r) { return r.statut === 'confirmee'; });
+
+  return (
+    <div>
+      <div className="dash-page-header">
+        <div><h1>Mes locations</h1><p>{locationsActives.length} location(s) active(s)</p></div>
+        <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>
+          🔍 Chercher un logement
+        </Link>
+      </div>
+
+      {locationsActives.length === 0 && (
+        <div className="dash-empty-state">
+          <Home size={48} strokeWidth={1} color="#C8E6C9" />
+          <h3>Aucune location active</h3>
+          <p>Réservez un logement pour commencer</p>
+          <Link to="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
+            🔍 Trouver un logement
+          </Link>
+        </div>
+      )}
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        {locationsActives.map(function(r) {
+          return (
+            <div key={r.id} style={{ background: '#fff', borderRadius: 16, padding: 18, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid #1B6B3A' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
+                <div style={{ width: 48, height: 48, background: '#E8F5E9', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>🏠</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{r.logement_titre}</div>
+                  <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>
+                    Depuis le {r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A'}
+                  </div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#1B6B3A', marginTop: 6 }}>
+                    {new Intl.NumberFormat('fr-FR').format(r.prix_mensuel || 0)} GNF/mois
+                    <span style={{ fontSize: 11, fontWeight: 400, color: '#888' }}> / mois</span>
+                  </div>
+                </div>
+                <div style={{ background: '#E8F5E9', color: '#1B5E20', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
+                  Active
+                </div>
+              </div>
+
+              {/* Boutons locataire */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <Link to={'/reservation/' + r.id}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E8F5E9', color: '#1B5E20', textDecoration: 'none', fontSize: 13, fontWeight: 600, border: '0.5px solid #A5D6A7' }}>
+                  📋 Détails
+                </Link>
+                <button onClick={function() { if (setOnglet) setOnglet('/dashboard/documents'); }}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', fontSize: 13, fontWeight: 600, border: '0.5px solid #90CAF9', cursor: 'pointer' }}>
+                  <FileText size={14} strokeWidth={1.5} /> Documents
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
