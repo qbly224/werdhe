@@ -413,10 +413,8 @@ router.get('/profil-public/:id', async (req, res) => {
     // Infos du propriétaire
     var userResult = await db.query(
       `SELECT
-         id, nom, prenom, role,
-         note_moyenne, nb_notations,
-         locataire_verifie, plan,
-         created_at
+         u.nom, u.prenom, u.note_moyenne, u.nb_notations, u.plan,
+            u.telephone, u.score_confiance, u.created_at
        FROM users
        WHERE id = $1
          AND role IN ('proprietaire', 'les_deux')
