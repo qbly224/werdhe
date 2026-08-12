@@ -169,14 +169,6 @@ const getReservationsProprietaire = async (req, res) => {
        ORDER BY r.created_at DESC`,
       [req.user.id]
     );
-    // Push notification au propriétaire
-envoyerPush(
-  l.proprietaire_id,
-  '📩 Nouvelle candidature',
-  req.user.prenom + ' ' + req.user.nom + ' postule pour ' + l.titre,
-  '/dashboard/reservations'
-).catch(console.warn);
-
     res.json({
       message: `✅ ${result.rows.length} réservation(s) sur vos logements`,
       reservations: result.rows

@@ -559,7 +559,7 @@ router.get('/overview', verifierToken, async (req, res) => {
       evenements:   evenements.rows,
       revenus6mois: revenus6mois.rows,
       candidatures:  candidatures.rows[0],
-      meilleur_mois: meilleurMois.rows[0] || null,
+      meilleur_mois: null,
     });
 
   } catch (err) {
