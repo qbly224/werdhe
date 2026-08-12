@@ -12,6 +12,15 @@ var CATEGORIES = ['appartement', 'villa', 'studio', 'chambre', 'duplex', 'bureau
 var VILLES_GN  = ['Conakry', 'Kindia', 'Labé', 'Kankan', 'Mamou', 'Boké', 'Faranah', 'N\'Zérékoré', 'Coyah', 'Dubréka', 'Fria', 'Télimélé'];
 var EQUIPEMENTS_OPTS = ['Eau courante', 'Électricité', 'Climatisation', 'Gardiennage', 'Parking', 'Groupe électrogène', 'Cuisine équipée', 'Balcon', 'Piscine'];
 
+// Optimiser les URLs Cloudinary automatiquement
+function optimiserImage(url, width, quality) {
+  if (!url || !url.includes('cloudinary.com')) return url;
+  var w   = width   || 400;
+  var q   = quality || 80;
+  // Injecter les transformations Cloudinary
+  return url.replace('/upload/', '/upload/w_' + w + ',q_' + q + ',f_auto/');
+}
+
 export default function Logements() {
   var navigate = useNavigate();
   var [logements, setLogements]   = useState([]);
@@ -280,7 +289,7 @@ export default function Logements() {
                 {/* Photo / placeholder */}
                  <div style={{ height: 180, position: 'relative', background: '#E8F5E9', overflow: 'hidden',display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48, position: 'relative' }}>
                   {l.photos && l.photos.length > 0 ? (
-  <img src={l.photos[0]} alt={l.titre} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
+  <img src={optimiserImage(typeof l.photos[0] === 'string' ? l.photos[0] : l.photos[0].url, 400, 75)} alt={l.titre} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
 ) : (
   <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1B6B3A 0%, #2D9E5F 50%, #E8F5E9 100%)' }}>
     <span style={{ fontSize: 48, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.2))' }}>

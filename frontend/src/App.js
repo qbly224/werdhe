@@ -7,28 +7,29 @@ import Register from './pages/Register';
 import OTP from './pages/OTP';
 import OnboardingProprietaire from './pages/OnboardingProprietaire';
 import OnboardingLocataire from './pages/OnboardingLocataire';
-import Logements from './pages/Logements';
-import LogementDetail from './pages/LogementDetail';
-import Dashboard from './pages/Dashboard';
 import Profil from './pages/Profil';
 import Reserver from './pages/Reserver';
 import AjouterLogement from './pages/AjouterLogement';
 import ReservationLocataire from './pages/ReservationLocataire';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import Admin from './pages/Admin';
-import Pricing from './pages/Pricing';
 import LoginTelephone from './pages/LoginTelephone';
 import LandingPage from './pages/LandingPage';
 import ProfilPublic from './pages/ProfilPublic';
 import AuthCallback from './pages/AuthCallback';
 import Login2FA from './pages/Login2FA';
 import { HelmetProvider } from 'react-helmet-async';
-import CGU from './pages/CGU';
-import Confidentialite from './pages/Confidentialite';
-import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
-import APropos from './pages/APropos';
+import { lazy, Suspense } from 'react';
+var Dashboard       = lazy(function() { return import('./pages/Dashboard'); });
+var Admin           = lazy(function() { return import('./pages/Admin'); });
+var Logements       = lazy(function() { return import('./pages/Logements'); });
+var LogementDetail  = lazy(function() { return import('./pages/LogementDetail'); });
+var Pricing         = lazy(function() { return import('./pages/Pricing'); });
+var APropos         = lazy(function() { return import('./pages/APropos'); });
+var Contact         = lazy(function() { return import('./pages/Contact'); });
+var CGU             = lazy(function() { return import('./pages/CGU'); });
+var Confidentialite = lazy(function() { return import('./pages/Confidentialite'); });
 
 function RoutePrivee(props) {
   var auth = useAuth();
@@ -43,6 +44,15 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Toaster position="top-right" />
+  <Suspense fallback={
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: 'system-ui' }}>
+     <div style={{ textAlign: 'center' }}>
+      <div style={{ width: 44, height: 44, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
+      <div style={{ fontSize: 14, color: '#888' }}>Chargement...</div>
+      <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
+    </div>
+  </div>
+}>
           <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/accueil" element={<Accueil />} />
@@ -73,6 +83,7 @@ function App() {
           <Route path="/a-propos" element={<APropos />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+  </Suspense>      
         </BrowserRouter>
       </AuthProvider>
     </HelmetProvider>

@@ -29,6 +29,7 @@ import {
 import Onboarding from '../components/Onboarding';
 import { activerNotificationsPush, estAbonne, desactiverNotifications } from '../services/pushService';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 
 // ================================================
 // UTILITAIRE — Formater les montants en GNF
@@ -4239,8 +4240,8 @@ function chargerDonnees() {
   // ================================================
   // Rendu de l'onglet actif
   // ================================================
-  function renderOnglet() {
-    if (onglet === '/dashboard') return <OngletOverview stats={stats} user={user} alertes={alertes} />;
+  var renderOnglet = useMemo(function() {
+    if (onglet === '/dashboard') return <OngletOverview stats={stats} user={user} alertes={alertes} setOnglet={setOnglet} />;
     if (onglet === '/dashboard/biens')  return <OngletBiens stats={stats} recharger={chargerDonnees} user={user} setOnglet={setOnglet} plan={monPlan} />;
     if (onglet === '/dashboard/locataires') return <OngletLocataires stats={stats} logements={stats.logements} />;
     if (onglet === '/dashboard/reservations') return <OngletReservations stats={stats} traiter={traiterReservation} user={user} navigate={navigate} recharger={chargerDonnees} />;
@@ -4254,8 +4255,8 @@ function chargerDonnees() {
     if (onglet === '/dashboard/mes-locations') return <OngletMesLocations stats={stats} setOnglet={setOnglet} />;
     if (onglet === '/dashboard/rapports') return <OngletRapports user={user} />;
     if (onglet === '/dashboard/historique') return <OngletHistorique user={user} />;
-    return <OngletOverview stats={stats} user={user} alertes={alertes} />;
-  }
+    return <OngletOverview stats={stats} user={user} alertes={alertes} setOnglet={setOnglet} />;
+  }, [onglet, stats, user, alertes, monPlan]);
 
   if (loading) {
     return (
@@ -4409,7 +4410,7 @@ function chargerDonnees() {
         )}
 
         <div className="dash-scroll">
-  {renderOnglet()}
+  {renderOnglet}
 </div>
 
 {/* Barre navigation mobile */}
