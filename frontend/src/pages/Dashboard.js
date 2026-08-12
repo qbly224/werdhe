@@ -2634,15 +2634,29 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
   function telecharger(doc) {
     api.get('/documents/' + doc.id + '/telecharger', { responseType: 'blob' })
       .then(function(res) {
-        var url = window.URL.createObjectURL(new Blob([res.data]));
-        var link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', doc.titre.replace(/\s+/g, '_') + '.html');
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        toast.success('Telechargement lance !');
-      }).catch(function() { toast.error('Erreur telechargement'); });
+        var blob = new Blob([res.data], { type: 'text/html; charset=utf-8' });
+        var url  = window.URL.createObjectURL(blob);
+        // Ouvrir dans une fenêtre d'impression pour sauvegarder en PDF
+        var win = window.open(url, '_blank');
+        if (win) {
+          win.onload = function() {
+            win.focus();
+            setTimeout(function() {
+              win.print();
+            }, 800);
+          };
+          toast.success('Fenêtre d\'impression ouverte — Choisissez "Enregistrer en PDF"');
+        } else {
+          // Fallback : télécharger le HTML
+          var link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', doc.titre.replace(/\s+/g, '_') + '.html');
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          toast.success('Document téléchargé');
+        }
+      }).catch(function() { toast.error('Erreur téléchargement'); });
   }
 
   // Types selon le rôle
@@ -2710,22 +2724,43 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
         <div className="dash-white-card" style={{ marginTop: 16 }}>
           <h3 style={{ marginBottom: 14 }}>Historique des documents</h3>
           {documents.map(function(doc) {
-             var icone = <FileText size={22} strokeWidth={1.5} color="#1B6B3A"/>;
+            var cfgDoc = {
+              contrat_bail:    { icon: '📜', color: '#1B6B3A', bg: '#E8F5E9', label: 'Contrat de bail'    },
+              quittance:       { icon: '🧾', color: '#1565C0', bg: '#E3F2FD', label: 'Quittance'           },
+              etat_lieux:      { icon: '📋', color: '#E65100', bg: '#FFF3E0', label: 'État des lieux'      },
+              mise_en_demeure: { icon: '⚠️', color: '#B71C1C', bg: '#FFEBEE', label: 'Mise en demeure'     },
+              preavis:         { icon: '📤', color: '#37474F', bg: '#ECEFF1', label: 'Préavis'              },
+              facture:         { icon: '💰', color: '#7B1FA2', bg: '#F3E5F5', label: 'Facture'              },
+              caution:         { icon: '🔐', color: '#1B6B3A', bg: '#E8F5E9', label: 'Reçu de caution'     },
+            }[doc.type] || { icon: '📄', color: '#888', bg: '#F5F5F5', label: 'Document' };
             return (
-              <div key={doc.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid #F5F5F5' }}>
-                <span style={{ fontSize: 24 }}>{icone}</span>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>{doc.titre}</div>
-                  <div style={{ fontSize: 11, color: '#888' }}>{new Date(doc.created_at).toLocaleDateString('fr-FR')}</div>
+              <div key={doc.id} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', borderRadius: 12, background: '#F7F8F7', marginBottom: 8 }}>
+                <div style={{ width: 42, height: 42, background: cfgDoc.bg, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>
+                  {cfgDoc.icon}
                 </div>
-                <button className="btn-outline-green" onClick={function() { telecharger(doc); }}>Telecharger</button>
-                <button className="btn-bien-secondary" style={{ padding: '6px 12px' }} onClick={function() {
-                  api.post('/documents/' + doc.id + '/renvoyer-email')
-                    .then(function() { toast.success('Email envoye !'); })
-                    .catch(function() { toast.error('Erreur'); });
-                }}>Email</button>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{doc.titre}</div>
+                  <div style={{ display: 'flex', gap: 8, marginTop: 3, alignItems: 'center' }}>
+                    <span style={{ background: cfgDoc.bg, color: cfgDoc.color, borderRadius: 20, padding: '1px 8px', fontSize: 10, fontWeight: 700 }}>{cfgDoc.label}</span>
+                    <span style={{ fontSize: 11, color: '#aaa' }}>{new Date(doc.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                  <button onClick={function() { telecharger(doc); }}
+                    style={{ padding: '7px 14px', borderRadius: 8, border: 'none', background: cfgDoc.color, color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <Download size={13} strokeWidth={2} /> PDF
+                  </button>
+                  <button onClick={function() {
+                    api.post('/documents/' + doc.id + '/renvoyer-email')
+                      .then(function() { toast.success('Email envoyé !'); })
+                      .catch(function() { toast.error('Erreur'); });
+                  }}
+                    style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <Mail size={13} strokeWidth={2} /> Email
+                  </button>
+                </div>
               </div>
-            );
+            ); 
           })}
         </div>
       )}
