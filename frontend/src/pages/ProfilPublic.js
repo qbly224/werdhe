@@ -47,7 +47,8 @@ export default function ProfilPublic() {
   }
 
   var p = data.proprietaire;
-  var initiales = p.nom.split(' ').map(function(n) { return n.charAt(0); }).join('').toUpperCase();
+  var nomComplet = (p.prenom || '') + ' ' + (p.nom || '');
+  var initiales  = [p.prenom, p.nom].filter(Boolean).map(function(n) { return n.charAt(0); }).join('').toUpperCase();
 
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
@@ -83,7 +84,7 @@ export default function ProfilPublic() {
             </div>
 
             {/* Nom + note */}
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 8px' }}>{p.nom}</h1>
+            <h1 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 8px' }}>{nomComplet}</h1>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 16 }}>
               {p.nb_notations > 0 ? (
@@ -118,6 +119,33 @@ export default function ProfilPublic() {
                   </div>
                 );
               })}
+            </div>
+
+            {/* Score de confiance */}
+            {p.score_confiance > 0 && (
+              <div style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 10, background: '#F7F8F7', borderRadius: 12, padding: '10px 14px' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Score de confiance</div>
+                  <div style={{ background: '#E0E0E0', borderRadius: 6, height: 6, overflow: 'hidden' }}>
+                    <div style={{ background: '#1B6B3A', width: p.score_confiance + '%', height: '100%', borderRadius: 6 }} />
+                  </div>
+                </div>
+                <div style={{ fontSize: 16, fontWeight: 800, color: '#1B6B3A', flexShrink: 0 }}>{p.score_confiance}/100</div>
+              </div>
+            )}
+
+            {/* Bouton contacter */}
+            <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+              <a href={'mailto:' + (p.email || '')}
+                style={{ flex: 1, padding: '11px', borderRadius: 12, border: '1.5px solid #1B6B3A', background: '#fff', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 700, textAlign: 'center' }}>
+                ✉️ Email
+              </a>
+              {p.telephone && (
+                <a href={'tel:' + p.telephone}
+                  style={{ flex: 1, padding: '11px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700, textAlign: 'center' }}>
+                  📞 Appeler
+                </a>
+              )}
             </div>
           </div>
         </div>
