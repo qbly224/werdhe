@@ -8,6 +8,13 @@ const PDFDocument = require('pdfkit');
 router.get('/financier', verifierToken, async (req, res) => {
   try {
     var userId = req.user.id;
+    var periode    = req.query.periode || '12mois';
+var intervalDB = {
+  '3mois':  '3 months',
+  '6mois':  '6 months',
+  '12mois': '12 months',
+  'annee':  '12 months',
+}[periode] || '12 months';
 
     var [
       resumeMois,
@@ -104,6 +111,33 @@ router.get('/financier', verifierToken, async (req, res) => {
         GROUP BY DATE_TRUNC('month', g.mois)
         ORDER BY DATE_TRUNC('month', g.mois) ASC
       `, [userId]),
+      // Stats candidatures
+db.query(`
+  SELECT
+    COUNT(*) as total_candidatures,
+    COUNT(*) FILTER (WHERE r.statut = 'confirmee') as acceptees,
+    COUNT(*) FILTER (WHERE r.statut = 'refusee')   as refusees,
+    COUNT(*) FILTER (WHERE r.statut = 'en_attente') as en_attente,
+    ROUND(COUNT(*) FILTER (WHERE r.statut = 'confirmee')::decimal
+      / NULLIF(COUNT(*), 0) * 100, 1) as taux_acceptation
+  FROM reservations r
+  JOIN logements l ON r.logement_id = l.id
+  WHERE l.proprietaire_id = $1
+`, [req.user.id]),
+
+// Meilleur mois
+db.query(`
+  SELECT
+    TO_CHAR(DATE_TRUNC('month', p.created_at), 'Month YYYY') as mois,
+    SUM(p.montant) as total
+  FROM paiements p
+  JOIN reservations r ON p.reservation_id = r.id
+  JOIN logements l ON r.logement_id = l.id
+  WHERE l.proprietaire_id = $1 AND p.statut = 'complete'
+  GROUP BY DATE_TRUNC('month', p.created_at)
+  ORDER BY total DESC
+  LIMIT 1
+`, [req.user.id]),
     ]);
 
     // Calculer le total annuel
@@ -524,6 +558,8 @@ router.get('/overview', verifierToken, async (req, res) => {
       alertes:      alertes.rows,
       evenements:   evenements.rows,
       revenus6mois: revenus6mois.rows,
+      candidatures:  candidatures.rows[0],
+      meilleur_mois: meilleurMois.rows[0] || null,
     });
 
   } catch (err) {
