@@ -13,9 +13,31 @@ const {
   supprimerLogement
 } = require('../controllers/logementController');
 
+// Cache mémoire simple (TTL 2 minutes)
+var cache = {};
+var CACHE_TTL = 2 * 60 * 1000; // 2 minutes
+
+function getCached(key) {
+  var entry = cache[key];
+  if (!entry) return null;
+  if (Date.now() - entry.time > CACHE_TTL) {
+    delete cache[key];
+    return null;
+  }
+  return entry.data;
+}
+
+function setCached(key, data) {
+  cache[key] = { data: data, time: Date.now() };
+}
+
+function invalidateCache(pattern) {
+  Object.keys(cache).forEach(function(k) {
+    if (k.startsWith(pattern)) delete cache[k];
+  });
+}
 // Routes publiques (sans token)
 // N'importe qui peut voir les logements disponibles
-// ← Remplacé par la version avec filtres avancés
 router.get('/', async (req, res) => {
   try {
     const {
@@ -24,6 +46,13 @@ router.get('/', async (req, res) => {
       nb_chambres, superficie_min,
       search, page = 1, limit = 20
     } = req.query;
+
+    var cacheKey = 'logements:' + JSON.stringify(req.query);
+    var cached   = getCached(cacheKey);
+    if (cached) {
+      res.setHeader('X-Cache', 'HIT');
+      return res.json(cached);
+    }  
 
     var conditions = ['l.statut = $1'];
     var params     = ['disponible'];
@@ -81,13 +110,16 @@ router.get('/', async (req, res) => {
       `SELECT COUNT(*) FROM logements l WHERE ${where}`,
       params
     );
-
-    res.json({
+    
+     var response = {
       logements: result.rows,
       total:     parseInt(total.rows[0].count),
       page:      Number(page),
       pages:     Math.ceil(parseInt(total.rows[0].count) / Number(limit))
-    });
+    };
+    setCached(cacheKey, response);
+    res.setHeader('X-Cache', 'MISS');
+    res.json(response);
 
   } catch (err) {
     console.error('GET /logements', err.message);

@@ -64,7 +64,17 @@ app.use(function(req, res, next) {
 });
 
 const PORT = process.env.PORT || 3000;
-
+// Headers de cache pour les assets statiques
+app.use(function(req, res, next) {
+  if (req.path.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$/)) {
+    res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 an
+  } else if (req.path.startsWith('/logements') && req.method === 'GET') {
+    res.setHeader('Cache-Control', 'public, max-age=120'); // 2 minutes
+  } else {
+    res.setHeader('Cache-Control', 'no-cache');
+  }
+  next();
+});
 // ── CORS — DOIT ÊTRE EN PREMIER ──────────────────────────────────
 app.use(cors({
   origin: function(origin, callback) {
@@ -97,7 +107,14 @@ app.use('/renouvellements', renouvellements);
 const passport = require('./config/passport');
 app.use(passport.initialize());
 // Compresser toutes les réponses (gzip)
-app.use(compression());
+app.use(compression({
+  level: 6,
+  threshold: 1024,
+  filter: function(req, res) {
+    if (req.headers['x-no-compression']) return false;
+    return compression.filter(req, res);
+  }
+}));
 
 // ── Body parser — AVANT les routes ───────────────────────────────
 app.use(express.json({ limit: '10mb' }));
