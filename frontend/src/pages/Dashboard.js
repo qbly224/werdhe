@@ -3620,11 +3620,11 @@ function OngletRapports(props) {
   var [periode, setPeriode]   = useState('12mois');
 
   useEffect(function() {
-    api.get('/rapports/financier')
+    api.get('/rapports/financier?periode=' + periode)
       .then(function(res) { setData(res.data); })
       .catch(function(err) { console.error('[Rapports]', err.message); })
       .finally(function() { setLoading(false); });
-  }, []);
+  }, [periode]);
 
   function exportCSV() {
     if (!data) return;
@@ -3669,6 +3669,13 @@ function OngletRapports(props) {
           <h1>Rapports financiers</h1>
           <p>Vue complète de vos revenus locatifs</p>
         </div>
+        <select value={periode} onChange={function(e) { setPeriode(e.target.value); }}
+            style={{ padding: '8px 14px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 13, color: '#555', cursor: 'pointer', outline: 'none', background: '#fff' }}>
+            <option value="3mois">3 derniers mois</option>
+            <option value="6mois">6 derniers mois</option>
+            <option value="12mois">12 derniers mois</option>
+            <option value="annee">Cette année</option>
+          </select>
         <div style={{ display: 'flex', gap: 8 }}>
   <button onClick={exportCSV} className="btn-outline-green" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
     <Download size={14} strokeWidth={1.5} /> CSV
@@ -3786,6 +3793,84 @@ function OngletRapports(props) {
           })}
         </div>
       </div>
+      {/* ─── ANALYTICS CANDIDATURES ──────────────────────────── */}
+      {data.candidatures && (
+        <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', marginBottom: 20 }}>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>
+            📊 Analyse des candidatures
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12, marginBottom: 16 }}>
+            {[
+              { label: 'Total reçues',      val: data.candidatures.total_candidatures, color: '#1B2B22', bg: '#F5F5F5' },
+              { label: 'Acceptées',         val: data.candidatures.acceptees,          color: '#1B6B3A', bg: '#E8F5E9' },
+              { label: 'Refusées',          val: data.candidatures.refusees,           color: '#E53935', bg: '#FFEBEE' },
+              { label: 'En attente',        val: data.candidatures.en_attente,         color: '#E65100', bg: '#FFF3E0' },
+            ].map(function(s, i) {
+              return (
+                <div key={i} style={{ background: s.bg, borderRadius: 12, padding: '14px', textAlign: 'center' }}>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: s.color }}>{s.val}</div>
+                  <div style={{ fontSize: 11, color: '#888', marginTop: 4 }}>{s.label}</div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Taux d'acceptation */}
+          <div style={{ background: '#F7F8F7', borderRadius: 12, padding: '14px 16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <span style={{ fontSize: 13, color: '#555', fontWeight: 600 }}>Taux d'acceptation</span>
+              <span style={{ fontSize: 16, fontWeight: 800, color: Number(data.candidatures.taux_acceptation) >= 50 ? '#1B6B3A' : '#E65100' }}>
+                {data.candidatures.taux_acceptation || 0}%
+              </span>
+            </div>
+            <div style={{ background: '#E0E0E0', borderRadius: 6, height: 8, overflow: 'hidden' }}>
+              <div style={{
+                background: Number(data.candidatures.taux_acceptation) >= 50 ? '#1B6B3A' : '#E65100',
+                width: (data.candidatures.taux_acceptation || 0) + '%',
+                height: '100%', borderRadius: 6, transition: 'width .6s'
+              }} />
+            </div>
+            {data.meilleur_mois && (
+              <div style={{ marginTop: 10, fontSize: 12, color: '#888', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span>🏆</span>
+                <span>Meilleur mois : <strong style={{ color: '#1B6B3A' }}>{data.meilleur_mois.mois}</strong> — {GNF(data.meilleur_mois.total)} GNF</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ─── PRÉVISIONS ────────────────────────────────────────── */}
+      {data.evolution && data.evolution.length >= 3 && (function() {
+        var derniersMois = data.evolution.slice(-3);
+        var moyenneMensuelle = derniersMois.reduce(function(s, m) { return s + Number(m.revenus); }, 0) / 3;
+        var prevision3mois = Math.round(moyenneMensuelle * 3);
+        var prevision12mois = Math.round(moyenneMensuelle * 12);
+        return (
+          <div style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', borderRadius: 16, padding: '20px', marginBottom: 20 }}>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: '#fff', margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
+              🔮 Prévisions basées sur vos 3 derniers mois
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+              {[
+                { label: 'Mois prochain',    val: GNF(Math.round(moyenneMensuelle)) + ' GNF' },
+                { label: 'Trimestre',        val: GNF(prevision3mois) + ' GNF'               },
+                { label: 'Projection annuelle', val: GNF(prevision12mois) + ' GNF'           },
+              ].map(function(p, i) {
+                return (
+                  <div key={i} style={{ background: 'rgba(255,255,255,0.1)', borderRadius: 12, padding: '14px', textAlign: 'center' }}>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: '#F5A623', marginBottom: 4 }}>{p.val}</div>
+                    <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>{p.label}</div>
+                  </div>
+                );
+              })}
+            </div>
+            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: '12px 0 0', textAlign: 'center' }}>
+              * Estimation basée sur la moyenne mensuelle des 3 derniers mois
+            </p>
+          </div>
+        );
+      })()}
 
       {/* Historique paiements */}
       <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
