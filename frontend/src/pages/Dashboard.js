@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
@@ -29,7 +29,6 @@ import {
 import Onboarding from '../components/Onboarding';
 import { activerNotificationsPush, estAbonne, desactiverNotifications } from '../services/pushService';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts';
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 
 // ================================================
 // UTILITAIRE — Formater les montants en GNF
