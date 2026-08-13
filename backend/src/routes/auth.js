@@ -700,4 +700,74 @@ router.get('/score/:userId', verifierToken, async (req, res) => {
     res.status(500).json({ erreur: err.message });
   }
 });
+// ─── SUPPRIMER MON COMPTE ─────────────────────────────────────────
+router.delete('/compte', verifierToken, async (req, res) => {
+  try {
+    var userId = req.user.id;
+
+    // Vérifier qu'il n'est pas admin
+    if (req.user.role === 'admin') {
+      return res.status(403).json({ erreur: 'Les comptes admin ne peuvent pas être supprimés via cette route.' });
+    }
+
+    // Vérifier mot de passe si fourni
+    if (req.body.mot_de_passe) {
+      var userCheck = await db.query('SELECT mot_de_passe FROM users WHERE id = $1', [userId]);
+      if (userCheck.rows.length === 0) return res.status(404).json({ erreur: 'Utilisateur non trouvé' });
+      var bcrypt  = require('bcrypt');
+      var valide  = await bcrypt.compare(req.body.mot_de_passe, userCheck.rows[0].mot_de_passe);
+      if (!valide) return res.status(401).json({ erreur: 'Mot de passe incorrect' });
+    }
+
+    // 1. Annuler les réservations actives
+    await db.query(
+      `UPDATE reservations SET statut = 'annulee'
+       WHERE (locataire_id = $1 OR logement_id IN (SELECT id FROM logements WHERE proprietaire_id = $1))
+         AND statut NOT IN ('terminee', 'annulee', 'refusee')`,
+      [userId]
+    );
+
+    // 2. Masquer les logements du proprio
+    await db.query(
+      `UPDATE logements SET statut = 'indisponible' WHERE proprietaire_id = $1`,
+      [userId]
+    );
+
+    // 3. Supprimer les push subscriptions
+    await db.query('DELETE FROM push_subscriptions WHERE user_id = $1', [userId]);
+
+    // 4. Supprimer les OTP
+    await db.query('DELETE FROM otp_telephone WHERE user_id = $1', [userId]);
+    await db.query('DELETE FROM otp_admin WHERE user_id = $1', [userId]).catch(function() {});
+
+    // 5. Anonymiser l'utilisateur (soft delete — garde les données contractuelles)
+    await db.query(
+      `UPDATE users SET
+         nom              = 'Utilisateur',
+         prenom           = 'Supprimé',
+         email            = 'deleted_' || id || '@werdhe.com',
+         telephone        = NULL,
+         mot_de_passe     = '',
+         google_id        = NULL,
+         score_confiance  = 0,
+         suspendu         = TRUE,
+         onboarding_termine = TRUE
+       WHERE id = $1`,
+      [userId]
+    );
+
+    // Log audit
+    await db.query(
+      `INSERT INTO logs_audit (user_id, action, details, created_at)
+       VALUES ($1, 'compte_supprime', $2, NOW())`,
+      [userId, JSON.stringify({ role: req.user.role, date: new Date().toISOString() })]
+    ).catch(function() {});
+
+    res.json({ message: 'Compte supprimé avec succès.' });
+
+  } catch (err) {
+    console.error('[DELETE /auth/compte]', err.message);
+    res.status(500).json({ erreur: err.message });
+  }
+});
 module.exports = router;
