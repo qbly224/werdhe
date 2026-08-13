@@ -288,7 +288,7 @@ export default function LandingPage() {
         </svg>
       </div>
       {/* ─── HERO ───────────────────────────────────────────────── */}
-      <section ref={heroRef} style={{ padding: 'clamp(60px, 10vw, 100px) 24px clamp(40px, 8vw, 80px)', textAlign: 'center', maxWidth: 800, margin: '0 auto' }}>
+      <section ref={heroRef} style={{ padding: 'clamp(60px, 10vw, 100px) 24px clamp(40px, 8vw, 80px)', textAlign: 'center', maxWidth: 800, margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#E8F5E9', border: '1px solid #A5D6A7', borderRadius: 20, padding: '5px 14px', marginBottom: 24 }}>
           <div style={{ width: 7, height: 7, background: '#1B6B3A', borderRadius: '50%' }} />
           <span style={{ fontSize: 13, color: '#1B5E20', fontWeight: 600 }}>Plateforme immobilière guinéenne</span>
