@@ -3,6 +3,7 @@ import {
   CreditCard, FileText, Bell, MessageCircle,
   Wrench, Send, Settings, TrendingUp, Clock 
 } from 'lucide-react';
+import Logo from '../Logo';
 import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
 
