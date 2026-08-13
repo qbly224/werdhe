@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
   Home, Users, FileText, Shield, Bell, MessageCircle,
   ChevronRight, Check, Star, MapPin, ArrowRight,
-  Building2, Key, TrendingUp, Banknote, Menu, X
+  Building2, Key, TrendingUp, Banknote, Menu, X, Search, Phone, Mail
 } from 'lucide-react';
 import SEO from '../components/SEO';
 import Logo from '../components/Logo';
@@ -12,19 +12,19 @@ import Logo from '../components/Logo';
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
 
 var STATS = [
-  { valeur: '1 200+', label: 'Logements disponibles' },
-  { valeur: '4 800+', label: 'Utilisateurs actifs'   },
-  { valeur: '98%',    label: 'Locataires satisfaits'  },
+  { valeur: '100+', label: 'Logements disponibles' },
+  { valeur: '80+', label: 'Utilisateurs actifs'   },
+  { valeur: '99%',    label: 'Locataires satisfaits'  },
   { valeur: '0 GNF',  label: 'Pour les locataires'   },
 ];
 
-var TEMOIGNAGES = [
+var AVIS = [
   {
-    nom:     'Mamadou Diallo',
+    nom:     'Pathé Diallo',
     role:    'Propriétaire, Conakry',
     note:    5,
     texte:   "Werdhe m'a permis de gérer mes 3 appartements depuis mon téléphone. Les paiements, les contrats, tout est centralisé. Je recommande vivement.",
-    initiales: 'MD',
+    initiales: 'PD',
     couleur: '#1B6B3A'
   },
   {
@@ -36,11 +36,11 @@ var TEMOIGNAGES = [
     couleur: '#1565C0'
   },
   {
-    nom:     'Ibrahima Bah',
-    role:    'Propriétaire, Kaloum',
+    nom:     'Abdoul Bah',
+    role:    'Propriétaire, Boké',
     note:    5,
     texte:   "Le système d'alertes automatiques pour les loyers en retard m'a sauvé plusieurs fois. Une vraie révolution pour la gestion locative en Guinée.",
-    initiales: 'IB',
+    initiales: 'AB',
     couleur: '#7B1FA2'
   },
 ];
@@ -60,7 +60,7 @@ var ETAPES_LOCATAIRE = [
 var FONCTIONNALITES = [
   { icon: <Shield size={20} strokeWidth={1.5} />,       titre: 'Dossiers sécurisés',    desc: 'CNI, bulletins de paie, contrats stockés et accessibles en toute sécurité.' },
   { icon: <FileText size={20} strokeWidth={1.5} />,     titre: 'Documents automatiques', desc: 'Baux, quittances et mises en demeure générés en un clic.' },
-  { icon: <Bell size={20} strokeWidth={1.5} />,         titre: 'Alertes intelligentes',  desc: 'Rappels loyers, baux expirants, préavis — tout est automatisé.' },
+  { icon: <Bell size={20} strokeWidth={1.5} />,         titre: 'Alertes intelligentes',  desc: 'Rappels loyers, baux expirants, préavis - tout est automatisé.' },
   { icon: <Banknote size={20} strokeWidth={1.5} />,     titre: 'Paiements multiples',    desc: 'Orange Money, MTN MoMo, espèces ou virement acceptés.' },
   { icon: <MessageCircle size={20} strokeWidth={1.5} />, titre: 'Messagerie intégrée',   desc: 'Communiquez directement avec locataires et propriétaires.' },
   { icon: <TrendingUp size={20} strokeWidth={1.5} />,   titre: 'Rapports financiers',    desc: 'Suivez vos revenus mois par mois avec des graphiques clairs.' },
@@ -137,36 +137,28 @@ function FaqLanding() {
 }
 var SLIDES = [
   {
-    titre:    'Louer à Conakry',
-    sous:     'La capitale, des milliers de logements disponibles',
-    bg:       'linear-gradient(135deg, #0F2417 0%, #1B4A2A 40%, #2D7A4A 100%)',
-    emoji:    '🌆',
-    tag:      'Conakry · Kaloum · Ratoma',
-    couleur:  '#F5A623',
+    img:    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1600&q=80&fit=crop',
+    titre:  'Trouvez votre logement idéal',
+    sous:   'Appartements, villas, studios à Conakry et partout en Guinée',
+    tag:    'Conakry · Boké · Kindia · Labé · Kankan',
   },
   {
-    titre:    'Trouver votre Villa/Appartement',
-    sous:     'Des maisons modernes au cœur de la Guinée',
-    bg:       'linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%)',
-    emoji:    '🏡',
-    tag:      'Boké · Kindia · Coyah · Dubréka',
-    couleur:  '#34A853',
+    img:    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80&fit=crop',
+    titre:  'Publiez votre bien en 5 minutes',
+    sous:   'Gérez candidatures, baux et paiements depuis un seul tableau de bord',
+    tag:    'Pour les propriétaires · Essai 14 jours gratuit',
   },
   {
-    titre:    'Loger les étudiants et autres',
-    sous:     'Studios et chambres proches des universités',
-    bg:       'linear-gradient(135deg, #2C1810 0%, #4A2C1A 50%, #1B6B3A 100%)',
-    emoji:    '🎓',
-    tag:      'Boké · Labé · Kankan · Faranah',
-    couleur:  '#F5A623',
+    img:    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&q=80&fit=crop',
+    titre:  'Des villas modernes en Guinée',
+    sous:   'Découvrez nos logements vérifiés, sans intermédiaire, sans frais cachés',
+    tag:    'Villas · Appartements · Studios · Bureaux',
   },
   {
-    titre:    'Gérer vos biens',
-    sous:     'Un tableau de bord complet pour les propriétaires',
-    bg:       'linear-gradient(135deg, #1B2B22 0%, #1B6B3A 60%, #2D9E5F 100%)',
-    emoji:    '📊',
-    tag:      'Werdhe · Plateforme immobilière guinéenne',
-    couleur:  '#fff',
+    img:    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1600&q=80&fit=crop',
+    titre:  'La location simplifiée',
+    sous:   'Candidatez, signez votre bail et payez - tout en ligne sur Werdhe',
+    tag:    '100% gratuit pour les locataires',
   },
 ];
 export default function LandingPage() {
@@ -331,110 +323,107 @@ useEffect(function() {
         </svg>
       </div>
       {/* ─── HERO PLEIN ÉCRAN ────────────────────────────────── */}
-      <section ref={heroRef} style={{ position: 'relative', height: '100vh', minHeight: 600, maxHeight: 900, overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
+      <section ref={heroRef} style={{ position: 'relative', height: '100vh', minHeight: 600, maxHeight: 900, overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
 
-        {/* Slides arrière-plan */}
+        {/* Photos slides */}
         {SLIDES.map(function(slide, i) {
           return (
-            <div key={i} style={{
-              position: 'absolute', inset: 0,
-              background: slide.bg,
-              opacity: slideActif === i ? 1 : 0,
-              transition: 'opacity 1.2s ease',
-              zIndex: 0,
-            }}>
-              {/* Éléments visuels du slide */}
-              <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
-                {/* Formes géométriques inspirées Guinée */}
-                <svg style={{ position: 'absolute', bottom: 0, left: 0, right: 0, width: '100%', opacity: 0.15 }} viewBox="0 0 1440 320" preserveAspectRatio="none">
-                  <path d="M0,200 C200,100 400,300 600,180 C800,60 1000,250 1200,150 C1350,80 1400,180 1440,160 L1440,320 L0,320 Z" fill="#fff" />
-                </svg>
-                {/* Montagne/colline guinéenne */}
-                <svg style={{ position: 'absolute', bottom: 0, right: '5%', opacity: 0.12, width: 400, height: 300 }} viewBox="0 0 400 300">
-                  <polygon points="200,0 400,300 0,300" fill="#fff" />
-                  <polygon points="120,80 280,300 0,300" fill="#fff" opacity="0.5" />
-                </svg>
-                {/* Soleil levant */}
-                <div style={{ position: 'absolute', top: 60, right: '10%', width: 120, height: 120, borderRadius: '50%', background: slide.couleur, opacity: 0.15, filter: 'blur(20px)' }} />
-                <div style={{ position: 'absolute', top: 80, right: '11%', width: 80, height: 80, borderRadius: '50%', background: slide.couleur, opacity: 0.2 }} />
-                {/* Palmiers */}
-                <svg style={{ position: 'absolute', bottom: 40, left: '5%', opacity: 0.2, width: 80, height: 200 }} viewBox="0 0 80 200">
-                  <line x1="40" y1="200" x2="40" y2="80" stroke="#fff" strokeWidth="5" />
-                  <ellipse cx="40" cy="70" rx="35" ry="15" fill="#fff" transform="rotate(-25 40 70)" />
-                  <ellipse cx="40" cy="70" rx="35" ry="15" fill="#fff" transform="rotate(15 40 70)" />
-                  <ellipse cx="40" cy="70" rx="30" ry="12" fill="#fff" transform="rotate(55 40 70)" />
-                </svg>
-                <svg style={{ position: 'absolute', bottom: 60, left: '8%', opacity: 0.15, width: 60, height: 150 }} viewBox="0 0 60 150">
-                  <line x1="30" y1="150" x2="30" y2="50" stroke="#fff" strokeWidth="4" />
-                  <ellipse cx="30" cy="42" rx="26" ry="12" fill="#fff" transform="rotate(-20 30 42)" />
-                  <ellipse cx="30" cy="42" rx="26" ry="12" fill="#fff" transform="rotate(20 30 42)" />
-                </svg>
-              </div>
+            <div key={i} style={{ position: 'absolute', inset: 0, opacity: slideActif === i ? 1 : 0, transition: 'opacity 1.4s ease', zIndex: 0 }}>
+              <img src={slide.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
             </div>
           );
         })}
 
-        {/* Overlay sombre pour lisibilité */}
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 1 }} />
+        {/* Overlay dégradé */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%)', zIndex: 1 }} />
 
-        {/* Contenu */}
-        <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 900, margin: '0 auto', padding: '0 24px' }}>
+        {/* Contenu hero */}
+        <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 960, margin: '0 auto', padding: '0 24px', textAlign: 'center' }}>
 
-          {/* Tag */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '5px 14px', marginBottom: 24 }}>
-            <div style={{ width: 7, height: 7, background: SLIDES[slideActif].couleur, borderRadius: '50%', animation: 'pulse 2s ease infinite' }} />
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.9)', fontWeight: 600 }}>{SLIDES[slideActif].tag}</span>
+          {/* Badge */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 20, padding: '6px 16px', marginBottom: 24 }}>
+            <div style={{ width: 7, height: 7, background: '#F5A623', borderRadius: '50%' }} />
+            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.95)', fontWeight: 600 }}>{SLIDES[slideActif].tag}</span>
           </div>
 
-          {/* Titre grand */}
-          <h1 style={{ fontSize: 'clamp(36px, 7vw, 72px)', fontWeight: 900, color: '#fff', margin: '0 0 16px', letterSpacing: -2, lineHeight: 1.05, textShadow: '0 2px 20px rgba(0,0,0,0.3)' }}>
-            {SLIDES[slideActif].emoji}{' '}
-            <span style={{ color: SLIDES[slideActif].couleur }}>{SLIDES[slideActif].titre}</span>
+          {/* Titre */}
+          <h1 style={{ fontSize: 'clamp(32px, 6vw, 68px)', fontWeight: 900, color: '#fff', margin: '0 0 14px', letterSpacing: -1.5, lineHeight: 1.08, textShadow: '0 2px 24px rgba(0,0,0,0.4)' }}>
+            {SLIDES[slideActif].titre}
           </h1>
-
-          <p style={{ fontSize: 'clamp(16px, 2vw, 20px)', color: 'rgba(255,255,255,0.8)', margin: '0 0 36px', lineHeight: 1.5, maxWidth: 560 }}>
+          <p style={{ fontSize: 'clamp(15px, 2vw, 19px)', color: 'rgba(255,255,255,0.85)', margin: '0 auto 36px', lineHeight: 1.6, maxWidth: 580 }}>
             {SLIDES[slideActif].sous}
           </p>
 
-          {/* Boutons */}
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            <button onClick={function() { navigate('/inscription'); }}
-              style={{ padding: '14px 28px', borderRadius: 12, border: 'none', background: '#F5A623', color: '#1B2B22', fontSize: 15, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 4px 20px rgba(245,166,35,0.4)' }}>
-              Démarrer gratuitement <ArrowRight size={16} strokeWidth={2.5} />
-            </button>
-            <button onClick={function() { navigate('/logements'); }}
-              style={{ padding: '14px 28px', borderRadius: 12, border: '1.5px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
-              Voir les logements
+          {/* Barre de recherche */}
+          <div style={{ background: '#fff', borderRadius: 16, padding: 8, display: 'flex', gap: 8, maxWidth: 720, margin: '0 auto 28px', boxShadow: '0 8px 40px rgba(0,0,0,0.25)', flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: 140, display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, background: '#F7F8F7' }}>
+              <MapPin size={16} strokeWidth={1.5} color="#1B6B3A" />
+              <select defaultValue="" style={{ border: 'none', background: 'transparent', fontSize: 14, color: '#1B2B22', outline: 'none', width: '100%', cursor: 'pointer' }}>
+                <option value="">Toutes les villes</option>
+                {['Conakry', 'Kindia', 'Labé', 'Kankan', 'Mamou', 'Boké', 'Faranah', 'N\'Zérékoré'].map(function(v) {
+                  return <option key={v} value={v}>{v}</option>;
+                })}
+              </select>
+            </div>
+            <div style={{ flex: 1, minWidth: 130, display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, background: '#F7F8F7' }}>
+              <Home size={16} strokeWidth={1.5} color="#1B6B3A" />
+              <select defaultValue="" style={{ border: 'none', background: 'transparent', fontSize: 14, color: '#1B2B22', outline: 'none', width: '100%', cursor: 'pointer' }}>
+                <option value="">Type de bien</option>
+                {['Appartement', 'Villa', 'Studio', 'Duplex', 'Bureau'].map(function(c) {
+                  return <option key={c} value={c.toLowerCase()}>{c}</option>;
+                })}
+              </select>
+            </div>
+            <div style={{ flex: 1, minWidth: 130, display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, background: '#F7F8F7' }}>
+              <Banknote size={16} strokeWidth={1.5} color="#1B6B3A" />
+              <select defaultValue="" style={{ border: 'none', background: 'transparent', fontSize: 14, color: '#1B2B22', outline: 'none', width: '100%', cursor: 'pointer' }}>
+                <option value="">Budget</option>
+                <option value="0-500000">Moins de 500K GNF</option>
+                <option value="500000-1000000">500K – 1M GNF</option>
+                <option value="1000000-3000000">1M – 3M GNF</option>
+                <option value="3000000+">Plus de 3M GNF</option>
+              </select>
+            </div>
+            <button
+              onClick={function() { navigate('/logements'); }}
+              style={{ padding: '12px 22px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, whiteSpace: 'nowrap' }}>
+              <Search size={16} strokeWidth={2} /> Rechercher
             </button>
           </div>
 
-          {/* Checkmarks */}
-          <div style={{ marginTop: 24, display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-            {['100% gratuit pour les locataires', 'Essai Pro 14 jours', 'Sans carte de crédit'].map(function(item) {
+          {/* Badges rapides */}
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+            {[
+              { icon: <Building2 size={13} strokeWidth={1.5} />, label: 'Appartements' },
+              { icon: <Home size={13} strokeWidth={1.5} />,      label: 'Villas'       },
+              { icon: <Key size={13} strokeWidth={1.5} />,       label: 'Studios'      },
+              { icon: <Users size={13} strokeWidth={1.5} />,     label: 'Colocations'  },
+            ].map(function(b, i) {
               return (
-                <span key={item} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>
-                  <Check size={14} strokeWidth={2.5} color="#34A853" /> {item}
-                </span>
+                <button key={i} onClick={function() { navigate('/logements'); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                  {b.icon} {b.label}
+                </button>
               );
             })}
           </div>
         </div>
 
-        {/* Indicateurs slides en bas */}
-        <div style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8, zIndex: 2 }}>
+        {/* Slides nav points */}
+        <div style={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8, zIndex: 2 }}>
           {SLIDES.map(function(_, i) {
             return (
               <button key={i} onClick={function() { setSlideActif(i); }}
-                style={{ width: slideActif === i ? 28 : 8, height: 8, borderRadius: 4, border: 'none', background: slideActif === i ? '#F5A623' : 'rgba(255,255,255,0.4)', cursor: 'pointer', transition: 'all .4s', padding: 0 }} />
+                style={{ width: slideActif === i ? 28 : 8, height: 8, borderRadius: 4, border: 'none', background: slideActif === i ? '#F5A623' : 'rgba(255,255,255,0.5)', cursor: 'pointer', transition: 'all .4s', padding: 0 }} />
             );
           })}
         </div>
 
-        {/* Flèche scroll */}
-        <div style={{ position: 'absolute', bottom: 32, right: 32, zIndex: 2, animation: 'flottement 2s ease-in-out infinite' }}>
-          <div style={{ width: 40, height: 40, borderRadius: '50%', border: '1.5px solid rgba(255,255,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-            onClick={function() { document.getElementById('comment').scrollIntoView({ behavior: 'smooth' }); }}>
-            <ChevronRight size={18} color="rgba(255,255,255,0.7)" strokeWidth={2} style={{ transform: 'rotate(90deg)' }} />
+        {/* Scroll indicator */}
+        <div style={{ position: 'absolute', bottom: 28, right: 28, zIndex: 2 }}>
+          <div style={{ width: 40, height: 40, borderRadius: '50%', border: '1.5px solid rgba(255,255,255,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', animation: 'flottement 2s ease-in-out infinite' }}
+            onClick={function() { document.getElementById('comment') && document.getElementById('comment').scrollIntoView({ behavior: 'smooth' }); }}>
+            <ChevronRight size={18} color="rgba(255,255,255,0.8)" strokeWidth={2} style={{ transform: 'rotate(90deg)' }} />
           </div>
         </div>
       </section>
