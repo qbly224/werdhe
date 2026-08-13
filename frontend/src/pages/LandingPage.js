@@ -7,6 +7,7 @@ import {
   Building2, Key, TrendingUp, Banknote, Menu, X
 } from 'lucide-react';
 import SEO from '../components/SEO';
+import Logo from '../components/Logo';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
 
