@@ -4397,10 +4397,10 @@ function chargerDonnees() {
 
   if (estProprietaire) {
     req = Promise.all([
-      api.get('/logements/proprietaire/mes-logements'),
-      api.get('/reservations/proprietaire'),
-      api.get('/paiements/proprietaire'),
-      api.get('/alertes'),
+      api.get('/logements/proprietaire/mes-logements').catch(function() { return { data: { logements: [] } }; }),
+      api.get('/reservations/proprietaire').catch(function() { return { data: { reservations: [] } }; }),
+      api.get('/paiements/proprietaire').catch(function() { return { data: { paiements: [] } }; }),
+      api.get('/alertes').catch(function() { return { data: { alertes: [] } }; }),
     ]).then(function(results) {
       setStats({
         logements:    results[0].data.logements    || [],
