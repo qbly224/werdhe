@@ -1,28 +1,41 @@
 /* eslint-disable */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-import { Eye, EyeOff, Mail, Lock, Home, ArrowRight, Phone } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Phone } from 'lucide-react';
+import Logo from '../components/Logo';
 
 export default function Login() {
-  var navigate    = useNavigate();
-  var { login }   = useAuth();
+  var navigate  = useNavigate();
+  var { login } = useAuth();
   var [email, setEmail]       = useState('');
   var [password, setPassword] = useState('');
   var [showPwd, setShowPwd]   = useState(false);
   var [loading, setLoading]   = useState(false);
   var [erreur, setErreur]     = useState('');
   var [remember, setRemember] = useState(false);
+  var [compteurs, setCompteurs] = useState({ logements: 0, utilisateurs: 0, villes: 0 });
 
   var emailValide = email.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  function remplirTest(role) {
-    if (role === 'proprio') { setEmail('mamadou@werdhe.com'); setPassword('motdepasse123'); }
-    else if (role === 'locataire') { setEmail('fatoumata@werdhe.com'); setPassword('motdepasse123'); }
-    else { setEmail('admin@werdhe.com'); setPassword('WerdheAdmin2026'); }
-  }
+  useEffect(function() {
+    var start    = Date.now();
+    var duration = 2000;
+    var targets  = { logements: 47, utilisateurs: 124, villes: 5 };
+    var raf = requestAnimationFrame(function step() {
+      var pct  = Math.min((Date.now() - start) / duration, 1);
+      var ease = 1 - Math.pow(1 - pct, 3);
+      setCompteurs({
+        logements:    Math.round(targets.logements    * ease),
+        utilisateurs: Math.round(targets.utilisateurs * ease),
+        villes:       Math.round(targets.villes       * ease),
+      });
+      if (pct < 1) requestAnimationFrame(step);
+    });
+    return function() { cancelAnimationFrame(raf); };
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -32,12 +45,12 @@ export default function Login() {
     try {
       var res = await api.post('/auth/login', { email, mot_de_passe: password });
       if (res.data.requires_2fa) {
-        toast('Code 2FA envoyé à votre email 🔐', { icon: '📧' });
+        toast('Code 2FA envoyé à votre email', { icon: '🔐' });
         navigate('/admin/2fa', { state: { user_id: res.data.user_id, email } });
         return;
       }
       login(res.data.user, res.data.token);
-      toast.success('Bon retour ' + res.data.user.prenom + ' ! 👋');
+      toast.success('Bon retour ' + res.data.user.prenom + ' !');
       navigate('/dashboard');
     } catch (err) {
       setErreur(err.response && err.response.data ? err.response.data.erreur : 'Email ou mot de passe incorrect');
@@ -46,46 +59,73 @@ export default function Login() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', fontFamily: 'system-ui, sans-serif' }}>
-      {/* Panneau gauche */}
-      <div className="login-panel-left" style={{ flex: '0 0 45%', background: 'linear-gradient(135deg, #1B2B22 0%, #1B6B3A 60%, #2D9E5F 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: -80, right: -80, width: 300, height: 300, borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }} />
-        <div style={{ position: 'absolute', bottom: -60, left: -60, width: 250, height: 250, borderRadius: '50%', background: 'rgba(245,166,35,0.08)' }} />
-        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', maxWidth: 360 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'center', marginBottom: 48 }}>
-            <div style={{ width: 44, height: 44, background: 'rgba(255,255,255,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Home size={22} color="#fff" strokeWidth={2} />
-            </div>
-            <span style={{ fontWeight: 900, fontSize: 22, color: '#fff', letterSpacing: -0.5 }}>Werdhe</span>
+
+      {/* ─── PANNEAU GAUCHE — image fond Guinée ─────────────────── */}
+      <div className="login-panel-left" style={{ flex: '0 0 45%', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px' }}>
+
+        {/* Photo fond */}
+        <img src="/accueil.jpg" alt="Guinée" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
+
+        {/* Overlay */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(160deg, rgba(10,28,16,0.88) 0%, rgba(27,107,58,0.78) 60%, rgba(15,36,23,0.85) 100%)' }} />
+
+        {/* Contenu */}
+        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', maxWidth: 340, width: '100%' }}>
+
+          {/* Logo */}
+          <div style={{ marginBottom: 32 }}>
+            <Logo size={44} showText={true} darkBg={true} variant="gold" />
           </div>
-          <div style={{ fontSize: 64, marginBottom: 20 }}>🏡</div>
-          <h2 style={{ fontSize: 26, fontWeight: 800, color: '#fff', margin: '0 0 14px', lineHeight: 1.2 }}>La location immobilière en Guinée</h2>
-          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, margin: '0 0 36px' }}>Connectez propriétaires et locataires directement. Sans intermédiaire, sans frais cachés.</p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            {[{ val: '1 200+', label: 'Logements' }, { val: '4 800+', label: 'Utilisateurs' }, { val: '100%', label: 'Gratuit locataire' }, { val: '5 min', label: 'Pour publier' }].map(function(s, i) {
+
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: '#fff', margin: '0 0 12px', lineHeight: 1.25 }}>
+            La plateforme immobilière<br />de référence en Guinée
+          </h2>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', margin: '0 0 32px', lineHeight: 1.65 }}>
+            Connectez propriétaires et locataires directement. Sans intermédiaire, sans frais cachés.
+          </p>
+
+          {/* Compteurs animés */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 28 }}>
+            {[
+              { val: compteurs.logements + '+',    label: 'Logements'    },
+              { val: compteurs.utilisateurs + '+',  label: 'Utilisateurs' },
+              { val: compteurs.villes + ' villes',  label: 'Couvertes'    },
+            ].map(function(s, i) {
               return (
-                <div key={i} style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: '#F5A623' }}>{s.val}</div>
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 3 }}>{s.label}</div>
+                <div key={i} style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(8px)', borderRadius: 12, padding: '14px 8px', border: '1px solid rgba(255,255,255,0.12)' }}>
+                  <div style={{ fontSize: 20, fontWeight: 900, color: '#F5A623', letterSpacing: -0.5 }}>{s.val}</div>
+                  <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', marginTop: 4 }}>{s.label}</div>
                 </div>
               );
             })}
           </div>
+
+          {/* Badge Guinée */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(245,166,35,0.12)', border: '1px solid rgba(245,166,35,0.25)', borderRadius: 20, padding: '6px 14px' }}>
+            <div style={{ width: 6, height: 6, background: '#F5A623', borderRadius: '50%' }} />
+            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>Made in Guinea</span>
+          </div>
         </div>
       </div>
 
-      {/* Panneau droit */}
+      {/* ─── PANNEAU DROIT — formulaire ──────────────────────────── */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 24px', background: '#F7F8F7', overflowY: 'auto' }}>
         <div style={{ width: '100%', maxWidth: 420 }}>
+
+          {/* Logo mobile uniquement */}
           <div className="login-mobile-header" style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 32, justifyContent: 'center' }}>
-            <div style={{ width: 32, height: 32, background: '#1B6B3A', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Home size={16} color="#fff" strokeWidth={2} />
-            </div>
-            <span style={{ fontWeight: 800, fontSize: 18, color: '#1B2B22' }}>Werdhe</span>
+            <Logo size={36} showText={true} darkBg={false} />
           </div>
 
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#1B2B22', margin: '0 0 6px', letterSpacing: -0.5 }}>Bon retour 👋</h1>
-          <p style={{ fontSize: 14, color: '#888', margin: '0 0 28px' }}>Connectez-vous à votre espace Werdhe</p>
+          {/* Titre */}
+          <h1 style={{ fontSize: 'clamp(20px, 3vw, 26px)', fontWeight: 800, color: '#1B2B22', margin: '0 0 6px', letterSpacing: -0.5, lineHeight: 1.2 }}>
+            Connectez-vous à votre<br />espace Werdhe
+          </h1>
+          <p style={{ fontSize: 13, color: '#888', margin: '0 0 24px' }}>
+            Accédez à votre tableau de bord
+          </p>
 
+          {/* Google */}
           <button onClick={function() { window.location.href = 'https://api.werdhe.com/auth/google'; }}
             style={{ width: '100%', padding: '13px', borderRadius: 12, border: '1.5px solid #E0E0E0', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontSize: 14, fontWeight: 600, color: '#1B2B22', cursor: 'pointer', marginBottom: 8, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
             <svg width="18" height="18" viewBox="0 0 24 24">
@@ -97,7 +137,8 @@ export default function Login() {
             Continuer avec Google
           </button>
 
-          <Link to="/login-telephone" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '11px', borderRadius: 12, border: '1.5px solid #E0E0E0', background: '#fff', fontSize: 13, fontWeight: 600, color: '#1B2B22', textDecoration: 'none', marginBottom: 20, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          <Link to="/login-telephone"
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '11px', borderRadius: 12, border: '1.5px solid #E0E0E0', background: '#fff', fontSize: 13, fontWeight: 600, color: '#1B2B22', textDecoration: 'none', marginBottom: 20, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
             <Phone size={16} strokeWidth={1.5} color="#555" /> Continuer par téléphone
           </Link>
 
@@ -107,12 +148,14 @@ export default function Login() {
             <div style={{ flex: 1, height: 0.5, background: '#E0E0E0' }} />
           </div>
 
+          {/* Erreur */}
           {erreur && (
             <div style={{ background: '#FFEBEE', border: '1px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: '#B71C1C' }}>
-              ⚠️ {erreur}
+              {erreur}
             </div>
           )}
 
+          {/* Formulaire */}
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: 14 }}>
               <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Adresse email</label>
@@ -156,24 +199,10 @@ export default function Login() {
             </button>
           </form>
 
-          <p style={{ textAlign: 'center', fontSize: 14, color: '#888', margin: '0 0 24px' }}>
+          <p style={{ textAlign: 'center', fontSize: 14, color: '#888', margin: 0 }}>
             Pas encore de compte ?{' '}
             <Link to="/inscription" style={{ color: '#1B6B3A', fontWeight: 700, textDecoration: 'none' }}>Créer un compte gratuit</Link>
           </p>
-
-          <div style={{ background: '#F0FBF0', border: '1px solid #A5D6A7', borderRadius: 12, padding: '14px 16px' }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#1B5E20', marginBottom: 10 }}>🧪 Comptes de démonstration</div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
-              {[{ label: '🏠 Proprio', role: 'proprio' }, { label: '🔍 Locataire', role: 'locataire' }, { label: '⚙️ Admin', role: 'admin' }].map(function(t) {
-                return (
-                  <button key={t.role} onClick={function() { remplirTest(t.role); }}
-                    style={{ padding: '7px 6px', borderRadius: 8, border: '1px solid #A5D6A7', background: '#fff', color: '#1B5E20', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
-                    {t.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
         </div>
       </div>
 
