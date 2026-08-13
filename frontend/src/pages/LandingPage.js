@@ -102,13 +102,61 @@ var PLANS = [
     recommande: false
   },
 ];
+var FAQ_LANDING = [
+  { q: 'Werdhe est-il gratuit pour les locataires ?',      r: 'Oui, 100% gratuit pour toujours. Aucun frais d\'agence, aucune commission.' },
+  { q: 'Comment fonctionne l\'essai Pro ?',                r: '14 jours d\'accès complet au plan Pro, sans carte bancaire. À la fin, vous choisissez de continuer ou non.' },
+  { q: 'Quels modes de paiement sont acceptés ?',          r: 'Orange Money, MTN MoMo, espèces et virement bancaire (BICIGUI, Ecobank).' },
+  { q: 'Mes données sont-elles sécurisées ?',              r: 'Oui. HTTPS, mots de passe hachés, 2FA admin, aucune donnée bancaire stockée.' },
+  { q: 'Puis-je gérer plusieurs logements ?',              r: 'Oui. Le plan Pro permet jusqu\'à 25 biens, le plan Agence est illimité.' },
+];
 
+function FaqLanding() {
+  var [open, setOpen] = useState(null);
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {FAQ_LANDING.map(function(item, i) {
+        var estOpen = open === i;
+        return (
+          <div key={i} style={{ background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 6px rgba(0,0,0,0.05)', border: estOpen ? '1px solid #A5D6A7' : '1px solid transparent' }}>
+            <button onClick={function() { setOpen(estOpen ? null : i); }}
+              style={{ width: '100%', padding: '16px 18px', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', textAlign: 'left', gap: 12 }}>
+              <span style={{ fontSize: 14, fontWeight: 600, color: '#1B2B22' }}>{item.q}</span>
+              <span style={{ color: '#1B6B3A', fontSize: 20, flexShrink: 0 }}>{estOpen ? '−' : '+'}</span>
+            </button>
+            {estOpen && (
+              <div style={{ padding: '0 18px 16px', fontSize: 14, color: '#555', lineHeight: 1.7, borderTop: '0.5px solid #F0F0F0', paddingTop: 12 }}>
+                {item.r}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 export default function LandingPage() {
   var navigate            = useNavigate();
   var [mobileMenu, setMobileMenu] = useState(false);
   var [ongletEtapes, setOngletEtapes] = useState('proprio');
   var heroRef             = useRef(null);
+  var [compteurs, setCompteurs] = useState({ logements: 0, utilisateurs: 0 });
 
+  useEffect(function() {
+    var start = Date.now();
+    var duration = 2000;
+    var targets = { logements: 1200, utilisateurs: 4800 };
+    var raf = requestAnimationFrame(function step() {
+      var elapsed = Date.now() - start;
+      var pct     = Math.min(elapsed / duration, 1);
+      var ease    = 1 - Math.pow(1 - pct, 3); // easeOutCubic
+      setCompteurs({
+        logements:    Math.round(targets.logements * ease),
+        utilisateurs: Math.round(targets.utilisateurs * ease),
+      });
+      if (pct < 1) requestAnimationFrame(step);
+    });
+    return function() { cancelAnimationFrame(raf); };
+  }, []);
   useEffect(function() {
     var handler = function(e) {
       if (e.key === 'Escape') setMobileMenu(false);
@@ -211,7 +259,63 @@ export default function LandingPage() {
           <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Check size={13} color="#1B6B3A" strokeWidth={2.5} /> Essai Pro 14 jours gratuits</span>
           <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Check size={13} color="#1B6B3A" strokeWidth={2.5} /> Sans carte de crédit</span>
         </div>
+        {/* Preview dashboard */}
+        <div style={{ marginTop: 48, background: '#1B2B22', borderRadius: 20, padding: '20px 20px 0', maxWidth: 700, margin: '48px auto 0', boxShadow: '0 24px 60px rgba(0,0,0,0.2)', overflow: 'hidden' }}>
+          <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
+            {['#ff5f56','#ffbd2e','#27c93f'].map(function(c, i) {
+              return <div key={i} style={{ width: 10, height: 10, borderRadius: '50%', background: c }} />;
+            })}
+            <div style={{ flex: 1, background: '#2D3F2E', borderRadius: 4, height: 10, marginLeft: 8, maxWidth: 200 }} />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: 12, height: 200, overflow: 'hidden' }}>
+            <div style={{ background: '#1B3A22', borderRadius: '10px 0 0 0', padding: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {['Tableau de bord','Mes biens','Candidatures','Paiements','Documents'].map(function(item, i) {
+                return (
+                  <div key={i} style={{ padding: '8px 10px', borderRadius: 8, background: i === 0 ? '#1B6B3A' : 'transparent', fontSize: 11, color: i === 0 ? '#fff' : 'rgba(255,255,255,0.4)', fontWeight: i === 0 ? 700 : 400 }}>
+                    {item}
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+                {[{l:'Revenus',v:'850 000 GNF',c:'#1B6B3A'},{l:'Biens',v:'3',c:'#1565C0'},{l:'Candidatures',v:'7',c:'#E65100'}].map(function(k, i) {
+                  return (
+                    <div key={i} style={{ background: '#1B3A22', borderRadius: 10, padding: '10px 12px' }}>
+                      <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', marginBottom: 4 }}>{k.l}</div>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: k.c }}>{k.v}</div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={{ background: '#1B3A22', borderRadius: 10, padding: 12, flex: 1 }}>
+                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', marginBottom: 8 }}>Revenus 6 mois</div>
+                <div style={{ display: 'flex', gap: 4, alignItems: 'flex-end', height: 60 }}>
+                  {[40,65,45,80,70,100].map(function(h, i) {
+                    return <div key={i} style={{ flex: 1, background: i === 5 ? '#F5A623' : '#1B6B3A', borderRadius: '3px 3px 0 0', height: h + '%', opacity: i === 5 ? 1 : 0.6 }} />;
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
+      {/* ─── CONFIANCE ─────────────────────────────────────────── */}
+      <div style={{ background: '#fff', borderTop: '0.5px solid #F0F0F0', borderBottom: '0.5px solid #F0F0F0', padding: '14px 24px' }}>
+        <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'clamp(16px, 4vw, 40px)', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 12, color: '#aaa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>Paiements acceptés</span>
+          {[
+            { nom: '🟠 Orange Money', couleur: '#FF6600' },
+            { nom: '🟡 MTN MoMo',    couleur: '#FFCB00' },
+            { nom: '💵 Espèces',      couleur: '#1B6B3A' },
+            { nom: '🏦 Virement',     couleur: '#1565C0' },
+          ].map(function(p, i) {
+            return (
+              <span key={i} style={{ fontSize: 13, fontWeight: 700, color: '#555', display: 'flex', alignItems: 'center', gap: 4 }}>{p.nom}</span>
+            );
+          })}
+        </div>
+      </div>
 
       {/* ─── STATS ─────────────────────────────────────────────── */}
       <section style={{ background: '#1B2B22', padding: 'clamp(32px, 5vw, 56px) 24px' }}>
@@ -219,7 +323,9 @@ export default function LandingPage() {
           {STATS.map(function(s, i) {
             return (
               <div key={i} style={{ textAlign: 'center', padding: '20px 12px' }}>
-                <div style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 900, color: i === 0 ? '#F5A623' : '#fff', letterSpacing: -1 }}>{s.valeur}</div>
+                <div style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 900, color: i === 0 ? '#F5A623' : '#fff', letterSpacing: -1 }}>
+          {i === 0 ? compteurs.logements.toLocaleString('fr-FR') + '+' : i === 1 ? compteurs.utilisateurs.toLocaleString('fr-FR') + '+' : s.valeur}
+        </div>
                 <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', marginTop: 6 }}>{s.label}</div>
               </div>
             );
@@ -387,7 +493,14 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
+      {/* ─── FAQ ───────────────────────────────────────────────── */}
+      <section style={{ padding: 'clamp(50px, 8vw, 80px) 24px', maxWidth: 700, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 36 }}>
+          <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>FAQ</div>
+          <h2 style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: 800, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>Questions fréquentes</h2>
+        </div>
+        <FaqLanding />
+      </section>
       {/* ─── CTA FINAL ───────────────────────────────────────────── */}
       <section style={{ background: '#1B6B3A', padding: 'clamp(50px, 8vw, 80px) 24px', textAlign: 'center' }}>
         <div style={{ maxWidth: 600, margin: '0 auto' }}>
