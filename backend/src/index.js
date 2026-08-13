@@ -72,6 +72,10 @@ if (manquantes.length > 0) {
 console.log('✅ Variables d\'environnement vérifiées');
 
 const app  = express();
+// Désactiver console.log en production
+if (process.env.NODE_ENV === 'production') {
+  console.log = function() {};
+}
 // Headers de sécurité
 app.use(function(req, res, next) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
