@@ -3908,6 +3908,127 @@ function OngletRapports(props) {
     </div>
   );
 }
+function SupprimerCompte({ onRetour, user }) {
+  var auth     = useAuth();
+  var navigate = useNavigate();
+  var [etape, setEtape]     = useState(1); // 1=avertissement, 2=confirmation, 3=succès
+  var [motDePasse, setMotDePasse] = useState('');
+  var [loading, setLoading] = useState(false);
+  var [erreur, setErreur]   = useState('');
+
+  function confirmer() {
+    if (etape === 1) { setEtape(2); return; }
+    if (!motDePasse) { setErreur('Entrez votre mot de passe pour confirmer'); return; }
+    setLoading(true);
+    api.delete('/auth/compte', { data: { mot_de_passe: motDePasse } })
+      .then(function() {
+        setEtape(3);
+        setTimeout(function() {
+          auth.logout();
+          navigate('/');
+        }, 3000);
+      })
+      .catch(function(err) {
+        setErreur(err.response && err.response.data ? err.response.data.erreur : 'Erreur lors de la suppression');
+        setLoading(false);
+      });
+  }
+
+  if (etape === 3) {
+    return (
+      <div className="dash-form-card" style={{ maxWidth: 500, textAlign: 'center' }}>
+        <div style={{ width: 64, height: 64, background: '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+          <CheckCircle size={32} strokeWidth={1.5} color="#1B6B3A" />
+        </div>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1B2B22', margin: '0 0 10px' }}>Compte supprimé</h3>
+        <p style={{ fontSize: 14, color: '#888' }}>Vos données ont été supprimées. Vous allez être redirigé...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="dash-form-card" style={{ maxWidth: 500 }}>
+      <h3 style={{ fontSize: 18, fontWeight: 800, color: '#E53935', margin: '0 0 20px', display: 'flex', alignItems: 'center', gap: 10 }}>
+        <Trash2 size={20} strokeWidth={2} color="#E53935" />
+        Supprimer mon compte
+      </h3>
+
+      {etape === 1 && (
+        <>
+          <div style={{ background: '#FFEBEE', borderRadius: 12, padding: '16px 18px', marginBottom: 20, border: '1px solid #FFCDD2' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#B71C1C', marginBottom: 10 }}>
+              Attention — Action irréversible
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {[
+                'Votre profil sera anonymisé',
+                'Vos logements seront masqués',
+                'Vos candidatures actives seront annulées',
+                'Vos messages seront conservés 30 jours',
+                'Les données contractuelles (baux, paiements) sont conservées 5 ans',
+              ].map(function(item, i) {
+                return (
+                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: '#C62828' }}>
+                    <AlertCircle size={14} strokeWidth={2} style={{ flexShrink: 0, marginTop: 1 }} />
+                    {item}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button onClick={onRetour}
+              style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+              Annuler
+            </button>
+            <button onClick={confirmer}
+              style={{ flex: 1, padding: '12px', borderRadius: 10, border: 'none', background: '#E53935', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+              Continuer
+            </button>
+          </div>
+        </>
+      )}
+
+      {etape === 2 && (
+        <>
+          <p style={{ fontSize: 14, color: '#555', marginBottom: 20, lineHeight: 1.6 }}>
+            Pour confirmer la suppression de votre compte <strong>{user && user.email}</strong>, entrez votre mot de passe.
+          </p>
+
+          {erreur && (
+            <div style={{ background: '#FFEBEE', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#B71C1C' }}>
+              {erreur}
+            </div>
+          )}
+
+          <div style={{ marginBottom: 20 }}>
+            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>
+              Mot de passe actuel *
+            </label>
+            <input type="password" placeholder="Votre mot de passe" value={motDePasse}
+              onChange={function(e) { setMotDePasse(e.target.value); setErreur(''); }}
+              style={{ width: '100%', padding: '11px 14px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
+          </div>
+
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button onClick={function() { setEtape(1); setMotDePasse(''); setErreur(''); }}
+              style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+              Retour
+            </button>
+            <button onClick={confirmer} disabled={loading}
+              style={{ flex: 1, padding: '12px', borderRadius: 10, border: 'none', background: loading ? '#aaa' : '#E53935', color: '#fff', fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              {loading
+                ? <><div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Suppression...</>
+                : 'Supprimer définitivement'
+              }
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 // ================================================
 // ONGLET : Parametres
 // ================================================
@@ -3954,6 +4075,7 @@ function OngletParametres(props) {
     { id: 'langue', icon: '🌐', titre: 'Langue', desc: 'Francais (Guinee)' },
     { id: 'score', icon: <Star size={22} strokeWidth={1.5} />, titre: 'Score de confiance', desc: 'Votre réputation sur Werdhe' },
     { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: 'Notifications', desc: 'Gérer mes préférences de notifications' },
+    { id: 'supprimer', icon: <Trash2 size={22} strokeWidth={1.5} color="#E53935" />, titre: 'Supprimer mon compte', desc: 'Action irréversible — toutes vos données seront effacées', danger: true },
   ];
 
   return (
@@ -3969,7 +4091,7 @@ function OngletParametres(props) {
           {menuItems.map(function(item) {
             return (
               <div key={item.id} onClick={function() { setSection(item.id); }}
-                style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer', transition: 'all 0.15s' }}
+                style={{ background: item.danger ? '#FFF5F5' : '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer', transition: 'all 0.15s', border: item.danger ? '1px solid #FFCDD2' : 'none' }}
                 onMouseEnter={function(e) { e.currentTarget.style.transform = 'translateX(4px)'; }}
                 onMouseLeave={function(e) { e.currentTarget.style.transform = 'translateX(0)'; }}>
                 <span style={{ fontSize: 28 }}>{item.icon}</span>
@@ -4168,10 +4290,12 @@ function OngletParametres(props) {
           </button>
         </div>
       )}
+      {section === 'supprimer' && (
+        <SupprimerCompte onRetour={function() { setSection(null); }} user={user} />
+      )}
     </div>
   );
 }
-
 // ================================================
 // ONGLET : Mes locations (locataire)
 // ================================================
