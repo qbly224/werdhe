@@ -1,11 +1,11 @@
-const express = require('express');
-const cors    = require('cors');
+const express   = require('express');
+const cors      = require('cors');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
-
+const app       = express();
 // Rate limiter global
 app.use(rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 200,
   message: { erreur: 'Trop de requêtes. Réessayez dans 15 minutes.' },
   standardHeaders: true,
@@ -71,7 +71,6 @@ if (manquantes.length > 0) {
 }
 console.log('✅ Variables d\'environnement vérifiées');
 
-const app  = express();
 // Désactiver console.log en production
 if (process.env.NODE_ENV === 'production') {
   console.log = function() {};
