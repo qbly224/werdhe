@@ -3,6 +3,26 @@ const cors    = require('cors');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 
+// Rate limiter global
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 200,
+  message: { erreur: 'Trop de requêtes. Réessayez dans 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+}));
+
+// Rate limiter strict pour auth
+var authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { erreur: 'Trop de tentatives de connexion. Réessayez dans 15 minutes.' },
+  skipSuccessfulRequests: true,
+});
+app.use('/auth/login', authLimiter);
+app.use('/auth/register', authLimiter);
+app.use('/auth/inscription', authLimiter);
+
 // Limiter les tentatives de connexion (10 par minute par IP)
 const limiteurConnexion = rateLimit({
   windowMs: 60 * 1000,
@@ -52,6 +72,14 @@ if (manquantes.length > 0) {
 console.log('✅ Variables d\'environnement vérifiées');
 
 const app  = express();
+// Headers de sécurité
+app.use(function(req, res, next) {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
 const logger = require('./services/loggerService');
 
 // Middleware de logging des requêtes
