@@ -1,6 +1,5 @@
 const db = require('../database');
 const emailService = require('../services/emailService');
-var { envoyerPush } = require('../routes/push');
 // ================================
 // CRÉER UNE RÉSERVATION
 // ================================
