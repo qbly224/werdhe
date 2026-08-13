@@ -18,30 +18,30 @@ var STATS = [
   { valeur: '0 GNF',  label: 'Pour les locataires'   },
 ];
 
-var AVIS = [
+var TEMOIGNAGES = [
   {
-    nom:     'Pathé Diallo',
-    role:    'Propriétaire, Conakry',
-    note:    5,
-    texte:   "Werdhe m'a permis de gérer mes 3 appartements depuis mon téléphone. Les paiements, les contrats, tout est centralisé. Je recommande vivement.",
-    initiales: 'PD',
-    couleur: '#1B6B3A'
+    nom:       'Mamadou Diallo',
+    role:      'Propriétaire, Conakry',
+    note:      5,
+    texte:     "Werdhe m'a permis de gérer mes 3 appartements depuis mon téléphone. Les paiements, les contrats, tout est centralisé.",
+    initiales: 'MD',
+    couleur:   '#1B6B3A'
   },
   {
-    nom:     'Fatoumata Camara',
-    role:    'Locataire, Ratoma',
-    note:    5,
-    texte:   "J'ai trouvé mon appartement en 48h. Le propriétaire était sérieux, le contrat signé en ligne. Plus besoin d'intermédiaire.",
+    nom:       'Fatoumata Camara',
+    role:      'Locataire, Ratoma',
+    note:      5,
+    texte:     "J'ai trouvé mon appartement en 48h. Le propriétaire était sérieux, le contrat signé en ligne. Plus besoin d'intermédiaire.",
     initiales: 'FC',
-    couleur: '#1565C0'
+    couleur:   '#1565C0'
   },
   {
-    nom:     'Abdoul Bah',
-    role:    'Propriétaire, Boké',
-    note:    5,
-    texte:   "Le système d'alertes automatiques pour les loyers en retard m'a sauvé plusieurs fois. Une vraie révolution pour la gestion locative en Guinée.",
-    initiales: 'AB',
-    couleur: '#7B1FA2'
+    nom:       'Ibrahima Bah',
+    role:      'Propriétaire, Kaloum',
+    note:      5,
+    texte:     "Le système d'alertes automatiques pour les loyers en retard m'a sauvé plusieurs fois. Une vraie révolution.",
+    initiales: 'IB',
+    couleur:   '#7B1FA2'
   },
 ];
 
