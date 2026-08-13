@@ -166,7 +166,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: '#F7F8F7', color: '#1B2B22', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: '#F7F8F7', color: '#1B2B22', overflowX: 'hidden', position: 'relative' }}>
       <SEO
         titre="Location immobilière en Guinée sans intermédiaire"
         description="Trouvez ou louez un logement en Guinée facilement. Werdhe connecte propriétaires et locataires directement. 100% gratuit pour les locataires."
@@ -174,15 +174,10 @@ export default function LandingPage() {
       />
       {/* ─── NAVBAR ─────────────────────────────────────────────── */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(247,248,247,0.92)', backdropFilter: 'blur(8px)', borderBottom: '0.5px solid rgba(27,107,58,0.12)', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ width: 32, height: 32, background: '#1B6B3A', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Home size={16} color="#fff" strokeWidth={2} />
-          </div>
-          <span style={{ fontWeight: 800, fontSize: 18, color: '#1B2B22', letterSpacing: -0.5 }}>Werdhe</span>
-        </div>
+        <Logo size={36} showText={true} darkBg={false} />
 
         <div style={{ display: 'flex', gap: 28, alignItems: 'center' }} className="nav-desktop">
-          {[['Fonctionnalités', '#fonctionnalites'], ['Comment ça marche', '#comment'], ['Tarifs', '#tarifs']].map(function(l) {
+          {[['Fonctionnalités', '#fonctionnalites'], ['Comment ça marche', '#comment'], ['Tarifs', '#tarifs'], ['Avis', '#avis'], ['FAQ', '#faq']].map(function(l) {
             return <a key={l[0]} href={l[1]} style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontWeight: 500 }}>{l[0]}</a>;
           })}
         </div>
@@ -226,7 +221,72 @@ export default function LandingPage() {
           </button>
         </div>
       )}
+      {/* ─── FOND ANIMÉ GUINÉE ──────────────────────────────── */}
+      <div style={{ position: 'absolute', top: 60, left: 0, right: 0, height: 600, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+        <svg viewBox="0 0 1440 600" style={{ width: '100%', height: '100%', opacity: 0.07 }} xmlns="http://www.w3.org/2000/svg">
+          {/* Maisons guinéennes stylisées */}
+          <g transform="translate(100, 200)">
+            <polygon points="60,0 120,60 0,60" fill="#1B6B3A" />
+            <rect x="20" y="60" width="80" height="80" fill="#1B6B3A" />
+            <rect x="45" y="100" width="30" height="40" fill="#F5A623" />
+          </g>
+          <g transform="translate(300, 220)">
+            <polygon points="50,0 100,50 0,50" fill="#1B6B3A" />
+            <rect x="15" y="50" width="70" height="70" fill="#1B6B3A" />
+            <rect x="35" y="85" width="25" height="35" fill="#F5A623" />
+          </g>
+          <g transform="translate(1100, 180)">
+            <polygon points="70,0 140,70 0,70" fill="#1B6B3A" />
+            <rect x="25" y="70" width="90" height="90" fill="#1B6B3A" />
+            <rect x="50" y="110" width="35" height="50" fill="#F5A623" />
+          </g>
+          <g transform="translate(1280, 210)">
+            <polygon points="50,0 100,50 0,50" fill="#1B6B3A" />
+            <rect x="15" y="50" width="70" height="70" fill="#1B6B3A" />
+          </g>
+          {/* Collines guinéennes */}
+          <ellipse cx="200" cy="520" rx="300" ry="120" fill="#1B6B3A" />
+          <ellipse cx="800" cy="550" rx="400" ry="100" fill="#1B6B3A" />
+          <ellipse cx="1300" cy="530" rx="280" ry="110" fill="#1B6B3A" />
+          {/* Soleil */}
+          <circle cx="1350" cy="120" r="60" fill="#F5A623" opacity="0.5" />
+          {/* Palmiers */}
+          <line x1="550" y1="500" x2="550" y2="350" stroke="#1B6B3A" strokeWidth="8" />
+          <ellipse cx="550" cy="340" rx="40" ry="20" fill="#1B6B3A" transform="rotate(-20, 550, 340)" />
+          <ellipse cx="550" cy="340" rx="40" ry="20" fill="#1B6B3A" transform="rotate(20, 550, 340)" />
+          <ellipse cx="550" cy="340" rx="40" ry="20" fill="#1B6B3A" transform="rotate(60, 550, 340)" />
+          <line x1="900" y1="490" x2="900" y2="370" stroke="#1B6B3A" strokeWidth="6" />
+          <ellipse cx="900" cy="360" rx="30" ry="15" fill="#1B6B3A" transform="rotate(-20, 900, 360)" />
+          <ellipse cx="900" cy="360" rx="30" ry="15" fill="#1B6B3A" transform="rotate(30, 900, 360)" />
+        </svg>
 
+        {/* Personnages animés */}
+        <div style={{ position: 'absolute', bottom: 60, left: '15%', animation: 'flottement 4s ease-in-out infinite' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 48 }}>👨‍💼</div>
+            <div style={{ fontSize: 10, color: '#1B6B3A', fontWeight: 700, marginTop: 4 }}>Propriétaire</div>
+          </div>
+        </div>
+        <div style={{ position: 'absolute', bottom: 60, right: '15%', animation: 'flottement 4s ease-in-out infinite 1s' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 48 }}>👩</div>
+            <div style={{ fontSize: 10, color: '#1B6B3A', fontWeight: 700, marginTop: 4 }}>Locataire</div>
+          </div>
+        </div>
+        <div style={{ position: 'absolute', bottom: 80, left: '50%', transform: 'translateX(-50%)', animation: 'flottement 3s ease-in-out infinite 0.5s' }}>
+          <div style={{ fontSize: 56 }}>🏠</div>
+        </div>
+
+        {/* Flèches de connexion animées */}
+        <svg style={{ position: 'absolute', bottom: 70, left: '20%', width: '60%', height: 60 }} viewBox="0 0 400 60">
+          <path d="M30 30 Q200 10 370 30" stroke="#1B6B3A" strokeWidth="2" fill="none" strokeDasharray="8 4" opacity="0.4">
+            <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="1.5s" repeatCount="indefinite" />
+          </path>
+          <path d="M370 30 Q200 50 30 30" stroke="#F5A623" strokeWidth="2" fill="none" strokeDasharray="8 4" opacity="0.4">
+            <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="1.5s" repeatCount="indefinite" />
+          </path>
+        </svg>
+      </div>
       {/* ─── HERO ───────────────────────────────────────────────── */}
       <section ref={heroRef} style={{ padding: 'clamp(60px, 10vw, 100px) 24px clamp(40px, 8vw, 80px)', textAlign: 'center', maxWidth: 800, margin: '0 auto' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#E8F5E9', border: '1px solid #A5D6A7', borderRadius: 20, padding: '5px 14px', marginBottom: 24 }}>
@@ -462,8 +522,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ─── TÉMOIGNAGES ─────────────────────────────────────────── */}
-      <section style={{ background: '#F0F8F3', padding: 'clamp(50px, 8vw, 90px) 24px' }}>
+      {/* ─── TÉMOIGNAGES / AVIS */}
+      <section id="avis" style={{ background: '#F0F8F3', padding: 'clamp(50px, 8vw, 90px) 24px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
             <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>Témoignages</div>
@@ -494,7 +554,7 @@ export default function LandingPage() {
         </div>
       </section>
       {/* ─── FAQ ───────────────────────────────────────────────── */}
-      <section style={{ padding: 'clamp(50px, 8vw, 80px) 24px', maxWidth: 700, margin: '0 auto' }}>
+      <section id="faq" style={{ padding: 'clamp(50px, 8vw, 80px) 24px', maxWidth: 700, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
           <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>FAQ</div>
           <h2 style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: 800, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>Questions fréquentes</h2>
@@ -528,11 +588,8 @@ export default function LandingPage() {
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 32, marginBottom: 40 }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-                <div style={{ width: 28, height: 28, background: '#1B6B3A', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Home size={14} color="#fff" strokeWidth={2} />
-                </div>
-                <span style={{ fontWeight: 800, fontSize: 16, color: '#fff' }}>Werdhe</span>
+              <div style={{ marginBottom: 14 }}>
+                <Logo size={32} showText={true} darkBg={true} />
               </div>
               <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6, margin: '0 0 14px' }}>
                 La plateforme immobilière de référence en Guinée.
@@ -584,6 +641,10 @@ export default function LandingPage() {
         button { transition: opacity .15s, transform .1s; }
         button:hover { opacity: 0.9; }
         button:active { transform: scale(0.98); }
+        @keyframes flottement {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
       `}</style>
     </div>
   );

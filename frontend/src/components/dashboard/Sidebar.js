@@ -67,18 +67,17 @@ export default function Sidebar(props) {
       zIndex: 1000,
       overflow: 'hidden'
     }}>
-
       <div style={{padding:'20px 16px', borderBottom:'1px solid rgba(255,255,255,0.1)', flexShrink:0}}>
         <div style={{display:'flex', alignItems:'center', gap:10}}>
-          <div style={{
-            width:38, height:38, background:'#F5A623',
-            borderRadius:10, display:'flex', alignItems:'center',
-            justifyContent:'center', fontSize:20, flexShrink:0
-          }}>🏠</div>
+          <Logo size={38} showText={false} variant="gold" />
           {open && (
             <div>
               <div style={{color:'#fff', fontWeight:800, fontSize:16, letterSpacing:0.5, whiteSpace:'nowrap'}}>Werdhe</div>
-              <div style={{color:'rgba(255,255,255,0.6)', fontSize:11}}>Gestion Locative</div>
+              <div style={{color:'rgba(255,255,255,0.5)', fontSize:11, marginTop:2}}>
+                {user && (user.role === 'proprietaire' || user.role === 'les_deux')
+                  ? 'Espace propriétaire'
+                  : 'Espace locataire'}
+              </div>
             </div>
           )}
         </div>
