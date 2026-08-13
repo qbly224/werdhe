@@ -135,12 +135,54 @@ function FaqLanding() {
     </div>
   );
 }
+var SLIDES = [
+  {
+    titre:    'Louer à Conakry',
+    sous:     'La capitale, des milliers de logements disponibles',
+    bg:       'linear-gradient(135deg, #0F2417 0%, #1B4A2A 40%, #2D7A4A 100%)',
+    emoji:    '🌆',
+    tag:      'Conakry · Kaloum · Ratoma',
+    couleur:  '#F5A623',
+  },
+  {
+    titre:    'Trouver votre Villa/Appartement',
+    sous:     'Des maisons modernes au cœur de la Guinée',
+    bg:       'linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%)',
+    emoji:    '🏡',
+    tag:      'Boké · Kindia · Coyah · Dubréka',
+    couleur:  '#34A853',
+  },
+  {
+    titre:    'Loger les étudiants et autres',
+    sous:     'Studios et chambres proches des universités',
+    bg:       'linear-gradient(135deg, #2C1810 0%, #4A2C1A 50%, #1B6B3A 100%)',
+    emoji:    '🎓',
+    tag:      'Boké · Labé · Kankan · Faranah',
+    couleur:  '#F5A623',
+  },
+  {
+    titre:    'Gérer vos biens',
+    sous:     'Un tableau de bord complet pour les propriétaires',
+    bg:       'linear-gradient(135deg, #1B2B22 0%, #1B6B3A 60%, #2D9E5F 100%)',
+    emoji:    '📊',
+    tag:      'Werdhe · Plateforme immobilière guinéenne',
+    couleur:  '#fff',
+  },
+];
 export default function LandingPage() {
   var navigate            = useNavigate();
   var [mobileMenu, setMobileMenu] = useState(false);
   var [ongletEtapes, setOngletEtapes] = useState('proprio');
   var heroRef             = useRef(null);
   var [compteurs, setCompteurs] = useState({ logements: 0, utilisateurs: 0 });
+  var [slideActif, setSlideActif] = useState(0);
+
+useEffect(function() {
+  var interval = setInterval(function() {
+    setSlideActif(function(i) { return (i + 1) % SLIDES.length; });
+  }, 5000);
+  return function() { clearInterval(interval); };
+}, []);
 
   useEffect(function() {
     var start = Date.now();
@@ -288,76 +330,111 @@ export default function LandingPage() {
           </path>
         </svg>
       </div>
-      {/* ─── HERO ───────────────────────────────────────────────── */}
-      <section ref={heroRef} style={{ padding: 'clamp(60px, 10vw, 100px) 24px clamp(40px, 8vw, 80px)', textAlign: 'center', maxWidth: 800, margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#E8F5E9', border: '1px solid #A5D6A7', borderRadius: 20, padding: '5px 14px', marginBottom: 24 }}>
-          <div style={{ width: 7, height: 7, background: '#1B6B3A', borderRadius: '50%' }} />
-          <span style={{ fontSize: 13, color: '#1B5E20', fontWeight: 600 }}>Plateforme immobilière guinéenne</span>
-        </div>
+      {/* ─── HERO PLEIN ÉCRAN ────────────────────────────────── */}
+      <section ref={heroRef} style={{ position: 'relative', height: '100vh', minHeight: 600, maxHeight: 900, overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
 
-        <h1 style={{ fontSize: 'clamp(32px, 6vw, 58px)', fontWeight: 900, lineHeight: 1.1, color: '#1B2B22', margin: '0 0 20px', letterSpacing: -1.5 }}>
-          Louer en Guinée,{' '}
-          <span style={{ color: '#1B6B3A', borderBottom: '4px solid #F5A623', paddingBottom: 2 }}>sans intermédiaire</span>
-        </h1>
+        {/* Slides arrière-plan */}
+        {SLIDES.map(function(slide, i) {
+          return (
+            <div key={i} style={{
+              position: 'absolute', inset: 0,
+              background: slide.bg,
+              opacity: slideActif === i ? 1 : 0,
+              transition: 'opacity 1.2s ease',
+              zIndex: 0,
+            }}>
+              {/* Éléments visuels du slide */}
+              <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+                {/* Formes géométriques inspirées Guinée */}
+                <svg style={{ position: 'absolute', bottom: 0, left: 0, right: 0, width: '100%', opacity: 0.15 }} viewBox="0 0 1440 320" preserveAspectRatio="none">
+                  <path d="M0,200 C200,100 400,300 600,180 C800,60 1000,250 1200,150 C1350,80 1400,180 1440,160 L1440,320 L0,320 Z" fill="#fff" />
+                </svg>
+                {/* Montagne/colline guinéenne */}
+                <svg style={{ position: 'absolute', bottom: 0, right: '5%', opacity: 0.12, width: 400, height: 300 }} viewBox="0 0 400 300">
+                  <polygon points="200,0 400,300 0,300" fill="#fff" />
+                  <polygon points="120,80 280,300 0,300" fill="#fff" opacity="0.5" />
+                </svg>
+                {/* Soleil levant */}
+                <div style={{ position: 'absolute', top: 60, right: '10%', width: 120, height: 120, borderRadius: '50%', background: slide.couleur, opacity: 0.15, filter: 'blur(20px)' }} />
+                <div style={{ position: 'absolute', top: 80, right: '11%', width: 80, height: 80, borderRadius: '50%', background: slide.couleur, opacity: 0.2 }} />
+                {/* Palmiers */}
+                <svg style={{ position: 'absolute', bottom: 40, left: '5%', opacity: 0.2, width: 80, height: 200 }} viewBox="0 0 80 200">
+                  <line x1="40" y1="200" x2="40" y2="80" stroke="#fff" strokeWidth="5" />
+                  <ellipse cx="40" cy="70" rx="35" ry="15" fill="#fff" transform="rotate(-25 40 70)" />
+                  <ellipse cx="40" cy="70" rx="35" ry="15" fill="#fff" transform="rotate(15 40 70)" />
+                  <ellipse cx="40" cy="70" rx="30" ry="12" fill="#fff" transform="rotate(55 40 70)" />
+                </svg>
+                <svg style={{ position: 'absolute', bottom: 60, left: '8%', opacity: 0.15, width: 60, height: 150 }} viewBox="0 0 60 150">
+                  <line x1="30" y1="150" x2="30" y2="50" stroke="#fff" strokeWidth="4" />
+                  <ellipse cx="30" cy="42" rx="26" ry="12" fill="#fff" transform="rotate(-20 30 42)" />
+                  <ellipse cx="30" cy="42" rx="26" ry="12" fill="#fff" transform="rotate(20 30 42)" />
+                </svg>
+              </div>
+            </div>
+          );
+        })}
 
-        <p style={{ fontSize: 'clamp(16px, 2vw, 20px)', color: '#555', lineHeight: 1.6, margin: '0 auto 36px', maxWidth: 560 }}>
-          Werdhe connecte propriétaires et locataires directement — candidatures, dossiers, baux, paiements. Tout en un seul endroit.
-        </p>
+        {/* Overlay sombre pour lisibilité */}
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 1 }} />
 
-        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button onClick={function() { navigate('/inscription'); }}
-            style={{ padding: '14px 28px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
-            Démarrer gratuitement <ArrowRight size={16} strokeWidth={2} />
-          </button>
-          <button onClick={function() { navigate('/logements'); }}
-            style={{ padding: '14px 28px', borderRadius: 12, border: '1.5px solid #E0E0E0', background: '#fff', color: '#1B2B22', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
-            Chercher un logement
-          </button>
-        </div>
+        {/* Contenu */}
+        <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 900, margin: '0 auto', padding: '0 24px' }}>
 
-        <div style={{ marginTop: 20, fontSize: 12, color: '#888', display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Check size={13} color="#1B6B3A" strokeWidth={2.5} /> 100% gratuit pour les locataires</span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Check size={13} color="#1B6B3A" strokeWidth={2.5} /> Essai Pro 14 jours gratuits</span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Check size={13} color="#1B6B3A" strokeWidth={2.5} /> Sans carte de crédit</span>
-        </div>
-        {/* Preview dashboard */}
-        <div style={{ marginTop: 48, background: '#1B2B22', borderRadius: 20, padding: '20px 20px 0', maxWidth: 700, margin: '48px auto 0', boxShadow: '0 24px 60px rgba(0,0,0,0.2)', overflow: 'hidden' }}>
-          <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
-            {['#ff5f56','#ffbd2e','#27c93f'].map(function(c, i) {
-              return <div key={i} style={{ width: 10, height: 10, borderRadius: '50%', background: c }} />;
-            })}
-            <div style={{ flex: 1, background: '#2D3F2E', borderRadius: 4, height: 10, marginLeft: 8, maxWidth: 200 }} />
+          {/* Tag */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '5px 14px', marginBottom: 24 }}>
+            <div style={{ width: 7, height: 7, background: SLIDES[slideActif].couleur, borderRadius: '50%', animation: 'pulse 2s ease infinite' }} />
+            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.9)', fontWeight: 600 }}>{SLIDES[slideActif].tag}</span>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: 12, height: 200, overflow: 'hidden' }}>
-            <div style={{ background: '#1B3A22', borderRadius: '10px 0 0 0', padding: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {['Tableau de bord','Mes biens','Candidatures','Paiements','Documents'].map(function(item, i) {
-                return (
-                  <div key={i} style={{ padding: '8px 10px', borderRadius: 8, background: i === 0 ? '#1B6B3A' : 'transparent', fontSize: 11, color: i === 0 ? '#fff' : 'rgba(255,255,255,0.4)', fontWeight: i === 0 ? 700 : 400 }}>
-                    {item}
-                  </div>
-                );
-              })}
-            </div>
-            <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-                {[{l:'Revenus',v:'850 000 GNF',c:'#1B6B3A'},{l:'Biens',v:'3',c:'#1565C0'},{l:'Candidatures',v:'7',c:'#E65100'}].map(function(k, i) {
-                  return (
-                    <div key={i} style={{ background: '#1B3A22', borderRadius: 10, padding: '10px 12px' }}>
-                      <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', marginBottom: 4 }}>{k.l}</div>
-                      <div style={{ fontSize: 14, fontWeight: 800, color: k.c }}>{k.v}</div>
-                    </div>
-                  );
-                })}
-              </div>
-              <div style={{ background: '#1B3A22', borderRadius: 10, padding: 12, flex: 1 }}>
-                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', marginBottom: 8 }}>Revenus 6 mois</div>
-                <div style={{ display: 'flex', gap: 4, alignItems: 'flex-end', height: 60 }}>
-                  {[40,65,45,80,70,100].map(function(h, i) {
-                    return <div key={i} style={{ flex: 1, background: i === 5 ? '#F5A623' : '#1B6B3A', borderRadius: '3px 3px 0 0', height: h + '%', opacity: i === 5 ? 1 : 0.6 }} />;
-                  })}
-                </div>
-              </div>
-            </div>
+
+          {/* Titre grand */}
+          <h1 style={{ fontSize: 'clamp(36px, 7vw, 72px)', fontWeight: 900, color: '#fff', margin: '0 0 16px', letterSpacing: -2, lineHeight: 1.05, textShadow: '0 2px 20px rgba(0,0,0,0.3)' }}>
+            {SLIDES[slideActif].emoji}{' '}
+            <span style={{ color: SLIDES[slideActif].couleur }}>{SLIDES[slideActif].titre}</span>
+          </h1>
+
+          <p style={{ fontSize: 'clamp(16px, 2vw, 20px)', color: 'rgba(255,255,255,0.8)', margin: '0 0 36px', lineHeight: 1.5, maxWidth: 560 }}>
+            {SLIDES[slideActif].sous}
+          </p>
+
+          {/* Boutons */}
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <button onClick={function() { navigate('/inscription'); }}
+              style={{ padding: '14px 28px', borderRadius: 12, border: 'none', background: '#F5A623', color: '#1B2B22', fontSize: 15, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 4px 20px rgba(245,166,35,0.4)' }}>
+              Démarrer gratuitement <ArrowRight size={16} strokeWidth={2.5} />
+            </button>
+            <button onClick={function() { navigate('/logements'); }}
+              style={{ padding: '14px 28px', borderRadius: 12, border: '1.5px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+              Voir les logements
+            </button>
+          </div>
+
+          {/* Checkmarks */}
+          <div style={{ marginTop: 24, display: 'flex', gap: 20, flexWrap: 'wrap' }}>
+            {['100% gratuit pour les locataires', 'Essai Pro 14 jours', 'Sans carte de crédit'].map(function(item) {
+              return (
+                <span key={item} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>
+                  <Check size={14} strokeWidth={2.5} color="#34A853" /> {item}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Indicateurs slides en bas */}
+        <div style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8, zIndex: 2 }}>
+          {SLIDES.map(function(_, i) {
+            return (
+              <button key={i} onClick={function() { setSlideActif(i); }}
+                style={{ width: slideActif === i ? 28 : 8, height: 8, borderRadius: 4, border: 'none', background: slideActif === i ? '#F5A623' : 'rgba(255,255,255,0.4)', cursor: 'pointer', transition: 'all .4s', padding: 0 }} />
+            );
+          })}
+        </div>
+
+        {/* Flèche scroll */}
+        <div style={{ position: 'absolute', bottom: 32, right: 32, zIndex: 2, animation: 'flottement 2s ease-in-out infinite' }}>
+          <div style={{ width: 40, height: 40, borderRadius: '50%', border: '1.5px solid rgba(255,255,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+            onClick={function() { document.getElementById('comment').scrollIntoView({ behavior: 'smooth' }); }}>
+            <ChevronRight size={18} color="rgba(255,255,255,0.7)" strokeWidth={2} style={{ transform: 'rotate(90deg)' }} />
           </div>
         </div>
       </section>
