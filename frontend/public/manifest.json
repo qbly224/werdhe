@@ -1,18 +1,21 @@
 {
   "short_name": "Werdhe",
-  "name": "Werdhe - Immobilier Guinée",
-  "description": "Plateforme de location immobilière en Guinée",
-  "icons": [
-    { "src": "favicon.ico", "sizes": "64x64 32x32 24x24 16x16", "type": "image/x-icon" },
-    { "src": "logo192.png", "type": "image/png", "sizes": "192x192", "purpose": "any maskable" },
-    { "src": "logo512.png", "type": "image/png", "sizes": "512x512" }
-  ],
-  "start_url": "/dashboard",
-  "scope": "/",
+  "name": "Werdhe - Location immobilière en Guinée",
+  "description": "La plateforme immobilière de référence en Guinée. Connectez propriétaires et locataires directement.",
+  "lang": "fr",
+  "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "theme_color": "#1B6B3A",
   "background_color": "#F7F8F7",
-  "orientation": "portrait",
-  "categories": ["business", "finance"],
-  "lang": "fr"
+  "categories": ["lifestyle", "utilities"],
+  "icons": [
+    { "src": "/logo192.png", "type": "image/png", "sizes": "192x192", "purpose": "any maskable" },
+    { "src": "/logo512.png", "type": "image/png", "sizes": "512x512", "purpose": "any maskable" },
+    { "src": "/favicon.ico", "type": "image/x-icon", "sizes": "64x64 32x32 24x24 16x16" }
+  ],
+  "shortcuts": [
+    { "name": "Chercher un logement", "short_name": "Logements", "url": "/logements", "description": "Voir les logements disponibles" },
+    { "name": "Mon dashboard", "short_name": "Dashboard", "url": "/dashboard", "description": "Accéder à mon espace" }
+  ]
 }

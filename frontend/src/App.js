@@ -20,7 +20,38 @@ import AuthCallback from './pages/AuthCallback';
 import Login2FA from './pages/Login2FA';
 import { HelmetProvider } from 'react-helmet-async';
 import NotFound from './pages/NotFound';
-import { lazy, Suspense } from 'react';
+import React, { lazy, Suspense } from 'react';
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(error, info) { console.error('[ErrorBoundary]', error, info); }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui', background: '#F7F8F7', padding: 24, textAlign: 'center' }}>
+          <div style={{ width: 64, height: 64, background: '#1B6B3A', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+            <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
+              <path d="M18 14 L24 9 L30 14 L30 20 L18 20 Z" fill="#F5A623"/>
+              <rect x="22.5" y="20" width="3" height="16" rx="1" fill="#F5A623"/>
+              <rect x="22.5" y="28" width="7" height="3" rx="1" fill="#F5A623"/>
+              <rect x="22.5" y="33" width="5" height="3" rx="1" fill="#F5A623"/>
+            </svg>
+          </div>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>Une erreur est survenue</h2>
+          <p style={{ fontSize: 14, color: '#888', margin: '0 0 24px' }}>Rechargez la page pour continuer.</p>
+          <button onClick={function() { window.location.reload(); }}
+            style={{ padding: '12px 24px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+            Recharger la page
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 var Dashboard       = lazy(function() { return import('./pages/Dashboard'); });
 var Admin           = lazy(function() { return import('./pages/Admin'); });
 var Logements       = lazy(function() { return import('./pages/Logements'); });
@@ -40,6 +71,7 @@ function RoutePrivee(props) {
 
 function App() {
   return (
+    <ErrorBoundary>
     <HelmetProvider>
       <AuthProvider>
         <BrowserRouter>
@@ -87,6 +119,7 @@ function App() {
         </BrowserRouter>
       </AuthProvider>
     </HelmetProvider>
+    </ErrorBoundary>
   );
 }
 
