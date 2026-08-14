@@ -543,9 +543,10 @@ function OngletBiens(props) {
   var recharger = props.recharger;
   var user      = props.user;
   var setOnglet = props.setOnglet;
-  var plan      = props.plan || { plan: 'gratuit', droits: { max_biens: 2 }, nb_biens: 0 }; // ← AJOUTER
+  var plan      = props.plan || { plan: 'gratuit', droits: { max_biens: 2 }, nb_biens: 0 };
   var estProprio = user && (user.role === 'proprietaire' || user.role === 'les_deux');
-  var limiteAtteinte = plan.nb_biens >= plan.droits.max_biens;
+  // Dans OngletBiens, après la déclaration de limiteAtteinte
+  var limiteAtteinte = plan.nb_biens >= 20 && plan.plan !== 'agence';
 
   var [showConfirm, setShowConfirm] = useState(null);
   var [modeEdit, setModeEdit]       = useState(null);
@@ -651,6 +652,20 @@ function OngletBiens(props) {
                   <span style={{display:'flex',alignItems:'center',gap:5}}><FileText size={14} strokeWidth={1.5}/> Documents</span>
                 </button>
               </div>
+              {limiteAtteinte ? (
+  <div style={{ background: '#FFF3E0', border: '1px solid #FFE082', borderRadius: 10, padding: '10px 16px', fontSize: 13, color: '#7B4F00', display: 'flex', alignItems: 'center', gap: 10 }}>
+    <AlertCircle size={16} strokeWidth={1.5} color="#E65100" />
+    Limite de 20 logements atteinte.{' '}
+    <button onClick={function() { navigate('/pricing'); }}
+      style={{ background: 'none', border: 'none', color: '#7B1FA2', fontWeight: 700, cursor: 'pointer', padding: 0, fontSize: 13 }}>
+      Passer au plan Agence →
+    </button>
+  </div>
+) : (
+  <Link to="/logements/ajouter" className="btn-green" style={{ textDecoration: 'none' }}>
+    + Ajouter un bien
+  </Link>
+)}
             </div>
           );
         })}
@@ -4363,6 +4378,46 @@ function OngletMesLocations(props) {
     </div>
   );
 }
+function UpgradePrompt({ fonctionnalite, planRequis, setOnglet }) {
+  var navigate = useNavigate();
+  var CONFIGS = {
+    multi_users: {
+      titre:  'Multi-utilisateurs',
+      desc:   'Ajoutez jusqu\'à 5 comptes pour votre équipe. Disponible avec le plan Agence.',
+      icon:   <Users size={36} strokeWidth={1} color="#7B1FA2" />,
+      bg:     '#F3E5F5',
+      color:  '#7B1FA2',
+    },
+    logements_illimites: {
+      titre:  'Logements illimités',
+      desc:   'Vous avez atteint la limite de 20 logements du plan Pro. Passez au plan Agence pour des biens illimités.',
+      icon:   <Building2 size={36} strokeWidth={1} color="#7B1FA2" />,
+      bg:     '#F3E5F5',
+      color:  '#7B1FA2',
+    },
+  };
+  var cfg = CONFIGS[fonctionnalite] || { titre: 'Fonctionnalité Agence', desc: 'Disponible avec le plan Agence.', icon: <Zap size={36} strokeWidth={1} color="#7B1FA2" />, bg: '#F3E5F5', color: '#7B1FA2' };
+
+  return (
+    <div style={{ background: '#fff', borderRadius: 16, padding: 32, textAlign: 'center', maxWidth: 420, margin: '40px auto', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
+      <div style={{ width: 72, height: 72, background: cfg.bg, borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+        {cfg.icon}
+      </div>
+      <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>{cfg.titre}</h3>
+      <p style={{ fontSize: 14, color: '#666', lineHeight: 1.7, margin: '0 0 24px' }}>{cfg.desc}</p>
+      <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+        <button onClick={function() { navigate('/pricing'); }}
+          style={{ padding: '12px 20px', borderRadius: 10, border: 'none', background: '#7B1FA2', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+          Passer au plan Agence
+        </button>
+        <button onClick={function() { setOnglet('/dashboard'); }}
+          style={{ padding: '12px 20px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 14, cursor: 'pointer' }}>
+          Retour
+        </button>
+      </div>
+    </div>
+  );
+}
 // ================================================
 // COMPOSANT PRINCIPAL : Dashboard
 // ================================================
@@ -4567,6 +4622,16 @@ function chargerDonnees() {
       .catch(function() { toast.error('Erreur'); });
   }
 
+// ================================================
+  // Helper — vérifier accès par plan
+  // ================================================
+  function peutAcceder(fonctionnalite) {
+    var droitsAgence = ['multi_users', 'codes_promo', 'rapport_auto'];
+    if (droitsAgence.includes(fonctionnalite)) {
+      return monPlan && monPlan.plan === 'agence';
+    }
+    return true;
+  }
   // ================================================
   // Rendu de l'onglet actif
   // ================================================

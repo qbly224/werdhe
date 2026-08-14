@@ -118,7 +118,15 @@ export default function Sidebar(props) {
           );
         })}
       </nav>
-
+      {/* Badge plan */}
+{user && user.plan && user.plan !== 'gratuit' && open && (
+  <div style={{ margin: '8px 12px', background: user.plan === 'agence' ? 'rgba(123,31,162,0.2)' : 'rgba(27,107,58,0.2)', borderRadius: 8, padding: '5px 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
+    <Zap size={12} strokeWidth={2} color={user.plan === 'agence' ? '#CE93D8' : '#A5D6A7'} />
+    <span style={{ fontSize: 11, color: user.plan === 'agence' ? '#CE93D8' : '#A5D6A7', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+      Plan {user.plan}
+    </span>
+  </div>
+)}
       <div style={{padding:'14px 12px', borderTop:'1px solid rgba(255,255,255,0.1)', flexShrink:0}}>
         <div style={{display:'flex', alignItems:'center', gap:10}}>
           <div style={{
