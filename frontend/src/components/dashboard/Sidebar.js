@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Home, Users, CalendarCheck,
   CreditCard, FileText, Bell, MessageCircle,
-  Wrench, Send, Settings, TrendingUp, Clock 
+  Wrench, Send, Settings, TrendingUp, Clock, Zap
 } from 'lucide-react';
 import Logo from '../Logo';
 import { useAuth } from '../../context/AuthContext';
