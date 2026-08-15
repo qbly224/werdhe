@@ -123,7 +123,7 @@ export default function Pricing() {
           Des tarifs clairs pour tous
         </h1>
         <p style={{ fontSize: 16, color: '#888', margin: '0 0 28px', maxWidth: 480, marginLeft: 'auto', marginRight: 'auto' }}>
-          L'espace locataire est 100% gratuit. Les propriétaires bénéficient d'un essai Pro de 14 jours.
+          Choisissez le plan qui correspond à votre activité. Essai Pro 14 jours gratuit.
         </p>
 
         {/* Toggle mensuel / annuel */}
@@ -193,9 +193,9 @@ export default function Pricing() {
                 <button
                   onClick={function() {
                     if (plan.id === 'agence') {
-                      window.location.href = 'mailto:contact@werdhe.com?subject=Plan Agence Werdhe';
+                      navigate('/inscription?role=proprietaire&plan=agence');
                     } else {
-                      navigate('/inscription?role=' + (plan.id === 'gratuit' ? 'locataire' : 'proprietaire'));
+                      navigate('/inscription?role=proprietaire');
                     }
                   }}
                   style={{ width: '100%', padding: '12px', borderRadius: 12, border: plan.recommande ? 'none' : '1.5px solid ' + plan.couleur, background: plan.recommande ? plan.couleur : 'transparent', color: plan.recommande ? '#fff' : plan.couleur, fontSize: 14, fontWeight: 700, cursor: 'pointer', marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, transition: 'all .2s' }}>
@@ -255,7 +255,7 @@ export default function Pricing() {
         </h2>
         <div style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
           {/* Header */}
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', background: '#1B2B22', padding: '16px 20px', gap: 8 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', background: '#1B2B22', padding: '16px 20px', gap: 8 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.5)' }}>Fonctionnalité</div>
             {PLANS.map(function(p) {
               return <div key={p.id} style={{ fontSize: 13, fontWeight: 700, color: p.recommande ? '#F5A623' : '#fff', textAlign: 'center' }}>{p.nom}</div>;
@@ -274,7 +274,7 @@ export default function Pricing() {
             { label: 'Support dédié',            vals: ['Email', 'Téléphone']  },
           ].map(function(row, i) {
             return (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', padding: '13px 20px', background: i % 2 === 0 ? '#fff' : '#FAFAFA', borderBottom: '0.5px solid #F0F0F0', gap: 8, alignItems: 'center' }}>
+              <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', padding: '13px 20px', background: i % 2 === 0 ? '#fff' : '#FAFAFA', borderBottom: '0.5px solid #F0F0F0', gap: 8, alignItems: 'center' }}>
                 <div style={{ fontSize: 13, color: '#555' }}>{row.label}</div>
                 {row.vals.map(function(v, vi) {
                   var plan = PLANS[vi];
@@ -334,7 +334,7 @@ export default function Pricing() {
             style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, background: '#F5A623', color: '#1B2B22', textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>
             Je suis propriétaire <ArrowRight size={16} strokeWidth={2.5} />
           </Link>
-          <Link to="/inscription?role=locataire"
+          <Link to="/inscription?role=proprietaire"
             style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: 15 }}>
             Je cherche un logement
           </Link>
