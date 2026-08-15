@@ -70,23 +70,12 @@ var FONCTIONNALITES = [
 
 var PLANS = [
   {
-    nom: 'Locataire',
-    prix: 0,
-    sousTitre: 'Toujours gratuit',
-    couleur: '#1565C0',
-    bg: '#E3F2FD',
-    features: ['Recherche avancée', 'Candidatures illimitées', 'Messagerie', 'Suivi de dossier', 'Signature électronique'],
-    cta: 'Trouver un logement',
-    role: 'locataire',
-    recommande: false
-  },
-  {
     nom: 'Pro',
     prix: 120000,
-    sousTitre: "Jusqu'à 25 biens",
+    sousTitre: "Jusqu'à 20 biens",
     couleur: '#1B6B3A',
     bg: '#E8F5E9',
-    features: ['Tout du gratuit', 'Orange Money + MTN', 'Baux et quittances PDF', 'Alertes automatiques', 'Rapports financiers', 'Essai 14 jours'],
+    features: ['Orange Money + MTN MoMo', 'Baux et quittances PDF', 'Alertes automatiques', 'Rapports financiers', 'Essai 14 jours'],
     cta: 'Essai gratuit 14 jours',
     role: 'proprietaire',
     recommande: true
@@ -97,7 +86,7 @@ var PLANS = [
     sousTitre: 'Biens illimités',
     couleur: '#7B1FA2',
     bg: '#F3E5F5',
-    features: ['Tout du plan Pro', 'Multi-utilisateurs', 'API et intégrations', 'Marque blanche', 'Support prioritaire'],
+    features: ['Tout du plan Pro', 'Multi-utilisateurs (5 comptes)', 'Rapport mensuel automatique', 'Support téléphonique dédié'],
     cta: 'Nous contacter',
     role: 'agence',
     recommande: false

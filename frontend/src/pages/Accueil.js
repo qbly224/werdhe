@@ -258,29 +258,14 @@ export default function Accueil() {
           <p>L'espace locataire est toujours 100% gratuit</p>
         </div>
         <div className="accueil-plans">
-          <div className="accueil-plan">
-            <div className="accueil-plan-type">Gratuit</div>
-            <div className="accueil-plan-price">0 <span>GNF/mois</span></div>
-            <div className="accueil-plan-sub">1 a 2 biens</div>
-            <Link to="/register" className="accueil-btn-outline accueil-btn-full" style={{textAlign:'center',display:'block'}}>Demarrer</Link>
-            <div className="accueil-plan-features">
-              <div className="accueil-plan-feature accueil-plan-feature-ok">Gestion basique</div>
-              <div className="accueil-plan-feature accueil-plan-feature-ok">Alertes loyers</div>
-              <div className="accueil-plan-feature accueil-plan-feature-ok">Messagerie locataires</div>
-              <div className="accueil-plan-feature accueil-plan-feature-no">Mobile Money</div>
-              <div className="accueil-plan-feature accueil-plan-feature-no">Annuaire logements</div>
-            </div>
-          </div>
-
           <div className="accueil-plan accueil-plan-featured">
             <div className="accueil-plan-badge">Recommande</div>
             <div className="accueil-plan-type">Pro</div>
             <div className="accueil-plan-price">120 000 <span>GNF/mois</span></div>
-            <div className="accueil-plan-sub">Jusqu'a 25 biens</div>
+            <div className="accueil-plan-sub">Jusqu'a 20 biens</div>
             <Link to="/register" className="accueil-btn-green accueil-btn-full" style={{textAlign:'center',display:'block'}}>Essai 14 jours</Link>
             <div className="accueil-plan-features">
-              <div className="accueil-plan-feature accueil-plan-feature-ok">Tout du plan Gratuit</div>
-              <div className="accueil-plan-feature accueil-plan-feature-ok">Orange Money + MTN + Especes</div>
+              <div className="accueil-plan-feature accueil-plan-feature-ok">Orange Money + MTN MoMo</div>
               <div className="accueil-plan-feature accueil-plan-feature-ok">Baux et quittances PDF</div>
               <div className="accueil-plan-feature accueil-plan-feature-ok">Annuaire logements</div>
               <div className="accueil-plan-feature accueil-plan-feature-ok">Rapports financiers</div>
