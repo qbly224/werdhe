@@ -8,6 +8,9 @@ import {
 } from 'lucide-react';
 import SEO from '../components/SEO';
 import Logo from '../components/Logo';
+import api from '../services/api';
+import toast from 'react-hot-toast';
+import { useAuth } from '../context/AuthContext';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
 
@@ -70,14 +73,26 @@ var FONCTIONNALITES = [
 
 var PLANS = [
   {
+    nom: 'Locataire',
+    prix: 0,
+    sousTitre: 'Toujours gratuit',
+    couleur: '#1565C0',
+    bg: '#E3F2FD',
+    features: ['Recherche avancée', 'Candidatures illimitées', 'Messagerie', 'Suivi de dossier', 'Signature électronique'],
+    cta: 'Trouver un logement',
+    role: 'locataire',
+    recommande: false
+  },
+  {
     nom: 'Pro',
     prix: 120000,
     sousTitre: "Jusqu'à 20 biens",
     couleur: '#1B6B3A',
     bg: '#E8F5E9',
-    features: ['Orange Money + MTN MoMo', 'Baux et quittances PDF', 'Alertes automatiques', 'Rapports financiers', 'Essai 14 jours'],
-    cta: 'Essai gratuit 14 jours',
+    features: ['Orange Money + MTN MoMo', 'Baux et quittances PDF', 'Alertes automatiques', 'Rapports financiers', 'Essai 1 mois'],
+    cta: 'Essai gratuit 1 mois',
     role: 'proprietaire',
+    plan: 'pro',
     recommande: true
   },
   {
@@ -86,18 +101,19 @@ var PLANS = [
     sousTitre: 'Biens illimités',
     couleur: '#7B1FA2',
     bg: '#F3E5F5',
-    features: ['Tout du plan Pro', 'Multi-utilisateurs (5 comptes)', 'Rapport mensuel automatique', 'Support téléphonique dédié'],
-    cta: 'Nous contacter',
-    role: 'agence',
+    features: ['Tout du plan Pro', 'Multi-utilisateurs (5 comptes)', 'Rapport mensuel automatique', 'Support Mail/Message'],
+    cta: 'Essai gratuit 1 mois',
+    role: 'proprietaire',
+    plan: 'agence',
     recommande: false
   },
 ];
 var FAQ_LANDING = [
   { q: 'Werdhe est-il gratuit pour les locataires ?',      r: 'Oui, 100% gratuit pour toujours. Aucun frais d\'agence, aucune commission.' },
-  { q: 'Comment fonctionne l\'essai Pro ?',                r: '14 jours d\'accès complet au plan Pro, sans carte bancaire. À la fin, vous choisissez de continuer ou non.' },
+  { q: 'Comment fonctionne l\'essai Pro / Agence ?',       r: '1 mois complet d\'accès au plan choisi, sans Mobile Money requis. À la fin, vous choisissez de continuer ou non.' },
   { q: 'Quels modes de paiement sont acceptés ?',          r: 'Orange Money, MTN MoMo, espèces et virement bancaire (BICIGUI, Ecobank).' },
   { q: 'Mes données sont-elles sécurisées ?',              r: 'Oui. HTTPS, mots de passe hachés, 2FA admin, aucune donnée bancaire stockée.' },
-  { q: 'Puis-je gérer plusieurs logements ?',              r: 'Oui. Le plan Pro permet jusqu\'à 25 biens, le plan Agence est illimité.' },
+  { q: 'Puis-je gérer plusieurs logements ?',              r: 'Oui. Le plan Pro permet jusqu\'à 20 biens, le plan Agence est illimité.' },
 ];
 
 function FaqLanding() {
@@ -135,7 +151,7 @@ var SLIDES = [
     img:    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80&fit=crop',
     titre:  'Publiez votre bien en 5 minutes',
     sous:   'Gérez candidatures, baux et paiements depuis un seul tableau de bord',
-    tag:    'Pour les propriétaires · Essai 14 jours gratuit',
+    tag:    'Pour les propriétaires · Essai 1 mois gratuit',
   },
   {
     img:    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&q=80&fit=crop',
@@ -152,11 +168,34 @@ var SLIDES = [
 ];
 export default function LandingPage() {
   var navigate            = useNavigate();
+  var { user }             = useAuth();
   var [mobileMenu, setMobileMenu] = useState(false);
   var [ongletEtapes, setOngletEtapes] = useState('proprio');
+  var [essaiEnCours, setEssaiEnCours] = useState(null);
   var heroRef             = useRef(null);
   var [compteurs, setCompteurs] = useState({ logements: 0, utilisateurs: 0 });
   var [slideActif, setSlideActif] = useState(0);
+
+  function choisirPlan(plan) {
+    if (plan.role === 'locataire') {
+      navigate('/inscription?role=locataire');
+      return;
+    }
+    if (!user) {
+      navigate('/inscription?role=proprietaire&plan=' + plan.plan);
+      return;
+    }
+    setEssaiEnCours(plan.plan);
+    api.post('/abonnements/essai', { plan: plan.plan })
+      .then(function() {
+        toast.success('Essai ' + plan.nom + ' démarré ! 1 mois gratuit.');
+        navigate('/dashboard');
+      })
+      .catch(function() {
+        navigate('/pricing');
+      })
+      .finally(function() { setEssaiEnCours(null); });
+  }
 
 useEffect(function() {
   var interval = setInterval(function() {
@@ -540,7 +579,7 @@ useEffect(function() {
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
                   <div style={{ width: 36, height: 36, background: plan.bg, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Building2 size={18} strokeWidth={1.5} color={plan.couleur} />
+                    {plan.role === 'locataire' ? <Users size={18} strokeWidth={1.5} color={plan.couleur} /> : <Building2 size={18} strokeWidth={1.5} color={plan.couleur} />}
                   </div>
                   <span style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{plan.nom}</span>
                 </div>
@@ -554,12 +593,10 @@ useEffect(function() {
                 <div style={{ fontSize: 12, color: '#888', marginBottom: 20 }}>{plan.sousTitre}</div>
 
                 <button
-                  onClick={function() {
-                    if (plan.role === 'agence') { window.location.href = 'mailto:contact@werdhe.com?subject=Plan Agence'; }
-                    else { navigate('/inscription'); }
-                  }}
-                  style={{ width: '100%', padding: '12px', borderRadius: 10, border: plan.recommande ? 'none' : '1.5px solid ' + plan.couleur, background: plan.recommande ? plan.couleur : 'transparent', color: plan.recommande ? '#fff' : plan.couleur, fontSize: 14, fontWeight: 700, cursor: 'pointer', marginBottom: 20 }}>
-                  {plan.cta}
+                  onClick={function() { choisirPlan(plan); }}
+                  disabled={essaiEnCours === plan.plan}
+                  style={{ width: '100%', padding: '12px', borderRadius: 10, border: plan.recommande ? 'none' : '1.5px solid ' + plan.couleur, background: essaiEnCours === plan.plan ? '#aaa' : (plan.recommande ? plan.couleur : 'transparent'), color: plan.recommande ? '#fff' : plan.couleur, fontSize: 14, fontWeight: 700, cursor: essaiEnCours === plan.plan ? 'not-allowed' : 'pointer', marginBottom: 20 }}>
+                  {essaiEnCours === plan.plan ? 'Démarrage...' : plan.cta}
                 </button>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

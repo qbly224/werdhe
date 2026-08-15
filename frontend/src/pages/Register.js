@@ -15,6 +15,7 @@ export default function Register() {
   var [params]      = useSearchParams();
   var roleInitial   = params.get('role') || 'locataire';
   var refCode       = params.get('ref')  || '';
+  var planInitial   = params.get('plan') || '';
 
   var [etape, setEtape]         = useState(1); // 1=rôle, 2=infos, 3=sécurité
   var [role, setRole]           = useState(roleInitial);
@@ -59,11 +60,26 @@ export default function Register() {
         role,
         code_parrainage: codeParrainage || undefined
       });
+      var utilisateur = res.data.user;
       if (res.data.token) {
         localStorage.setItem('token', res.data.token);
-        localStorage.setItem('user', JSON.stringify(res.data.user));
-        if (login) login(res.data.user, res.data.token);
+        localStorage.setItem('user', JSON.stringify(utilisateur));
+        if (login) login(utilisateur, res.data.token);
       }
+
+      // Démarrer directement l'essai gratuit 1 mois si un plan a été choisi
+      // depuis la page tarifs (Pro ou Agence)
+      if (role === 'proprietaire' && ['pro', 'agence'].includes(planInitial)) {
+        try {
+          await api.post('/abonnements/essai', { plan: planInitial });
+          utilisateur = Object.assign({}, utilisateur, { plan: planInitial });
+          localStorage.setItem('user', JSON.stringify(utilisateur));
+          if (login) login(utilisateur, res.data.token);
+        } catch (essaiErr) {
+          // Non bloquant : le compte est créé, l'essai pourra être démarré depuis le dashboard
+        }
+      }
+
       toast.success('Compte créé avec succès ! 🎉');
       navigate(role === 'proprietaire' ? '/onboarding/proprietaire' : '/onboarding/locataire');
     } catch (err) {
@@ -179,7 +195,7 @@ export default function Register() {
 
                 {role === 'proprietaire' && (
                   <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#1B5E20', display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span>✅</span> Essai Pro 14 jours gratuit — sans carte bancaire
+                    <span>✅</span> Essai {planInitial === 'agence' ? 'Agence' : 'Pro'} 1 mois gratuit — sans Mobile Money
                   </div>
                 )}
                 {role === 'locataire' && (

@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import GestionPhotos from '../components/GestionPhotos';
 import OngletPreavisComponent from '../components/OngletPreavis';
 import OngletPaiementsComponent from '../components/OngletPaiements';
+import ModalPaiementMobile from '../components/ModalPaiementMobile';
 import useDarkMode from '../hooks/useDarkMode';
 import { t, changerLangue, getLangue } from '../services/i18n';
 import RechercheGlobale from '../components/dashboard/RechercheGlobale';
@@ -4058,11 +4059,43 @@ function OngletParametres(props) {
   var [langue, setLangue] = useState('fr');
   var [saving, setSaving] = useState(false);
   var [scoreData, setScoreData] = useState(null);
+  var [monAbonnement, setMonAbonnement] = useState(null);
+  var [essaiEnCours, setEssaiEnCours] = useState(null);
+  var [cycleChoisi, setCycleChoisi] = useState('mensuel');
+  var [showPaiementAbo, setShowPaiementAbo] = useState(null);
+
+  var PRIX_ABONNEMENT = { pro: 120000, agence: 300000 };
+  var CYCLES_ABONNEMENT = {
+    mensuel:    { label: 'Mensuel', mois: 1,  reduction: 0    },
+    semestriel: { label: '6 mois',  mois: 6,  reduction: 0.10 },
+    annuel:     { label: 'Annuel',  mois: 12, reduction: 0.20 },
+  };
+
+  function chargerAbonnement() {
+    api.get('/abonnements/mon-plan')
+      .then(function(res) { setMonAbonnement(res.data); })
+      .catch(console.error);
+  }
+
   useEffect(function() {
     api.get('/auth/mon-score')
       .then(function(res) { setScoreData(res.data); })
       .catch(console.error);
+    chargerAbonnement();
   }, []);
+
+  function demarrerEssai(plan) {
+    setEssaiEnCours(plan);
+    api.post('/abonnements/essai', { plan: plan })
+      .then(function() {
+        toast.success('Essai ' + (plan === 'pro' ? 'Pro' : 'Agence') + ' démarré ! 1 mois gratuit.');
+        chargerAbonnement();
+      })
+      .catch(function(err) {
+        toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur');
+      })
+      .finally(function() { setEssaiEnCours(null); });
+  }
   function saveProfil(e) {
     e.preventDefault();
     setSaving(true);
@@ -4132,13 +4165,70 @@ function OngletParametres(props) {
       {user && user.plan ? user.plan : 'Gratuit'}
     </div>
   </div>
-  {user && user.role !== 'locataire' && user.plan === 'gratuit' && (
-    <button onClick={function() { window.location.href = '/pricing'; }}
-      style={{ width: '100%', marginTop: 12, background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-      ⬆️ Passer au plan Pro — 14 jours gratuits
-    </button>
+
+  {monAbonnement && monAbonnement.abonnement && monAbonnement.abonnement.statut === 'impaye' && (
+    <div style={{ background: '#FFEBEE', border: '1px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', marginTop: 12, fontSize: 12, color: '#B71C1C' }}>
+      🔒 Abonnement impayé — accès restreint. Réglez votre abonnement pour retrouver toutes les fonctionnalités.
+    </div>
+  )}
+
+  {monAbonnement && monAbonnement.jours_restants !== null && monAbonnement.plan !== 'gratuit' && monAbonnement.abonnement && monAbonnement.abonnement.statut !== 'impaye' && (
+    <div style={{ fontSize: 12, color: monAbonnement.jours_restants <= 5 ? '#E65100' : '#888', marginTop: 8, fontWeight: monAbonnement.jours_restants <= 5 ? 700 : 400 }}>
+      {monAbonnement.jours_restants > 0
+        ? (monAbonnement.abonnement.statut === 'essai' ? 'Essai gratuit' : 'Abonnement') + ' — ' + monAbonnement.jours_restants + ' jour(s) restant(s)'
+        : 'Abonnement expiré'}
+    </div>
+  )}
+
+  {user && user.role !== 'locataire' && monAbonnement && monAbonnement.plan === 'gratuit' && (
+    <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+      <button onClick={function() { demarrerEssai('pro'); }} disabled={essaiEnCours === 'pro'}
+        style={{ flex: 1, background: essaiEnCours === 'pro' ? '#aaa' : '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+        {essaiEnCours === 'pro' ? '...' : '⬆️ Essai Pro — 1 mois gratuit'}
+      </button>
+      <button onClick={function() { demarrerEssai('agence'); }} disabled={essaiEnCours === 'agence'}
+        style={{ flex: 1, background: essaiEnCours === 'agence' ? '#aaa' : '#7B1FA2', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+        {essaiEnCours === 'agence' ? '...' : '⬆️ Essai Agence — 1 mois gratuit'}
+      </button>
+    </div>
+  )}
+
+  {user && user.role !== 'locataire' && monAbonnement && ['pro', 'agence'].includes(monAbonnement.plan) && (
+    <div style={{ marginTop: 12, paddingTop: 12, borderTop: '0.5px solid #F0F0F0' }}>
+      <div style={{ fontSize: 11, color: '#888', fontWeight: 600, marginBottom: 6 }}>Cycle de facturation</div>
+      <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
+        {Object.keys(CYCLES_ABONNEMENT).map(function(c) {
+          var actif = cycleChoisi === c;
+          return (
+            <button key={c} onClick={function() { setCycleChoisi(c); }}
+              style={{ flex: 1, padding: '6px 8px', borderRadius: 8, border: actif ? '1.5px solid #1B6B3A' : '1px solid #E0E0E0', background: actif ? '#E8F5E9' : '#fff', color: actif ? '#1B6B3A' : '#888', fontSize: 11, fontWeight: actif ? 700 : 500, cursor: 'pointer' }}>
+              {CYCLES_ABONNEMENT[c].label}
+            </button>
+          );
+        })}
+      </div>
+      <button onClick={function() { setShowPaiementAbo(monAbonnement.plan); }}
+        style={{ width: '100%', background: '#1B2B22', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+        💳 Payer par Mobile Money
+      </button>
+    </div>
   )}
 </div>
+
+{showPaiementAbo && (
+  <ModalPaiementMobile
+    montant={Math.round(PRIX_ABONNEMENT[showPaiementAbo] * CYCLES_ABONNEMENT[cycleChoisi].mois * (1 - CYCLES_ABONNEMENT[cycleChoisi].reduction))}
+    titre={'Abonnement ' + (showPaiementAbo === 'pro' ? 'Pro' : 'Agence') + ' — ' + CYCLES_ABONNEMENT[cycleChoisi].label}
+    payload={{ plan: showPaiementAbo, cycle: cycleChoisi }}
+    endpoints={{
+      orange:    '/abonnements/orange-money/initier',
+      mtn:       '/abonnements/mtn-momo/initier',
+      confirmer: '/abonnements/confirmer/',
+    }}
+    onClose={function() { setShowPaiementAbo(null); }}
+    onSuccess={function() { chargerAbonnement(); }}
+  />
+)}
           <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <div style={{ fontSize: 12, color: '#888', marginBottom: 10, fontWeight: 600 }}>Informations du compte</div>
             <div style={{ fontSize: 14, color: '#333', marginBottom: 4 }}>Email : {user && user.email}</div>

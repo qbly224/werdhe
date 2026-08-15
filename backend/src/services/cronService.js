@@ -434,4 +434,110 @@ cron.schedule('0 2 * * 0', async function() {
   }
 });
 
+// ════════════════════════════════════════════════════════
+// CRON 7 — Relances abonnement impayé J+3 puis J+5 (blocage)
+// Tourne tous les jours à 8h30
+// ════════════════════════════════════════════════════════
+cron.schedule('30 8 * * *', async function() {
+  console.log('[CRON] Vérification abonnements impayés — ' + new Date().toLocaleDateString('fr-FR'));
+  try {
+    // Relance J+3 : abonnement échu depuis exactement 3 jours
+    var rappelsJ3 = await db.query(
+      `SELECT a.id, a.user_id, a.plan, u.nom, u.prenom, u.email
+       FROM abonnements a
+       JOIN users u ON a.user_id = u.id
+       WHERE a.statut IN ('actif', 'essai')
+         AND a.date_fin::date = (CURRENT_DATE - INTERVAL '3 days')::date
+         AND a.rappel_j3_envoye IS NOT TRUE`
+    );
+
+    for (var r3 of rappelsJ3.rows) {
+      try {
+        await resend.emails.send({
+          from:    'Werdhe <no-reply@werdhe.com>',
+          to:      r3.email,
+          subject: '⏰ Votre abonnement Werdhe a expiré',
+          html: `
+            <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
+              <div style="background:#F5A623;padding:20px;border-radius:10px 10px 0 0">
+                <h2 style="color:#1B2B22;margin:0">🏠 Werdhe</h2>
+              </div>
+              <div style="background:#fff;padding:24px;border-radius:0 0 10px 10px;border:1px solid #e0e0e0">
+                <p>Bonjour <b>${r3.prenom}</b>,</p>
+                <p>Votre abonnement <b>${r3.plan}</b> est arrivé à échéance il y a 3 jours.</p>
+                <p>Réglez votre abonnement par Mobile Money pour continuer à profiter de toutes les fonctionnalités.</p>
+                <p style="color:#B71C1C;font-weight:700">Sans règlement, votre accès sera bloqué dans 2 jours.</p>
+                <a href="https://werdhe.com/dashboard/parametres" style="display:inline-block;background:#1B6B3A;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700">Régler mon abonnement →</a>
+              </div>
+            </div>
+          `
+        });
+      } catch (emailErr) {
+        console.warn('[CRON Abonnement J+3] Email non envoyé:', emailErr.message);
+      }
+
+      await db.query('UPDATE abonnements SET rappel_j3_envoye = TRUE WHERE id = $1', [r3.id]);
+
+      await db.query(
+        `INSERT INTO alertes (proprietaire_id, destinataire_id, type, titre, description, priorite)
+         VALUES ($1, $1, 'abonnement_impaye', $2, $3, 'haute')`,
+        [r3.user_id, '⏰ Abonnement expiré depuis 3 jours', 'Plan ' + r3.plan + ' — réglez pour éviter le blocage']
+      ).catch(console.warn);
+    }
+
+    // Relance finale + blocage J+5 : abonnement échu depuis exactement 5 jours
+    var blocagesJ5 = await db.query(
+      `SELECT a.id, a.user_id, a.plan, u.nom, u.prenom, u.email
+       FROM abonnements a
+       JOIN users u ON a.user_id = u.id
+       WHERE a.statut IN ('actif', 'essai')
+         AND a.date_fin::date = (CURRENT_DATE - INTERVAL '5 days')::date
+         AND a.rappel_j5_envoye IS NOT TRUE`
+    );
+
+    for (var r5 of blocagesJ5.rows) {
+      try {
+        await resend.emails.send({
+          from:    'Werdhe <no-reply@werdhe.com>',
+          to:      r5.email,
+          subject: '🔒 Accès Werdhe bloqué — abonnement impayé',
+          html: `
+            <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
+              <div style="background:#B71C1C;padding:20px;border-radius:10px 10px 0 0">
+                <h2 style="color:#fff;margin:0">🔒 Accès bloqué</h2>
+              </div>
+              <div style="background:#fff;padding:24px;border-radius:0 0 10px 10px;border:1px solid #e0e0e0">
+                <p>Bonjour <b>${r5.prenom}</b>,</p>
+                <p>Votre abonnement <b>${r5.plan}</b> est resté impayé 5 jours après son échéance.</p>
+                <p>Votre accès à Werdhe est désormais bloqué. Contactez <a href="mailto:contact@werdhe.com">contact@werdhe.com</a> ou réglez votre abonnement pour le réactiver.</p>
+              </div>
+            </div>
+          `
+        });
+      } catch (emailErr) {
+        console.warn('[CRON Abonnement J+5] Email non envoyé:', emailErr.message);
+      }
+
+      await db.query(
+        `UPDATE abonnements SET rappel_j5_envoye = TRUE, statut = 'impaye' WHERE id = $1`,
+        [r5.id]
+      );
+      await db.query(
+        `UPDATE users SET plan = 'gratuit', abonnement_bloque = TRUE WHERE id = $1`,
+        [r5.user_id]
+      );
+
+      await db.query(
+        `INSERT INTO alertes (proprietaire_id, destinataire_id, type, titre, description, priorite)
+         VALUES ($1, $1, 'abonnement_impaye', $2, $3, 'haute')`,
+        [r5.user_id, '🔒 Accès bloqué — abonnement impayé', 'Plan ' + r5.plan + ' — contactez le support pour réactiver']
+      ).catch(console.warn);
+    }
+
+    console.log('[CRON Abonnements] ' + rappelsJ3.rows.length + ' relance(s) J+3, ' + blocagesJ5.rows.length + ' blocage(s) J+5');
+  } catch (err) {
+    console.error('[CRON Abonnements] Erreur:', err.message);
+  }
+});
+
 module.exports = {};

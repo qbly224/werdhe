@@ -173,7 +173,7 @@ router.get('/users', verifierToken, verifierAdmin, async (req, res) => {
     var result = await db.query(
       `SELECT
          u.id, u.nom, u.prenom, u.email, u.telephone, u.role,
-         u.suspendu, u.verifie, u.locataire_verifie, u.plan,
+         u.suspendu, u.abonnement_bloque, u.verifie, u.locataire_verifie, u.plan,
          u.note_moyenne, u.nb_notations, u.created_at,
          COUNT(DISTINCT l.id) as nb_logements,
          COUNT(DISTINCT r.id) as nb_reservations
@@ -202,6 +202,25 @@ router.patch('/users/:id/suspendre', verifierToken, verifierAdmin, async (req, r
     var newVal = !(current.rows[0].suspendu);
     await db.query('UPDATE users SET suspendu = $1 WHERE id = $2', [newVal, req.params.id]);
     res.json({ message: newVal ? 'Compte suspendu' : 'Compte réactivé', suspendu: newVal });
+  } catch (err) {
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+});
+
+// Débloquer manuellement un compte bloqué pour abonnement impayé
+router.patch('/users/:id/debloquer-abonnement', verifierToken, verifierAdmin, async (req, res) => {
+  try {
+    var current = await db.query('SELECT abonnement_bloque FROM users WHERE id = $1', [req.params.id]);
+    if (current.rows.length === 0) return res.status(404).json({ erreur: 'Utilisateur non trouvé' });
+
+    await db.query('UPDATE users SET abonnement_bloque = FALSE WHERE id = $1', [req.params.id]);
+    await db.query(
+      `UPDATE abonnements SET statut = 'actif', rappel_j3_envoye = FALSE, rappel_j5_envoye = FALSE
+       WHERE user_id = $1`,
+      [req.params.id]
+    );
+
+    res.json({ message: 'Accès débloqué' });
   } catch (err) {
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
