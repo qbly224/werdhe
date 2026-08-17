@@ -111,6 +111,16 @@ export default function Admin() {
       .catch(function() { toast.error('Erreur'); });
   }
 
+  function debloquerAbonnement(id) {
+    if (!window.confirm('Débloquer l\'accès de cet utilisateur (abonnement impayé) ?')) return;
+    api.patch('/admin/users/' + id + '/debloquer-abonnement')
+      .then(function() {
+        toast.success('Accès débloqué');
+        charger();
+      })
+      .catch(function() { toast.error('Erreur'); });
+  }
+
   function verifierLogement(id) {
     api.patch('/admin/logements/' + id + '/verifier')
       .then(function() { toast.success('Logement vérifié !'); charger(); })
@@ -496,6 +506,7 @@ var NAV = [
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                         <span style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{u.prenom} {u.nom}</span>
                         {u.suspendu && <span style={{ background: '#FFEBEE', color: '#B71C1C', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>Suspendu</span>}
+                        {u.abonnement_bloque && <span style={{ background: '#FFF3E0', color: '#E65100', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>🔒 Abonnement impayé</span>}
                         {u.plan && u.plan !== 'gratuit' && <span style={{ background: '#E8F5E9', color: '#1B6B3A', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{u.plan}</span>}
                       </div>
                       <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{u.email} · {u.telephone || 'N/A'}</div>
@@ -511,6 +522,12 @@ var NAV = [
                         <button onClick={function() { suspendreUser(u.id, u.suspendu); }}
                           style={{ padding: '6px 12px', borderRadius: 8, border: u.suspendu ? '0.5px solid #A5D6A7' : '0.5px solid #FFCDD2', background: u.suspendu ? '#E8F5E9' : '#FFEBEE', color: u.suspendu ? '#1B5E20' : '#B71C1C', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
                           {u.suspendu ? '✅ Réactiver' : '🚫 Suspendre'}
+                        </button>
+                      )}
+                      {u.abonnement_bloque && (
+                        <button onClick={function() { debloquerAbonnement(u.id); }}
+                          style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #FFCC80', background: '#FFF3E0', color: '#E65100', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
+                          🔓 Débloquer
                         </button>
                       )}
                     </div>

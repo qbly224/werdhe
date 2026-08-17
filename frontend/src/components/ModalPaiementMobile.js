@@ -2,11 +2,21 @@ import { useState } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 
+// Modal Mobile Money générique : réutilisable pour un paiement de loyer
+// (reservation_id) ou un paiement d'abonnement (plan/cycle), selon les
+// endpoints et le payload passés en props.
 export default function ModalPaiementMobile(props) {
   var onClose = props.onClose;
   var onSuccess = props.onSuccess;
   var reservation = props.reservation;
   var montant = props.montant;
+  var titre = props.titre || (reservation && reservation.logement_titre);
+  var payload = props.payload || (reservation ? { reservation_id: reservation.id } : {});
+  var endpoints = props.endpoints || {
+    orange:    '/paiements/orange-money/initier',
+    mtn:       '/paiements/mtn-momo/initier',
+    confirmer: '/paiements/confirmer/',
+  };
 
   var [operateur, setOperateur] = useState(null);
   var [telephone, setTelephone] = useState('');
@@ -25,15 +35,12 @@ export default function ModalPaiementMobile(props) {
 
   function initierPaiement() {
     setLoading(true);
-    var endpoint = operateur === 'orange'
-      ? '/paiements/orange-money/initier'
-      : '/paiements/mtn-momo/initier';
+    var endpoint = operateur === 'orange' ? endpoints.orange : endpoints.mtn;
 
-    api.post(endpoint, {
-      reservation_id: reservation.id,
+    api.post(endpoint, Object.assign({}, payload, {
       telephone: telephone,
       montant: montant
-    })
+    }))
       .then(function(res) {
         setPaiementData(res.data);
         setEtape(3);
@@ -57,8 +64,9 @@ export default function ModalPaiementMobile(props) {
 
   function confirmerSimulation() {
     if (!paiementData) return;
+    var id = paiementData.paiement_id || paiementData.facture_id;
     setConfirming(true);
-    api.patch('/paiements/confirmer/' + paiementData.paiement_id, { statut: 'complete' })
+    api.patch(endpoints.confirmer + id, { statut: 'complete' })
       .then(function() {
         toast.success('Paiement confirme ! 🎉');
         setEtape(4);
@@ -109,7 +117,7 @@ export default function ModalPaiementMobile(props) {
           <div style={{fontSize:'24px', fontWeight:'800', color:'#1B6B3A'}}>
             {Number(montant).toLocaleString('fr-FR')} GNF
           </div>
-          <div style={{fontSize:'12px', color:'#888'}}>{reservation && reservation.logement_titre}</div>
+          <div style={{fontSize:'12px', color:'#888'}}>{titre}</div>
         </div>
 
         {etape === 1 && (

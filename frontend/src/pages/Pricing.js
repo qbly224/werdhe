@@ -4,19 +4,44 @@ import { Link, useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-import { Check, X, ChevronDown, ChevronUp, Zap, Building2, ArrowRight, Home } from 'lucide-react';
+import ModalPaiementMobile from '../components/ModalPaiementMobile';
+import { useAuth } from '../context/AuthContext';
+import { Check, X, ChevronDown, ChevronUp, Zap, Building2, Users, ArrowRight, Home } from 'lucide-react';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
 
+var CYCLES = {
+  mensuel:    { label: 'Mensuel', mois: 1,  reduction: 0    },
+  semestriel: { label: '6 mois',  mois: 6,  reduction: 0.10 },
+  annuel:     { label: 'Annuel',  mois: 12, reduction: 0.20 },
+};
+
 var PLANS = [
+  {
+    id:         'gratuit',
+    nom:        'Locataire',
+    prix_mois:  0,
+    couleur:    '#1565C0',
+    bg:         '#E3F2FD',
+    sous_titre: 'Pour trouver un logement',
+    features: [
+      'Recherche avancée de logements',
+      'Candidatures illimitées',
+      'Messagerie avec propriétaires',
+      'Suivi de candidature en temps réel',
+      'Signature électronique de bail',
+      'Historique de locations',
+      'Score de confiance',
+    ],
+    nonInclus: []
+  },
   {
     id:        'pro',
     nom:       'Pro',
     prix_mois: 120000,
-    prix_an:   96000,
     couleur:   '#1B6B3A',
     bg:        '#E8F5E9',
-    badge:     '14 jours gratuits',
+    badge:     '1 mois gratuit',
     recommande: true,
     sous_titre: 'Jusqu\'à 20 logements',
     features: [
@@ -33,16 +58,15 @@ var PLANS = [
     nonInclus: [
       'Multi-utilisateurs',
       'Logements illimités',
-      'Support téléphonique',
     ]
   },
   {
     id:        'agence',
     nom:       'Agence',
     prix_mois: 300000,
-    prix_an:   240000,
     couleur:   '#7B1FA2',
     bg:        '#F3E5F5',
+    badge:     '1 mois gratuit',
     recommande: false,
     sous_titre: 'Logements illimités',
     features: [
@@ -51,7 +75,7 @@ var PLANS = [
       'Multi-utilisateurs (5 comptes)',
       'Rapport mensuel automatique',
       'Codes promo personnalisés',
-      'Support téléphonique dédié',
+      'Support Mail/Message',
       'Formation et onboarding équipe',
       'Tableau de bord agence centralisé',
     ],
@@ -61,23 +85,23 @@ var PLANS = [
 
 var FAQ_ITEMS = [
   { q: 'Comment payer mon abonnement ?', r: 'Le paiement se fait uniquement par Mobile Money (Orange Money ou MTN MoMo). Aucun paiement en espèces n\'est accepté.' },
-  { q: 'L\'essai Pro est-il vraiment gratuit ?', r: 'Oui, 14 jours complets sans Mobile Money requis. Accès à toutes les fonctionnalités Pro. À la fin, choisissez de continuer ou non.' },
+  { q: 'L\'essai est-il vraiment gratuit ?', r: 'Oui, 1 mois complet sur Pro ou Agence, sans Mobile Money requis. Accès à toutes les fonctionnalités du plan choisi. À la fin, choisissez de continuer ou non.' },
+  { q: 'Quels rythmes de paiement sont proposés ?', r: 'Mensuel, tous les 6 mois (-10%) ou annuel (-20%). Vous choisissez ce qui vous convient.' },
+  { q: 'Que se passe-t-il si je ne paie pas à temps ?', r: 'Vous recevez une relance 3 jours après l\'échéance, puis une dernière relance à 5 jours. Sans règlement, l\'accès est bloqué jusqu\'à régularisation.' },
   { q: 'Puis-je changer de plan à tout moment ?', r: 'Oui. Vous pouvez upgrader ou downgrader depuis vos paramètres. Le changement prend effet immédiatement.' },
   { q: 'Quelle est la commission Werdhe ?', r: 'Werdhe prélève 5% sur chaque loyer encaissé via la plateforme.' },
-  { q: 'Que se passe-t-il si j\'annule ?', r: 'Vos données sont conservées 30 jours. Vous pouvez réactiver votre compte à tout moment.' },
 ];
 
 export default function Pricing() {
-  var navigate          = useNavigate();
-  var [annuel, setAnnuel] = useState(false);
+  var navigate            = useNavigate();
+  var { user }             = useAuth();
+  var [cycle, setCycle]     = useState('mensuel');
   var [openFaq, setOpenFaq] = useState(null);
-  var [code, setCode]   = useState('');
-  var [codeOk, setCodeOk] = useState(null);
+  var [code, setCode]       = useState('');
+  var [codeOk, setCodeOk]   = useState(null);
   var [loading, setLoading] = useState(false);
+  var [essaiEnCours, setEssaiEnCours] = useState(null); // id du plan en cours de démarrage
   var [showPaiement, setShowPaiement] = useState(null); // 'pro' ou 'agence'
-  var [numMobile, setNumMobile] = useState('');
-  var [operateur, setOperateur] = useState('orange');
-  var [payLoading, setPayLoading] = useState(false);
 
   function validerCode() {
     if (!code.trim()) return;
@@ -88,35 +112,45 @@ export default function Pricing() {
       .finally(function() { setLoading(false); });
   }
 
-  function lancerPaiement(planId) {
-    if (!numMobile || numMobile.length < 8) {
-      toast.error('Entrez un numéro Mobile Money valide');
+  // CTA intelligent : redirige vers l'inscription si non connecté,
+  // démarre l'essai gratuit si connecté, ou propose le paiement direct
+  // si l'essai a déjà été utilisé.
+  function choisirPlan(planId) {
+    if (planId === 'gratuit') {
+      navigate('/inscription?role=locataire');
       return;
     }
-    setPayLoading(true);
-    api.post('/abonnements/souscrire', {
-      plan:       planId,
-      periodicite: annuel ? 'annuel' : 'mensuel',
-      telephone:  '+224' + numMobile.replace(/\s/g, ''),
-      operateur:  operateur,
-    })
+
+    if (!user) {
+      navigate('/inscription?role=proprietaire&plan=' + planId);
+      return;
+    }
+
+    setEssaiEnCours(planId);
+    api.post('/abonnements/essai', { plan: planId })
       .then(function() {
-        toast.success('Paiement initié ! Confirmez sur votre téléphone.');
-        setShowPaiement(null);
-        setNumMobile('');
+        toast.success('Essai ' + (planId === 'pro' ? 'Pro' : 'Agence') + ' démarré ! 1 mois gratuit.');
         navigate('/dashboard');
       })
       .catch(function(err) {
-        toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur paiement');
+        // Essai déjà utilisé ou abonnement déjà actif → payer directement
+        var msg = err.response && err.response.data ? err.response.data.erreur : '';
+        toast(msg || 'Essai déjà utilisé — vous pouvez payer directement', { icon: 'ℹ️' });
+        setShowPaiement(planId);
       })
-      .finally(function() { setPayLoading(false); });
+      .finally(function() { setEssaiEnCours(null); });
+  }
+
+  function montantCycle(prixMois) {
+    var infos = CYCLES[cycle];
+    return Math.round(prixMois * infos.mois * (1 - infos.reduction));
   }
 
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
       <SEO
-        titre="Tarifs — Plans Pro et Agence"
-        description="Plans Werdhe pour propriétaires. Pro : 120 000 GNF/mois · Agence : 300 000 GNF/mois. Paiement Mobile Money."
+        titre="Tarifs — Locataire gratuit, plans Pro et Agence"
+        description="Werdhe est 100% gratuit pour les locataires. Plans Pro et Agence pour les propriétaires, 1 mois d'essai gratuit. Paiement Mobile Money."
         url="https://werdhe.com/pricing"
       />
 
@@ -140,91 +174,51 @@ export default function Pricing() {
           Des tarifs transparents
         </h1>
         <p style={{ fontSize: 15, color: '#888', margin: '0 0 6px' }}>
-          Pour les propriétaires et agences immobilières
+          100% gratuit pour les locataires · Pro et Agence pour les propriétaires
         </p>
         <p style={{ fontSize: 13, color: '#1B6B3A', fontWeight: 600, margin: '0 0 28px' }}>
           Paiement uniquement par Mobile Money (Orange / MTN)
         </p>
 
-        {/* Toggle */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12, background: '#fff', borderRadius: 30, padding: '6px 8px', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
-          <button onClick={function() { setAnnuel(false); }}
-            style={{ padding: '8px 18px', borderRadius: 22, border: 'none', background: !annuel ? '#1B6B3A' : 'transparent', color: !annuel ? '#fff' : '#888', fontSize: 13, fontWeight: !annuel ? 700 : 500, cursor: 'pointer' }}>
-            Mensuel
-          </button>
-          <button onClick={function() { setAnnuel(true); }}
-            style={{ padding: '8px 18px', borderRadius: 22, border: 'none', background: annuel ? '#1B6B3A' : 'transparent', color: annuel ? '#fff' : '#888', fontSize: 13, fontWeight: annuel ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-            Annuel
-            <span style={{ background: '#F5A623', color: '#1B2B22', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 800 }}>-20%</span>
-          </button>
+        {/* Toggle cycle de facturation */}
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#fff', borderRadius: 30, padding: '6px 8px', boxShadow: '0 2px 10px rgba(0,0,0,0.08)', flexWrap: 'wrap', justifyContent: 'center' }}>
+          {Object.keys(CYCLES).map(function(c) {
+            var actif = cycle === c;
+            return (
+              <button key={c} onClick={function() { setCycle(c); }}
+                style={{ padding: '8px 16px', borderRadius: 22, border: 'none', background: actif ? '#1B6B3A' : 'transparent', color: actif ? '#fff' : '#888', fontSize: 13, fontWeight: actif ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                {CYCLES[c].label}
+                {CYCLES[c].reduction > 0 && (
+                  <span style={{ background: '#F5A623', color: '#1B2B22', borderRadius: 20, padding: '2px 7px', fontSize: 10, fontWeight: 800 }}>
+                    -{Math.round(CYCLES[c].reduction * 100)}%
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Modal paiement Mobile Money */}
+      {/* Modal paiement Mobile Money (abonnement) */}
       {showPaiement && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-          <div style={{ background: '#fff', borderRadius: 20, padding: '28px 24px', maxWidth: 400, width: '100%', boxShadow: '0 24px 64px rgba(0,0,0,0.2)' }}>
-            <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 6px' }}>
-              Payer par Mobile Money
-            </h3>
-            <p style={{ fontSize: 13, color: '#888', margin: '0 0 20px' }}>
-              Plan {showPaiement === 'pro' ? 'Pro' : 'Agence'} · {GNF(showPaiement === 'pro' ? (annuel ? 96000 : 120000) : (annuel ? 240000 : 300000))} GNF/{annuel ? 'mois (annuel)' : 'mois'}
-            </p>
-
-            <div style={{ marginBottom: 14 }}>
-              <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Opérateur</label>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                {[
-                  { val: 'orange', label: 'Orange Money', couleur: '#FF6600', bg: '#FFF3E0' },
-                  { val: 'mtn',    label: 'MTN MoMo',    couleur: '#FFCB00', bg: '#FFFDE7' },
-                ].map(function(op) {
-                  return (
-                    <button key={op.val} onClick={function() { setOperateur(op.val); }}
-                      style={{ padding: '12px', borderRadius: 10, border: '2px solid ' + (operateur === op.val ? op.couleur : '#E0E0E0'), background: operateur === op.val ? op.bg : '#fff', cursor: 'pointer', fontWeight: 700, fontSize: 13, color: operateur === op.val ? op.couleur : '#888' }}>
-                      {op.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div style={{ marginBottom: 20 }}>
-              <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Numéro Mobile Money</label>
-              <div style={{ display: 'flex', gap: 8 }}>
-                <div style={{ background: '#F7F8F7', border: '1.5px solid #E0E0E0', borderRadius: 10, padding: '10px 12px', fontSize: 14, color: '#555', flexShrink: 0 }}>
-                  +224
-                </div>
-                <input type="tel" placeholder="622 00 00 00" value={numMobile}
-                  onChange={function(e) { setNumMobile(e.target.value); }}
-                  style={{ flex: 1, padding: '10px 14px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none' }} />
-              </div>
-            </div>
-
-            <div style={{ background: '#FFF8E1', borderRadius: 10, padding: '10px 14px', marginBottom: 20, fontSize: 12, color: '#7B4F00' }}>
-              Vous recevrez une confirmation sur votre téléphone pour valider le paiement.
-            </div>
-
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button onClick={function() { setShowPaiement(null); setNumMobile(''); }}
-                style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 14, cursor: 'pointer' }}>
-                Annuler
-              </button>
-              <button onClick={function() { lancerPaiement(showPaiement); }} disabled={payLoading}
-                style={{ flex: 2, padding: '12px', borderRadius: 10, border: 'none', background: payLoading ? '#aaa' : '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: payLoading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                {payLoading
-                  ? <><div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Traitement...</>
-                  : 'Confirmer le paiement'
-                }
-              </button>
-            </div>
-          </div>
-        </div>
+        <ModalPaiementMobile
+          montant={montantCycle(PLANS.find(function(p) { return p.id === showPaiement; }).prix_mois)}
+          titre={'Abonnement ' + (showPaiement === 'pro' ? 'Pro' : 'Agence') + ' — ' + CYCLES[cycle].label}
+          payload={{ plan: showPaiement, cycle: cycle, code_promo: codeOk && codeOk.valide ? code : undefined }}
+          endpoints={{
+            orange:    '/abonnements/orange-money/initier',
+            mtn:       '/abonnements/mtn-momo/initier',
+            confirmer: '/abonnements/confirmer/',
+          }}
+          onClose={function() { setShowPaiement(null); }}
+          onSuccess={function() { navigate('/dashboard'); }}
+        />
       )}
 
       {/* Cards plans */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20, maxWidth: 800, margin: '0 auto 48px', padding: '0 20px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 18, maxWidth: 1000, margin: '0 auto 48px', padding: '0 20px' }}>
         {PLANS.map(function(plan) {
-          var prix = annuel ? plan.prix_an : plan.prix_mois;
+          var prix = montantCycle(plan.prix_mois);
           return (
             <div key={plan.id} style={{ background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: plan.recommande ? '0 8px 32px rgba(27,107,58,0.15)' : '0 2px 12px rgba(0,0,0,0.06)', border: plan.recommande ? '2px solid ' + plan.couleur : '1px solid #E8E8E8', position: 'relative' }}>
               {plan.recommande && (
@@ -235,7 +229,7 @@ export default function Pricing() {
               <div style={{ padding: '24px 22px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
                   <div style={{ width: 44, height: 44, background: plan.bg, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: plan.couleur }}>
-                    {plan.id === 'pro' ? <Zap size={24} strokeWidth={1.5} /> : <Building2 size={24} strokeWidth={1.5} />}
+                    {plan.id === 'gratuit' ? <Users size={24} strokeWidth={1.5} /> : plan.id === 'pro' ? <Zap size={24} strokeWidth={1.5} /> : <Building2 size={24} strokeWidth={1.5} />}
                   </div>
                   <div>
                     <div style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22' }}>{plan.nom}</div>
@@ -244,25 +238,40 @@ export default function Pricing() {
                 </div>
 
                 <div style={{ marginBottom: 20 }}>
-                  <div style={{ fontSize: 36, fontWeight: 900, color: '#1B2B22', letterSpacing: -1 }}>
-                    {GNF(prix)} <span style={{ fontSize: 14, fontWeight: 400, color: '#888' }}>GNF/mois</span>
-                  </div>
-                  {annuel && (
-                    <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 600, marginTop: 4 }}>
-                      Économie : {GNF((plan.prix_mois - plan.prix_an) * 12)} GNF/an
-                    </div>
+                  {prix === 0 ? (
+                    <div style={{ fontSize: 36, fontWeight: 900, color: '#1B2B22' }}>Gratuit</div>
+                  ) : (
+                    <>
+                      <div style={{ fontSize: 36, fontWeight: 900, color: '#1B2B22', letterSpacing: -1 }}>
+                        {GNF(prix)} <span style={{ fontSize: 14, fontWeight: 400, color: '#888' }}>GNF</span>
+                      </div>
+                      <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{CYCLES[cycle].label.toLowerCase()}</div>
+                      {CYCLES[cycle].reduction > 0 && (
+                        <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 600, marginTop: 4 }}>
+                          Économie : {GNF(Math.round(plan.prix_mois * CYCLES[cycle].mois * CYCLES[cycle].reduction))} GNF
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
 
-                {/* Bouton paiement Mobile Money */}
-                <button onClick={function() { setShowPaiement(plan.id); }}
-                  style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: plan.couleur, color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                  {plan.id === 'pro' ? 'Essai gratuit 14 jours' : 'S\'abonner maintenant'} <ArrowRight size={15} strokeWidth={2.5} />
+                {/* CTA intelligent */}
+                <button onClick={function() { choisirPlan(plan.id); }} disabled={essaiEnCours === plan.id}
+                  style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: essaiEnCours === plan.id ? '#aaa' : plan.couleur, color: '#fff', fontSize: 14, fontWeight: 700, cursor: essaiEnCours === plan.id ? 'not-allowed' : 'pointer', marginBottom: plan.id === 'gratuit' ? 20 : 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                  {essaiEnCours === plan.id
+                    ? 'Démarrage...'
+                    : <>{plan.id === 'gratuit' ? 'Créer un compte gratuit' : 'Essai gratuit 1 mois'} <ArrowRight size={15} strokeWidth={2.5} /></>
+                  }
                 </button>
 
-                <div style={{ fontSize: 11, color: '#aaa', textAlign: 'center', marginBottom: 16 }}>
-                  Paiement par Orange Money ou MTN MoMo
-                </div>
+                {plan.id !== 'gratuit' && (
+                  <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                    <button onClick={function() { setShowPaiement(plan.id); }}
+                      style={{ background: 'none', border: 'none', color: '#888', fontSize: 11, cursor: 'pointer', textDecoration: 'underline' }}>
+                      Déjà utilisé votre essai ? Payer maintenant
+                    </button>
+                  </div>
+                )}
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
                   {plan.features.map(function(f, i) {
@@ -300,13 +309,13 @@ export default function Pricing() {
             <input type="text" placeholder="Ex: WERDHE50" value={code}
               onChange={function(e) { setCode(e.target.value.toUpperCase()); setCodeOk(null); }}
               onKeyDown={function(e) { if (e.key === 'Enter') validerCode(); }}
-              style={{ flex: 1, padding: '10px 14px', border: '1.5px solid ' + (codeOk === true ? '#1B6B3A' : codeOk === false ? '#E53935' : '#E0E0E0'), borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'monospace', letterSpacing: 1 }} />
+              style={{ flex: 1, padding: '10px 14px', border: '1.5px solid ' + (codeOk && codeOk.valide ? '#1B6B3A' : codeOk === false ? '#E53935' : '#E0E0E0'), borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'monospace', letterSpacing: 1 }} />
             <button onClick={validerCode} disabled={loading || !code.trim()}
               style={{ padding: '10px 18px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
               {loading ? '...' : 'Valider'}
             </button>
           </div>
-          {codeOk && codeOk !== false && (
+          {codeOk && codeOk.valide && (
             <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginTop: 12, fontSize: 13, color: '#1B5E20', fontWeight: 600 }}>
               Code valide ! -{codeOk.reduction_pct}% sur le plan {codeOk.plan_cible}
             </div>
@@ -315,28 +324,29 @@ export default function Pricing() {
       </div>
 
       {/* Tableau comparatif */}
-      <div style={{ maxWidth: 700, margin: '0 auto 48px', padding: '0 20px' }}>
+      <div style={{ maxWidth: 900, margin: '0 auto 48px', padding: '0 20px' }}>
         <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', textAlign: 'center', margin: '0 0 20px' }}>Comparaison</h2>
-        <div style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', background: '#1B2B22', padding: '16px 20px', gap: 8 }}>
+        <div style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', overflowX: 'auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', background: '#1B2B22', padding: '16px 20px', gap: 8, minWidth: 560 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.5)' }}>Fonctionnalité</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#90CAF9', textAlign: 'center' }}>Locataire</div>
             <div style={{ fontSize: 13, fontWeight: 700, color: '#F5A623', textAlign: 'center' }}>Pro</div>
             <div style={{ fontSize: 13, fontWeight: 700, color: '#CE93D8', textAlign: 'center' }}>Agence</div>
           </div>
           {[
-            { label: 'Logements gérés',            vals: ['20', 'Illimités']   },
-            { label: 'Paiement Mobile Money',       vals: [true,  true]        },
-            { label: 'Candidatures et dossiers',    vals: [true,  true]        },
-            { label: 'Documents PDF auto',          vals: [true,  true]        },
-            { label: 'Alertes loyers auto',         vals: [true,  true]        },
-            { label: 'Rapports financiers',         vals: [true,  true]        },
-            { label: 'Score confiance locataires',  vals: [true,  true]        },
-            { label: 'Multi-utilisateurs',          vals: [false, '5 comptes'] },
-            { label: 'Support dédié',              vals: ['Email', 'Téléphone']},
+            { label: 'Logements gérés',            vals: ['—', '20', 'Illimités']    },
+            { label: 'Paiement Mobile Money',       vals: [false, true,  true]        },
+            { label: 'Candidatures et dossiers',    vals: [true,  true,  true]        },
+            { label: 'Documents PDF auto',          vals: [false, true,  true]        },
+            { label: 'Alertes loyers auto',         vals: [false, true,  true]        },
+            { label: 'Rapports financiers',         vals: [false, true,  true]        },
+            { label: 'Score confiance',             vals: [true,  true,  true]        },
+            { label: 'Multi-utilisateurs',          vals: [false, false, '5 comptes'] },
+            { label: 'Support',                     vals: ['—', 'Email', 'Mail/Message'] },
           ].map(function(row, i) {
-            var colors = ['#1B6B3A', '#7B1FA2'];
+            var colors = ['#1565C0', '#1B6B3A', '#7B1FA2'];
             return (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', padding: '13px 20px', background: i % 2 === 0 ? '#fff' : '#FAFAFA', borderBottom: '0.5px solid #F0F0F0', gap: 8, alignItems: 'center' }}>
+              <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', padding: '13px 20px', background: i % 2 === 0 ? '#fff' : '#FAFAFA', borderBottom: '0.5px solid #F0F0F0', gap: 8, alignItems: 'center', minWidth: 560 }}>
                 <div style={{ fontSize: 13, color: '#555' }}>{row.label}</div>
                 {row.vals.map(function(v, vi) {
                   return (
@@ -383,8 +393,8 @@ export default function Pricing() {
       {/* CTA */}
       <div style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', padding: 'clamp(40px, 6vw, 64px) 24px', textAlign: 'center' }}>
         <h2 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 900, color: '#fff', margin: '0 0 12px' }}>Prêt à commencer ?</h2>
-        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', margin: '0 0 28px' }}>14 jours d'essai Pro gratuit · Paiement Mobile Money uniquement</p>
-        <button onClick={function() { setShowPaiement('pro'); }}
+        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', margin: '0 0 28px' }}>1 mois d'essai gratuit · Paiement Mobile Money uniquement</p>
+        <button onClick={function() { choisirPlan('pro'); }}
           style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, border: 'none', background: '#F5A623', color: '#1B2B22', fontWeight: 800, fontSize: 15, cursor: 'pointer' }}>
           Démarrer l'essai gratuit <ArrowRight size={16} strokeWidth={2.5} />
         </button>

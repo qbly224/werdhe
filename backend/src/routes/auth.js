@@ -77,6 +77,13 @@ async function connexionHandler(req, res) {
       return res.status(403).json({ erreur: 'Compte suspendu. Contactez le support.' });
     }
 
+    if (user.abonnement_bloque) {
+      return res.status(403).json({
+        erreur: 'Abonnement impayé. Réglez votre abonnement ou contactez contact@werdhe.com pour retrouver l\'accès.',
+        code:   'ABONNEMENT_BLOQUE'
+      });
+    }
+
     var valid = await bcrypt.compare(mot_de_passe, user.mot_de_passe);
     if (!valid) {
       return res.status(401).json({ erreur: 'Email ou mot de passe incorrect' });

@@ -1,9 +1,31 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import api from '../services/api';
+import toast from 'react-hot-toast';
 import './Accueil.css';
 
 export default function Accueil() {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const [essaiEnCours, setEssaiEnCours] = useState(null);
+
+  function choisirPlan(plan) {
+    if (!user) {
+      navigate('/inscription?role=proprietaire&plan=' + plan);
+      return;
+    }
+    setEssaiEnCours(plan);
+    api.post('/abonnements/essai', { plan: plan })
+      .then(function() {
+        toast.success('Essai ' + (plan === 'pro' ? 'Pro' : 'Agence') + ' démarré ! 1 mois gratuit.');
+        navigate('/dashboard');
+      })
+      .catch(function() {
+        navigate('/pricing');
+      })
+      .finally(function() { setEssaiEnCours(null); });
+  }
 
   return (
     <div className="accueil-page">
@@ -258,12 +280,28 @@ export default function Accueil() {
           <p>L'espace locataire est toujours 100% gratuit</p>
         </div>
         <div className="accueil-plans">
+          <div className="accueil-plan">
+            <div className="accueil-plan-type">Locataire</div>
+            <div className="accueil-plan-price">0 <span>GNF/mois</span></div>
+            <div className="accueil-plan-sub">Toujours gratuit</div>
+            <Link to="/register?role=locataire" className="accueil-btn-outline accueil-btn-full" style={{textAlign:'center',display:'block'}}>Trouver un logement</Link>
+            <div className="accueil-plan-features">
+              <div className="accueil-plan-feature accueil-plan-feature-ok">Recherche avancee</div>
+              <div className="accueil-plan-feature accueil-plan-feature-ok">Candidatures illimitees</div>
+              <div className="accueil-plan-feature accueil-plan-feature-ok">Messagerie</div>
+              <div className="accueil-plan-feature accueil-plan-feature-ok">Signature electronique</div>
+            </div>
+          </div>
+
           <div className="accueil-plan accueil-plan-featured">
             <div className="accueil-plan-badge">Recommande</div>
             <div className="accueil-plan-type">Pro</div>
             <div className="accueil-plan-price">120 000 <span>GNF/mois</span></div>
             <div className="accueil-plan-sub">Jusqu'a 20 biens</div>
-            <Link to="/register" className="accueil-btn-green accueil-btn-full" style={{textAlign:'center',display:'block'}}>Essai 14 jours</Link>
+            <button onClick={function() { choisirPlan('pro'); }} disabled={essaiEnCours === 'pro'}
+              className="accueil-btn-green accueil-btn-full" style={{textAlign:'center',display:'block',cursor:essaiEnCours==='pro'?'not-allowed':'pointer'}}>
+              {essaiEnCours === 'pro' ? 'Demarrage...' : 'Essai 1 mois gratuit'}
+            </button>
             <div className="accueil-plan-features">
               <div className="accueil-plan-feature accueil-plan-feature-ok">Orange Money + MTN MoMo</div>
               <div className="accueil-plan-feature accueil-plan-feature-ok">Baux et quittances PDF</div>
@@ -276,13 +314,15 @@ export default function Accueil() {
             <div className="accueil-plan-type">Agence</div>
             <div className="accueil-plan-price">300 000 <span>GNF/mois</span></div>
             <div className="accueil-plan-sub">Biens illimites</div>
-            <Link to="/login" className="accueil-btn-outline accueil-btn-full" style={{textAlign:'center',display:'block'}}>Nous contacter</Link>
+            <button onClick={function() { choisirPlan('agence'); }} disabled={essaiEnCours === 'agence'}
+              className="accueil-btn-outline accueil-btn-full" style={{textAlign:'center',display:'block',cursor:essaiEnCours==='agence'?'not-allowed':'pointer'}}>
+              {essaiEnCours === 'agence' ? 'Demarrage...' : 'Essai 1 mois gratuit'}
+            </button>
             <div className="accueil-plan-features">
               <div className="accueil-plan-feature accueil-plan-feature-ok">Tout du plan Pro</div>
               <div className="accueil-plan-feature accueil-plan-feature-ok">Multi-utilisateurs</div>
-              <div className="accueil-plan-feature accueil-plan-feature-ok">Marque blanche</div>
-              <div className="accueil-plan-feature accueil-plan-feature-ok">API et integrations</div>
-              <div className="accueil-plan-feature accueil-plan-feature-ok">Support prioritaire</div>
+              <div className="accueil-plan-feature accueil-plan-feature-ok">Rapport mensuel automatique</div>
+              <div className="accueil-plan-feature accueil-plan-feature-ok">Support Mail/Message</div>
             </div>
           </div>
         </div>
