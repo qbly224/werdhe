@@ -4805,9 +4805,9 @@ function chargerDonnees() {
              <Menu size={22} strokeWidth={1.5} />
             </button>
             <div className="dash-header-title">
-              <h1>{pageTitle[onglet] || 'Tableau de bord'}</h1>
-              <p>{new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
-            </div>
+            <h1>{pageTitle[onglet] || 'Tableau de bord'}</h1>
+            {!isMobile && <p>{new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>}
+          </div>
           {!isMobile && <RechercheGlobale stats={stats} onNavigate={setOnglet} />}
           {!enLigne && (
   <div style={{ background: '#E53935', color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20, display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -4897,7 +4897,14 @@ function chargerDonnees() {
         <div className="dash-scroll">
   {renderOnglet}
 </div>
-
+{/* Bouton + flottant mobile (proprio) */}
+{isMobile && user && (user.role === 'proprietaire' || user.role === 'les_deux') && (
+  <button
+    onClick={function() { navigate('/logements/ajouter'); }}
+    style={{ position: 'fixed', bottom: 74, right: 16, width: 52, height: 52, borderRadius: '50%', background: '#1B6B3A', border: 'none', boxShadow: '0 4px 16px rgba(27,107,58,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 499 }}>
+    <Plus size={24} color="#fff" strokeWidth={2.5} />
+  </button>
+)}
 {/* Barre navigation mobile */}
 {isMobile && (
   <div style={{
@@ -4910,7 +4917,14 @@ function chargerDonnees() {
     {(user && user.role === 'locataire' ? [
       { path: '/dashboard',               icon: <LayoutDashboard size={22} strokeWidth={1.5} />, label: 'Accueil'   },
       { path: '/dashboard/mes-locations', icon: <Home            size={22} strokeWidth={1.5} />, label: 'Locations' },
-      { path: '/dashboard/messages',      icon: <MessageCircle   size={22} strokeWidth={1.5} />, label: 'Messages'  },
+            { path: '/dashboard/messages', icon: (
+        <div style={{ position: 'relative' }}>
+          <MessageCircle size={22} strokeWidth={1.5} />
+          {alertes && alertes.filter(function(a) { return !a.lu && a.type === 'message'; }).length > 0 && (
+            <div style={{ position: 'absolute', top: -4, right: -4, width: 8, height: 8, background: '#E53935', borderRadius: '50%' }} />
+          )}
+        </div>
+      ), label: 'Messages' },
       { path: '/dashboard/paiements',     icon: <CreditCard      size={22} strokeWidth={1.5} />, label: 'Paiements' },
       { path: '/dashboard/historique', icon: <Clock size={22} strokeWidth={1.5} />, label: 'Historique' },
       { path: '/dashboard/parametres',    icon: <Settings        size={22} strokeWidth={1.5} />, label: 'Profil'    },
@@ -4918,7 +4932,14 @@ function chargerDonnees() {
       { path: '/dashboard',               icon: <LayoutDashboard size={22} strokeWidth={1.5} />, label: 'Accueil'   },
       { path: '/dashboard/biens',         icon: <Home            size={22} strokeWidth={1.5} />, label: 'Biens'     },
       { path: '/dashboard/reservations',  icon: <CalendarCheck   size={22} strokeWidth={1.5} />, label: 'Résas'     },
-      { path: '/dashboard/messages',      icon: <MessageCircle   size={22} strokeWidth={1.5} />, label: 'Messages'  },
+            { path: '/dashboard/messages', icon: (
+        <div style={{ position: 'relative' }}>
+          <MessageCircle size={22} strokeWidth={1.5} />
+          {alertes && alertes.filter(function(a) { return !a.lu && a.type === 'message'; }).length > 0 && (
+            <div style={{ position: 'absolute', top: -4, right: -4, width: 8, height: 8, background: '#E53935', borderRadius: '50%' }} />
+          )}
+        </div>
+      ), label: 'Messages' },
       { path: '/dashboard/parametres',    icon: <Settings        size={22} strokeWidth={1.5} />, label: 'Profil'    },
     ]).map(function(item) {
       var actif = onglet === item.path;

@@ -652,3 +652,55 @@ input:focus, textarea:focus, select:focus {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+/* ─── MOBILE DASHBOARD ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .dashboard-main {
+    margin-left: 0 !important;
+    padding-bottom: 80px !important;
+  }
+
+  .dash-page-header {
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding: 16px !important;
+  }
+
+  .dash-page-header h1 {
+    font-size: 20px !important;
+  }
+
+  .stats-grid-4 {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .stat-card-colored {
+    padding: 14px !important;
+  }
+
+  .stat-card-val {
+    font-size: 18px !important;
+  }
+
+  .messages-container {
+    grid-template-columns: 1fr !important;
+  }
+
+  .messages-list {
+    display: none !important;
+  }
+
+  .messages-chat {
+    height: calc(100vh - 140px) !important;
+  }
+
+  .dash-header {
+    padding: 10px 14px !important;
+    height: 52px !important;
+  }
+
+  .dash-form-card {
+    padding: 16px !important;
+    border-radius: 12px !important;
+  }
+}
