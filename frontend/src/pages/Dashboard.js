@@ -4884,11 +4884,10 @@ function chargerDonnees() {
             <NotifPanel alertes={alertes} onClose={function() { setShowNotif(false); }} />
           </div>
         )}
-
-        <div className="dash-scroll">
-  {renderOnglet}
-</div>
-{/* Bouton + flottant mobile (proprio) */}
+                              <div className="dash-scroll">
+          {renderOnglet}
+        </div>
+        {/* Bouton + flottant mobile (proprio) */}  
 {isMobile && user && (user.role === 'proprietaire' || user.role === 'les_deux') && (
   <button
     onClick={function() { navigate('/logements/ajouter'); }}
@@ -4953,6 +4952,5 @@ function chargerDonnees() {
   </div>
 )}
       </div>
-    </div>
   );
 }
