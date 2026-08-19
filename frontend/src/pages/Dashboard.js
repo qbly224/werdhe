@@ -203,41 +203,6 @@ function OngletOverviewLocataire(props) {
               <div className="stat-card-label">{s.label}</div>
             </div>
           );
-                  <div className="stats-grid-4" style={{ marginBottom: 24, gap: 16 }}>
-          {kpis.map(function(s, i) {
-            return (
-              <div key={i} style={{
-                background: '#fff',
-                borderRadius: 16,
-                padding: '20px',
-                boxShadow: '0 2px 12px rgba(0,0,0,0.05)',
-                border: '1px solid #F0F0F0',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 12,
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div style={{ width: 42, height: 42, background: s.bg, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                    {s.icon}
-                  </div>
-                  {s.tendance !== undefined && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: s.tendance >= 0 ? '#E8F5E9' : '#FFEBEE', borderRadius: 20, padding: '3px 8px' }}>
-                      <TrendingUp size={11} strokeWidth={2} color={s.tendance >= 0 ? '#1B6B3A' : '#E53935'} style={{ transform: s.tendance < 0 ? 'rotate(180deg)' : 'none' }} />
-                      <span style={{ fontSize: 11, fontWeight: 700, color: s.tendance >= 0 ? '#1B6B3A' : '#E53935' }}>
-                        {s.tendance >= 0 ? '+' : ''}{s.tendance}%
-                      </span>
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <div style={{ fontSize: 22, fontWeight: 900, color: '#1B2B22', letterSpacing: -0.5 }}>{s.val}</div>
-                  <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>{s.label}</div>
-                  {s.sub && <div style={{ fontSize: 11, color: s.subColor || '#888', marginTop: 3, fontWeight: 600 }}>{s.sub}</div>}
-                </div>
-              </div>
-            );
-          })}
-        </div>
         })}
       </div>
 
@@ -4834,49 +4799,22 @@ function chargerDonnees() {
     open={sidebarOpen} />
 
       <div className="dashboard-main" style={{ marginLeft: sidebarWidth }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', height: 64, background: '#fff', borderBottom: '1px solid #F0F0F0', position: 'sticky', top: 0, zIndex: 100 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <button onClick={function() { setSidebarOpen(!sidebarOpen); }}
-              style={{ width: 36, height: 36, borderRadius: 10, border: 'none', background: '#F7F8F7', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#555' }}>
-              <Menu size={18} strokeWidth={1.5} />
+        <div className="dash-header">
+          <div className="dash-header-left" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <button className="dash-toggle-btn" onClick={function() { setSidebarOpen(!sidebarOpen); }} type="button">
+             <Menu size={22} strokeWidth={1.5} />
             </button>
-            <div>
-              {!isMobile && (
-                <div style={{ fontSize: 11, color: '#888', fontWeight: 500 }}>
-                  {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
-                </div>
-              )}
-              <div style={{ fontSize: 16, fontWeight: 800, color: '#1B2B22', letterSpacing: -0.3 }}>
-                {pageTitle[onglet] || 'Tableau de bord'}
-              </div>
-            </div>
+            <div className="dash-header-title">
+            <h1>{pageTitle[onglet] || 'Tableau de bord'}</h1>
+            {!isMobile && <p>{new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>}
           </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            {!isMobile && <RechercheGlobale stats={stats} onNavigate={setOnglet} />}
-
-            {/* Cloche alertes */}
-            <button onClick={function() { setOnglet('/dashboard/alertes'); }}
-              style={{ position: 'relative', width: 38, height: 38, borderRadius: 10, border: 'none', background: '#F7F8F7', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#555' }}>
-              <Bell size={17} strokeWidth={1.5} />
-              {alertes.filter(function(a) { return !a.lu; }).length > 0 && (
-                <div style={{ position: 'absolute', top: 6, right: 6, width: 8, height: 8, background: '#E53935', borderRadius: '50%' }} />
-              )}
-            </button>
-
-            {/* Avatar */}
-            <div onClick={function() { setOnglet('/dashboard/parametres'); }}
-              style={{ width: 38, height: 38, borderRadius: '50%', background: '#1B6B3A', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>
-              {user ? ((user.prenom || '').charAt(0) + (user.nom || '').charAt(0)).toUpperCase() : 'U'}
-            </div>
-
-            {!enLigne && (
-              <div style={{ background: '#E53935', color: '#fff', fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20 }}>
-                Hors ligne
-              </div>
-            )}
-          </div>
-        </div>
+          {!isMobile && <RechercheGlobale stats={stats} onNavigate={setOnglet} />}
+          {!enLigne && (
+  <div style={{ background: '#E53935', color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20, display: 'flex', alignItems: 'center', gap: 5 }}>
+    <div style={{ width: 6, height: 6, background: '#fff', borderRadius: '50%', opacity: 0.8 }} />
+    Hors ligne
+  </div>
+)}
         </div>
 
         {showNotif && (
