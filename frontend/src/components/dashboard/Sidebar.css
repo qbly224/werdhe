@@ -1,188 +1,122 @@
+/* ═══ SIDEBAR WERDHE — Style icônes ═══════════════════════════ */
 .sidebar {
-  width: 260px;
-  min-height: 100vh;
-  background: #1B5E20;
-  display: flex;
-  flex-direction: column;
   position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 100;
-  box-shadow: 4px 0 12px rgba(0,0,0,0.15);
-}
-
-/* Logo */
-.sidebar-logo {
-  padding: 24px 20px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  top: 0; left: 0;
+  height: 100vh;
+  width: 64px;
+  background: #fff;
+  border-right: 1px solid #EBEBEB;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  z-index: 1000;
+  transition: width .25s ease;
+  overflow: hidden;
 }
 
-.sidebar-logo a {
-  font-size: 22px;
-  font-weight: 800;
-  color: white;
-  text-decoration: none;
-  letter-spacing: 1px;
+.sidebar.sidebar-open {
+  width: 220px;
 }
 
-.sidebar-logo small {
-  font-size: 11px;
-  color: rgba(255,255,255,0.5);
-  letter-spacing: 0.5px;
-}
-
-/* Profil */
-.sidebar-profil {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  margin-bottom: 8px;
-}
-
-.sidebar-avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.2);
-  color: white;
+/* Logo zone */
+.sidebar .sidebar-logo {
+  height: 62px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  font-weight: 800;
+  padding: 0 14px;
+  border-bottom: 1px solid #F0F0F0;
   flex-shrink: 0;
 }
 
-.sidebar-user-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  overflow: hidden;
-}
-
-.sidebar-user-info strong {
-  font-size: 14px;
-  color: white;
-  font-weight: 700;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.sidebar-user-info span {
-  font-size: 12px;
-  color: rgba(255,255,255,0.6);
-}
-
-/* Nav */
-.sidebar-nav {
+/* Nav items */
+.sidebar nav {
   flex: 1;
-  padding: 8px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  padding: 10px 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-.sidebar-item {
+.sidebar nav button,
+.sidebar nav a {
+  width: 100%;
+  height: 42px;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 11px 14px;
+  padding: 0 10px;
+  margin-bottom: 2px;
   border-radius: 10px;
   border: none;
   background: transparent;
-  color: rgba(255,255,255,0.7);
-  font-size: 14px;
-  font-weight: 500;
+  color: #888;
   cursor: pointer;
-  transition: all 0.2s;
-  text-align: left;
-  width: 100%;
-}
-
-.sidebar-item:hover {
-  background: rgba(255,255,255,0.1);
-  color: white;
-}
-
-.sidebar-item.active {
-  background: rgba(255,255,255,0.2);
-  color: white;
-  font-weight: 700;
-}
-
-.sidebar-icon {
-  font-size: 18px;
-  width: 24px;
-  text-align: center;
-  flex-shrink: 0;
-}
-
-/* Footer */
-.sidebar-footer {
-  padding: 8px 12px 16px;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.sidebar-logout {
-  color: #ff8a80 !important;
-}
-
-.sidebar-logout:hover {
-  background: rgba(255,0,0,0.15) !important;
-}
-
-@media (max-width: 768px) {
-  .sidebar-wrapper {
-    width: 240px !important;
-    min-height: 100vh;
-  }
-  .sidebar-label {
-    display: block !important;
-  }
-  .sidebar-item {
-    padding: 12px 16px !important;
-    font-size: 14px !important;
-  }
-}
-
-/* ── RESPONSIVE SIDEBAR ─────────────────────────────── */
-@media (max-width: 768px) {
-  .sidebar-desktop {
-    transform: translateX(-100%) !important;
-    width: 240px !important;
-    z-index: 1000 !important;
-  }
-
-  .sidebar-desktop.open {
-    transform: translateX(0) !important;
-    box-shadow: 4px 0 30px rgba(0,0,0,0.4) !important;
-  }
-
-  .sidebar-label {
-    display: inline !important;
-  }
-}
-/* Sidebar modernisée */
-.sidebar {
-  background: #fff !important;
-  border-right: 1px solid #F0F0F0 !important;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.04) !important;
-}
-
-.sidebar nav button {
-  border-radius: 10px !important;
-  margin-bottom: 2px !important;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all .15s;
+  text-decoration: none;
+  position: relative;
 }
 
 .sidebar nav button:hover {
-  background: #F7F8F7 !important;
+  background: #F7F8F7;
+  color: #1B2B22;
+}
+
+.sidebar nav button.active {
+  background: #E8F5E9;
+  color: #1B6B3A;
+  font-weight: 700;
+}
+
+/* Badge notification */
+.sidebar .nav-badge {
+  position: absolute;
+  top: 6px; right: 8px;
+  width: 16px; height: 16px;
+  background: #E53935;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tooltip quand sidebar fermée */
+.sidebar:not(.sidebar-open) nav button::after {
+  content: attr(title);
+  position: absolute;
+  left: 54px;
+  background: #1B2B22;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transition: opacity .15s;
+}
+
+.sidebar:not(.sidebar-open) nav button:hover::after {
+  opacity: 1;
+}
+
+/* Profil bas */
+.sidebar .sidebar-footer {
+  padding: 10px 10px 16px;
+  border-top: 1px solid #F0F0F0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
 }
