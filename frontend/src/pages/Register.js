@@ -195,7 +195,7 @@ export default function Register() {
 
                 {role === 'proprietaire' && (
                   <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#1B5E20', display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span>✅</span> Essai {planInitial === 'agence' ? 'Agence' : 'Pro'} 1 mois gratuit — sans Mobile Money
+                    <span>✅</span> Essai {planInitial === 'agence' ? 'Agence' : 'Pro'} 1 mois gratuit - sans Mobile Money
                   </div>
                 )}
                 {role === 'locataire' && (

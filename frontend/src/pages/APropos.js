@@ -126,7 +126,7 @@ export default function APropos() {
                 Rendre la location accessible à tous
               </h2>
               <p style={{ fontSize: 15, color: '#555', lineHeight: 1.8, margin: '0 0 16px' }}>
-                En Guinée, trouver un logement ou un locataire fiable est souvent un parcours semé d'embûches — frais d'agence exorbitants, manque de transparence, documents difficiles à gérer.
+                En Guinée, trouver un logement ou un locataire fiable est souvent un parcours semé d'embûches - frais d'agence exorbitants, manque de transparence, documents difficiles à gérer.
               </p>
               <p style={{ fontSize: 15, color: '#555', lineHeight: 1.8, margin: '0 0 20px' }}>
                 Werdhe change ça. En mettant la technologie au service des Guinéens, nous simplifions chaque étape : de la recherche à la signature du bail, en passant par le suivi des paiements.
