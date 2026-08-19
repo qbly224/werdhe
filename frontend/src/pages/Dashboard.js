@@ -4753,9 +4753,7 @@ function chargerDonnees() {
       </div>
     );
   }
-
-  var sidebarWidth = sidebarOpen ? 240 : 70;
-
+  var sidebarWidth = isMobile ? 0 : sidebarOpen ? 220 : 64;
   return (
     <div className="dashboard-wrapper">
 
@@ -4798,7 +4796,7 @@ function chargerDonnees() {
     setOnglet={function(o) { setOnglet(o); if (isMobile) setSidebarOpen(false); }}
     open={sidebarOpen} />
 
-      <div className="dashboard-main" style={{ marginLeft: sidebarWidth }}>
+            <div className="dashboard-main" style={{ marginLeft: sidebarWidth, transition: 'margin-left .25s ease', minHeight: '100vh', background: '#F5F6FA' }}>
         <div className="dash-header">
           <div className="dash-header-left" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <button className="dash-toggle-btn" onClick={function() { setSidebarOpen(!sidebarOpen); }} type="button">
