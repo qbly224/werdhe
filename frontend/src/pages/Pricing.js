@@ -135,7 +135,7 @@ export default function Pricing() {
       .catch(function(err) {
         // Essai déjà utilisé ou abonnement déjà actif → payer directement
         var msg = err.response && err.response.data ? err.response.data.erreur : '';
-        toast(msg || 'Essai déjà utilisé — vous pouvez payer directement', { icon: 'ℹ️' });
+        toast(msg || 'Essai déjà utilisé - vous pouvez payer directement', { icon: 'ℹ️' });
         setShowPaiement(planId);
       })
       .finally(function() { setEssaiEnCours(null); });
@@ -149,7 +149,7 @@ export default function Pricing() {
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
       <SEO
-        titre="Tarifs — Locataire gratuit, plans Pro et Agence"
+        titre="Tarifs - Locataire gratuit, plans Pro et Agence"
         description="Werdhe est 100% gratuit pour les locataires. Plans Pro et Agence pour les propriétaires, 1 mois d'essai gratuit. Paiement Mobile Money."
         url="https://werdhe.com/pricing"
       />
@@ -203,7 +203,7 @@ export default function Pricing() {
       {showPaiement && (
         <ModalPaiementMobile
           montant={montantCycle(PLANS.find(function(p) { return p.id === showPaiement; }).prix_mois)}
-          titre={'Abonnement ' + (showPaiement === 'pro' ? 'Pro' : 'Agence') + ' — ' + CYCLES[cycle].label}
+          titre={'Abonnement ' + (showPaiement === 'pro' ? 'Pro' : 'Agence') + ' - ' + CYCLES[cycle].label}
           payload={{ plan: showPaiement, cycle: cycle, code_promo: codeOk && codeOk.valide ? code : undefined }}
           endpoints={{
             orange:    '/abonnements/orange-money/initier',
@@ -223,7 +223,7 @@ export default function Pricing() {
             <div key={plan.id} style={{ background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: plan.recommande ? '0 8px 32px rgba(27,107,58,0.15)' : '0 2px 12px rgba(0,0,0,0.06)', border: plan.recommande ? '2px solid ' + plan.couleur : '1px solid #E8E8E8', position: 'relative' }}>
               {plan.recommande && (
                 <div style={{ background: plan.couleur, color: '#fff', textAlign: 'center', padding: '6px', fontSize: 12, fontWeight: 700 }}>
-                  Recommandé — {plan.badge}
+                  Recommandé - {plan.badge}
                 </div>
               )}
               <div style={{ padding: '24px 22px' }}>
@@ -334,7 +334,7 @@ export default function Pricing() {
             <div style={{ fontSize: 13, fontWeight: 700, color: '#CE93D8', textAlign: 'center' }}>Agence</div>
           </div>
           {[
-            { label: 'Logements gérés',            vals: ['—', '20', 'Illimités']    },
+            { label: 'Logements gérés',            vals: ['-', '20', 'Illimités']    },
             { label: 'Paiement Mobile Money',       vals: [false, true,  true]        },
             { label: 'Candidatures et dossiers',    vals: [true,  true,  true]        },
             { label: 'Documents PDF auto',          vals: [false, true,  true]        },
@@ -342,7 +342,7 @@ export default function Pricing() {
             { label: 'Rapports financiers',         vals: [false, true,  true]        },
             { label: 'Score confiance',             vals: [true,  true,  true]        },
             { label: 'Multi-utilisateurs',          vals: [false, false, '5 comptes'] },
-            { label: 'Support',                     vals: ['—', 'Email', 'Mail/Message'] },
+            { label: 'Support',                     vals: ['-', 'Email', 'Mail/Message'] },
           ].map(function(row, i) {
             var colors = ['#1565C0', '#1B6B3A', '#7B1FA2'];
             return (
