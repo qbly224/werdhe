@@ -3,6 +3,8 @@ const cors      = require('cors');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const app       = express();
+// Render utilise un proxy - nécessaire pour express-rate-limit
+app.set('trust proxy', 1);
 // Rate limiter global
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
