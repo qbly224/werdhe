@@ -43,16 +43,7 @@ export default function Sidebar({ ongletActif, setOnglet, open, alertes }) {
   var initiales = user ? ((user.prenom || '').charAt(0) + (user.nom || '').charAt(0)).toUpperCase() : 'U';
 
   return (
-    <div style={{
-      position: 'fixed', top: 0, left: 0, height: '100vh',
-      width: open ? 220 : 64,
-      background: '#fff',
-      borderRight: '1px solid #EBEBEB',
-      display: 'flex', flexDirection: 'column',
-      zIndex: 1000,
-      transition: 'width .25s ease',
-      overflow: 'hidden',
-      flexShrink: 0,
+        <div className={'sidebar-desktop' + (open ? ' open' : '')} style={{
     }}>
 
       {/* Logo */}

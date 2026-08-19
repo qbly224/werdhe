@@ -32,7 +32,7 @@ import { activerNotificationsPush, estAbonne, desactiverNotifications } from '..
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts';
 
 // ================================================
-// UTILITAIRE — Formater les montants en GNF
+// UTILITAIRE - Formater les montants en GNF
 // ================================================
 var GNF = function(n) {
   return new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
@@ -427,7 +427,7 @@ function OngletOverview(props) {
               <div key={'ev' + i} style={{ display: 'flex', gap: 10, padding: '8px 0', alignItems: 'center' }}>
                 <div style={{ width: 8, height: 8, background: '#1565C0', borderRadius: '50%', flexShrink: 0 }} />
                 <div style={{ flex: 1, fontSize: 12, color: '#1B2B22' }}>
-                  Bail expire — {e.logement_titre}
+                  Bail expire - {e.logement_titre}
                   <span style={{ color: joursRestants <= 15 ? '#E53935' : '#888', fontWeight: 700, marginLeft: 6 }}>
                     dans {joursRestants}j
                   </span>
@@ -722,7 +722,7 @@ function OngletBiens(props) {
         {limiteAtteinte ? (
           <button onClick={function() { window.location.href = '/pricing'; }}
             style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 16px', borderRadius: 10, background: '#F5A623', color: '#1B2B22', border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-            <Lock size={14} strokeWidth={1.5} /> Limite atteinte — Upgrader
+            <Lock size={14} strokeWidth={1.5} /> Limite atteinte - Upgrader
           </button>
         ) : (
           <Link to="/logements/ajouter" className="btn-green" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
@@ -756,7 +756,7 @@ function OngletBiens(props) {
           if (modeEdit === b.id) {
             return (
               <div key={b.id} style={{ background: '#fff', borderRadius: 16, padding: 18, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid #1565C0' }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>Modifier — {b.titre}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>Modifier - {b.titre}</div>
                 <div className="form-row-2">
                   <div className="form-group"><label>Titre</label><input type="text" value={formEdit.titre} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { titre: e.target.value })); }} /></div>
                   <div className="form-group"><label>Prix (GNF)</label><input type="number" value={formEdit.prix_mensuel} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { prix_mensuel: e.target.value })); }} /></div>
@@ -897,7 +897,7 @@ function OngletBiens(props) {
         </select>
       </div>
       <div className="form-group">
-        <label>Nouveau loyer mensuel (GNF) — laisser vide pour conserver le même</label>
+        <label>Nouveau loyer mensuel (GNF) - laisser vide pour conserver le même</label>
         <input type="number" placeholder={showRenouv.loyer} value={renouvForm.prix}
           onChange={function(e) { setRenouvForm(Object.assign({}, renouvForm, { prix: e.target.value })); }} />
       </div>
@@ -1504,7 +1504,7 @@ useEffect(function() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <button onClick={function() { action('/decision', { decision: 'acceptee' }, 'Dossier validé ! Candidature acceptée.'); }}
         style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-        <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><CheckCircle size={15} strokeWidth={1.5}/> Valider le dossier — Accepter la candidature</span>
+        <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><CheckCircle size={15} strokeWidth={1.5}/> Valider le dossier - Accepter la candidature</span>
       </button>
       <button onClick={function() { action('/decision', { decision: 'dossier_requis' }, 'Informations complémentaires demandées.'); }}
         style={{ background: '#E3F2FD', color: '#1565C0', border: '1px solid #90CAF9', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
@@ -1872,7 +1872,7 @@ function PaiementsProprietaire(props) {
 return {
   id:            l.id,
   nom:           l.titre,
-  locataire:     resaActive ? (resaActive.locataire_prenom + ' ' + resaActive.locataire_nom) : '—',
+  locataire:     resaActive ? (resaActive.locataire_prenom + ' ' + resaActive.locataire_nom) : '-',
   reservation_id: resaActive ? resaActive.id : null,
   quartier:      l.ville,
   loyer:         Number(l.prix_mensuel),
@@ -1969,7 +1969,7 @@ return {
             <div style={{background:'#F0F4F1',borderRadius:'12px',padding:'14px',marginBottom:'18px',display:'flex',justifyContent:'space-between',alignItems:'center'}}><div><div style={{fontSize:'12px',color:'#555'}}>Montant du loyer</div></div><div style={{fontSize:'22px',fontWeight:'700',color:'#1B6B3A'}}>{GNF(modal.loyer)}</div></div>
             <div style={{fontSize:'13px',fontWeight:'700',marginBottom:'12px'}}>Mode de paiement</div>
             {PAY_MODES.map(function(p){return(<div key={p.id} onClick={function(){setSelectedMode(p.id);}} style={{display:'flex',alignItems:'center',gap:'12px',padding:'12px 14px',border:selectedMode===p.id?'2px solid #1B6B3A':'0.5px solid #E0E0E0',background:selectedMode===p.id?'#E8F5E9':'#fff',borderRadius:'12px',marginBottom:'8px',cursor:'pointer'}}><div style={{width:'40px',height:'40px',background:p.color||'#E8F5E9',borderRadius:'10px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:p.icon?'20px':'13px',fontWeight:'700',color:p.text||'#1B6B3A'}}>{p.icon||p.abbr}</div><div style={{flex:1}}><div style={{fontSize:'14px',fontWeight:'600'}}>{p.label}</div><div style={{fontSize:'11px',color:'#888'}}>{p.sub}</div></div><div style={{width:'22px',height:'22px',borderRadius:'50%',border:selectedMode===p.id?'none':'1.5px solid #E0E0E0',background:selectedMode===p.id?'#1B6B3A':'transparent',display:'flex',alignItems:'center',justifyContent:'center'}}>{selectedMode===p.id&&<span style={{color:'#fff',fontSize:'12px'}}>✓</span>}</div></div>);})}
-            <button type="button" onClick={confirmerPaiement} disabled={processing} style={{width:'100%',background:processing?'#999':'#1B6B3A',color:'#fff',border:'none',borderRadius:'12px',padding:'14px',fontSize:'15px',fontWeight:'700',cursor:processing?'not-allowed':'pointer',marginTop:'6px'}}>{processing?'Traitement...':'Confirmer — '+GNF(modal.loyer)}</button>
+            <button type="button" onClick={confirmerPaiement} disabled={processing} style={{width:'100%',background:processing?'#999':'#1B6B3A',color:'#fff',border:'none',borderRadius:'12px',padding:'14px',fontSize:'15px',fontWeight:'700',cursor:processing?'not-allowed':'pointer',marginTop:'6px'}}>{processing?'Traitement...':'Confirmer - '+GNF(modal.loyer)}</button>
           </div>):(<div style={{textAlign:'center',padding:'20px 0'}}>
             <div style={{width:'70px',height:'70px',background:'#E8F5E9',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px',fontSize:'36px'}}><CheckCircle size={36} strokeWidth={1.5} color="#1B6B3A"/></div>
             <div style={{fontSize:'20px',fontWeight:'700',color:'#1B6B3A',marginBottom:'8px'}}>Paiement enregistre !</div>
@@ -1996,7 +1996,7 @@ function PaiementsLocataire(props) {
   var [logement, setLogement] = useState(null);
   useEffect(function() {
     var r = (stats.reservations||[]).find(function(r){return r.statut==='confirmee';});
-    if(r){setLogement({nom:r.logement_titre||'Mon logement',proprio:(r.proprietaire_prenom||'')+' '+(r.proprietaire_nom||''),propIni:((r.proprietaire_prenom||'').charAt(0)+(r.proprietaire_nom||'').charAt(0)).toUpperCase()||'P',quartier:r.logement_ville||'Conakry',loyer:Number(r.prix_mensuel)||0,debut:r.date_debut?new Date(r.date_debut).toLocaleDateString('fr-FR'):'—',fin:r.date_fin?new Date(r.date_fin).toLocaleDateString('fr-FR'):'—'});}
+    if(r){setLogement({nom:r.logement_titre||'Mon logement',proprio:(r.proprietaire_prenom||'')+' '+(r.proprietaire_nom||''),propIni:((r.proprietaire_prenom||'').charAt(0)+(r.proprietaire_nom||'').charAt(0)).toUpperCase()||'P',quartier:r.logement_ville||'Conakry',loyer:Number(r.prix_mensuel)||0,debut:r.date_debut?new Date(r.date_debut).toLocaleDateString('fr-FR'):'-',fin:r.date_fin?new Date(r.date_fin).toLocaleDateString('fr-FR'):'-'});}
     else{setLogement({nom:'Appartement F3 - Ratoma',proprio:'Mamadou Barry',propIni:'MB',quartier:'Ratoma, Conakry',loyer:1500000,debut:'1 juillet 2025',fin:'30 juin 2026'});}
   }, [stats]);
   if (!logement) return null;
@@ -2018,7 +2018,7 @@ function PaiementsLocataire(props) {
           {[['Debut',logement.debut],['Fin',logement.fin],['Caution',GNF(logement.loyer)]].map(function(row){return <div key={row[0]} style={{background:'#F8F8F8',borderRadius:'8px',padding:'8px 10px'}}><div style={{fontSize:'10px',color:'#888'}}>{row[0]}</div><div style={{fontSize:'11px',fontWeight:'600',color:'#333',marginTop:'2px'}}>{row[1]}</div></div>;})}
         </div>
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 14px',background:stepPay==='success'?'#E8F5E9':'#FFEBEE',borderRadius:'10px',marginBottom:'14px',border:'0.5px solid '+(stepPay==='success'?'#A5D6A7':'#FFCDD2')}}>
-          <div><div style={{fontSize:'13px',fontWeight:'700',color:stepPay==='success'?'#1B6B3A':'#B71C1C'}}>{stepPay==='success'?'Loyer paye — '+moisActuel:'Loyer impaye — '+moisActuel}</div><div style={{fontSize:'11px',color:'#888',marginTop:'2px'}}>{stepPay==='success'?'Quittance envoyee':'Du depuis 3 jours'}</div></div>
+          <div><div style={{fontSize:'13px',fontWeight:'700',color:stepPay==='success'?'#1B6B3A':'#B71C1C'}}>{stepPay==='success'?'Loyer paye - '+moisActuel:'Loyer impaye - '+moisActuel}</div><div style={{fontSize:'11px',color:'#888',marginTop:'2px'}}>{stepPay==='success'?'Quittance envoyee':'Du depuis 3 jours'}</div></div>
           <div style={{fontSize:'16px',fontWeight:'700',color:stepPay==='success'?'#1B6B3A':'#C62828'}}>{GNF(logement.loyer)}</div>
         </div>
         <div style={{fontSize:'13px',fontWeight:'600',marginBottom:'8px'}}>Historique recent</div>
@@ -2046,7 +2046,7 @@ function PaiementsLocataire(props) {
           <div style={{fontSize:'12px',fontWeight:'600',marginBottom:'8px'}}>Recapitulatif</div>
           {[['Bien',logement.nom],['Mois payes',nbMois+' mois'],['Mode',(PAY_MODES.find(function(p){return p.id===mode;})||{}).label],['Total',GNF(total)]].map(function(row){return(<div key={row[0]} style={{display:'flex',justifyContent:'space-between',fontSize:'12px',padding:'4px 0',borderBottom:'0.5px solid #EFEFEF'}}><span style={{color:'#888'}}>{row[0]}</span><span style={{fontWeight:'600',color:row[0]==='Total'?'#1A4FA0':'#333'}}>{row[1]}</span></div>);})}
         </div>
-        <button type="button" onClick={function(){setStepPay('success');toast.success('Paiement effectue ! Quittance generee.');}} style={{width:'100%',background:'#1A4FA0',color:'#fff',border:'none',borderRadius:'12px',padding:'14px',fontSize:'15px',fontWeight:'700',cursor:'pointer'}}>Confirmer — {GNF(total)}</button>
+        <button type="button" onClick={function(){setStepPay('success');toast.success('Paiement effectue ! Quittance generee.');}} style={{width:'100%',background:'#1A4FA0',color:'#fff',border:'none',borderRadius:'12px',padding:'14px',fontSize:'15px',fontWeight:'700',cursor:'pointer'}}>Confirmer - {GNF(total)}</button>
       </div>):(<div style={{background:'#E8F5E9',borderRadius:'14px',padding:'20px',textAlign:'center',boxShadow:'0 2px 10px rgba(0,0,0,.06)'}}><div style={{fontSize:'40px',marginBottom:'10px'}}>🎉</div><div style={{fontSize:'16px',fontWeight:'700',color:'#1B6B3A',marginBottom:'6px'}}>Paiement effectue !</div><div style={{fontSize:'13px',color:'#2E7D32',marginBottom:'16px'}}>{GNF(total)} · {nbMois} mois · Quittance envoyee</div><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}><button type="button" style={{background:'#fff',color:'#1B6B3A',border:'0.5px solid #A5D6A7',borderRadius:'10px',padding:'10px',fontSize:'13px',cursor:'pointer',fontWeight:'600'}}>Voir quittance</button><button type="button" onClick={function(){setStepPay('select');setNbMois(1);}} style={{background:'#1B6B3A',color:'#fff',border:'none',borderRadius:'10px',padding:'10px',fontSize:'13px',cursor:'pointer',fontWeight:'700'}}>Retour</button></div></div>)}
     </div>
   );
@@ -2391,7 +2391,7 @@ function repondre(preavisId, reponse) {
         <div key={p.id} style={{ background: '#fff', borderRadius: 14, padding: 18, marginBottom: 12, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid #C62828' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>📋 Préavis — {p.logement_titre}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>📋 Préavis - {p.logement_titre}</div>
               <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>De : {expediteur}</div>
             </div>
             {diff !== null && (
@@ -2661,7 +2661,7 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
               win.print();
             }, 800);
           };
-          toast.success('Fenêtre d\'impression ouverte — Choisissez "Enregistrer en PDF"');
+          toast.success('Fenêtre d\'impression ouverte - Choisissez "Enregistrer en PDF"');
         } else {
           // Fallback : télécharger le HTML
           var link = document.createElement('a');
@@ -3849,7 +3849,7 @@ function OngletRapports(props) {
             {data.meilleur_mois && (
               <div style={{ marginTop: 10, fontSize: 12, color: '#888', display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span>🏆</span>
-                <span>Meilleur mois : <strong style={{ color: '#1B6B3A' }}>{data.meilleur_mois.mois}</strong> — {GNF(data.meilleur_mois.total)} GNF</span>
+                <span>Meilleur mois : <strong style={{ color: '#1B6B3A' }}>{data.meilleur_mois.mois}</strong> - {GNF(data.meilleur_mois.total)} GNF</span>
               </div>
             )}
           </div>
@@ -3973,7 +3973,7 @@ function SupprimerCompte({ onRetour, user }) {
         <>
           <div style={{ background: '#FFEBEE', borderRadius: 12, padding: '16px 18px', marginBottom: 20, border: '1px solid #FFCDD2' }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: '#B71C1C', marginBottom: 10 }}>
-              Attention — Action irréversible
+              Attention - Action irréversible
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {[
@@ -4123,7 +4123,7 @@ function OngletParametres(props) {
     { id: 'langue', icon: '🌐', titre: 'Langue', desc: 'Francais (Guinee)' },
     { id: 'score', icon: <Star size={22} strokeWidth={1.5} />, titre: 'Score de confiance', desc: 'Votre réputation sur Werdhe' },
     { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: 'Notifications', desc: 'Gérer mes préférences de notifications' },
-    { id: 'supprimer', icon: <Trash2 size={22} strokeWidth={1.5} color="#E53935" />, titre: 'Supprimer mon compte', desc: 'Action irréversible — toutes vos données seront effacées', danger: true },
+    { id: 'supprimer', icon: <Trash2 size={22} strokeWidth={1.5} color="#E53935" />, titre: 'Supprimer mon compte', desc: 'Action irréversible - toutes vos données seront effacées', danger: true },
   ];
 
   return (
@@ -4168,14 +4168,14 @@ function OngletParametres(props) {
 
   {monAbonnement && monAbonnement.abonnement && monAbonnement.abonnement.statut === 'impaye' && (
     <div style={{ background: '#FFEBEE', border: '1px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', marginTop: 12, fontSize: 12, color: '#B71C1C' }}>
-      🔒 Abonnement impayé — accès restreint. Réglez votre abonnement pour retrouver toutes les fonctionnalités.
+      🔒 Abonnement impayé - accès restreint. Réglez votre abonnement pour retrouver toutes les fonctionnalités.
     </div>
   )}
 
   {monAbonnement && monAbonnement.jours_restants !== null && monAbonnement.plan !== 'gratuit' && monAbonnement.abonnement && monAbonnement.abonnement.statut !== 'impaye' && (
     <div style={{ fontSize: 12, color: monAbonnement.jours_restants <= 5 ? '#E65100' : '#888', marginTop: 8, fontWeight: monAbonnement.jours_restants <= 5 ? 700 : 400 }}>
       {monAbonnement.jours_restants > 0
-        ? (monAbonnement.abonnement.statut === 'essai' ? 'Essai gratuit' : 'Abonnement') + ' — ' + monAbonnement.jours_restants + ' jour(s) restant(s)'
+        ? (monAbonnement.abonnement.statut === 'essai' ? 'Essai gratuit' : 'Abonnement') + ' - ' + monAbonnement.jours_restants + ' jour(s) restant(s)'
         : 'Abonnement expiré'}
     </div>
   )}
@@ -4184,11 +4184,11 @@ function OngletParametres(props) {
     <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
       <button onClick={function() { demarrerEssai('pro'); }} disabled={essaiEnCours === 'pro'}
         style={{ flex: 1, background: essaiEnCours === 'pro' ? '#aaa' : '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-        {essaiEnCours === 'pro' ? '...' : '⬆️ Essai Pro — 1 mois gratuit'}
+        {essaiEnCours === 'pro' ? '...' : '⬆️ Essai Pro - 1 mois gratuit'}
       </button>
       <button onClick={function() { demarrerEssai('agence'); }} disabled={essaiEnCours === 'agence'}
         style={{ flex: 1, background: essaiEnCours === 'agence' ? '#aaa' : '#7B1FA2', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-        {essaiEnCours === 'agence' ? '...' : '⬆️ Essai Agence — 1 mois gratuit'}
+        {essaiEnCours === 'agence' ? '...' : '⬆️ Essai Agence - 1 mois gratuit'}
       </button>
     </div>
   )}
@@ -4218,7 +4218,7 @@ function OngletParametres(props) {
 {showPaiementAbo && (
   <ModalPaiementMobile
     montant={Math.round(PRIX_ABONNEMENT[showPaiementAbo] * CYCLES_ABONNEMENT[cycleChoisi].mois * (1 - CYCLES_ABONNEMENT[cycleChoisi].reduction))}
-    titre={'Abonnement ' + (showPaiementAbo === 'pro' ? 'Pro' : 'Agence') + ' — ' + CYCLES_ABONNEMENT[cycleChoisi].label}
+    titre={'Abonnement ' + (showPaiementAbo === 'pro' ? 'Pro' : 'Agence') + ' - ' + CYCLES_ABONNEMENT[cycleChoisi].label}
     payload={{ plan: showPaiementAbo, cycle: cycleChoisi }}
     endpoints={{
       orange:    '/abonnements/orange-money/initier',
@@ -4713,7 +4713,7 @@ function chargerDonnees() {
   }
 
 // ================================================
-  // Helper — vérifier accès par plan
+  // Helper - vérifier accès par plan
   // ================================================
   function peutAcceder(fonctionnalite) {
     var droitsAgence = ['multi_users', 'codes_promo', 'rapport_auto'];
@@ -4795,8 +4795,7 @@ function chargerDonnees() {
     ongletActif={onglet}
     setOnglet={function(o) { setOnglet(o); if (isMobile) setSidebarOpen(false); }}
     open={sidebarOpen} />
-
-            <div className="dashboard-main" style={{ marginLeft: sidebarWidth, transition: 'margin-left .25s ease', minHeight: '100vh', background: '#F5F6FA' }}>
+                  <div className={'dashboard-main' + (sidebarOpen && !isMobile ? ' sidebar-open' : '')}>
         <div className="dash-header">
           <div className="dash-header-left" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <button className="dash-toggle-btn" onClick={function() { setSidebarOpen(!sidebarOpen); }} type="button">
