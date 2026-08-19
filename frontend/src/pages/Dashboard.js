@@ -4815,14 +4815,14 @@ function chargerDonnees() {
     Hors ligne
   </div>
 )}
+               </div>
         </div>
-
         {showNotif && (
           <div style={{ position: 'relative' }}>
             <NotifPanel alertes={alertes} onClose={function() { setShowNotif(false); }} />
           </div>
         )}
-                              <div className="dash-scroll">
+        <div className="dash-scroll">
           {renderOnglet}
         </div>
         {/* Bouton + flottant mobile (proprio) */}  
@@ -4887,8 +4887,9 @@ function chargerDonnees() {
         </button>
       );
     })}
-  </div>
+   </div>
 )}
       </div>
+    </div>
   );
 }
