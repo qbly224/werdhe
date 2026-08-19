@@ -171,3 +171,18 @@
     display: inline !important;
   }
 }
+/* Sidebar modernisée */
+.sidebar {
+  background: #fff !important;
+  border-right: 1px solid #F0F0F0 !important;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.04) !important;
+}
+
+.sidebar nav button {
+  border-radius: 10px !important;
+  margin-bottom: 2px !important;
+}
+
+.sidebar nav button:hover {
+  background: #F7F8F7 !important;
+}

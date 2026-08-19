@@ -704,3 +704,29 @@ input:focus, textarea:focus, select:focus {
     border-radius: 12px !important;
   }
 }
+/* Cards KPI modernisées */
+.stat-card-colored {
+  background: #fff !important;
+  border: 1px solid #F0F0F0 !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05) !important;
+  border-radius: 16px !important;
+  border-left: 4px solid var(--card-color, #1B6B3A) !important;
+}
+
+/* Dashboard fond gris clair */
+.dashboard-main {
+  background: #F5F6FA !important;
+}
+
+.dash-scroll {
+  padding: 20px !important;
+}
+
+/* Cards blanches partout */
+.dash-form-card,
+.dash-section {
+  background: #fff !important;
+  border-radius: 16px !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05) !important;
+  border: 1px solid #F0F0F0 !important;
+}
