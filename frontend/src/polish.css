@@ -730,3 +730,108 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 2px 12px rgba(0,0,0,0.05) !important;
   border: 1px solid #F0F0F0 !important;
 }
+/* ─── HEADER DASHBOARD ─────────────────────────────────────────── */
+.dash-header {
+  background: #fff !important;
+  border-bottom: 1px solid #F0F0F0 !important;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.04) !important;
+  height: 60px !important;
+  padding: 0 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.dash-header-title h1 {
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  color: #1B2B22 !important;
+  letter-spacing: -0.3px !important;
+}
+
+.dash-header-title p {
+  font-size: 11px !important;
+  color: #aaa !important;
+  margin: 0 !important;
+}
+
+/* ─── SIDEBAR ───────────────────────────────────────────────────── */
+.sidebar {
+  background: #fff !important;
+  border-right: 1px solid #F0F0F0 !important;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.04) !important;
+}
+
+/* ─── FOND DASHBOARD ────────────────────────────────────────────── */
+.dashboard-main {
+  background: #F5F6FA !important;
+}
+
+.dash-scroll {
+  padding: 20px 24px !important;
+}
+
+/* ─── CARDS KPI ─────────────────────────────────────────────────── */
+.stat-card-colored {
+  background: #fff !important;
+  border-radius: 16px !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05) !important;
+  border: 1px solid #F0F0F0 !important;
+  padding: 20px !important;
+}
+
+/* ─── SECTIONS ──────────────────────────────────────────────────── */
+.dash-form-card {
+  background: #fff !important;
+  border-radius: 16px !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05) !important;
+  border: 1px solid #F0F0F0 !important;
+}
+
+/* ─── PAGE HEADER ───────────────────────────────────────────────── */
+.dash-page-header {
+  margin-bottom: 20px !important;
+}
+
+.dash-page-header h1 {
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  color: #1B2B22 !important;
+  letter-spacing: -0.5px !important;
+}
+
+/* ─── TABLES ────────────────────────────────────────────────────── */
+.dash-table {
+  background: #fff !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+}
+
+/* ─── BOUTONS ───────────────────────────────────────────────────── */
+.btn-green {
+  background: #1B6B3A !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  border: none !important;
+  padding: 10px 18px !important;
+  cursor: pointer !important;
+}
+
+.btn-outline-green {
+  background: transparent !important;
+  color: #1B6B3A !important;
+  border: 1.5px solid #1B6B3A !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  padding: 8px 16px !important;
+  cursor: pointer !important;
+}
+
+/* ─── MOBILE ────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .dash-scroll { padding: 14px !important; }
+  .stat-card-colored { padding: 14px !important; }
+  .dash-page-header h1 { font-size: 18px !important; }
+}
