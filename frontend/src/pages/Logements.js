@@ -128,7 +128,7 @@ export default function Logements() {
       <div style={{ background: '#fff', padding: '14px 16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
         <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
           <div style={{ flex: 1, position: 'relative' }}>
-            <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#888', fontSize: 16 }}>🔍</span>
+             <Search size={15} strokeWidth={1.5} color="#aaa" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
             <input
               type="text"
               placeholder="Rechercher : titre, quartier, adresse..."
@@ -139,7 +139,7 @@ export default function Logements() {
           <button
             onClick={function() { setShowFiltres(!showFiltres); }}
             style={{ padding: '10px 16px', borderRadius: 10, border: nbFiltresActifs > 0 ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: nbFiltresActifs > 0 ? '#E8F5E9' : '#F8F8F8', color: nbFiltresActifs > 0 ? '#1B6B3A' : '#555', fontSize: 13, fontWeight: nbFiltresActifs > 0 ? 700 : 400, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-            🎛️ Filtres {nbFiltresActifs > 0 && <span style={{ background: '#1B6B3A', color: '#fff', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>{nbFiltresActifs}</span>}
+              <SlidersHorizontal size={15} strokeWidth={1.5} /> Filtres {nbFiltresActifs > 0 && <span style={{ background: '#1B6B3A', color: '#fff', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>{nbFiltresActifs}</span>}
           </button>
         </div>
 
