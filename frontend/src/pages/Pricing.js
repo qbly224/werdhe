@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import ModalPaiementMobile from '../components/ModalPaiementMobile';
 import { useAuth } from '../context/AuthContext';
 import { Check, X, ChevronDown, ChevronUp, Zap, Building2, Users, ArrowRight, Home } from 'lucide-react';
+import Logo from '../components/Logo';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
 
@@ -145,7 +146,6 @@ export default function Pricing() {
     var infos = CYCLES[cycle];
     return Math.round(prixMois * infos.mois * (1 - infos.reduction));
   }
-
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
       <SEO
@@ -156,11 +156,8 @@ export default function Pricing() {
 
       {/* Navbar */}
       <nav style={{ background: '#fff', borderBottom: '0.5px solid #E0E0E0', padding: '0 24px', height: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
-          <div style={{ width: 30, height: 30, background: '#1B6B3A', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Home size={15} color="#fff" strokeWidth={2} />
-          </div>
-          <span style={{ fontWeight: 800, fontSize: 16, color: '#1B2B22' }}>Werdhe</span>
+        <Link to="/" style={{ textDecoration: 'none' }}>
+          <Logo size={34} showText={true} darkBg={false} />
         </Link>
         <div style={{ display: 'flex', gap: 10 }}>
           <Link to="/login" style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>Connexion</Link>
