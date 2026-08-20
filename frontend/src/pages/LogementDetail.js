@@ -9,6 +9,7 @@ import {
   Zap, Droplets, Wind, Shield, Car, Trees, ArrowRight,
   Copy, Check, Phone, Star, Home, Share2
 } from 'lucide-react';
+import Logo from '../components/Logo';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(Number(n)); };
 
@@ -111,10 +112,7 @@ export default function LogementDetail() {
       {/* Navbar */}
       <nav style={{ background: '#fff', borderBottom: '0.5px solid #E0E0E0', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 1px 8px rgba(0,0,0,0.04)' }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
-          <div style={{ width: 30, height: 30, background: '#1B6B3A', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Home size={15} color="#fff" strokeWidth={2} />
-          </div>
-          <span style={{ fontWeight: 800, fontSize: 16, color: '#1B2B22' }}>Werdhe</span>
+          <Logo size={32} showText={true} darkBg={false} />
         </Link>
         <button onClick={function() { navigate(-1); }}
           style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: '1px solid #E0E0E0', borderRadius: 8, padding: '6px 14px', fontSize: 13, color: '#555', cursor: 'pointer' }}>
@@ -343,7 +341,7 @@ export default function LogementDetail() {
               )}
               {logement.statut !== 'disponible' && (
                 <div style={{ background: '#F5F5F5', color: '#888', borderRadius: 12, padding: '14px', textAlign: 'center', fontSize: 14, fontWeight: 600, marginBottom: 10 }}>
-                  🔒 Logement actuellement occupé
+                  Logement actuellement occupé
                 </div>
               )}
 
@@ -358,10 +356,10 @@ export default function LogementDetail() {
             <div style={{ background: '#1B2B22', borderRadius: 14, padding: '16px 18px' }}>
               <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>Sur Werdhe</div>
               {[
-                '✅ Aucun frais d\'agence',
-                '🔒 Bail électronique sécurisé',
-                '📋 Dossier en ligne simplifié',
-                '💬 Messagerie directe',
+                'Aucun frais d\'agence',
+                'Bail électronique sécurisé',
+                'Dossier en ligne simplifié',
+                'Messagerie directe',
               ].map(function(item, i) {
                 return <div key={i} style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8 }}>{item}</div>;
               })}

@@ -5,6 +5,7 @@ import {
   ChevronLeft, Home, Users, Shield, TrendingUp,
   MapPin, Heart, Star, ArrowRight, CheckCircle
 } from 'lucide-react';
+import Logo from '../components/Logo';
 
 var VALEURS = [
   {
@@ -43,18 +44,18 @@ var STATS = [
 var EQUIPE = [
   {
     nom:     'Moussa BAH',
-    role:    'Fondateur & Développeur',
+    role:    'Fondateur & Expert Informatique et Système d\'Information',
     initiales: 'MB',
     couleur: '#1B6B3A',
-    bio: 'Ingénieur logiciel passionné par l\'impact technologique en Afrique. Créateur de Werdhe pour simplifier la location immobilière en Guinée.',
+    bio: 'Ingénieur IT passionné par l\'impact technologique en Afrique. Créateur de Werdhe pour simplifier la location immobilière en Guinée.',
   },
 ];
 
 var ETAPES = [
-  { annee: '2025', titre: 'L\'idée', desc: 'Face aux difficultés de trouver un logement à Conakry sans intermédiaire, l\'idée de Werdhe naît.' },
-  { annee: 'Jan 2026', titre: 'Développement', desc: 'Début du développement de la plateforme avec React, Node.js et Supabase.' },
-  { annee: 'Juil 2026', titre: 'Lancement', desc: 'Werdhe.com est lancé officiellement. Les premiers propriétaires publient leurs biens.' },
-  { annee: '2027', titre: 'Expansion', desc: 'Objectif : couvrir toutes les préfectures de Guinée et lancer l\'application mobile.' },
+  { annee: '2025', titre: 'L\'idée', desc: 'Face aux difficultés de trouver un logement sans intermédiaire et éviter des frais, arnaque , l\'idée de Werdhe naît.' },
+  { annee: 'Juil 2026', titre: 'Développement', desc: 'Début du développement de la plateforme avec React, Node.js et Supabase.' },
+  { annee: 'Oct 2026', titre: 'Lancement', desc: 'Werdhe.com est lancé officiellement. Les premiers propriétaires publient leurs biens.' },
+  { annee: '2027', titre: 'Expansion', desc: 'Objectif : couvrir d\'autre pays en afrique et lancer l\'application mobile.' },
 ];
 
 export default function APropos() {
@@ -64,7 +65,7 @@ export default function APropos() {
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
       <SEO
         titre="À propos de Werdhe"
-        description="Werdhe est la première plateforme immobilière numérique de Guinée. Découvrez notre mission, nos valeurs et notre équipe."
+        description="Werdhe est une des première plateforme immobilière numérique de ce type de Guinée. Découvrez notre mission, nos valeurs et notre équipe."
         url="https://werdhe.com/a-propos"
       />
 
@@ -75,10 +76,7 @@ export default function APropos() {
           <ChevronLeft size={16} strokeWidth={2} /> Retour
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ width: 28, height: 28, background: '#1B6B3A', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Home size={14} color="#fff" strokeWidth={2} />
-          </div>
-          <span style={{ color: '#fff', fontWeight: 800, fontSize: 16 }}>Werdhe</span>
+         <Logo size={30} showText={true} darkBg={true} />
         </div>
       </div>
 

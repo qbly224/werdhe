@@ -8,16 +8,17 @@ import {
   ChevronLeft, Mail, Phone, MessageCircle,
   ChevronDown, ChevronUp, Send, Home
 } from 'lucide-react';
+import Logo from '../components/Logo';
 
 var FAQ_CATEGORIES = [
   {
-    categorie: '🏠 Pour les locataires',
+    categorie: 'Pour les locataires',
     couleur: '#1565C0',
     bg: '#E3F2FD',
     questions: [
       {
         q: 'Est-ce que Werdhe est gratuit pour les locataires ?',
-        r: 'Oui, l\'espace locataire est 100% gratuit et le restera toujours. Aucun frais d\'agence, aucune commission — vous payez uniquement votre loyer directement au propriétaire.'
+        r: 'Oui, l\'espace locataire est 100% gratuit et le restera toujours. Aucun frais d\'agence, aucune commission - vous payez uniquement votre loyer directement au propriétaire.'
       },
       {
         q: 'Comment postuler pour un logement ?',
@@ -42,7 +43,7 @@ var FAQ_CATEGORIES = [
     ]
   },
   {
-    categorie: '🔑 Pour les propriétaires',
+    categorie: 'Pour les propriétaires',
     couleur: '#1B6B3A',
     bg: '#E8F5E9',
     questions: [
@@ -73,7 +74,7 @@ var FAQ_CATEGORIES = [
     ]
   },
   {
-    categorie: '💳 Paiements',
+    categorie: 'Paiements',
     couleur: '#E65100',
     bg: '#FFF3E0',
     questions: [
@@ -92,7 +93,7 @@ var FAQ_CATEGORIES = [
     ]
   },
   {
-    categorie: '🔒 Sécurité et confidentialité',
+    categorie: 'Sécurité et confidentialité',
     couleur: '#7B1FA2',
     bg: '#F3E5F5',
     questions: [
@@ -114,7 +115,7 @@ var FAQ_CATEGORIES = [
 
 var CONTACTS = [
   { icon: <Mail size={22} strokeWidth={1.5} />, label: 'Email', valeur: 'contact@werdhe.com', href: 'mailto:contact@werdhe.com', couleur: '#1B6B3A' },
-  { icon: <MessageCircle size={22} strokeWidth={1.5} />, label: 'WhatsApp', valeur: '+224 621 00 00 00', href: 'https://wa.me/224621000000', couleur: '#25D366' },
+  { icon: <MessageCircle size={22} strokeWidth={1.5} />, label: 'WhatsApp', valeur: '+33 07 66 68 74 85', href: 'https://wa.me/330766687485', couleur: '#25D366' },
 ];
 
 export default function Contact() {
@@ -165,10 +166,7 @@ export default function Contact() {
           </button>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ width: 28, height: 28, background: '#1B6B3A', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Home size={14} color="#fff" strokeWidth={2} />
-          </div>
-          <span style={{ color: '#fff', fontWeight: 800, fontSize: 16 }}>Werdhe</span>
+          <Logo size={30} showText={true} darkBg={true} />
         </div>
       </div>
 

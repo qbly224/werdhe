@@ -6,8 +6,9 @@ import api from '../services/api';
 import toast from 'react-hot-toast';
 import {
   Home, User, Mail, Phone, Lock, Eye, EyeOff,
-  Check, ChevronRight, ChevronLeft, ArrowRight
+  Check, ChevronRight, ChevronLeft, ArrowRight, Building2, Search
 } from 'lucide-react';
+import Logo from '../components/Logo';
 
 export default function Register() {
   var navigate      = useNavigate();
@@ -99,10 +100,7 @@ export default function Register() {
       {/* Header */}
       <div style={{ background: '#fff', borderBottom: '0.5px solid #E0E0E0', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
-          <div style={{ width: 32, height: 32, background: '#1B6B3A', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Home size={16} color="#fff" strokeWidth={2} />
-          </div>
-          <span style={{ fontWeight: 800, fontSize: 17, color: '#1B2B22' }}>Werdhe</span>
+          <Logo size={34} showText={true} darkBg={false} />
         </Link>
         <span style={{ fontSize: 13, color: '#888' }}>
           Déjà un compte ?{' '}
@@ -173,14 +171,14 @@ export default function Register() {
                 <div style={{ fontSize: 12, color: '#888', fontWeight: 600, marginBottom: 10 }}>Je suis…</div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 24 }}>
                   {[
-                    { val: 'proprietaire', emoji: '🏠', titre: 'Propriétaire',  desc: 'Je gère des biens locatifs', couleur: '#1B6B3A', bg: '#E8F5E9' },
-                    { val: 'locataire',    emoji: '🔍', titre: 'Locataire',     desc: 'Je cherche un logement',    couleur: '#1565C0', bg: '#E3F2FD' },
+                    { val: 'proprietaire', icone: <Building2 size={28} strokeWidth={1} color="#1B6B3A" />, titre: 'Propriétaire',  desc: 'Je gère des biens locatifs', couleur: '#1B6B3A', bg: '#E8F5E9' },
+                    { val: 'locataire',    icone: <Search    size={28} strokeWidth={1} color="#1565C0" />, titre: 'Locataire',     desc: 'Je cherche un logement',    couleur: '#1565C0', bg: '#E3F2FD' },
                   ].map(function(r) {
                     var sel = role === r.val;
                     return (
                       <div key={r.val} onClick={function() { setRole(r.val); }}
                         style={{ padding: '16px 14px', borderRadius: 14, border: sel ? '2px solid ' + r.couleur : '1.5px solid #E0E0E0', background: sel ? r.bg : '#FAFAFA', cursor: 'pointer', transition: 'all .2s', textAlign: 'center' }}>
-                        <div style={{ fontSize: 28, marginBottom: 8 }}>{r.emoji}</div>
+                          <div style={{ marginBottom: 8 }}>{r.icone}</div>
                         <div style={{ fontSize: 14, fontWeight: 700, color: sel ? r.couleur : '#1B2B22', marginBottom: 4 }}>{r.titre}</div>
                         <div style={{ fontSize: 11, color: '#888', lineHeight: 1.4 }}>{r.desc}</div>
                         {sel && (
