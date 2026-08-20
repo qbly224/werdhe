@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { useState, useEffect, useCallback } from 'react';
-import { BedDouble, Bath, Maximize2, ArrowRight, MapPin, Search, SlidersHorizontal, X, Home } from 'lucide-react';
+import { BedDouble, Bath, Maximize2, ArrowRight, MapPin, Search, SlidersHorizontal, X, Home, Building2 } from 'lucide-react';
+import Logo from '../components/Logo';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import MapView from '../components/MapView';
@@ -80,11 +81,8 @@ export default function Logements() {
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
       {/* Navbar */}
       <nav style={{ background: 'rgba(247,248,247,0.96)', backdropFilter: 'blur(8px)', borderBottom: '0.5px solid rgba(27,107,58,0.1)', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
-          <div style={{ width: 30, height: 30, background: '#1B6B3A', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Home size={15} color="#fff" strokeWidth={2} />
-          </div>
-          <span style={{ fontWeight: 800, fontSize: 16, color: '#1B2B22' }}>Werdhe</span>
+                <Link to="/" style={{ textDecoration: 'none' }}>
+          <Logo size={34} showText={true} darkBg={false} />
         </Link>
         <div style={{ display: 'flex', gap: 10 }}>
           <Link to="/login" style={{ padding: '7px 14px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>Connexion</Link>
@@ -96,7 +94,7 @@ export default function Logements() {
       <div style={{ background: 'linear-gradient(135deg, #1B2B22 0%, #1B6B3A 100%)', padding: '28px 24px 20px', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
   <div style={{ maxWidth: 900, margin: '0 auto' }}>
     <h1 style={{ color: '#fff', fontSize: 'clamp(22px,4vw,30px)', fontWeight: 900, margin: '0 0 6px', letterSpacing: -0.5 }}>
-      🏠 Logements disponibles en Guinée
+      Logements disponibles en Guinée
     </h1>
     <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 14, margin: 0 }}>
       {total} logement(s) trouvé(s) · Sans intermédiaire
@@ -231,7 +229,7 @@ export default function Logements() {
           {/* Fourchette prix visuelle */}
           {(prixMin || prixMax) && (
             <div style={{ marginTop: 12, padding: '10px 14px', background: '#E8F5E9', borderRadius: 10, fontSize: 13, color: '#1B5E20', fontWeight: 600 }}>
-              💰 Fourchette : {prixMin ? GNF(prixMin) : '0'} — {prixMax ? GNF(prixMax) : 'illimité'}
+              💰 Fourchette : {prixMin ? GNF(prixMin) : '0'} - {prixMax ? GNF(prixMax) : 'illimité'}
             </div>
           )}
         </div>
