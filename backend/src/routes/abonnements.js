@@ -261,7 +261,15 @@ async function initierPaiement(req, res, operateur) {
 
 router.post('/orange-money/initier', verifierToken, function(req, res) { initierPaiement(req, res, 'orange'); });
 router.post('/mtn-momo/initier',     verifierToken, function(req, res) { initierPaiement(req, res, 'mtn'); });
-
+router.post('/souscrire', verifierToken, function(req, res) {
+  var operateur = req.body.operateur || 'orange';
+  initierPaiement(req, res, operateur);
+});
+// ─── ROUTE UNIFIÉE (appelée par la page Pricing) ─────────────────
+router.post('/souscrire', verifierToken, function(req, res) {
+  var operateur = req.body.operateur || 'orange';
+  initierPaiement(req, res, operateur);
+});
 // ─── CONFIRMER LE PAIEMENT (simulation) ──────────────────────────
 router.patch('/confirmer/:facture_id', verifierToken, async (req, res) => {
   try {
@@ -312,5 +320,53 @@ router.patch('/confirmer/:facture_id', verifierToken, async (req, res) => {
     res.status(500).json({ erreur: 'Erreur confirmation paiement' });
   }
 });
+// ─── WEBHOOK SIMULATION (confirme après 30s en dev) ──────────────
+router.post('/webhook/confirmer', async (req, res) => {
+  try {
+    var { reference, statut } = req.body;
+    if (!reference) return res.status(400).json({ erreur: 'Référence manquante' });
 
+    var facture = await db.query(
+      `SELECT * FROM factures_abonnements WHERE reference_externe = $1`,
+      [reference]
+    );
+    if (facture.rows.length === 0) {
+      return res.status(404).json({ erreur: 'Facture non trouvée' });
+    }
+    var f = facture.rows[0];
+
+    if (statut === 'succes') {
+      await db.query(
+        `UPDATE factures_abonnements SET statut = 'payee' WHERE reference_externe = $1`,
+        [reference]
+      );
+      var maj = await db.query(
+        `UPDATE abonnements SET plan = $1, statut = 'actif', date_fin = $2, cycle = $3,
+         essai_termine = TRUE WHERE user_id = $4`,
+        [f.plan, f.periode_fin, f.cycle, f.user_id]
+      );
+      if (maj.rowCount === 0) {
+        await db.query(
+          `INSERT INTO abonnements (user_id, plan, statut, date_fin, cycle, essai_termine)
+           VALUES ($1, $2, 'actif', $3, $4, TRUE)`,
+          [f.user_id, f.plan, f.periode_fin, f.cycle]
+        );
+      }
+      await db.query(
+        'UPDATE users SET plan = $1, abonnement_bloque = FALSE WHERE id = $2',
+        [f.plan, f.user_id]
+      );
+      envoyerFactureParEmail(f.user_id, f.plan, f.montant, f.cycle, f.periode_debut, f.periode_fin).catch(console.warn);
+    } else {
+      await db.query(
+        `UPDATE factures_abonnements SET statut = 'echec' WHERE reference_externe = $1`,
+        [reference]
+      );
+    }
+    res.json({ recu: true });
+  } catch (err) {
+    console.error('[Webhook]', err.message);
+    res.status(500).json({ erreur: err.message });
+  }
+});
 module.exports = router;
