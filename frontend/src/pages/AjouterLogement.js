@@ -5,105 +5,52 @@ import Navbar from '../components/Navbar';
 import PhotoUpload from '../components/PhotoUpload';
 import toast from 'react-hot-toast';
 import './AjouterLogement.css';
+import { MapPin, Home, Building2, Building, Warehouse, Store, BriefcaseBusiness, BedDouble, DoorOpen, Landmark, Hotel, ShoppingBag, Factory } from 'lucide-react';
 
-const CATEGORIES = [
+var CATEGORIES = [
   {
-    groupe: '🏰 Villas',
+    groupe: 'Villas',
     types: [
-      { value: 'villa_luxe', label: 'Villa de luxe', icon: '👑',
-        description: '4+ chambres, piscine, jardin, gardien',
-        hasChambres: true, chambresMin: 4, chambresMax: 20,
-        hasSallesBain: true, hasSuperficie: true },
-      { value: 'villa_standard', label: 'Villa standard', icon: '🏰',
-        description: '3-4 chambres, cour, clôture',
-        hasChambres: true, chambresMin: 3, chambresMax: 10,
-        hasSallesBain: true, hasSuperficie: true }
+      { value: 'villa_luxe',     label: 'Villa de luxe',        icon: <Building2  size={22} strokeWidth={1.5} color="#7B1FA2" />, description: '4+ chambres, piscine, jardin, gardien',             hasChambres: true,  chambresMin: 4, chambresMax: 20, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'villa_standard', label: 'Villa standard',       icon: <Building2  size={22} strokeWidth={1.5} color="#1B6B3A" />, description: '3-4 chambres, cour, clôture',                       hasChambres: true,  chambresMin: 3, chambresMax: 10, hasSallesBain: true,  hasSuperficie: true  },
     ]
   },
   {
-    groupe: '🏠 Maisons',
+    groupe: 'Maisons',
     types: [
-      { value: 'maison_moderne', label: 'Maison moderne', icon: '🏠',
-        description: 'Construction en dur, parpaings/ciment',
-        hasChambres: true, chambresMin: 1, chambresMax: 15,
-        hasSallesBain: true, hasSuperficie: true },
-      { value: 'maison_banco', label: 'Maison traditionnelle', icon: '🛖',
-        description: 'Murs en banco, toit en tôle ou chaume',
-        hasChambres: true, chambresMin: 1, chambresMax: 8,
-        hasSallesBain: true, hasSuperficie: true },
-      { value: 'maison_chantier', label: 'Maison en construction', icon: '🏗️',
-        description: 'Rez-de-chaussée habitable, étage en attente',
-        hasChambres: true, chambresMin: 1, chambresMax: 10,
-        hasSallesBain: true, hasSuperficie: true },
-      { value: 'concession', label: 'Concession familiale', icon: '🏘️',
-        description: 'Plusieurs logements autour d\'une cour commune',
-        hasChambres: true, chambresMin: 1, chambresMax: 30,
-        hasSallesBain: true, hasSuperficie: true }
+      { value: 'maison_moderne',   label: 'Maison moderne',          icon: <Home       size={22} strokeWidth={1.5} color="#1565C0" />, description: 'Construction en dur, parpaings/ciment',              hasChambres: true,  chambresMin: 1, chambresMax: 15, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'maison_banco',     label: 'Maison traditionnelle',   icon: <Home       size={22} strokeWidth={1.5} color="#E65100" />, description: 'Murs en banco, toit en tôle ou chaume',             hasChambres: true,  chambresMin: 1, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'maison_chantier',  label: 'Maison en construction',  icon: <Building   size={22} strokeWidth={1.5} color="#888"    />, description: 'Rez-de-chaussée habitable, étage en attente',       hasChambres: true,  chambresMin: 1, chambresMax: 10, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'concession',       label: 'Concession familiale',    icon: <Landmark   size={22} strokeWidth={1.5} color="#1B6B3A" />, description: 'Plusieurs logements autour d\'une cour commune',   hasChambres: true,  chambresMin: 1, chambresMax: 30, hasSallesBain: true,  hasSuperficie: true  },
     ]
   },
   {
-    groupe: '🏢 Appartements',
+    groupe: 'Appartements',
     types: [
-      { value: 'appartement', label: 'Appartement (F2, F3, F4...)', icon: '🏢',
-        description: 'Logement dans un immeuble collectif',
-        hasChambres: true, chambresMin: 1, chambresMax: 8,
-        hasSallesBain: true, hasSuperficie: true },
-      { value: 'duplex', label: 'Duplex', icon: '🏬',
-        description: 'Appartement sur deux niveaux',
-        hasChambres: true, chambresMin: 2, chambresMax: 8,
-        hasSallesBain: true, hasSuperficie: true },
-      { value: 'logement_social', label: 'Logement social', icon: '🏛️',
-        description: 'Programme Sonapi, Addoha...',
-        hasChambres: true, chambresMin: 1, chambresMax: 5,
-        hasSallesBain: true, hasSuperficie: true }
+      { value: 'appartement',      label: 'Appartement',             icon: <Building2  size={22} strokeWidth={1.5} color="#1565C0" />, description: 'Logement dans un immeuble collectif',               hasChambres: true,  chambresMin: 1, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'duplex',           label: 'Duplex',                  icon: <Building2  size={22} strokeWidth={1.5} color="#7B1FA2" />, description: 'Appartement sur deux niveaux',                      hasChambres: true,  chambresMin: 2, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'logement_social',  label: 'Logement social',         icon: <Building   size={22} strokeWidth={1.5} color="#37474F" />, description: 'Programme Sonapi, Addoha...',                       hasChambres: true,  chambresMin: 1, chambresMax: 5,  hasSallesBain: true,  hasSuperficie: true  },
     ]
   },
   {
-    groupe: '🏨 Chambres & Studios',
+    groupe: 'Chambres & Studios',
     types: [
-      { value: 'studio_moderne', label: 'Studio moderne', icon: '🏨',
-        description: '1 pièce + sanitaires internes',
-        hasChambres: false, chambresFixed: 1,
-        hasSallesBain: true, hasSuperficie: true },
-      { value: 'chambre_habitant', label: 'Chambre chez l\'habitant', icon: '🛏️',
-        description: 'Une pièce, sanitaires communs',
-        hasChambres: false, chambresFixed: 1,
-        hasSallesBain: false, hasSuperficie: true },
-      { value: 'chambre_cour', label: 'Chambre en cour commune', icon: '🚪',
-        description: 'Petit espace dans une concession',
-        hasChambres: false, chambresFixed: 1,
-        hasSallesBain: false, hasSuperficie: true },
-      { value: 'habitat_precaire', label: 'Habitat précaire', icon: '🏚️',
-        description: 'Construction en tôles/planches',
-        hasChambres: true, chambresMin: 0, chambresMax: 5,
-        hasSallesBain: false, hasSuperficie: false }
+      { value: 'studio_moderne',    label: 'Studio moderne',         icon: <Hotel      size={22} strokeWidth={1.5} color="#1B6B3A" />, description: '1 pièce + sanitaires internes',                     hasChambres: false, chambresFixed: 1,               hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'chambre_habitant',  label: "Chambre chez l'habitant",icon: <BedDouble  size={22} strokeWidth={1.5} color="#E65100" />, description: 'Une pièce, sanitaires communs',                     hasChambres: false, chambresFixed: 1,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'chambre_cour',      label: 'Chambre en cour commune',icon: <DoorOpen   size={22} strokeWidth={1.5} color="#888"    />, description: 'Petit espace dans une concession',                  hasChambres: false, chambresFixed: 1,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'habitat_precaire',  label: 'Habitat précaire',       icon: <Home       size={22} strokeWidth={1.5} color="#B71C1C" />, description: 'Construction en tôles/planches',                    hasChambres: true,  chambresMin: 0, chambresMax: 5,  hasSallesBain: false, hasSuperficie: false },
     ]
   },
   {
-    groupe: '🏪 Locaux commerciaux',
+    groupe: 'Locaux commerciaux',
     types: [
-      { value: 'boutique', label: 'Boutique / Échoppe', icon: '🏪',
-        description: 'Vente de détail, marché',
-        hasChambres: false, chambresFixed: 0,
-        hasSallesBain: false, hasSuperficie: true },
-      { value: 'bureau', label: 'Bureau', icon: '💼',
-        description: 'Activités administratives',
-        hasChambres: true, chambresMin: 0, chambresMax: 20,
-        hasSallesBain: false, hasSuperficie: true },
-      { value: 'entrepot', label: 'Entrepôt / Hangar', icon: '🏭',
-        description: 'Stockage de marchandises',
-        hasChambres: false, chambresFixed: 0,
-        hasSallesBain: false, hasSuperficie: true },
-      { value: 'local_commercial', label: 'Local commercial', icon: '🏬',
-        description: 'RDC d\'immeuble, usage mixte',
-        hasChambres: false, chambresFixed: 0,
-        hasSallesBain: false, hasSuperficie: true },
-      { value: 'centre_commercial', label: 'Centre commercial', icon: '🛍️',
-        description: 'Diamond Plaza, grandes surfaces...',
-        hasChambres: false, chambresFixed: 0,
-        hasSallesBain: false, hasSuperficie: true }
+      { value: 'boutique',          label: 'Boutique / Échoppe',     icon: <Store      size={22} strokeWidth={1.5} color="#E65100" />, description: 'Vente de détail, marché',                           hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'bureau',            label: 'Bureau',                 icon: <Warehouse  size={22} strokeWidth={1.5} color="#1565C0" />, description: 'Activités administratives',                         hasChambres: true,  chambresMin: 0, chambresMax: 20, hasSallesBain: false, hasSuperficie: true  },
+      { value: 'entrepot',          label: 'Entrepôt / Hangar',      icon: <Factory    size={22} strokeWidth={1.5} color="#37474F" />, description: 'Stockage de marchandises',                          hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'local_commercial',  label: 'Local commercial',       icon: <Building   size={22} strokeWidth={1.5} color="#7B1FA2" />, description: 'RDC d\'immeuble, usage mixte',                     hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'centre_commercial', label: 'Centre commercial',      icon: <ShoppingBag size={22} strokeWidth={1.5} color="#1B6B3A" />, description: 'Diamond Plaza, grandes surfaces...',               hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
     ]
-  }
+  },
 ];
 
 const VILLES = [
@@ -131,7 +78,7 @@ const AjouterLogement = () => {
   const [communes, setCommunes] = useState([]);
 
   const [formData, setFormData] = useState({
-    titre: '', description: '', adresse: '', quartier: '',
+        titre: '', description: '', adresse: '', quartier: '', point_repere: '',
     region_id: '', prefecture_id: '', commune_id: '',
     ville: '', pays: 'Guinée', prix_mensuel: '',
     nb_chambres: 1, nb_salles_bain: 1, superficie: '',
@@ -203,7 +150,7 @@ const AjouterLogement = () => {
 
       const res = await api.post('/logements', payload);
       setLogementCree(res.data.logement);
-      toast.success('✅ Logement créé ! Ajoutez maintenant des photos.');
+      toast.success('Logement créé ! Ajoutez maintenant des photos.');
       setEtape(5); // Aller à l'étape photos
     } catch (err) {
       setErreur(err.response?.data?.erreur || 'Erreur lors de l\'ajout');
@@ -272,204 +219,82 @@ const AjouterLogement = () => {
                 </div>
                 <button className="btn-changer" onClick={() => setEtape(1)}>Changer</button>
               </div>
+                            <h2 style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 4px' }}>
+                <MapPin size={20} strokeWidth={1.5} color="#1B6B3A" /> Localisation du bien
+              </h2>
+              <p className="etape-subtitle">Soyez précis pour aider les locataires à vous trouver</p>
 
-              <h2>📍 Localisation du bien</h2>
-              <p className="etape-subtitle">Soyez précis pour aider les locataires</p>
+              {/* Type de logement */}
+              <div className="form-group">
+                <label>Type de logement *</label>
+                <select name="categorie" value={formData.categorie} onChange={handleChange} required>
+                  <option value="">Sélectionnez un type</option>
+                  {CATEGORIES.map(function(c) {
+                    return <option key={c.value} value={c.value}>{c.label}</option>;
+                  })}
+                </select>
+              </div>
 
+              {/* Région */}
               <div className="form-group">
                 <label>Région *</label>
-                <select name="region_id" value={formData.region_id}
-                  onChange={handleChange} required>
+                <select name="region_id" value={formData.region_id} onChange={handleChange} required>
                   <option value="">Sélectionnez une région</option>
-                  {regions.map(r => (
-                    <option key={r.id} value={r.id}>{r.nom}</option>
-                  ))}
+                  {regions.map(function(r) {
+                    return <option key={r.id} value={r.id}>{r.nom}</option>;
+                  })}
                 </select>
               </div>
 
+              {/* Ville / Préfecture */}
               {prefectures.length > 0 && (
                 <div className="form-group">
-                  <label>{formData.region_id === '1' ? 'Commune de Conakry *' : 'Préfecture *'}</label>
-                  <select name="prefecture_id" value={formData.prefecture_id}
-                    onChange={handleChange} required>
+                  <label>{formData.region_id === '1' ? 'Ville *' : 'Préfecture *'}</label>
+                  <select name="prefecture_id" value={formData.prefecture_id} onChange={handleChange} required>
                     <option value="">Sélectionnez</option>
-                    {prefectures.map(p => (
-                      <option key={p.id} value={p.id}>{p.nom}</option>
-                    ))}
+                    {prefectures.map(function(p) {
+                      return <option key={p.id} value={p.id}>{p.nom}</option>;
+                    })}
                   </select>
                 </div>
               )}
 
+              {/* Commune */}
               {communes.length > 0 && (
                 <div className="form-group">
-                  <label>Quartier</label>
+                  <label>Commune</label>
                   <select name="commune_id" value={formData.commune_id} onChange={handleChange}>
-                    <option value="">Sélectionnez (optionnel)</option>
-                    {communes.map(c => (
-                      <option key={c.id} value={c.id}>{c.nom}</option>
-                    ))}
+                    <option value="">Sélectionnez une commune</option>
+                    {communes.map(function(c) {
+                      return <option key={c.id} value={c.id}>{c.nom}</option>;
+                    })}
                   </select>
                 </div>
               )}
 
+              {/* Quartier */}
               <div className="form-group">
-                <label>Ville (si hors liste) *</label>
-                <select name="ville" value={formData.ville} onChange={handleChange}>
-                  <option value="">Sélectionnez ou laissez vide</option>
-                  {VILLES.map(v => (
-                    <option key={v} value={v}>{v}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Quartier / Lieu-dit (précision)</label>
+                <label>Quartier *</label>
                 <input type="text" name="quartier" value={formData.quartier}
                   onChange={handleChange}
-                  placeholder="Ex: Près du marché, derrière la mosquée..." />
+                  placeholder="Ex: Ratoma, Kaloum, Hafia..." required />
               </div>
 
+              {/* Point de repère */}
               <div className="form-group">
-                <label>Adresse précise *</label>
+                <label>Point de repère</label>
+                <input type="text" name="point_repere" value={formData.point_repere || ''}
+                  onChange={handleChange}
+                  placeholder="Ex: Face à la mosquée, près du marché central..." />
+              </div>
+
+              {/* Adresse détaillée */}
+              <div className="form-group">
+                <label>Adresse détaillée *</label>
                 <input type="text" name="adresse" value={formData.adresse}
                   onChange={handleChange}
-                  placeholder="Ex: Rue KA-001, face à la pharmacie" required />
+                  placeholder="Ex: Rue KA-001, maison bleue à gauche" required />
               </div>
-
-              {erreur && <div className="error">{erreur}</div>}
-              <div className="form-actions">
-                <button type="button" className="btn btn-secondary" onClick={() => setEtape(1)}>← Retour</button>
-                <button type="button" className="btn btn-primary"
-                  onClick={() => {
-                    if (!formData.adresse) { setErreur('Adresse obligatoire'); return; }
-                    setErreur(''); setEtape(3);
-                  }}>Continuer →</button>
-              </div>
-            </div>
-          )}
-
-          {/* ÉTAPE 3 — Détails */}
-          {etape === 3 && (
-            <div className="etape-card">
-              <h2>📋 Détails du logement</h2>
-              {erreur && <div className="error">{erreur}</div>}
-
-              <div className="form-group">
-                <label>Titre de l'annonce *</label>
-                <input type="text" name="titre" value={formData.titre}
-                  onChange={handleChange}
-                  placeholder="Ex: Appartement moderne au centre-ville" required />
-              </div>
-
-              <div className="form-row-3">
-                {/* Chambres */}
-                {categorieSelectionnee?.hasChambres ? (
-                  <div className="form-group">
-                    <label>Chambres</label>
-                    <div className="counter">
-                      <button type="button" className="counter-btn"
-                        onClick={() => setFormData(prev => ({
-                          ...prev,
-                          nb_chambres: Math.max(categorieSelectionnee.chambresMin ?? 0, prev.nb_chambres - 1)
-                        }))}>−</button>
-                      <span className="counter-val">{formData.nb_chambres}</span>
-                      <button type="button" className="counter-btn"
-                        onClick={() => setFormData(prev => ({
-                          ...prev,
-                          nb_chambres: Math.min(categorieSelectionnee.chambresMax || 30, prev.nb_chambres + 1)
-                        }))}>+</button>
-                    </div>
-                  </div>
-                ) : categorieSelectionnee?.chambresFixed === 1 ? (
-                  <div className="form-group">
-                    <label>Chambres</label>
-                    <div className="fixed-val">🏨 1 pièce</div>
-                  </div>
-                ) : null}
-
-                {/* Salles de bain */}
-                {categorieSelectionnee?.hasSallesBain && (
-                  <div className="form-group">
-                    <label>Salles de bain</label>
-                    <div className="counter">
-                      <button type="button" className="counter-btn"
-                        onClick={() => setFormData(prev => ({
-                          ...prev, nb_salles_bain: Math.max(0, prev.nb_salles_bain - 1)
-                        }))}>−</button>
-                      <span className="counter-val">{formData.nb_salles_bain}</span>
-                      <button type="button" className="counter-btn"
-                        onClick={() => setFormData(prev => ({
-                          ...prev, nb_salles_bain: prev.nb_salles_bain + 1
-                        }))}>+</button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Superficie */}
-                {categorieSelectionnee?.hasSuperficie && (
-                  <div className="form-group">
-                    <label>Superficie (m²)</label>
-                    <input type="number" name="superficie" value={formData.superficie}
-                      onChange={handleChange} placeholder="Ex: 75" min="0" />
-                  </div>
-                )}
-              </div>
-
-              {/* Sanitaires */}
-              <div className="form-group">
-                <label>Type de sanitaires</label>
-                <select name="sanitaires_type" value={formData.sanitaires_type} onChange={handleChange}>
-                  <option value="interne">🚿 Internes (dans le logement)</option>
-                  <option value="externe">🚿 Externes (dans la cour)</option>
-                  <option value="commun">👥 Communs (partagés)</option>
-                  <option value="aucun">❌ Aucun</option>
-                </select>
-              </div>
-
-              {/* État */}
-              <div className="form-group">
-                <label>État du logement *</label>
-                <div className="etat-grid">
-                  {[
-                    { value: 'neuf', label: 'Neuf', icon: '✨' },
-                    { value: 'bon_etat', label: 'Bon état', icon: '✅' },
-                    { value: 'a_renover', label: 'À rénover', icon: '🔧' },
-                    { value: 'en_construction', label: 'En construction', icon: '🏗️' },
-                    { value: 'vetuste', label: 'Vétuste', icon: '⚠️' }
-                  ].map(e => (
-                    <button key={e.value} type="button"
-                      className={`etat-btn ${formData.etat === e.value ? 'active' : ''}`}
-                      onClick={() => setFormData(prev => ({ ...prev, etat: e.value }))}>
-                      {e.icon} {e.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Prix */}
-              <div className="form-group">
-                <label>Prix mensuel (GNF) *</label>
-                <div className="prix-input">
-                  <input type="number" name="prix_mensuel" value={formData.prix_mensuel}
-                    onChange={handleChange} placeholder="Ex: 500000" required min="1" />
-                  <span className="prix-devise">GNF / mois</span>
-                </div>
-                {formData.prix_mensuel && (
-                  <small className="prix-affiche">
-                    💰 {Number(formData.prix_mensuel).toLocaleString()} GNF par mois
-                  </small>
-                )}
-              </div>
-
-              {/* Description */}
-              <div className="form-group">
-                <label>Description</label>
-                <textarea name="description" value={formData.description}
-                  onChange={handleChange}
-                  placeholder="Décrivez votre logement : environnement, points forts, accès..."
-                  rows={4} />
-              </div>
-
               <div className="form-actions">
                 <button type="button" className="btn btn-secondary" onClick={() => setEtape(2)}>← Retour</button>
                 <button type="button" className="btn btn-primary"
@@ -496,11 +321,11 @@ const AjouterLogement = () => {
                     <label>Accès à l'eau</label>
                     <select name="acces_eau" value={formData.acces_eau} onChange={handleChange}>
                       <option value="">Sélectionnez</option>
-                      <option value="robinet_interieur">🚰 Robinet intérieur</option>
-                      <option value="robinet_exterieur">🚰 Robinet extérieur</option>
-                      <option value="puits">🪣 Puits</option>
-                      <option value="forage">⛽ Forage</option>
-                      <option value="public">🏛️ Borne publique</option>
+                      <option value="robinet_interieur">Robinet intérieur</option>
+                      <option value="robinet_exterieur">Robinet extérieur</option>
+                      <option value="puits">Puits</option>
+                      <option value="forage">Forage</option>
+                      <option value="public">Borne publique</option>
                     </select>
                   </div>
 
@@ -508,10 +333,10 @@ const AjouterLogement = () => {
                     <label>Électricité</label>
                     <select name="electricite" value={formData.electricite} onChange={handleChange}>
                       <option value="">Sélectionnez</option>
-                      <option value="secteur">⚡ Secteur (EDG)</option>
-                      <option value="solaire">☀️ Panneau solaire</option>
-                      <option value="groupe">🔋 Groupe électrogène</option>
-                      <option value="sans">❌ Sans électricité</option>
+                      <option value="secteur">Secteur (EDG)</option>
+                      <option value="solaire">Panneau solaire</option>
+                      <option value="groupe">Groupe électrogène</option>
+                      <option value="sans">Sans électricité</option>
                     </select>
                   </div>
 
@@ -519,10 +344,10 @@ const AjouterLogement = () => {
                     <label>Type de toit</label>
                     <select name="type_toit" value={formData.type_toit} onChange={handleChange}>
                       <option value="">Sélectionnez</option>
-                      <option value="dalle">🏢 Dalle (béton)</option>
-                      <option value="tole">🏠 Tôle</option>
-                      <option value="chaume">🛖 Chaume</option>
-                      <option value="autre">❓ Autre</option>
+                      <option value="dalle">Dalle (béton)</option>
+                      <option value="tole">Tôle</option>
+                      <option value="chaume">Chaume</option>
+                      <option value="autre">Autre</option>
                     </select>
                   </div>
 
@@ -530,10 +355,10 @@ const AjouterLogement = () => {
                     <label>Type de sol</label>
                     <select name="type_sol" value={formData.type_sol} onChange={handleChange}>
                       <option value="">Sélectionnez</option>
-                      <option value="carreaux">✨ Carreaux</option>
-                      <option value="ciment">🏗️ Ciment</option>
-                      <option value="terre">🌱 Terre</option>
-                      <option value="autre">❓ Autre</option>
+                      <option value="carreaux">Carreaux</option>
+                      <option value="ciment">Ciment</option>
+                      <option value="terre">Terre</option>
+                      <option value="autre">Autre</option>
                     </select>
                   </div>
                 </div>
@@ -541,11 +366,11 @@ const AjouterLogement = () => {
                 <div className="form-group">
                   <label>Statut foncier</label>
                   <select name="statut_foncier" value={formData.statut_foncier} onChange={handleChange}>
-                    <option value="titre_foncier">📜 Titre foncier</option>
-                    <option value="permis_habiter">🏛️ Permis d'habiter</option>
-                    <option value="accord_coutumier">🤝 Accord coutumier</option>
-                    <option value="sous_seing_prive">✍️ Sous-seing privé</option>
-                    <option value="non_precise">❓ Non précisé</option>
+                    <option value="titre_foncier">Titre foncier</option>
+                    <option value="permis_habiter">Permis d'habiter</option>
+                    <option value="accord_coutumier">Accord coutumier</option>
+                    <option value="sous_seing_prive">Sous-seing privé</option>
+                    <option value="non_precise">Non précisé</option>
                   </select>
                 </div>
 
@@ -553,10 +378,10 @@ const AjouterLogement = () => {
                   <label>Équipements disponibles</label>
                   <div className="equipements-grid">
                     {[
-                      { name: 'parking', label: '🚗 Parking' },
-                      { name: 'jardin', label: '🌿 Jardin / Cour' },
-                      { name: 'climatisation', label: '❄️ Climatisation' },
-                      { name: 'gardien', label: '👮 Gardien' }
+                      { name: 'parking', label: 'Parking' },
+                      { name: 'jardin', label: 'Jardin / Cour' },
+                      { name: 'climatisation', label: 'Climatisation' },
+                      { name: 'gardien', label: 'Gardien' }
                     ].map(eq => (
                       <label key={eq.name} className="checkbox-label">
                         <input type="checkbox" name={eq.name}
@@ -570,7 +395,7 @@ const AjouterLogement = () => {
                 <div className="form-actions">
                   <button type="button" className="btn btn-secondary" onClick={() => setEtape(3)}>← Retour</button>
                   <button type="submit" className="btn btn-primary" disabled={loading}>
-                    {loading ? 'Publication...' : '🚀 Publier et ajouter des photos'}
+                    {loading ? 'Publication...' : 'Publier et ajouter des photos'}
                   </button>
                 </div>
               </form>
@@ -624,7 +449,7 @@ const AjouterLogement = () => {
   }}
   style={{ opacity: photosAjoutees.length === 0 ? 0.5 : 1 }}
 >
-  {photosAjoutees.length === 0 ? '📷 Ajoutez une photo d\'abord' : '✅ Publier — ' + photosAjoutees.length + ' photo(s)'}
+  {photosAjoutees.length === 0 ? 'Ajoutez une photo d\'abord' : 'Publier - ' + photosAjoutees.length + ' photo(s)'}
 </button>
               </div>
             </div>
