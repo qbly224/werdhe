@@ -107,7 +107,7 @@ const AjouterLogement = () => {
           setFormData(prev => ({ ...prev, commune_id: '' }));
         }).catch(console.error);
     }
-  }, [formData.prefecture_id]);
+  }, [formData.prefecture_id, formData.region_id]);
     // Charger sous-préfectures quand préfecture change (hors Conakry)
   useEffect(function() {
     if (!formData.prefecture_id || formData.region_id === '1') {
