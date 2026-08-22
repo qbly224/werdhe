@@ -52,7 +52,23 @@ var CATEGORIES = [
     ]
   },
 ];
-
+// Sous-préfectures par préfecture (liste statique)
+var SOUS_PREFECTURES = {
+  // Kindia
+  'Kindia':     ['Bantignel', 'Damakania', 'Fermessadou Pompo', 'Friguiagbé', 'Kolente', 'Mambia', 'Molota', 'Souguéta'],
+  // Boké
+  'Boké':       ['Boké centre', 'Dabiss', 'Kolaboui', 'Malapouyah', 'Sangarédi', 'Sansalé'],
+  // Kankan
+  'Kankan':     ['Balandougou', 'Djankana', 'Gbérédou-Baranama', 'Karifamoriah', 'Koumana', 'Missamana', 'Sabadou-Baranama'],
+  // Labé
+  'Labé':       ['Dalaba', 'Hafia', 'Komba', 'Laïné', 'Lélouma', 'Mali', 'Pita', 'Tougué'],
+  // Mamou
+  'Mamou':      ['Dounet', 'Konkouré', 'Mamou centre', 'Niagara', 'Saramoussayah', 'Soyah', 'Tolo'],
+  // Faranah
+  'Faranah':    ['Banian', 'Faranah centre', 'Kobikoro', 'Passayah', 'Sandenia', 'Songoyah', 'Tiro'],
+  // N'Zérékoré
+  'N\'Zérékoré': ['Bossou', 'Gouécké', 'Laine', 'Nzoo', 'Palé', 'Samoé', 'Yalenzou'],
+};
 const AjouterLogement = () => {
   const navigate = useNavigate();
 
@@ -109,15 +125,22 @@ const AjouterLogement = () => {
     }
   }, [formData.prefecture_id, formData.region_id]);
     // Charger sous-préfectures quand préfecture change (hors Conakry)
-  useEffect(function() {
+    useEffect(function() {
     if (!formData.prefecture_id || formData.region_id === '1') {
       setSousPrefectures([]);
       return;
     }
-    api.get('/localisation/sous-prefectures/' + formData.prefecture_id)
-      .then(function(res) { setSousPrefectures(res.data.sous_prefectures || []); })
-      .catch(function() { setSousPrefectures([]); });
-    }, [formData.prefecture_id, formData.region_id]);
+    // Chercher le nom de la préfecture sélectionnée
+    var prefNom = prefectures.find(function(p) { return String(p.id) === String(formData.prefecture_id); });
+    if (prefNom && SOUS_PREFECTURES[prefNom.nom]) {
+      setSousPrefectures(SOUS_PREFECTURES[prefNom.nom].map(function(nom, i) { return { id: i, nom: nom }; }));
+    } else {
+      // Fallback API
+      api.get('/localisation/sous-prefectures/' + formData.prefecture_id)
+        .then(function(res) { setSousPrefectures(res.data.sous_prefectures || []); })
+        .catch(function() { setSousPrefectures([]); });
+    }
+  }, [formData.prefecture_id, formData.region_id, prefectures]);
 
   const handleSelectCategorie = (cat) => {
     setCategorieSelectionnee(cat);
@@ -230,17 +253,19 @@ const AjouterLogement = () => {
               </h2>
               <p className="etape-subtitle">Soyez précis pour aider les locataires à vous trouver</p>
 
-              {/* Type de logement */}
-              <div className="form-group">
-                <label>Type de logement *</label>
-                <select name="categorie" value={formData.categorie} onChange={handleChange} required>
-                  <option value="">Sélectionnez un type</option>
-                  {CATEGORIES.map(function(c) {
-                    return <option key={c.value} value={c.value}>{c.label}</option>;
-                  })}
-                </select>
-              </div>
-
+              {/* Type de logement — auto depuis étape 1 */}
+              {categorieSelectionnee && (
+                <div className="form-group">
+                  <label>Type de logement</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: '#E8F5E9', borderRadius: 10, border: '1.5px solid #A5D6A7' }}>
+                    <span>{categorieSelectionnee.icon}</span>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{categorieSelectionnee.label}</div>
+                      <div style={{ fontSize: 12, color: '#888' }}>{categorieSelectionnee.description}</div>
+                    </div>
+                  </div>
+                </div>
+              )}
               {/* Région */}
               <div className="form-group">
                 <label>Région *</label>
