@@ -68,13 +68,14 @@ const AjouterLogement = () => {
   // Localisation
   const [regions, setRegions] = useState([]);
   const [prefectures, setPrefectures] = useState([]);
-  const [communes, setCommunes] = useState([]);
+  const [communes, setCommunes]             = useState([]);
+  const [sousPrefectures, setSousPrefectures] = useState([]);
 
   const [formData, setFormData] = useState({
-        titre: '', description: '', adresse: '', quartier: '', point_repere: '',
-    region_id: '', prefecture_id: '', commune_id: '',
+    titre: '', description: '', adresse: '', quartier: '', point_repere: '',
+    region_id: '', prefecture_id: '', commune_id: '', sous_prefecture: '',
     ville: '', pays: 'Guinée', prix_mensuel: '',
-    nb_chambres: 1, nb_salles_bain: 1, superficie: '',
+    nb_chambres: '', nb_salles_bain: '', superficie: '',
     categorie: '', etat: 'bon_etat', type_toit: '',
     type_sol: '', acces_eau: '', electricite: '',
     statut_foncier: 'non_precise', sanitaires_type: 'interne',
@@ -106,6 +107,16 @@ const AjouterLogement = () => {
           setFormData(prev => ({ ...prev, commune_id: '' }));
         }).catch(console.error);
     }
+  }, [formData.prefecture_id]);
+    // Charger sous-préfectures quand préfecture change (hors Conakry)
+  useEffect(function() {
+    if (!formData.prefecture_id || formData.region_id === '1') {
+      setSousPrefectures([]);
+      return;
+    }
+    api.get('/localisation/sous-prefectures/' + formData.prefecture_id)
+      .then(function(res) { setSousPrefectures(res.data.sous_prefectures || []); })
+      .catch(function() { setSousPrefectures([]); });
   }, [formData.prefecture_id]);
 
   const handleSelectCategorie = (cat) => {
@@ -161,7 +172,9 @@ const AjouterLogement = () => {
         <div className="container">
 
           <div className="ajouter-header">
-            <h1>🏠 Publier un logement</h1>
+            <h1 style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 24, fontWeight: 800, color: '#1B2B22', margin: 0 }}>
+              <Home size={24} strokeWidth={1.5} color="#1B6B3A" /> Publier un logement
+            </h1>
             <p>Mettez votre bien en location sur Werdhè</p>
           </div>
 
@@ -247,6 +260,18 @@ const AjouterLogement = () => {
                     <option value="">Sélectionnez</option>
                     {prefectures.map(function(p) {
                       return <option key={p.id} value={p.id}>{p.nom}</option>;
+                    })}
+                  </select>
+                </div>
+              )}
+              {/* Sous-préfecture (hors Conakry) */}
+              {sousPrefectures.length > 0 && (
+                <div className="form-group">
+                  <label>Sous-préfecture</label>
+                  <select name="sous_prefecture" value={formData.sous_prefecture} onChange={handleChange}>
+                    <option value="">Sélectionnez une sous-préfecture</option>
+                    {sousPrefectures.map(function(sp) {
+                      return <option key={sp.id} value={sp.nom}>{sp.nom}</option>;
                     })}
                   </select>
                 </div>
