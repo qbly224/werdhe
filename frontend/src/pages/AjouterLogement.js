@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar';
 import PhotoUpload from '../components/PhotoUpload';
 import toast from 'react-hot-toast';
 import './AjouterLogement.css';
-import { MapPin, Home, Building2, Building, Warehouse, Store, BriefcaseBusiness, BedDouble, DoorOpen, Landmark, Hotel, ShoppingBag, Factory } from 'lucide-react';
+import { MapPin, Home, Building2, Building, Warehouse, Store, BedDouble, DoorOpen, Landmark, Hotel, ShoppingBag, Factory } from 'lucide-react';
 
 var CATEGORIES = [
   {
@@ -51,13 +51,6 @@ var CATEGORIES = [
       { value: 'centre_commercial', label: 'Centre commercial',      icon: <ShoppingBag size={22} strokeWidth={1.5} color="#1B6B3A" />, description: 'Diamond Plaza, grandes surfaces...',               hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
     ]
   },
-];
-
-const VILLES = [
-  'Conakry', 'Kindia', 'Kankan', 'Labé', 'Mamou',
-  'Boké', 'Faranah', 'N\'Zérékoré', 'Siguiri',
-  'Guékédou', 'Macenta', 'Kissidougou', 'Coyah',
-  'Dubréka', 'Forécariah', 'Dalaba', 'Pita', 'Dabola'
 ];
 
 const AjouterLogement = () => {
