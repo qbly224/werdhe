@@ -117,7 +117,7 @@ const AjouterLogement = () => {
     api.get('/localisation/sous-prefectures/' + formData.prefecture_id)
       .then(function(res) { setSousPrefectures(res.data.sous_prefectures || []); })
       .catch(function() { setSousPrefectures([]); });
-  }, [formData.prefecture_id]);
+    }, [formData.prefecture_id, formData.region_id]);
 
   const handleSelectCategorie = (cat) => {
     setCategorieSelectionnee(cat);
