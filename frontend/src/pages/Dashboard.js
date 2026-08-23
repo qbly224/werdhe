@@ -30,6 +30,7 @@ import {
 import Onboarding from '../components/Onboarding';
 import { activerNotificationsPush, estAbonne, desactiverNotifications } from '../services/pushService';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts';
+import useInactivite from '../hooks/useInactivite';
 
 // ================================================
 // UTILITAIRE - Formater les montants en GNF
@@ -4528,6 +4529,8 @@ export default function Dashboard() {
   var [enLigne, setEnLigne] = useState(navigator.onLine);
   var [installPrompt, setInstallPrompt] = useState(null);
   var [showInstall, setShowInstall]     = useState(false);
+
+useInactivite(true);
 
 useEffect(function() {
   function handler(e) {

@@ -166,6 +166,42 @@ var SLIDES = [
     tag:    '100% gratuit pour les locataires',
   },
 ];
+function Particules() {
+  var [scrollY, setScrollY] = useState(0);
+
+  useEffect(function() {
+    function onScroll() { setScrollY(window.scrollY); }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return function() { window.removeEventListener('scroll', onScroll); };
+  }, []);
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
+      {[
+        { size: 6,   left: '10%', top: '20%', speed: 0.08, opacity: 0.15, color: '#1B6B3A' },
+        { size: 10,  left: '85%', top: '15%', speed: 0.12, opacity: 0.1,  color: '#F5A623' },
+        { size: 4,   left: '60%', top: '40%', speed: 0.06, opacity: 0.12, color: '#1B6B3A' },
+        { size: 8,   left: '25%', top: '60%', speed: 0.1,  opacity: 0.08, color: '#F5A623' },
+        { size: 5,   left: '75%', top: '70%', speed: 0.09, opacity: 0.1,  color: '#1B6B3A' },
+        { size: 12,  left: '45%', top: '30%', speed: 0.07, opacity: 0.06, color: '#F5A623' },
+      ].map(function(p, i) {
+        return (
+          <div key={i} style={{
+            position: 'absolute',
+            width:  p.size,
+            height: p.size,
+            borderRadius: '50%',
+            background: p.color,
+            left: p.left,
+            top:  'calc(' + p.top + ' - ' + (scrollY * p.speed) + 'px)',
+            opacity: p.opacity,
+            transition: 'top 0.1s ease-out',
+          }} />
+        );
+      })}
+    </div>
+  );
+}
 export default function LandingPage() {
   var navigate            = useNavigate();
   var { user }             = useAuth();
@@ -175,6 +211,18 @@ export default function LandingPage() {
   var heroRef             = useRef(null);
   var [compteurs, setCompteurs] = useState({ logements: 0, utilisateurs: 0 });
   var [slideActif, setSlideActif] = useState(0);
+  var [souris, setSouris] = useState({ x: 0, y: 0 });
+
+useEffect(function() {
+  function handleMouse(e) {
+    setSouris({
+      x: (e.clientX / window.innerWidth  - 0.5) * 20,
+      y: (e.clientY / window.innerHeight - 0.5) * 20,
+    });
+  }
+  window.addEventListener('mousemove', handleMouse);
+  return function() { window.removeEventListener('mousemove', handleMouse); };
+}, []);
 
   function choisirPlan(plan) {
     if (plan.role === 'locataire') {
@@ -230,6 +278,7 @@ useEffect(function() {
 
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: '#F7F8F7', color: '#1B2B22', overflowX: 'hidden', position: 'relative' }}>
+      <Particules />
       <SEO
         titre="Location immobilière en Guinée sans intermédiaire"
         description="Trouvez ou louez un logement en Guinée facilement. Werdhe connecte propriétaires et locataires directement. 100% gratuit pour les locataires."
@@ -357,7 +406,7 @@ useEffect(function() {
         {SLIDES.map(function(slide, i) {
           return (
             <div key={i} style={{ position: 'absolute', inset: 0, opacity: slideActif === i ? 1 : 0, transition: 'opacity 1.4s ease', zIndex: 0 }}>
-              <img src={slide.img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
+            <img src={slide.img} alt="" style={{ width: '105%', height: '105%', objectFit: 'cover', objectPosition: 'center', transform: 'translate(' + (souris.x * -0.5) + 'px, ' + (souris.y * -0.5) + 'px)', transition: 'transform 0.15s ease-out', marginLeft: '-2.5%', marginTop: '-2.5%' }} />
             </div>
           );
         })}
@@ -366,7 +415,7 @@ useEffect(function() {
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%)', zIndex: 1 }} />
 
         {/* Contenu hero */}
-        <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 960, margin: '0 auto', padding: '0 24px', textAlign: 'center' }}>
+        <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 960, margin: '0 auto', padding: '0 24px', textAlign: 'center', transform: 'translate(' + (souris.x * 0.3) + 'px, ' + (souris.y * 0.3) + 'px)', transition: 'transform 0.1s ease-out' }}>
 
           {/* Badge */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 20, padding: '6px 16px', marginBottom: 24 }}>
@@ -460,10 +509,10 @@ useEffect(function() {
         <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'clamp(16px, 4vw, 40px)', flexWrap: 'wrap' }}>
           <span style={{ fontSize: 12, color: '#aaa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>Paiements acceptés</span>
           {[
-            { nom: '🟠 Orange Money', couleur: '#FF6600' },
-            { nom: '🟡 MTN MoMo',    couleur: '#FFCB00' },
-            { nom: '💵 Espèces',      couleur: '#1B6B3A' },
-            { nom: '🏦 Virement',     couleur: '#1565C0' },
+            { nom: 'Orange Money', couleur: '#FF6600' },
+            { nom: 'MTN MoMo',    couleur: '#FFCB00' },
+            { nom: 'Espèces',      couleur: '#1B6B3A' },
+            { nom: 'Virement',     couleur: '#1565C0' },
           ].map(function(p, i) {
             return (
               <span key={i} style={{ fontSize: 13, fontWeight: 700, color: '#555', display: 'flex', alignItems: 'center', gap: 4 }}>{p.nom}</span>
