@@ -1805,8 +1805,24 @@ function OngletPaiements(props) {
   var estLocataire = user && user.role === 'locataire';
 
   // ── VUE LOCATAIRE ─────────────────────────────────────────────
-  if (estLocataire) {
-    var paiements = stats.paiements || [];
+    if (estLocataire) {
+    var [paiementsLoc, setPaiementsLoc] = useState([]);
+    var [loadPay, setLoadPay]           = useState(true);
+
+    useEffect(function() {
+      api.get('/paiements/mes-paiements')
+        .then(function(r) { setPaiementsLoc(r.data.paiements || []); })
+        .catch(console.error)
+        .finally(function() { setLoadPay(false); });
+    }, []);
+
+    var paiements = paiementsLoc;
+    if (loadPay) return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 60, gap: 12 }}>
+        <div style={{ width: 28, height: 28, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        <span style={{ color: '#888', fontSize: 14 }}>Chargement...</span>
+      </div>
+    );
     return (
       <div>
         <div className="dash-page-header">
@@ -1896,10 +1912,11 @@ return {
   function confirmerPaiement() {
   if (!modal) return;
   setProcessing(true);
+    var modeBackend = selectedMode === 'cash' ? 'especes' : 'en_ligne';
   api.post('/paiements', {
     reservation_id: modal.reservation_id,
     montant:        modal.loyer,
-    mode_paiement:  selectedMode,
+    mode_paiement:  modeBackend,
     statut:         'complete'
   })
   .then(function() {
@@ -2635,7 +2652,11 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
   useEffect(function() {
     api.get('/documents').then(function(res) { setDocuments(res.data.documents || []); }).catch(console.error);
     var ep = user && user.role === 'locataire' ? '/reservations/mes-reservations' : '/reservations/proprietaire';
-    api.get(ep).then(function(res) { setReservations((res.data.reservations || []).filter(function(r) { return r.statut === 'confirmee'; })); }).catch(console.error);
+        api.get(ep).then(function(res) {
+      setReservations((res.data.reservations || []).filter(function(r) {
+        return ['confirmee', 'active', 'bail_signe', 'bail_signe_proprio', 'bail_signe_locataire', 'terminee'].includes(r.statut);
+      }));
+    }).catch(console.error);
   }, [user]);
 
   function generer(e) {
@@ -2657,18 +2678,16 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
         // Ouvrir dans une fenêtre d'impression pour sauvegarder en PDF
         var win = window.open(url, '_blank');
         if (win) {
-          win.onload = function() {
-            win.focus();
-            setTimeout(function() {
-              win.print();
-            }, 800);
-          };
-          toast.success('Fenêtre d\'impression ouverte - Choisissez "Enregistrer en PDF"');
+          win.focus();
+          setTimeout(function() {
+            try { win.print(); } catch(e) {}
+          }, 1200);
+          toast.success('Document ouvert - choisissez "Enregistrer en PDF"');
         } else {
-          // Fallback : télécharger le HTML
+          // Fallback : télécharger directement
           var link = document.createElement('a');
           link.href = url;
-          link.setAttribute('download', doc.titre.replace(/\s+/g, '_') + '.html');
+          link.setAttribute('download', (doc.titre || 'document').replace(/\s+/g, '_') + '.html');
           document.body.appendChild(link);
           link.click();
           link.remove();
