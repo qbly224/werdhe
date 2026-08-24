@@ -31,6 +31,7 @@ import Onboarding from '../components/Onboarding';
 import { activerNotificationsPush, estAbonne, desactiverNotifications } from '../services/pushService';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts';
 import useInactivite from '../hooks/useInactivite';
+import Logo from '../components/Logo';
 
 // ================================================
 // UTILITAIRE - Formater les montants en GNF
@@ -4799,23 +4800,91 @@ function chargerDonnees() {
     setOnglet={function(o) { setOnglet(o); if (isMobile) setSidebarOpen(false); }}
     open={sidebarOpen} />
                   <div className={'dashboard-main' + (sidebarOpen && !isMobile ? ' sidebar-open' : '')}>
-        <div className="dash-header">
-          <div className="dash-header-left" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <button className="dash-toggle-btn" onClick={function() { setSidebarOpen(!sidebarOpen); }} type="button">
-             <Menu size={22} strokeWidth={1.5} />
+        <div className="dash-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', height: 62, background: '#fff', borderBottom: '1px solid #EBEBEB', position: 'sticky', top: 0, zIndex: 100 }}>
+
+          {/* ── GAUCHE : toggle + logo ── */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+            <button className="dash-toggle-btn" onClick={function() { setSidebarOpen(!sidebarOpen); }} type="button"
+              style={{ width: 36, height: 36, borderRadius: 10, background: '#F5F6FA', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#555' }}>
+              <Menu size={18} strokeWidth={1.5} />
             </button>
-            <div className="dash-header-title">
-            <h1>{pageTitle[onglet] || 'Tableau de bord'}</h1>
-            {!isMobile && <p>{new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>}
+            {!sidebarOpen && !isMobile && (
+              <Logo size={30} showText={true} darkBg={false} />
+            )}
           </div>
-          {!isMobile && <RechercheGlobale stats={stats} onNavigate={setOnglet} />}
-          {!enLigne && (
-  <div style={{ background: '#E53935', color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20, display: 'flex', alignItems: 'center', gap: 5 }}>
-    <div style={{ width: 6, height: 6, background: '#fff', borderRadius: '50%', opacity: 0.8 }} />
-    Hors ligne
-  </div>
-)}
-               </div>
+
+          {/* ── CENTRE : onglets navigation ── */}
+          {!isMobile && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 2, background: '#F5F6FA', borderRadius: 12, padding: '3px' }}>
+              {(user && (user.role === 'proprietaire' || user.role === 'les_deux') ? [
+                { path: '/dashboard',              label: 'Accueil'      },
+                { path: '/dashboard/biens',        label: 'Mes biens'    },
+                { path: '/dashboard/reservations', label: 'Candidatures' },
+                { path: '/dashboard/messages',     label: 'Messages'     },
+                { path: '/dashboard/rapports',     label: 'Rapports'     },
+                { path: '/dashboard/documents',    label: 'Documents'    },
+              ] : [
+                { path: '/dashboard',               label: 'Accueil'      },
+                { path: '/dashboard/mes-locations', label: 'Locations'    },
+                { path: '/dashboard/reservations',  label: 'Candidatures' },
+                { path: '/dashboard/messages',      label: 'Messages'     },
+                { path: '/dashboard/paiements',     label: 'Paiements'    },
+                { path: '/dashboard/documents',     label: 'Documents'    },
+              ]).map(function(item) {
+                var actif = onglet === item.path;
+                return (
+                  <button key={item.path}
+                    onClick={function() { setOnglet(item.path); }}
+                    style={{ padding: '7px 14px', borderRadius: 9, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: actif ? 700 : 500, background: actif ? '#fff' : 'transparent', color: actif ? '#1B2B22' : '#888', boxShadow: actif ? '0 1px 4px rgba(0,0,0,0.08)' : 'none', transition: 'all .15s', whiteSpace: 'nowrap' }}>
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* ── DROITE : recherche, notifs, avatar ── */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+            {!isMobile && <RechercheGlobale stats={stats} onNavigate={setOnglet} />}
+
+            {!enLigne && (
+              <div style={{ background: '#E53935', color: '#fff', fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20 }}>
+                Hors ligne
+              </div>
+            )}
+
+            {/* Cloche */}
+            <button className="dash-notif-btn" type="button"
+              onClick={function() {
+                var nouvelEtat = !showNotif;
+                setShowNotif(nouvelEtat);
+                if (nouvelEtat && alertes.length > 0) {
+                  var estLocataire = user && user.role === 'locataire';
+                  api.patch(estLocataire ? '/alertes/mes-alertes/lues' : '/alertes/lues')
+                    .then(function() {
+                      setAlertes(function(prev) { return prev.map(function(a) { return Object.assign({}, a, { lu: true }); }); });
+                    }).catch(console.error);
+                }
+              }}
+              style={{ position: 'relative', width: 36, height: 36, borderRadius: 10, background: '#F5F6FA', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#555' }}>
+              <Bell size={17} strokeWidth={1.5} />
+              {alertes.filter(function(a) { return !a.lu; }).length > 0 && (
+                <div style={{ position: 'absolute', top: 5, right: 5, width: 8, height: 8, background: '#E53935', borderRadius: '50%', border: '2px solid #fff' }} />
+              )}
+            </button>
+
+            {/* Mode sombre */}
+            <button onClick={toggleDarkMode}
+              style={{ width: 36, height: 36, borderRadius: 10, background: '#F5F6FA', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#555' }}>
+              {darkMode ? <Sun size={16} strokeWidth={1.5} /> : <Moon size={16} strokeWidth={1.5} />}
+            </button>
+
+            {/* Avatar */}
+            <div onClick={function() { setOnglet('/dashboard/parametres'); }}
+              style={{ width: 36, height: 36, borderRadius: '50%', background: '#1B6B3A', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>
+              {user ? ((user.prenom || '').charAt(0) + (user.nom || '').charAt(0)).toUpperCase() : 'U'}
+            </div>
+          </div>
         </div>
         {showNotif && (
           <div style={{ position: 'relative' }}>
