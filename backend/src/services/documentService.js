@@ -1007,8 +1007,8 @@ const genererDocument = async ({
 
     return { success: true, document, numero };
 
-  } catch (err) {
-    console.error('Erreur generation document:', err);
+    } catch (err) {
+    console.error('Erreur generation document:', err.message, err.stack);
     return { success: false, erreur: err.message };
   }
 };

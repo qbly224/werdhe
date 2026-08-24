@@ -65,7 +65,7 @@ const effectuerPaiement = async (req, res) => {
       });
     }
 
-    if (resa.locataire_id !== req.user.id) {
+    if (resa.locataire_id !== req.user.id && resa.proprietaire_id !== req.user.id) {
       return res.status(403).json({
         erreur: 'Vous n\'êtes pas autorisé à effectuer ce paiement'
       });
