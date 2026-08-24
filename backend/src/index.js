@@ -5,15 +5,6 @@ const rateLimit = require('express-rate-limit');
 const app       = express();
 // Render utilise un proxy - nécessaire pour express-rate-limit
 app.set('trust proxy', 1);
-// Rate limiter global
-app.use(rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 200,
-  message: { erreur: 'Trop de requêtes. Réessayez dans 15 minutes.' },
-  standardHeaders: true,
-  legacyHeaders: false,
-}));
-
 // Rate limiter strict pour auth
 var authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -68,7 +59,7 @@ const notationsRoutes = require('./routes/notations');
 var ENV_REQUISES = ['JWT_SECRET', 'DATABASE_URL'];
 var manquantes = ENV_REQUISES.filter(function(v) { return !process.env[v]; });
 if (manquantes.length > 0) {
-  console.error('❌ Variables d\'environnement manquantes:', manquantes.join(', '));
+  console.error('Variables d\'environnement manquantes:', manquantes.join(', '));
   process.exit(1);
 }
 console.log('✅ Variables d\'environnement vérifiées');
@@ -127,6 +118,17 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials:  true
 }));
+// Rate limiter global — APRÈS CORS
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 500,
+  message: { erreur: 'Trop de requêtes. Réessayez dans 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: function(req) {
+    return req.method === 'OPTIONS';
+  },
+}));
 
 const { router: pushRoutes } = require('./routes/push');
 app.use('/push', pushRoutes);
@@ -148,7 +150,6 @@ app.use(compression({
     return compression.filter(req, res);
   }
 }));
-
 // ── Body parser — AVANT les routes ───────────────────────────────
 app.use(express.json({ limit: '10mb' }));
 // Appliquer les limites
@@ -247,5 +248,5 @@ app.get('/sitemap.xml', async (req, res) => {
 
 // ── Démarrage ────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log('✅ Serveur démarré sur le port ' + PORT);
+  console.log('Serveur démarré sur le port ' + PORT);
 });
