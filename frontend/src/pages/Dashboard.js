@@ -1879,8 +1879,8 @@ function PaiementsProprietaire(props) {
   var PAY_MODES = [
     { id: 'om', label: 'Orange Money', sub: 'Instantane', color: '#FF6600', text: '#fff', abbr: 'OM' },
     { id: 'mtn', label: 'MTN MoMo', sub: 'Instantane', color: '#FFCC00', text: '#1B2B22', abbr: 'MM' },
-    { id: 'cash', label: 'Especes', sub: 'Recu PDF auto', icon: '💵' },
-    { id: 'bank', label: 'Virement bancaire', sub: 'BICIGUI · Ecobank', icon: '🏦' }
+    { id: 'cash', label: 'Especes', sub: 'Recu PDF auto', abbr: 'ESP' },
+    { id: 'bank', label: 'Virement bancaire', sub: 'BICIGUI · Ecobank', abbr: 'VIR' }
   ];
   useEffect(function() {
     var bl = stats.logements.map(function(l) {
@@ -1919,10 +1919,10 @@ return {
     mode_paiement:  modeBackend,
     statut:         'complete'
   })
-  .then(function() {
+    .then(function() {
     setProcessing(false);
     setDone(true);
-    // Mettre à jour localement
+    // Mise à jour immédiate locale
     setBiensList(function(prev) {
       return prev.map(function(b) {
         return b.id === modal.id
@@ -1930,10 +1930,29 @@ return {
           : b;
       });
     });
-    // Rafraîchir le dashboard global
+    // Recharger les vraies données après 1s
     setTimeout(function() {
+      api.get('/paiements/proprietaire')
+        .then(function(res) {
+          var paiementsfrais = res.data.paiements || [];
+          setBiensList(function(prev) {
+            return prev.map(function(b) {
+              var dp = paiementsfrais.find(function(p) {
+                return String(p.logement_id) === String(b.id) && p.statut === 'complete';
+              });
+              var ea = paiementsfrais.find(function(p) {
+                return String(p.logement_id) === String(b.id) && p.statut === 'en_attente';
+              });
+              return Object.assign({}, b, {
+                statut: dp ? 'paye' : ea ? 'en_retard' : 'impaye',
+                jours:  ea ? 5 : 0,
+              });
+            });
+          });
+        })
+        .catch(console.warn);
       window.dispatchEvent(new CustomEvent('werdhe:refresh'));
-    }, 500);
+    }, 1000);
   })
   .catch(function(err) {
     setProcessing(false);
@@ -2006,8 +2025,8 @@ function PaiementsLocataire(props) {
   var PAY_MODES = [
     { id: 'om', label: 'Orange Money', sub: 'Instantane', color: '#FF6600', text: '#fff', abbr: 'OM' },
     { id: 'mtn', label: 'MTN MoMo', sub: 'Instantane', color: '#FFCC00', text: '#1B2B22', abbr: 'MM' },
-    { id: 'cash', label: 'Especes', sub: 'Recu PDF auto', icon: '💵' },
-    { id: 'bank', label: 'Virement', sub: 'BICIGUI · Ecobank', icon: '🏦' }
+    { id: 'cash', label: 'Especes', sub: 'Recu PDF auto', abbr: 'ESP' },
+    { id: 'bank', label: 'Virement bancaire', sub: 'BICIGUI · Ecobank', abbr: 'VIR' }
   ];
   var [nbMois, setNbMois] = useState(1);
   var [mode, setMode] = useState('om');
