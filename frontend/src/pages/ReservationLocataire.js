@@ -328,8 +328,8 @@ export default function ReservationLocataire() {
             {statut === 'en_attente'          ? 'Demande envoyée'
              : statut === 'dossier_requis'    ? 'Dossier demandé'
              : statut === 'en_examen'         ? 'En examen'
-             : statut === 'acceptee'          ? 'Acceptée ✅'
-             : statut === 'refusee'           ? 'Refusée ❌'
+             : statut === 'acceptee'          ? 'Acceptée'
+             : statut === 'refusee'           ? 'Refusée'
              : statut === 'echanges'          ? 'En échanges'
              : statut === 'caution_requise'   ? 'Caution à payer'
              : statut === 'caution_payee'     ? 'Caution versée'
@@ -359,7 +359,7 @@ export default function ReservationLocataire() {
               ['Loyer mensuel', GNF(loyer)],
               ['Date de début', reservation.date_debut ? new Date(reservation.date_debut).toLocaleDateString('fr-FR') : 'N/A'],
               ['Durée',         reservation.duree_mois ? reservation.duree_mois + ' mois' : 'N/A'],
-              ['Statut',        '📤 En attente de réponse'],
+              ['Statut',        'En attente de réponse'],
             ].map(function(row) {
               return (
                 <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '6px 0', borderBottom: '0.5px solid #F5F5F5' }}>
@@ -431,7 +431,7 @@ export default function ReservationLocataire() {
             </div>
             <button type="submit"
               style={{ width: '100%', background: Object.values(docs).filter(Boolean).length >= 2 ? '#1B6B3A' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: Object.values(docs).filter(Boolean).length >= 2 ? 'pointer' : 'not-allowed' }}>
-              📤 Soumettre mon dossier
+              Soumettre mon dossier
             </button>
           </form>
         </div>
@@ -524,7 +524,7 @@ export default function ReservationLocataire() {
           </div>
           <button onClick={passerCautionRequise}
             style={{ width: '100%', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-            🔒 Procéder au paiement de la caution →
+            Procéder au paiement de la caution →
           </button>
         </div>
       )}
@@ -541,7 +541,7 @@ export default function ReservationLocataire() {
           <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
             <div style={{ background: '#F0FBF0', borderRadius: 12, padding: 14, marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6B3A' }}>Caution — 1 mois de loyer</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6B3A' }}>Caution - 1 mois de loyer</div>
                 <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>Sécurisée sur Werdhe</div>
               </div>
               <div style={{ fontSize: 22, fontWeight: 800, color: '#1B6B3A' }}>{GNF(loyer)}</div>
@@ -567,7 +567,7 @@ export default function ReservationLocataire() {
           </div>
           <button onClick={payerCaution} disabled={payProcessing}
             style={{ width: '100%', background: payProcessing ? '#999' : '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: payProcessing ? 'not-allowed' : 'pointer' }}>
-            {payProcessing ? '⏳ Traitement...' : '🔒 Verser la caution — ' + GNF(loyer)}
+            {payProcessing ? 'Traitement...' : 'Verser la caution - ' + GNF(loyer)}
           </button>
         </div>
       )}
@@ -577,7 +577,7 @@ export default function ReservationLocataire() {
         <div>
           <AttenteCard
             icone="🛡️"
-            message="Caution sécurisée sur Werdhe"
+            message="Caution enregistrée - payée directement au propriétaire"
             sub="Le propriétaire va préparer le bail. Vous serez notifié(e) dès qu'il est prêt à être signé."
           />
           <div style={{ background: '#E8F5E9', borderRadius: 12, padding: 14, display: 'flex', gap: 8 }}>
@@ -676,7 +676,7 @@ export default function ReservationLocataire() {
           <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
             {[
               { icon: '✅', title: 'Demande acceptée',            sub: 'Dossier complet et approuvé' },
-              { icon: '✅', title: 'Caution sécurisée',           sub: GNF(loyer) + ' protégés sur Werdhe' },
+              { icon: '✅', title: 'Caution enregistrée',          sub: GNF(loyer) + ' GNF · payée au propriétaire' },
               { icon: '✅', title: 'Bail signé',                  sub: 'Contrat disponible en PDF' },
               { icon: '🗝️', title: 'Accès accordé !',            sub: logement && (logement.titre || logement.nom), highlight: true },
             ].map(function(item, i) {
@@ -693,7 +693,7 @@ export default function ReservationLocataire() {
           </div>
           <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginBottom: 14 }}>
             <div style={{ fontSize: 12, color: '#1B5E20' }}>
-              🔔 Votre premier loyer de <b>{GNF(loyer)}</b> sera dû le 1er du mois prochain.
+              Votre premier loyer de <b>{GNF(loyer)}</b> sera dû le 1er du mois prochain.
             </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -748,7 +748,7 @@ export default function ReservationLocataire() {
 )}
 {noteEnvoyee && (
   <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginTop: 14, fontSize: 13, color: '#1B5E20', fontWeight: 600 }}>
-    ⭐ Vous avez noté ce propriétaire. Merci !
+    Vous avez noté ce propriétaire. Merci !
   </div>
 )}
 
