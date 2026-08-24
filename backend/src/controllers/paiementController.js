@@ -84,7 +84,10 @@ const effectuerPaiement = async (req, res) => {
     }
 
     const numero_facture = await genererNumeroFacture();
-    const statut = mode_paiement === 'especes' ? 'en_attente' : 'complete';
+        // Si c'est le proprio qui enregistre le paiement espèces → complete directement
+    var estProprio = req.user.id === resa.proprietaire_id;
+    const statut = (mode_paiement === 'especes' && estProprio) ? 'complete' : 
+                   mode_paiement === 'especes' ? 'en_attente' : 'complete';
 
     // Créer le paiement
     const paiement = await db.query(

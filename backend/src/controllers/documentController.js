@@ -343,11 +343,13 @@ const telechargerDocument = async (req, res) => {
     }
 
     const doc = result.rows[0];
-
+    if (!doc.contenu_html) {
+      return res.status(404).json({ erreur: 'Contenu du document non disponible' });
+    }
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename="${doc.titre.replace(/\s+/g, '_')}.html"`
+      `attachment; filename="${doc.titre.replace(/[^a-zA-Z0-9_-]/g, '_')}.html"`
     );
     res.send(doc.contenu_html);
 
