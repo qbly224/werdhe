@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import MapView from '../components/MapView';
 import SEO from '../components/SEO';
+import { SkeletonLogement } from '../components/Skeleton';
 
 var GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 
@@ -229,7 +230,7 @@ export default function Logements() {
           {/* Fourchette prix visuelle */}
           {(prixMin || prixMax) && (
             <div style={{ marginTop: 12, padding: '10px 14px', background: '#E8F5E9', borderRadius: 10, fontSize: 13, color: '#1B5E20', fontWeight: 600 }}>
-              💰 Fourchette : {prixMin ? GNF(prixMin) : '0'} - {prixMax ? GNF(prixMax) : 'illimité'}
+              Fourchette : {prixMin ? GNF(prixMin) : '0'} - {prixMax ? GNF(prixMax) : 'illimité'}
             </div>
           )}
         </div>
@@ -308,7 +309,7 @@ export default function Logements() {
                   </div>
                   {estNouveau && (
   <div style={{ position: 'absolute', top: 10, left: 10, background: '#F5A623', color: '#1B2B22', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 800 }}>
-    ✨ Nouveau
+    Nouveau
   </div>
 )}
                   {l.categorie && (

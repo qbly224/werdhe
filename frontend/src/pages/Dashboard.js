@@ -32,6 +32,7 @@ import { activerNotificationsPush, estAbonne, desactiverNotifications } from '..
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area } from 'recharts';
 import useInactivite from '../hooks/useInactivite';
 import Logo from '../components/Logo';
+import { SkeletonKPI, SkeletonListe, SkeletonCard } from '../components/Skeleton';
 
 // ================================================
 // UTILITAIRE - Formater les montants en GNF
@@ -305,9 +306,14 @@ function OngletOverview(props) {
       .finally(function() { setLoading(false); });
   }, []);
 
-  if (loading) return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 60, gap: 12 }}>
-      <div style={{ width: 32, height: 32, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+    if (loading) return (
+    <div>
+      <div className="stats-grid-4" style={{ marginBottom: 24 }}>
+        <SkeletonKPI /><SkeletonKPI /><SkeletonKPI /><SkeletonKPI />
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <SkeletonCard /><SkeletonCard />
+      </div>
     </div>
   );
 
@@ -633,7 +639,7 @@ function OngletBiens(props) {
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{r.logement_titre}</div>
                   <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>
-                    📍 {r.logement_ville} · Depuis le {r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A'}
+                    {r.logement_ville} · Depuis le {r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A'}
                   </div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: '#1B6B3A', marginTop: 6 }}>
                     {new Intl.NumberFormat('fr-FR').format(r.prix_mensuel || 0)} GNF/mois
@@ -648,7 +654,7 @@ function OngletBiens(props) {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <Link to={'/reservation/' + r.id}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E8F5E9', color: '#1B5E20', textDecoration: 'none', fontSize: 13, fontWeight: 600, border: '0.5px solid #A5D6A7' }}>
-                  📋 Détails
+                  Détails
                 </Link>
                 <button onClick={function() { if (setOnglet) setOnglet('/dashboard/documents'); }}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', fontSize: 13, fontWeight: 600, border: '0.5px solid #90CAF9', cursor: 'pointer' }}>
@@ -706,7 +712,7 @@ function OngletBiens(props) {
         <button
           style={{ background: '#C62828', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontWeight: 700, cursor: 'pointer' }}
           onClick={function() { libererBien(showLiberer); }}>
-          ⚡ Libérer maintenant
+          Libérer maintenant
         </button>
         <button className="btn-outline-green" onClick={function() { setShowLiberer(null); }}>
           Annuler
@@ -866,7 +872,7 @@ function OngletBiens(props) {
                   )}
                   {preavisActif && (
                     <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#F5F5F5', color: '#888', border: '0.5px solid #E0E0E0', fontSize: 12, cursor: 'not-allowed' }} disabled>
-                      ⚠️ Préavis envoyé
+                      Préavis envoyé
                     </button>
                   )}
                   {estOccupe && (
@@ -880,7 +886,7 @@ function OngletBiens(props) {
     <button
       onClick={function() { setShowLiberer(b.id); }}
       style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#FFEBEE', color: '#C62828', border: '0.5px solid #FFCDD2', fontSize: 12, fontWeight: 600, cursor: 'pointer', gridColumn: '1 / -1' }}>
-      ⚡ Libérer immédiatement
+      Libérer immédiatement
     </button>
   </div>
 )}
@@ -888,7 +894,7 @@ function OngletBiens(props) {
 {showRenouv && (
   <div className="modal-overlay">
     <div className="modal-box">
-      <h3 style={{ color: '#1565C0' }}>🔄 Proposer un renouvellement</h3>
+      <h3 style={{ color: '#1565C0' }}>Proposer un renouvellement</h3>
       <p style={{ fontSize: 13, color: '#555', marginBottom: 16 }}>
         Logement : <b>{showRenouv.nom}</b>
       </p>
@@ -912,7 +918,7 @@ function OngletBiens(props) {
       <div className="modal-actions">
         <button onClick={envoyerRenouvellement} disabled={renouvLoading}
           style={{ background: '#1565C0', color: '#fff', border: 'none', borderRadius: 10, padding: '11px 20px', fontWeight: 700, cursor: 'pointer', flex: 1 }}>
-          {renouvLoading ? '⏳ Envoi...' : '🔄 Envoyer la proposition'}
+          {renouvLoading ? 'Envoi...' : 'Envoyer la proposition'}
         </button>
         <button className="btn-outline-green" onClick={function() { setShowRenouv(null); }}>Annuler</button>
       </div>
@@ -1328,7 +1334,7 @@ useEffect(function() {
   });
 
   var cfgStatuts = {
-    en_attente         : { label: '📩 Nouvelle candidature', couleur: '#E53935', urgent: true },
+    en_attente         : { label: 'Nouvelle candidature', couleur: '#E53935', urgent: true },
     dossier_requis     : { label: 'Attente du dossier',           couleur: '#F5A623', urgent: false },
     en_examen          : { label: 'Dossier à examiner',           couleur: '#7B1FA2', urgent: true  },
     acceptee           : { label: 'Acceptée',                      couleur: '#1B6B3A', urgent: false },
@@ -1412,7 +1418,7 @@ useEffect(function() {
               <button
                 onClick={function() { action('/decision', { decision: 'dossier_requis' }, 'Dossier demandé ! Le locataire va uploader ses documents.'); }}
                 style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-                📁 Demander le dossier complet
+                Demander le dossier complet
               </button>
               <button
                 onClick={function() { action('/decision', { decision: 'acceptee' }, 'Candidature acceptée ! Le locataire est notifié.'); }}
@@ -1447,7 +1453,7 @@ useEffect(function() {
 {r.statut === 'en_examen' && (
   <div style={{ background: '#fff', borderRadius: 14, padding: 18, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
     <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>
-      📋 Dossier soumis par {r.locataire_prenom}
+      Dossier soumis par {r.locataire_prenom}
     </div>
 
     {/* Documents avec liens de téléchargement */}
@@ -1625,7 +1631,7 @@ useEffect(function() {
             <button
               onClick={function() { action('/statut', { statut: 'bail_en_cours' }, 'Bail généré ! Les deux parties peuvent signer.'); }}
               style={{ width: '100%', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
-              📝 Générer et préparer le bail
+              Générer et préparer le bail
             </button>
           </div>
         )}
@@ -1780,13 +1786,13 @@ useEffect(function() {
             </div>
             {cfg.urgent && (
               <div style={{ background: '#FFF8E1', borderRadius: 8, padding: '7px 12px', marginBottom: 10, fontSize: 12, color: '#7B4F00', fontWeight: 600 }}>
-                ⚡ Votre intervention est requise
+                Votre intervention est requise
               </div>
             )}
             <button
               onClick={function() { setSelectionne(r); }}
               style={{ width: '100%', background: cfg.urgent ? '#1B6B3A' : '#F0F0F0', color: cfg.urgent ? '#fff' : '#555', border: 'none', borderRadius: 10, padding: 10, fontSize: 13, fontWeight: cfg.urgent ? 700 : 400, cursor: 'pointer' }}>
-              {cfg.urgent ? '⚡ Répondre maintenant →' : 'Voir le détail →'}
+              {cfg.urgent ? 'Répondre maintenant →' : 'Voir le détail →'}
             </button>
           </div>
         );
@@ -2108,7 +2114,7 @@ useEffect(function() {
 function repondreRenouvellement(id, reponse) {
   api.patch('/renouvellements/' + id + '/repondre', { reponse: reponse })
     .then(function() {
-      toast.success(reponse === 'accepte' ? '✅ Renouvellement accepté !' : 'Renouvellement refusé');
+      toast.success(reponse === 'accepte' ? 'Renouvellement accepté !' : 'Renouvellement refusé');
       setRenouvellements(function(prev) { return prev.filter(function(r) { return r.id !== id; }); });
     })
     .catch(function(err) { toast.error(err.response?.data?.erreur || 'Erreur'); });
@@ -2231,7 +2237,7 @@ function repondre(preavisId, reponse) {
             h1{color:#1B6B3A}.box{background:#FFF8E1;border:1px solid #FFE082;border-radius:8px;padding:16px;margin:16px 0}
             .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #FFE082;font-size:14px}</style></head>
             <body>
-              <h1>🏠 Werdhe - Préavis de départ</h1>
+              <h1>Werdhe - Préavis de départ</h1>
               <p>Date : ${new Date().toLocaleDateString('fr-FR')}</p>
               <div class="box">
                 <div class="row"><span>Motif</span><b>${motif}</b></div>
@@ -2292,11 +2298,11 @@ function repondre(preavisId, reponse) {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                   <button onClick={function() { repondreRenouvellement(rn.id, 'refuse'); }}
                     style={{ padding: 12, borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#888', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-                    ❌ Refuser
+                    Refuser
                   </button>
                   <button onClick={function() { repondreRenouvellement(rn.id, 'accepte'); }}
                     style={{ padding: 12, borderRadius: 10, border: 'none', background: '#1565C0', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-                    ✅ Accepter
+                    Accepter
                   </button>
                 </div>
               </div>
@@ -2344,7 +2350,7 @@ function repondre(preavisId, reponse) {
               ['Motif', motif],
               [estProprietaire ? 'Délai accordé' : 'Délai de préavis', delai + ' mois'],
               ['Date de sortie estimée', resultat.date_sortie || addDays(parseInt(delai) * 30)],
-              ['Statut', '⏳ En attente d\'accusé de réception'],
+              ['Statut', 'En attente d\'accusé de réception'],
             ].filter(Boolean).map(function(row) {
               return (
                 <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '5px 0', borderBottom: '0.5px solid #FFE082', flexWrap: 'wrap', gap: 4 }}>
@@ -2405,7 +2411,7 @@ function repondre(preavisId, reponse) {
               style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer' }}>← Modifier</button>
             <button onClick={envoyer} disabled={loading}
               style={{ flex: 2, background: loading ? '#999' : (estProprietaire ? '#C62828' : '#1B6B3A'), color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
-              {loading ? '⏳ Envoi en cours...' : <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><Send size={14} strokeWidth={1.5}/> Envoyer le préavis officiel</span>}
+              {loading ? 'Envoi en cours...' : <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><Send size={14} strokeWidth={1.5}/> Envoyer le préavis officiel</span>}
             </button>
           </div>
         </div>
@@ -2467,7 +2473,7 @@ function repondre(preavisId, reponse) {
                   onClick={function() { repondre(p.id, 'renouveler'); }}
                   disabled={reponseLoading}
                   style={{ padding: 12, borderRadius: 10, border: '1.5px solid #1565C0', background: '#E3F2FD', color: '#1565C0', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-                  🔄 Demander le renouvellement
+                  Demander le renouvellement
                 </button>
                 <button
                   onClick={function() { repondre(p.id, 'accepte'); }}
@@ -2485,7 +2491,7 @@ function repondre(preavisId, reponse) {
             <button
               onClick={function() { setReponseModal(p.id); }}
               style={{ width: '100%', background: '#C62828', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-              📩 Répondre au préavis →
+              Répondre au préavis →
             </button>
           )}
         </div>
@@ -2556,7 +2562,7 @@ function repondre(preavisId, reponse) {
             </div>
             {delai && (
               <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginTop: 10, display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
-                <span style={{ color: '#555' }}>📅 Date de sortie estimée</span>
+                <span style={{ color: '#555' }}>Date de sortie estimée</span>
                 <span style={{ fontWeight: 700, color: '#1B6B3A' }}>{addDays(parseInt(delai) * 30)}</span>
               </div>
             )}
@@ -2577,7 +2583,7 @@ function repondre(preavisId, reponse) {
               setStep('confirm');
             }}
             style={{ width: '100%', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-            📋 Préparer le préavis officiel →
+            Préparer le préavis officiel →
           </button>
         </div>
       )}
@@ -3359,7 +3365,7 @@ function PushToggle() {
       </div>
       <button onClick={toggle} disabled={loading}
         style={{ padding: '8px 16px', borderRadius: 20, border: 'none', background: abonne ? '#1B6B3A' : '#F0F0F0', color: abonne ? '#fff' : '#888', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-        {loading ? '...' : abonne ? '🔔 Activées' : '🔕 Désactivées'}
+        {loading ? '...' : abonne ? 'Activées' : 'Désactivées'}
       </button>
     </div>
   );
@@ -3390,7 +3396,7 @@ function BoutonNotifPush() {
       } else {
         m.activerNotificationsPush().then(function() {
           setAbonne(true);
-          toast.success('Notifications activées ✅');
+          toast.success('Notifications activées');
         }).catch(function() {
           toast.error('Autorisez les notifications dans votre navigateur');
         }).finally(function() { setLoading(false); });
@@ -3406,7 +3412,7 @@ function BoutonNotifPush() {
         </div>
         <div>
           <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>
-            Notifications push {abonne ? '(Activées ✅)' : '(Désactivées)'}
+            Notifications push {abonne ? '(Activées)' : '(Désactivées)'}
           </div>
           <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
             Candidatures, paiements, messages
@@ -3416,11 +3422,11 @@ function BoutonNotifPush() {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
         {[
-          '📩 Nouvelle candidature reçue',
-          '✅ Candidature acceptée',
-          '💰 Paiement confirmé',
-          '💬 Nouveau message',
-          '⏰ Rappel de loyer',
+          'Nouvelle candidature reçue',
+          'Candidature acceptée',
+          'Paiement confirmé',
+          'Nouveau message',
+          'Rappel de loyer',
         ].map(function(item, i) {
           return (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#555' }}>
@@ -3433,7 +3439,7 @@ function BoutonNotifPush() {
 
       <button onClick={toggleNotifs} disabled={loading}
         style={{ width: '100%', padding: '12px', borderRadius: 12, border: 'none', background: loading ? '#aaa' : abonne ? '#FFEBEE' : '#1B6B3A', color: loading ? '#fff' : abonne ? '#B71C1C' : '#fff', fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
-        {loading ? '⏳ ...' : abonne ? '🔕 Désactiver les notifications' : '🔔 Activer les notifications'}
+        {loading ? '⏳ ...' : abonne ? 'Désactiver les notifications' : '🔔 Activer les notifications'}
       </button>
     </div>
   );
@@ -3466,9 +3472,9 @@ function OngletHistorique(props) {
   var s           = data.stats;
   var GNFf        = function(n) { return new Intl.NumberFormat('fr-FR').format(Number(n)); };
   var noteLocataire = Number(s.note_moyenne_recue);
-  var badge = Number(s.nb_terminees) >= 3 ? '🏅 Locataire expérimenté'
-            : Number(s.nb_terminees) >= 1 ? '✅ Locataire vérifié'
-            : '🆕 Nouveau locataire';
+  var badge = Number(s.nb_terminees) >= 3 ? 'Locataire expérimenté'
+            : Number(s.nb_terminees) >= 1 ? 'Locataire vérifié'
+            : 'Nouveau locataire';
 
   return (
     <div>
@@ -3638,7 +3644,7 @@ function OngletHistorique(props) {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                   <div>
                     <div style={{ fontSize: 11, fontWeight: 700, color: estRecu ? '#1B6B3A' : '#1565C0', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                      {estRecu ? '⭐ Avis reçu' : '✍️ Avis donné'}
+                      {estRecu ? 'Avis reçu' : 'Avis donné'}
                     </div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22', marginTop: 2 }}>
                       {n.auteur_prenom} {n.auteur_nom} · {n.logement_titre}
@@ -3853,7 +3859,7 @@ function OngletRapports(props) {
       {data.candidatures && (
         <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', marginBottom: 20 }}>
           <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>
-            📊 Analyse des candidatures
+            Analyse des candidatures
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12, marginBottom: 16 }}>
             {[
@@ -3905,7 +3911,7 @@ function OngletRapports(props) {
         return (
           <div style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', borderRadius: 16, padding: '20px', marginBottom: 20 }}>
             <h3 style={{ fontSize: 15, fontWeight: 700, color: '#fff', margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
-              🔮 Prévisions basées sur vos 3 derniers mois
+              Prévisions basées sur vos 3 derniers mois
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
               {[
@@ -4208,7 +4214,7 @@ function OngletParametres(props) {
 
   {monAbonnement && monAbonnement.abonnement && monAbonnement.abonnement.statut === 'impaye' && (
     <div style={{ background: '#FFEBEE', border: '1px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', marginTop: 12, fontSize: 12, color: '#B71C1C' }}>
-      🔒 Abonnement impayé - accès restreint. Réglez votre abonnement pour retrouver toutes les fonctionnalités.
+      Abonnement impayé - accès restreint. Réglez votre abonnement pour retrouver toutes les fonctionnalités.
     </div>
   )}
 
@@ -4224,11 +4230,11 @@ function OngletParametres(props) {
     <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
       <button onClick={function() { demarrerEssai('pro'); }} disabled={essaiEnCours === 'pro'}
         style={{ flex: 1, background: essaiEnCours === 'pro' ? '#aaa' : '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-        {essaiEnCours === 'pro' ? '...' : '⬆️ Essai Pro - 1 mois gratuit'}
+        {essaiEnCours === 'pro' ? '...' : 'Essai Pro - 1 mois gratuit'}
       </button>
       <button onClick={function() { demarrerEssai('agence'); }} disabled={essaiEnCours === 'agence'}
         style={{ flex: 1, background: essaiEnCours === 'agence' ? '#aaa' : '#7B1FA2', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-        {essaiEnCours === 'agence' ? '...' : '⬆️ Essai Agence - 1 mois gratuit'}
+        {essaiEnCours === 'agence' ? '...' : 'Essai Agence - 1 mois gratuit'}
       </button>
     </div>
   )}
@@ -4354,7 +4360,7 @@ function OngletParametres(props) {
       )}
       {section === 'notifs' && (
   <div className="dash-form-card" style={{ maxWidth: 560 }}>
-    <h3>🔔 Notifications</h3>
+    <h3>Notifications</h3>
     <p style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>
       Recevez des alertes en temps réel même quand Werdhe est fermé.
     </p>
@@ -4387,7 +4393,7 @@ function OngletParametres(props) {
       )}
       {section === 'score' && scoreData && (
         <div className="dash-form-card" style={{ maxWidth: 560 }}>
-          <h3>⭐ Mon score de confiance</h3>
+          <h3>Mon score de confiance</h3>
           <div style={{ textAlign: 'center', padding: '24px 0', marginBottom: 20 }}>
             <div style={{ position: 'relative', width: 120, height: 120, margin: '0 auto 16px' }}>
               <svg width="120" height="120" viewBox="0 0 120 120">
@@ -4427,7 +4433,7 @@ function OngletParametres(props) {
             })}
           </div>
           <div style={{ background: '#FFF8E1', borderRadius: 10, padding: '12px 16px', fontSize: 13, color: '#7B4F00', marginBottom: 14 }}>
-            💡 Améliorez votre score en complétant votre profil, payant à temps et recevant de bonnes notes.
+            Améliorez votre score en complétant votre profil, payant à temps et recevant de bonnes notes.
           </div>
           <button className="btn-outline-green" style={{ width: '100%' }}
             onClick={function() { setSection(null); }}>
@@ -4454,7 +4460,7 @@ function OngletMesLocations(props) {
       <div className="dash-page-header">
         <div><h1>Mes locations</h1><p>{locationsActives.length} location(s) active(s)</p></div>
         <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>
-          🔍 Chercher un logement
+          Chercher un logement
         </Link>
       </div>
 
@@ -4464,7 +4470,7 @@ function OngletMesLocations(props) {
           <h3>Aucune location active</h3>
           <p>Réservez un logement pour commencer</p>
           <Link to="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
-            🔍 Trouver un logement
+            Trouver un logement
           </Link>
         </div>
       )}
@@ -4494,7 +4500,7 @@ function OngletMesLocations(props) {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <Link to={'/reservation/' + r.id}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E8F5E9', color: '#1B5E20', textDecoration: 'none', fontSize: 13, fontWeight: 600, border: '0.5px solid #A5D6A7' }}>
-                  📋 Détails
+                  Détails
                 </Link>
                 <button onClick={function() { if (setOnglet) setOnglet('/dashboard/documents'); }}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', fontSize: 13, fontWeight: 600, border: '0.5px solid #90CAF9', cursor: 'pointer' }}>

@@ -492,3 +492,67 @@
     gap: 14px !important;
   }
 }
+/* ─── ANIMATIONS ONGLETS ────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.dash-scroll > * {
+  animation: fadeInUp 0.25s ease-out;
+}
+
+/* Cards avec hover animé */
+.stat-card-colored {
+  transition: transform .2s ease, box-shadow .2s ease !important;
+}
+
+.stat-card-colored:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
+}
+
+/* Boutons avec effet press */
+button {
+  transition: opacity .15s, transform .1s !important;
+}
+
+button:active {
+  transform: scale(0.97) !important;
+}
+
+/* Links smooth */
+a {
+  transition: opacity .15s !important;
+}
+
+/* Sidebar items */
+.sidebar-nav-item {
+  transition: background .15s, color .15s !important;
+}
+
+/* Messages bubble apparition */
+.msg-bubble {
+  animation: fadeIn 0.2s ease-out !important;
+}
+
+/* Empty state */
+.dash-empty-state {
+  animation: fadeInUp 0.3s ease-out !important;
+}
+
+/* Form cards */
+.dash-form-card {
+  animation: fadeInUp 0.2s ease-out !important;
+}
