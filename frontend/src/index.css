@@ -1,3 +1,42 @@
+/* ─── THÈME CLAIR (défaut) ─────────────────────────────────────── */
+:root {
+  --bg-primary:    #F5F6FA;
+  --bg-secondary:  #fff;
+  --bg-tertiary:   #F0F0F0;
+  --border:        #EBEBEB;
+  --text-primary:  #1B2B22;
+  --text-secondary:#555;
+  --text-muted:    #888;
+  --text-light:    #aaa;
+  --green:         #1B6B3A;
+  --green-light:   #E8F5E9;
+  --green-border:  #A5D6A7;
+  --gold:          #F5A623;
+  --shadow-sm:     0 1px 4px rgba(0,0,0,0.06);
+  --shadow-md:     0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,0.12);
+  --radius-sm:     8px;
+  --radius-md:     12px;
+  --radius-lg:     16px;
+}
+/* ─── THÈME SOMBRE ─────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg-primary:    #0F1A12;
+  --bg-secondary:  #1A2B1E;
+  --bg-tertiary:   #243328;
+  --border:        #2D3E31;
+  --text-primary:  #E8F0E9;
+  --text-secondary:#A8BEA9;
+  --text-muted:    #6B8A6E;
+  --text-light:    #4A6B4D;
+  --green:         #2D9E5F;
+  --green-light:   #1A3322;
+  --green-border:  #2D5E3A;
+  --gold:          #F5A623;
+  --shadow-sm:     0 1px 4px rgba(0,0,0,0.3);
+  --shadow-md:     0 2px 12px rgba(0,0,0,0.4);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,0.5);
+}
 * {
   margin: 0;
   padding: 0;

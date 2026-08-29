@@ -556,3 +556,161 @@ a {
 .dash-form-card {
   animation: fadeInUp 0.2s ease-out !important;
 }
+/* ─── MODE SOMBRE — DASHBOARD ──────────────────────────────────── */
+[data-theme="dark"] .dashboard-main {
+  background: var(--bg-primary) !important;
+}
+
+[data-theme="dark"] .dash-header {
+  background: var(--bg-secondary) !important;
+  border-bottom-color: var(--border) !important;
+}
+
+[data-theme="dark"] .dash-header-title h1 {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .dash-header-title p {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .dash-toggle-btn,
+[data-theme="dark"] .dash-notif-btn {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .sidebar-desktop {
+  background: var(--bg-secondary) !important;
+  border-right-color: var(--border) !important;
+}
+
+[data-theme="dark"] .sidebar-nav-item {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .sidebar-nav-item.active {
+  background: var(--green-light) !important;
+  color: var(--green) !important;
+}
+
+[data-theme="dark"] .stat-card-colored {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .dash-form-card {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .dash-page-header h1 {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .dash-page-header p {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .dash-scroll {
+  background: var(--bg-primary) !important;
+}
+
+[data-theme="dark"] .dash-empty-state {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .dash-empty-state h3 {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .dash-empty-state p {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .messages-container {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .messages-list {
+  border-right-color: var(--border) !important;
+}
+
+[data-theme="dark"] .messages-chat {
+  background: var(--bg-primary) !important;
+}
+
+[data-theme="dark"] .msg-bubble-received {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .btn-outline-green {
+  border-color: var(--green) !important;
+  color: var(--green) !important;
+}
+
+[data-theme="dark"] .btn-outline-green:hover {
+  background: var(--green-light) !important;
+}
+
+[data-theme="dark"] .btn-bien-secondary {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border) !important;
+}
+
+/* Inputs en mode sombre */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--text-light) !important;
+}
+
+/* Nav mobile */
+[data-theme="dark"] .dashboard-main > div[style*="fixed"][style*="bottom: 0"] {
+  background: var(--bg-secondary) !important;
+  border-top-color: var(--border) !important;
+}
+
+/* Skeleton en mode sombre */
+[data-theme="dark"] .skeleton-box {
+  background: linear-gradient(90deg, #1A2B1E 25%, #243328 50%, #1A2B1E 75%) !important;
+  background-size: 200% 100% !important;
+}
+
+/* Tables et listes */
+[data-theme="dark"] .dash-table {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border) !important;
+}
+
+/* Toggle bouton dark mode */
+.dark-mode-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: background .15s;
+}
+
+.dark-mode-toggle:hover {
+  background: var(--green-light);
+  color: var(--green);
+}

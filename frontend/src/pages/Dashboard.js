@@ -4603,7 +4603,7 @@ function installerApp() {
 }
 
   var premierChargement = useRef(true);
-  var { darkMode, toggle: toggleDarkMode } = useDarkMode();
+  var { darkMode, toggleDarkMode } = useDarkMode();
   // ================================================
   // Titres et icones des onglets
   // ================================================

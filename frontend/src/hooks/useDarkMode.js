@@ -1,20 +1,27 @@
+/* eslint-disable */
 import { useState, useEffect } from 'react';
 
 export default function useDarkMode() {
   var [darkMode, setDarkMode] = useState(function() {
-    return localStorage.getItem('werdhe_dark') === 'true';
+    var saved = localStorage.getItem('werdhe-theme');
+    if (saved) return saved === 'dark';
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   useEffect(function() {
+    var root = document.documentElement;
     if (darkMode) {
-      document.body.classList.add('dark-mode');
+      root.setAttribute('data-theme', 'dark');
+      root.style.colorScheme = 'dark';
+      localStorage.setItem('werdhe-theme', 'dark');
     } else {
-      document.body.classList.remove('dark-mode');
+      root.removeAttribute('data-theme');
+      root.style.colorScheme = 'light';
+      localStorage.setItem('werdhe-theme', 'light');
     }
-    localStorage.setItem('werdhe_dark', darkMode);
   }, [darkMode]);
 
-  function toggle() { setDarkMode(function(prev) { return !prev; }); }
+  function toggleDarkMode() { setDarkMode(function(d) { return !d; }); }
 
-  return { darkMode, toggle };
+  return { darkMode, toggleDarkMode, setDarkMode };
 }
