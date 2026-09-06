@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
   Home, Users, FileText, Shield, Bell, MessageCircle,
   ChevronRight, Check, Star, MapPin, ArrowRight,
-  Building2, Key, TrendingUp, Banknote, Menu, X, Search, Phone, Mail
+  Building2, Key, TrendingUp, Banknote, Menu, X,Facebook, Instagram, Search, Phone, Mail, Clock
 } from 'lucide-react';
 import SEO from '../components/SEO';
 import Logo from '../components/Logo';
@@ -726,70 +726,229 @@ useEffect(function() {
       </section>
 
       {/* ─── FOOTER ───────────────────────────────────────────────── */}
-            <footer style={{ background: '#101A12', padding: '0' }}>
-        {/* Galerie résidences Guinée */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 4, height: 180 }}>
-          {[
-            { src: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&q=75&fit=crop', label: 'Villa moderne' },
-            { src: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=75&fit=crop', label: 'Appartement'   },
-            { src: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&q=75&fit=crop', label: 'Résidence'     },
-            { src: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&q=75&fit=crop', label: 'Duplex'        },
-          ].map(function(item, i) {
-            return (
-              <div key={i} style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer' }}>
-                <img src={item.src} alt={item.label} loading="lazy"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.5)', transition: 'transform .4s, filter .4s' }}
-                  onMouseEnter={function(e) { e.currentTarget.style.transform = 'scale(1.06)'; e.currentTarget.style.filter = 'brightness(0.75)'; }}
-                  onMouseLeave={function(e) { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.filter = 'brightness(0.5)'; }} />
-                <div style={{ position: 'absolute', bottom: 10, left: 12, fontSize: 12, fontWeight: 700, color: '#fff', textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
-                  {item.label}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        <div style={{ maxWidth: 1000, margin: '0 auto', padding: 'clamp(36px, 5vw, 56px) 24px 24px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 32, marginBottom: 40 }}>
-            <div>
-              <div style={{ marginBottom: 14 }}>
-                <Logo size={32} showText={true} darkBg={true} />
-              </div>
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6, margin: '0 0 14px' }}>
-                La plateforme immobilière de référence en Guinée.
-              </p>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>🇬🇳 Made in Guinea</div>
-            </div>
+<footer style={{ position: 'relative', background: '#0A1A0D', overflow: 'hidden' }}>
 
+  {/* Image de fond avec overlay */}
+  <div style={{
+    position: 'absolute', inset: 0,
+    backgroundImage: 'url(https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=75&fit=crop)',
+    backgroundSize: 'cover', backgroundPosition: 'center',
+  }}>
+    <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 12, 0.88)' }} />
+  </div>
+
+  {/* Contenu au-dessus de l'image */}
+  <div style={{ position: 'relative', zIndex: 1 }}>
+
+    {/* ── Section Newsletter ── */}
+    <div style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+      <div style={{
+        maxWidth: 1100, margin: '0 auto', padding: '40px 24px',
+        display: 'flex', alignItems: 'center',
+        justifyContent: 'space-between', flexWrap: 'wrap', gap: 24,
+      }}>
+        <div>
+          <h3 style={{ color: '#fff', fontSize: 22, fontWeight: 700, margin: '0 0 8px' }}>
+            Notre Newsletter
+          </h3>
+          <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 14, margin: 0, maxWidth: 380, lineHeight: 1.6 }}>
+            Recevez les nouvelles annonces et offres exclusives directement dans votre boîte mail.
+          </p>
+        </div>
+        <div style={{ display: 'flex', borderRadius: 8, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
+          <input
+            type="email"
+            placeholder="Votre adresse email"
+            style={{
+              padding: '12px 20px', border: 'none', outline: 'none',
+              fontSize: 14, width: 260, background: 'rgba(255,255,255,0.95)',
+              color: '#111',
+            }}
+          />
+          <button
+            style={{
+              padding: '12px 24px', background: '#F5A623', border: 'none',
+              color: '#101A12', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+              whiteSpace: 'nowrap', transition: 'background .2s',
+            }}
+            onMouseEnter={function(e) { e.currentTarget.style.background = '#e09400'; }}
+            onMouseLeave={function(e) { e.currentTarget.style.background = '#F5A623'; }}
+          >
+            S'abonner
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {/* ── Corps du footer ── */}
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '48px 24px 28px' }}>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: 40, marginBottom: 40,
+      }}>
+
+        {/* Colonne 1 — Logo + desc + réseaux */}
+        <div>
+          <div style={{ marginBottom: 14 }}>
+            <Logo size={32} showText={true} darkBg={true} />
+          </div>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, margin: '0 0 20px' }}>
+            La plateforme immobilière de référence en Guinée. Trouvez, louez et gérez vos biens en toute simplicité.
+          </p>
+          <div style={{ display: 'flex', gap: 10 }}>
             {[
-              { titre: 'Plateforme', liens: [['Logements disponibles', '/logements'], ['Tarifs', '/pricing'], ['À propos', '/a-propos'], ['Se connecter', '/login'], ['Créer un compte', '/inscription']] },
-              { titre: 'Assistance', liens: [['Contact', '/contact'], ['Conditions d\'utilisation', '/cgu'], ['Politique de confidentialité', '/confidentialite']] },
-            ].map(function(col) {
+  {
+    label: 'Facebook',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+      </svg>
+    ),
+  },
+  {
+    label: 'X (Twitter)',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>
+    ),
+  },
+  {
+    label: 'YouTube',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58a2.78 2.78 0 0 0 1.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58zM9.75 15.02V8.98L15.5 12z"/>
+      </svg>
+    ),
+  },
+].map(function(s) {
+  return (
+    <a key={s.label} href="#" title={s.label} style={{
+      width: 36, height: 36, borderRadius: 8,
+      border: '1px solid rgba(255,255,255,0.15)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      color: 'rgba(255,255,255,0.5)', textDecoration: 'none', transition: 'all .2s',
+    }}
+    onMouseEnter={function(e) {
+      e.currentTarget.style.background = '#1B6B3A';
+      e.currentTarget.style.borderColor = '#1B6B3A';
+      e.currentTarget.style.color = '#fff';
+    }}
+    onMouseLeave={function(e) {
+      e.currentTarget.style.background = 'transparent';
+      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
+      e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
+    }}>
+      {s.svg}
+    </a>
+  );
+})}
+          </div>
+        </div>
+
+        {/* Colonne 2 — Navigation */}
+        <div>
+          <div style={{ fontSize: 11, color: '#F5A623', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 16 }}>
+            Navigation
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {[
+              ['Accueil', '/'],
+              ['Logements', '/logements'],
+              ['Tarifs', '/pricing'],
+              ['À propos', '/a-propos'],
+              ['Se connecter', '/login'],
+            ].map(function(l) {
               return (
-                <div key={col.titre}>
-                  <div style={{ fontSize: 12, color: '#F5A623', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 14 }}>{col.titre}</div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {col.liens.map(function(l) {
-                      return (
-                        <a key={l[0]} href={l[1]}
-                          style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}
-                          onMouseEnter={function(e) { e.currentTarget.style.color = '#fff'; }}
-                          onMouseLeave={function(e) { e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; }}>
-                          {l[0]}
-                        </a>
-                      );
-                    })}
-                  </div>
-                </div>
+                <a key={l[0]} href={l[1]} style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', transition: 'color .2s' }}
+                  onMouseEnter={function(e) { e.currentTarget.style.color = '#fff'; }}
+                  onMouseLeave={function(e) { e.currentTarget.style.color = 'rgba(255,255,255,0.45)'; }}>
+                  {l[0]}
+                </a>
               );
             })}
           </div>
+        </div>
 
-          <div style={{ borderTop: '0.5px solid rgba(255,255,255,0.08)', paddingTop: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)' }}>© 2026 Werdhe. Tous droits réservés.</div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)' }}>contact@werdhe.com</div>
+        {/* Colonne 3 — Liens rapides */}
+        <div>
+          <div style={{ fontSize: 11, color: '#F5A623', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 16 }}>
+            Liens rapides
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {[
+              ['Créer un compte', '/inscription'],
+              ['Contact', '/contact'],
+              ['FAQ', '/a-propos#faq'],
+              ['CGU', '/cgu'],
+              ['Confidentialité', '/confidentialite'],
+            ].map(function(l) {
+              return (
+                <a key={l[0]} href={l[1]} style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', transition: 'color .2s' }}
+                  onMouseEnter={function(e) { e.currentTarget.style.color = '#fff'; }}
+                  onMouseLeave={function(e) { e.currentTarget.style.color = 'rgba(255,255,255,0.45)'; }}>
+                  {l[0]}
+                </a>
+              );
+            })}
           </div>
         </div>
-      </footer>
+
+        {/* Colonne 4 — Infos pratiques */}
+        <div>
+          <div style={{ fontSize: 11, color: '#F5A623', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 16 }}>
+            Infos pratiques
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+              <MapPin size={15} strokeWidth={1.5} style={{ color: '#F5A623', flexShrink: 0, marginTop: 2 }} />
+              <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
+                Conakry, Guinée
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+              <Clock size={15} strokeWidth={1.5} style={{ color: '#F5A623', flexShrink: 0, marginTop: 2 }} />
+              <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
+                Lun – Sam : 8h – 18h<br />
+                Support disponible en ligne
+              </span>
+            </div>
+          </div>
+          <a href="/contact" style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            marginTop: 20, padding: '10px 20px',
+            background: 'transparent', border: '1.5px solid #1B6B3A',
+            borderRadius: 8, color: '#fff', fontSize: 13,
+            fontWeight: 600, textDecoration: 'none', transition: 'all .2s',
+          }}
+          onMouseEnter={function(e) { e.currentTarget.style.background = '#1B6B3A'; }}
+          onMouseLeave={function(e) { e.currentTarget.style.background = 'transparent'; }}>
+            <Phone size={14} strokeWidth={1.5} />
+            Nous contacter
+          </a>
+        </div>
+
+      </div>
+
+      {/* ── Bas du footer ── */}
+      <div style={{
+        borderTop: '1px solid rgba(255,255,255,0.07)',
+        paddingTop: 20,
+        display: 'flex', justifyContent: 'space-between',
+        alignItems: 'center', flexWrap: 'wrap', gap: 10,
+      }}>
+        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.2)' }}>
+          © 2026 Werdhe. Tous droits réservés.
+        </div>
+        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.2)' }}>
+          contact@werdhe.com
+        </div>
+      </div>
+    </div>
+
+  </div>
+</footer>
 
       <style>{`
         @media (max-width: 768px) {
