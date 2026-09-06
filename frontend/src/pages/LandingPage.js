@@ -740,46 +740,6 @@ useEffect(function() {
   {/* Contenu au-dessus de l'image */}
   <div style={{ position: 'relative', zIndex: 1 }}>
 
-    {/* ── Section Newsletter ── */}
-    <div style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-      <div style={{
-        maxWidth: 1100, margin: '0 auto', padding: '40px 24px',
-        display: 'flex', alignItems: 'center',
-        justifyContent: 'space-between', flexWrap: 'wrap', gap: 24,
-      }}>
-        <div>
-          <h3 style={{ color: '#fff', fontSize: 22, fontWeight: 700, margin: '0 0 8px' }}>
-            Notre Newsletter
-          </h3>
-          <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 14, margin: 0, maxWidth: 380, lineHeight: 1.6 }}>
-            Recevez les nouvelles annonces et offres exclusives directement dans votre boîte mail.
-          </p>
-        </div>
-        <div style={{ display: 'flex', borderRadius: 8, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
-          <input
-            type="email"
-            placeholder="Votre adresse email"
-            style={{
-              padding: '12px 20px', border: 'none', outline: 'none',
-              fontSize: 14, width: 260, background: 'rgba(255,255,255,0.95)',
-              color: '#111',
-            }}
-          />
-          <button
-            style={{
-              padding: '12px 24px', background: '#F5A623', border: 'none',
-              color: '#101A12', fontWeight: 700, fontSize: 14, cursor: 'pointer',
-              whiteSpace: 'nowrap', transition: 'background .2s',
-            }}
-            onMouseEnter={function(e) { e.currentTarget.style.background = '#e09400'; }}
-            onMouseLeave={function(e) { e.currentTarget.style.background = '#F5A623'; }}
-          >
-            S'abonner
-          </button>
-        </div>
-      </div>
-    </div>
-
     {/* ── Corps du footer ── */}
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: '48px 24px 28px' }}>
       <div style={{
