@@ -726,8 +726,29 @@ useEffect(function() {
       </section>
 
       {/* ─── FOOTER ───────────────────────────────────────────────── */}
-      <footer style={{ background: '#101A12', padding: 'clamp(36px, 5vw, 56px) 24px 24px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+            <footer style={{ background: '#101A12', padding: '0' }}>
+        {/* Galerie résidences Guinée */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 4, height: 180 }}>
+          {[
+            { src: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&q=75&fit=crop', label: 'Villa moderne' },
+            { src: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=75&fit=crop', label: 'Appartement'   },
+            { src: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&q=75&fit=crop', label: 'Résidence'     },
+            { src: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&q=75&fit=crop', label: 'Duplex'        },
+          ].map(function(item, i) {
+            return (
+              <div key={i} style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer' }}>
+                <img src={item.src} alt={item.label} loading="lazy"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.5)', transition: 'transform .4s, filter .4s' }}
+                  onMouseEnter={function(e) { e.currentTarget.style.transform = 'scale(1.06)'; e.currentTarget.style.filter = 'brightness(0.75)'; }}
+                  onMouseLeave={function(e) { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.filter = 'brightness(0.5)'; }} />
+                <div style={{ position: 'absolute', bottom: 10, left: 12, fontSize: 12, fontWeight: 700, color: '#fff', textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
+                  {item.label}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ maxWidth: 1000, margin: '0 auto', padding: 'clamp(36px, 5vw, 56px) 24px 24px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 32, marginBottom: 40 }}>
             <div>
               <div style={{ marginBottom: 14 }}>

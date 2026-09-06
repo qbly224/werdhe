@@ -21,6 +21,7 @@ import Login2FA from './pages/Login2FA';
 import { HelmetProvider } from 'react-helmet-async';
 import NotFound from './pages/NotFound';
 import React, { lazy, Suspense } from 'react';
+import CookieBanner from './components/CookieBanner';
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -76,6 +77,7 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Toaster position="top-right" />
+          <CookieBanner />
   <Suspense fallback={
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: 'system-ui' }}>
      <div style={{ textAlign: 'center' }}>

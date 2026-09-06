@@ -25,7 +25,7 @@ import {
   Banknote, TrendingUp, Receipt, Shield,
   ChevronRight, ChevronLeft, Info, Zap,
   FileSignature, BedDouble, Bath, Maximize2,
-  LogOut, UserCheck, Award, AlertCircle, Gift
+  LogOut, UserCheck, Award, AlertCircle, Gift, HelpCircle
 } from 'lucide-react';
 import Onboarding from '../components/Onboarding';
 import { activerNotificationsPush, estAbonne, desactiverNotifications } from '../services/pushService';
@@ -33,6 +33,8 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import useInactivite from '../hooks/useInactivite';
 import Logo from '../components/Logo';
 import { SkeletonKPI, SkeletonListe, SkeletonCard } from '../components/Skeleton';
+import TourTooltip from '../components/TourTooltip';
+import useOnboarding from '../hooks/useOnboarding';
 
 // ================================================
 // UTILITAIRE - Formater les montants en GNF
@@ -4170,6 +4172,7 @@ function OngletParametres(props) {
     { id: 'score', icon: <Star size={22} strokeWidth={1.5} />, titre: 'Score de confiance', desc: 'Votre réputation sur Werdhe' },
     { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: 'Notifications', desc: 'Gérer mes préférences de notifications' },
     { id: 'supprimer', icon: <Trash2 size={22} strokeWidth={1.5} color="#E53935" />, titre: 'Supprimer mon compte', desc: 'Action irréversible - toutes vos données seront effacées', danger: true },
+    { id: 'tour', icon: <HelpCircle size={22} strokeWidth={1.5} />, titre: 'Tutoriel interactif', desc: 'Relancer la visite guidée du dashboard' },
   ];
 
   return (
@@ -4311,6 +4314,19 @@ function OngletParametres(props) {
           </form>
         </div>
       )}
+  {section === 'tour' && (
+  <div className="dash-form-card" style={{ maxWidth: 480, textAlign: 'center' }}>
+    <HelpCircle size={48} strokeWidth={1} color="#1B6B3A" style={{ marginBottom: 16 }} />
+    <h3 style={{ fontSize: 17, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>Tutoriel interactif</h3>
+    <p style={{ fontSize: 14, color: '#888', margin: '0 0 24px', lineHeight: 1.6 }}>
+      Relancez la visite guidée pour (re)découvrir toutes les fonctionnalités du dashboard.
+    </p>
+    <button onClick={function() { tour.relancer(); setSection(null); }}
+      style={{ padding: '12px 24px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+      Lancer le tutoriel
+    </button>
+  </div>
+  )}
 
       {section === 'mdp' && (
         <div className="dash-form-card" style={{ maxWidth: 480 }}>
@@ -4604,6 +4620,7 @@ function installerApp() {
 
   var premierChargement = useRef(true);
   var { darkMode, toggleDarkMode } = useDarkMode();
+  var tour = useOnboarding(user && user.role);
   // ================================================
   // Titres et icones des onglets
   // ================================================
@@ -4684,15 +4701,15 @@ useEffect(function() {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       // G + B → Mes biens
-      if (e.key === 'b') { setOnglet('/dashboard/biens');        toast('🏠 Mes biens',        { duration: 800 }); }
+      if (e.key === 'b') { setOnglet('/dashboard/biens');        toast('Mes biens',        { duration: 800 }); }
       // G + R → Réservations
-      if (e.key === 'r') { setOnglet('/dashboard/reservations'); toast('📅 Réservations',      { duration: 800 }); }
+      if (e.key === 'r') { setOnglet('/dashboard/reservations'); toast('Réservations',      { duration: 800 }); }
       // G + M → Messages
       if (e.key === 'm') { setOnglet('/dashboard/messages');     toast('<MessageCircle size={14} strokeWidth={1.5} /> Messages',          { duration: 800 }); }
       // G + P → Paiements
-      if (e.key === 'p') { setOnglet('/dashboard/paiements');    toast('💳 Paiements',         { duration: 800 }); }
+      if (e.key === 'p') { setOnglet('/dashboard/paiements');    toast('Paiements',         { duration: 800 }); }
       // G + H → Accueil (overview)
-      if (e.key === 'h') { setOnglet('/dashboard');              toast('📊 Tableau de bord',   { duration: 800 }); }
+      if (e.key === 'h') { setOnglet('/dashboard');              toast('Tableau de bord',   { duration: 800 }); }
     }
     window.addEventListener('keydown', handleRaccourcis);
 
