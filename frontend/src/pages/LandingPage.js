@@ -142,25 +142,25 @@ function FaqLanding() {
 }
 var SLIDES = [
   {
-    img:    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1600&q=80&fit=crop',
+    img:    '/img/residences/vue-aerienne-conakry.jpg',
     titre:  'Trouvez votre logement idéal',
     sous:   'Appartements, villas, studios à Conakry et partout en Guinée',
     tag:    'Conakry · Boké · Kindia · Labé · Kankan',
   },
   {
-    img:    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80&fit=crop',
+    img:    '/img/residences/villa-conakry.jpg',
     titre:  'Publiez votre bien en 5 minutes',
     sous:   'Gérez candidatures, baux et paiements depuis un seul tableau de bord',
     tag:    'Pour les propriétaires · Essai 1 mois gratuit',
   },
   {
-    img:    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&q=80&fit=crop',
+    img:    '/img/residences/immeuble-moderne.jpg',
     titre:  'Des villas modernes en Guinée',
     sous:   'Découvrez nos logements vérifiés, sans intermédiaire, sans frais cachés',
     tag:    'Villas · Appartements · Studios · Bureaux',
   },
   {
-    img:    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1600&q=80&fit=crop',
+    img:    '/img/residences/bungalow-residence.jpg',
     titre:  'La location simplifiée',
     sous:   'Candidatez, signez votre bail et payez - tout en ligne sur Werdhe',
     tag:    '100% gratuit pour les locataires',
