@@ -7,22 +7,27 @@ import toast from 'react-hot-toast';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Phone } from 'lucide-react';
 import Logo from '../components/Logo';
 
-// Photos de résidences guinéennes / africaines modernes via Unsplash
+// Photos de résidences guinéennes
 var SLIDES_LOGIN = [
   {
-    img:   'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1600&q=85&fit=crop',
+    img:   '/img/residences/vue-aerienne-conakry.jpg',
     titre: 'Bienvenue sur Werdhe',
     sous:  'La plateforme immobilière de référence en Guinée',
   },
   {
-    img:   'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=85&fit=crop',
+    img:   '/img/residences/villa-conakry.jpg',
     titre: 'Gérez vos biens',
     sous:  'Candidatures, baux et paiements depuis un seul endroit',
   },
   {
-    img:   'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1600&q=85&fit=crop',
+    img:   '/img/residences/immeuble-moderne.jpg',
     titre: 'Trouvez votre logement',
     sous:  'Des centaines de biens disponibles à Conakry et partout en Guinée',
+  },
+  {
+    img:   '/img/residences/bungalow-residence.jpg',
+    titre: 'Un chez-vous à votre image',
+    sous:  'Villas, bungalows, appartements — pour chaque style de vie',
   },
 ];
 
