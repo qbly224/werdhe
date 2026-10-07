@@ -2,8 +2,10 @@
 import { useState } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 export default function GestionPhotos({ logementId, photosInitiales, onUpdate }) {
+  var t = useTranslation('profil').t;
   var [photos, setPhotos]       = useState(photosInitiales || []);
   var [uploading, setUploading] = useState(false);
   var [preview, setPreview]     = useState(null);
@@ -15,7 +17,7 @@ export default function GestionPhotos({ logementId, photosInitiales, onUpdate })
     // Vérifier la taille (max 5MB par photo)
     var trop_grandes = files.filter(function(f) { return f.size > 5 * 1024 * 1024; });
     if (trop_grandes.length > 0) {
-      toast.error('Photos trop grandes (max 5MB chacune)');
+      toast.error(t('gestionPhotos.toasts.photosTropGrandes'));
       return;
     }
 
@@ -29,29 +31,29 @@ export default function GestionPhotos({ logementId, photosInitiales, onUpdate })
       .then(function(res) {
         setPhotos(res.data.photos);
         if (onUpdate) onUpdate(res.data.photos);
-        toast.success(files.length + ' photo(s) ajoutée(s) !');
+        toast.success(t('gestionPhotos.toasts.ajoutees', { count: files.length }));
       })
       .catch(function(err) {
-        toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur upload');
+        toast.error(err.response && err.response.data ? err.response.data.erreur : t('gestionPhotos.toasts.erreurUpload'));
       })
       .finally(function() { setUploading(false); });
   }
 
   function supprimerPhoto(url) {
-    if (!window.confirm('Supprimer cette photo ?')) return;
+    if (!window.confirm(t('gestionPhotos.confirmSupprimer'))) return;
     api.delete('/logements/' + logementId + '/photos', { data: { photoUrl: url } })
       .then(function(res) {
         setPhotos(res.data.photos);
         if (onUpdate) onUpdate(res.data.photos);
-        toast.success('Photo supprimée');
+        toast.success(t('gestionPhotos.toasts.supprimee'));
       })
-      .catch(function() { toast.error('Erreur suppression'); });
+      .catch(function() { toast.error(t('gestionPhotos.toasts.erreurSuppression')); });
   }
 
   return (
     <div>
       <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>
-        📷 Photos du logement ({photos.length}/10)
+        {t('gestionPhotos.titre', { count: photos.length })}
       </div>
 
       {/* Grille des photos */}
@@ -60,12 +62,12 @@ export default function GestionPhotos({ logementId, photosInitiales, onUpdate })
           return (
             <div key={i} style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', aspectRatio: '1', background: '#F0F0F0' }}>
               <img
-                src={url} alt={'Photo ' + (i + 1)}
+                src={url} alt={t('gestionPhotos.altPhoto', { index: i + 1 })}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}
                 onClick={function() { setPreview(url); }} />
               {i === 0 && (
                 <div style={{ position: 'absolute', top: 4, left: 4, background: '#1B6B3A', color: '#fff', borderRadius: 6, padding: '2px 6px', fontSize: 9, fontWeight: 700 }}>
-                  Photo principale
+                  {t('gestionPhotos.photoPrincipale')}
                 </div>
               )}
               <button
@@ -86,12 +88,12 @@ export default function GestionPhotos({ logementId, photosInitiales, onUpdate })
             {uploading ? (
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 20, marginBottom: 4 }}>⏳</div>
-                <div style={{ fontSize: 9, color: '#888' }}>Upload...</div>
+                <div style={{ fontSize: 9, color: '#888' }}>{t('gestionPhotos.upload')}</div>
               </div>
             ) : (
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 24, marginBottom: 4 }}>+</div>
-                <div style={{ fontSize: 9, color: '#888' }}>Ajouter</div>
+                <div style={{ fontSize: 9, color: '#888' }}>{t('gestionPhotos.ajouter')}</div>
               </div>
             )}
           </label>
@@ -99,7 +101,7 @@ export default function GestionPhotos({ logementId, photosInitiales, onUpdate })
       </div>
 
       <div style={{ fontSize: 11, color: '#aaa' }}>
-        JPG, PNG, WEBP · Max 5MB par photo · {10 - photos.length} emplacement(s) restant(s)
+        {t('gestionPhotos.formatsInfo', { count: 10 - photos.length })}
       </div>
 
       {/* Modal prévisualisation */}

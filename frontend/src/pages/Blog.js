@@ -4,8 +4,10 @@ import { Link, useSearchParams } from 'react-router-dom';
 import SEO from '../components/SEO';
 import api from '../services/api';
 import { Home, Calendar, Eye, ArrowRight, Search } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function Blog() {
+  var t = useTranslation('admin').t;
   var [params, setParams] = useSearchParams();
   var [articles, setArticles] = useState([]);
   var [categories, setCategories] = useState([]);
@@ -40,8 +42,8 @@ export default function Blog() {
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
       <SEO
-        titre="Blog — Guides et actualités immobilières en Guinée"
-        description="Conseils pour louer, prix des loyers par quartier, documents à fournir : le blog Werdhe sur l'immobilier en Guinée."
+        titre={t('blogPage.seoTitre')}
+        description={t('blogPage.seoDescription')}
         url="https://werdhe.com/blog"
       />
 
@@ -53,21 +55,21 @@ export default function Blog() {
           <span style={{ fontWeight: 800, fontSize: 16, color: '#1B2B22' }}>Werdhe</span>
         </Link>
         <div style={{ display: 'flex', gap: 10 }}>
-          <Link to="/logements" style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>Voir les logements</Link>
+          <Link to="/logements" style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>{t('blogPage.voirLogements')}</Link>
         </div>
       </nav>
 
       <div style={{ textAlign: 'center', padding: 'clamp(40px, 6vw, 56px) 24px 32px' }}>
         <h1 style={{ fontSize: 'clamp(26px, 5vw, 42px)', fontWeight: 900, color: '#1B2B22', margin: '0 0 12px', letterSpacing: -1 }}>
-          Le blog Werdhe
+          {t('blogPage.titre')}
         </h1>
         <p style={{ fontSize: 15, color: '#888', margin: '0 auto 24px', maxWidth: 480 }}>
-          Guides pratiques, prix des loyers et conseils pour louer ou gérer un bien en Guinée
+          {t('blogPage.sousTitre')}
         </p>
 
         <div style={{ maxWidth: 420, margin: '0 auto', position: 'relative' }}>
           <Search size={16} color="#aaa" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
-          <input type="text" placeholder="Rechercher un article..." value={recherche}
+          <input type="text" placeholder={t('blogPage.rechercherPlaceholder')} value={recherche}
             onChange={function(e) { setRecherche(e.target.value); }}
             style={{ width: '100%', padding: '11px 14px 11px 38px', borderRadius: 12, border: '1.5px solid #E0E0E0', fontSize: 14, outline: 'none', boxSizing: 'border-box', background: '#fff' }} />
         </div>
@@ -77,7 +79,7 @@ export default function Blog() {
         <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap', padding: '0 20px 32px' }}>
           <button onClick={function() { changerCategorie(''); }}
             style={{ padding: '7px 16px', borderRadius: 20, border: 'none', background: !categorieActive ? '#1B6B3A' : '#fff', color: !categorieActive ? '#fff' : '#555', fontSize: 13, fontWeight: 600, cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-            Tous
+            {t('blogPage.tous')}
           </button>
           {categories.map(function(c) {
             var actif = categorieActive === c.categorie;
@@ -93,9 +95,9 @@ export default function Blog() {
 
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px 64px' }}>
         {loading ? (
-          <div style={{ textAlign: 'center', padding: 60, color: '#888' }}>Chargement...</div>
+          <div style={{ textAlign: 'center', padding: 60, color: '#888' }}>{t('blogPage.chargement')}</div>
         ) : articles.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: 60, color: '#888' }}>Aucun article pour le moment.</div>
+          <div style={{ textAlign: 'center', padding: 60, color: '#888' }}>{t('blogPage.aucunArticle')}</div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
             {articles.map(function(a) {
@@ -130,7 +132,7 @@ export default function Blog() {
 
       <div style={{ background: '#101A12', padding: '20px 24px', textAlign: 'center' }}>
         <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', margin: 0 }}>
-          © 2026 Werdhe · <a href="/cgu" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>CGU</a> · <a href="/confidentialite" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>Confidentialité</a>
+          {t('footer.copyright')} · <a href="/cgu" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>{t('footer.cgu')}</a> · <a href="/confidentialite" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>{t('footer.confidentialite')}</a>
         </p>
       </div>
     </div>

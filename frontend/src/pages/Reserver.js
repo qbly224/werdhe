@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 const GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 
@@ -12,6 +13,7 @@ export default function Reserver() {
   var navigate = useNavigate();
   var auth = useAuth();
   var user = auth.user;
+  var t = useTranslation('logements').t;
 
   // ── Données du formulaire ──────────────────────────────────────
   var [dateDebut, setDateDebut] = useState('');
@@ -32,15 +34,15 @@ export default function Reserver() {
       })
       .catch(function(err) {
         console.error(err);
-        toast.error('Logement introuvable');
+        toast.error(t('reserver.erreurs.logementIntrouvable'));
         navigate('/logements');
       });
   }, [logementId]);
 
   function envoyerDemande(e) {
     e.preventDefault();
-    if (!dateDebut) { toast.error('Choisissez une date d\'entrée'); return; }
-    if (!message.trim()) { toast.error('Écrivez un message au propriétaire'); return; }
+    if (!dateDebut) { toast.error(t('reserver.erreurs.choisirDate')); return; }
+    if (!message.trim()) { toast.error(t('reserver.erreurs.ecrireMessage')); return; }
 
     setEnvoi(true);
 
@@ -53,7 +55,7 @@ export default function Reserver() {
     })
       .then(function(res) {
         var resa = res.data.reservation || res.data;
-        toast.success('Demande envoyée ! Le propriétaire a 48h pour répondre.');
+        toast.success(t('reserver.succes.demandeEnvoyee'));
         // Redirection vers le flux réel — ReservationLocataire.js
         navigate('/reservation/' + resa.id);
       })
@@ -61,7 +63,7 @@ export default function Reserver() {
         setEnvoi(false);
         var msg = err.response && err.response.data && err.response.data.erreur
           ? err.response.data.erreur
-          : 'Erreur lors de l\'envoi';
+          : t('reserver.erreurs.envoiErreur');
         toast.error(msg);
       });
   }
@@ -71,7 +73,7 @@ export default function Reserver() {
     return (
       <div style={{ fontFamily: 'system-ui, sans-serif', maxWidth: 560, margin: '0 auto', padding: 20, textAlign: 'center', paddingTop: 80 }}>
         <div style={{ fontSize: 36, marginBottom: 12 }}>⏳</div>
-        <div style={{ fontSize: 15, color: '#888' }}>Chargement du logement...</div>
+        <div style={{ fontSize: 15, color: '#888' }}>{t('reserver.chargement.logement')}</div>
       </div>
     );
   }
@@ -92,8 +94,8 @@ export default function Reserver() {
             ←
           </button>
           <div>
-            <div style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>Candidature de location</div>
-            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 }}>Étape 1 / 7 — Côté locataire</div>
+            <div style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>{t('reserver.header.titre')}</div>
+            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 }}>{t('reserver.header.etape')}</div>
           </div>
         </div>
       </div>
@@ -116,7 +118,7 @@ export default function Reserver() {
             </div>
           </div>
           <div style={{ background: '#E8F5E9', color: '#1B5E20', borderRadius: 20, padding: '4px 12px', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
-            Disponible
+            {t('reserver.fiche.disponible')}
           </div>
         </div>
 
@@ -124,17 +126,17 @@ export default function Reserver() {
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
           {logement.nb_chambres && (
             <span style={{ background: '#F5F5F5', color: '#666', padding: '3px 10px', borderRadius: 20, fontSize: 11 }}>
-              {logement.nb_chambres} chambre{logement.nb_chambres > 1 ? 's' : ''}
+              {logement.nb_chambres > 1 ? t('reserver.fiche.chambres', { count: logement.nb_chambres }) : t('reserver.fiche.chambre', { count: logement.nb_chambres })}
             </span>
           )}
           {logement.nb_salles_bain && (
             <span style={{ background: '#F5F5F5', color: '#666', padding: '3px 10px', borderRadius: 20, fontSize: 11 }}>
-              {logement.nb_salles_bain} salle{logement.nb_salles_bain > 1 ? 's' : ''} de bain
+              {logement.nb_salles_bain > 1 ? t('reserver.fiche.sallesDeBain', { count: logement.nb_salles_bain }) : t('reserver.fiche.salleDeBain', { count: logement.nb_salles_bain })}
             </span>
           )}
           {logement.superficie && (
             <span style={{ background: '#F5F5F5', color: '#666', padding: '3px 10px', borderRadius: 20, fontSize: 11 }}>
-              {logement.superficie} m²
+              {t('reserver.fiche.superficie', { superficie: logement.superficie })}
             </span>
           )}
           {logement.categorie && (
@@ -146,7 +148,7 @@ export default function Reserver() {
 
         {/* Propriétaire */}
         <div style={{ background: '#F8F8F8', borderRadius: 10, padding: 12 }}>
-          <div style={{ fontSize: 11, color: '#888', marginBottom: 6, fontWeight: 600 }}>Propriétaire</div>
+          <div style={{ fontSize: 11, color: '#888', marginBottom: 6, fontWeight: 600 }}>{t('reserver.fiche.proprietaire')}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 32, height: 32, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
               {logement.prop_prenom ? logement.prop_prenom.charAt(0).toUpperCase() : 'P'}
@@ -154,9 +156,9 @@ export default function Reserver() {
             </div>
             <div>
               <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>
-                {logement.prop_prenom || ''} {logement.prop_nom || 'Propriétaire'}
+                {logement.prop_prenom || ''} {logement.prop_nom || t('reserver.fiche.proprietaireParDefaut')}
               </div>
-              <div style={{ fontSize: 11, color: '#888' }}>Membre vérifié · Werdhe</div>
+              <div style={{ fontSize: 11, color: '#888' }}>{t('reserver.fiche.membreVerifie')}</div>
             </div>
           </div>
         </div>
@@ -165,12 +167,12 @@ export default function Reserver() {
       {/* ── FORMULAIRE DE DEMANDE ──────────────────────────────── */}
       <form onSubmit={envoyerDemande}>
         <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>Votre demande</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>{t('reserver.formulaire.votreDemande')}</div>
 
           {/* Date d'entrée */}
           <div style={{ marginBottom: 14 }}>
             <div style={{ fontSize: 12, color: '#555', marginBottom: 6, fontWeight: 600 }}>
-              Date d'entrée souhaitée *
+              {t('reserver.formulaire.dateEntree')}
             </div>
             <input
               type="date"
@@ -183,9 +185,9 @@ export default function Reserver() {
 
           {/* Durée */}
           <div style={{ marginBottom: 14 }}>
-            <div style={{ fontSize: 12, color: '#555', marginBottom: 8, fontWeight: 600 }}>Durée envisagée</div>
+            <div style={{ fontSize: 12, color: '#555', marginBottom: 8, fontWeight: 600 }}>{t('reserver.formulaire.dureeEnvisagee')}</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-              {[['6', '6 mois'], ['12', '12 mois'], ['24', '24 mois']].map(function(opt) {
+              {[['6', t('reserver.formulaire.duree6Mois')], ['12', t('reserver.formulaire.duree12Mois')], ['24', t('reserver.formulaire.duree24Mois')]].map(function(opt) {
                 return (
                   <button
                     key={opt[0]}
@@ -208,12 +210,12 @@ export default function Reserver() {
           {/* Message */}
           <div style={{ marginBottom: 14 }}>
             <div style={{ fontSize: 12, color: '#555', marginBottom: 6, fontWeight: 600 }}>
-              Message au propriétaire *
+              {t('reserver.formulaire.messageProprietaire')}
             </div>
             <textarea
               value={message}
               onChange={function(e) { setMessage(e.target.value); }}
-              placeholder="Présentez-vous : emploi, composition familiale, pourquoi ce logement..."
+              placeholder={t('reserver.formulaire.messagePlaceholder')}
               rows={4}
               required
               style={{ width: '100%', padding: '11px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', fontFamily: 'system-ui', boxSizing: 'border-box', outline: 'none', background: '#FAFAFA' }} />
@@ -223,7 +225,7 @@ export default function Reserver() {
           <div style={{ background: '#E3F2FD', borderRadius: 10, padding: '10px 14px', display: 'flex', gap: 8 }}>
             <span style={{ fontSize: 16, flexShrink: 0 }}>ℹ️</span>
             <span style={{ fontSize: 12, color: '#0D47A1', lineHeight: 1.5 }}>
-              Aucun paiement à cette étape. Le propriétaire a 48h pour répondre. Vous suivrez l'avancement directement dans votre tableau de bord.
+              {t('reserver.formulaire.infoDelai')}
             </span>
           </div>
         </div>
@@ -237,7 +239,7 @@ export default function Reserver() {
             fontSize: 15, fontWeight: 700, cursor: envoi ? 'not-allowed' : 'pointer',
             background: envoi ? '#999' : '#1B6B3A', color: '#fff'
           }}>
-          {envoi ? '⏳ Envoi en cours...' : '📤 Envoyer ma candidature au propriétaire'}
+          {envoi ? t('reserver.bouton.envoiEnCours') : t('reserver.bouton.envoyer')}
         </button>
       </form>
 

@@ -36,6 +36,8 @@ import Logo from '../components/Logo';
 import { SkeletonKPI, SkeletonListe, SkeletonCard } from '../components/Skeleton';
 import TourTooltip from '../components/TourTooltip';
 import useOnboarding from '../hooks/useOnboarding';
+import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 
 // ================================================
 // UTILITAIRE - Formater les montants en GNF
@@ -48,13 +50,13 @@ var GNF = function(n) {
 // TYPES DE DOCUMENTS disponibles
 // ================================================
 var DOCS_TYPES = [
-  { icon: <FileSignature size={32} strokeWidth={1.5} color="#1B6B3A"/>, titre: 'Nouveau bail',       desc: 'Generer un contrat de location',   color: '#1B6B3A', type: 'contrat_bail'     },
-  { icon: <Receipt       size={32} strokeWidth={1.5} color="#1565C0"/>, titre: 'Quittance de loyer', desc: 'Generer une quittance officielle',  color: '#1565C0', type: 'quittance'        },
-  { icon: <FileText      size={32} strokeWidth={1.5} color="#E65100"/>, titre: 'Etat des lieux',     desc: 'Entree ou sortie du locataire',     color: '#E65100', type: 'etat_lieux'       },
-  { icon: <AlertCircle   size={32} strokeWidth={1.5} color="#B71C1C"/>, titre: 'Mise en demeure',    desc: 'Pour loyer impaye',                 color: '#B71C1C', type: 'mise_en_demeure'  },
-  { icon: <TrendingUp    size={32} strokeWidth={1.5} color="#4A148C"/>, titre: 'Rapport financier',  desc: "Revenus du mois ou de l'annee",    color: '#4A148C', type: 'rapport_financier' },
-  { icon: <Shield        size={32} strokeWidth={1.5} color="#00695C"/>, titre: 'Caution / Depot',    desc: 'Contrat de caution solidaire',      color: '#00695C', type: 'caution'          },
-  { icon: <Send          size={32} strokeWidth={1.5} color="#37474F"/>, titre: 'Preavis de depart',  desc: 'Lettre de preavis locataire',       color: '#37474F', type: 'preavis'          },
+  { icon: <FileSignature size={32} strokeWidth={1.5} color="#1B6B3A"/>, labelKey: 'contratBail',     color: '#1B6B3A', type: 'contrat_bail'     },
+  { icon: <Receipt       size={32} strokeWidth={1.5} color="#1565C0"/>, labelKey: 'quittance',       color: '#1565C0', type: 'quittance'        },
+  { icon: <FileText      size={32} strokeWidth={1.5} color="#E65100"/>, labelKey: 'etatLieux',       color: '#E65100', type: 'etat_lieux'       },
+  { icon: <AlertCircle   size={32} strokeWidth={1.5} color="#B71C1C"/>, labelKey: 'miseEnDemeure',   color: '#B71C1C', type: 'mise_en_demeure'  },
+  { icon: <TrendingUp    size={32} strokeWidth={1.5} color="#4A148C"/>, labelKey: 'rapportFinancier', color: '#4A148C', type: 'rapport_financier' },
+  { icon: <Shield        size={32} strokeWidth={1.5} color="#00695C"/>, labelKey: 'caution',         color: '#00695C', type: 'caution'          },
+  { icon: <Send          size={32} strokeWidth={1.5} color="#37474F"/>, labelKey: 'preavis',         color: '#37474F', type: 'preavis'          },
 ];
 
 // ================================================
@@ -62,29 +64,30 @@ var DOCS_TYPES = [
 // ================================================
 
 function UpgradeBanner({ fonctionnalite, planRequis }) {
+  var t = useTranslation('dashboard').t;
   var navigate = useNavigate();
   var messages = {
-    mobile_money:  'Les paiements Mobile Money (Orange Money, MTN) sont disponibles à partir du plan Pro.',
-    documents_pdf: 'La génération de baux et quittances PDF est disponible à partir du plan Pro.',
-    annuaire:      'La visibilité dans l\'annuaire Werdhe est disponible à partir du plan Pro.',
-    rapports:      'Les rapports financiers sont disponibles à partir du plan Pro.',
-    max_biens:     'Vous avez atteint la limite de 2 biens du plan Gratuit. Passez au plan Pro pour jusqu\'à 25 biens.',
+    mobile_money:  t('upgradeBanner.messages.mobileMoney'),
+    documents_pdf: t('upgradeBanner.messages.documentsPdf'),
+    annuaire:      t('upgradeBanner.messages.annuaire'),
+    rapports:      t('upgradeBanner.messages.rapports'),
+    max_biens:     t('upgradeBanner.messages.maxBiens'),
   };
   return (
     <div style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', borderRadius: 14, padding: 18, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
       <div style={{ flexShrink: 0, display:'flex', alignItems:'center' }}><Lock size={28} strokeWidth={1.5} /></div>
       <div style={{ flex: 1 }}>
         <div style={{ color: '#fff', fontWeight: 700, fontSize: 14, marginBottom: 4 }}>
-          Fonctionnalité réservée au plan {planRequis || 'Pro'}
+          {t('upgradeBanner.titre', { plan: planRequis || 'Pro' })}
         </div>
         <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 12, lineHeight: 1.5 }}>
-          {messages[fonctionnalite] || 'Passez au plan supérieur pour accéder à cette fonctionnalité.'}
+          {messages[fonctionnalite] || t('upgradeBanner.messages.defaut')}
         </div>
       </div>
       <button
         onClick={function() { navigate('/pricing'); }}
         style={{ background: '#F5A623', color: '#1B2B22', border: 'none', borderRadius: 10, padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>
-        Voir les plans →
+        {t('upgradeBanner.voirLesPlans')}
       </button>
     </div>
   );
@@ -94,6 +97,7 @@ function UpgradeBanner({ fonctionnalite, planRequis }) {
 // COMPOSANT : Badge Score de Confiance
 // ================================================
 function BadgeScore({ userId }) {
+  var t = useTranslation('dashboard').t;
   var [score, setScore] = useState(null);
 
   useEffect(function() {
@@ -110,10 +114,10 @@ function BadgeScore({ userId }) {
     : '#888';
 
   var badgeLabel = {
-    elite: 'Elite',
-    excellent: 'Excellent',
-    fiable: 'Fiable',
-    nouveau: 'Nouveau'
+    elite: t('badgeScore.badges.elite'),
+    excellent: t('badgeScore.badges.excellent'),
+    fiable: t('badgeScore.badges.fiable'),
+    nouveau: t('badgeScore.badges.nouveau')
   };
 
   return (
@@ -131,14 +135,14 @@ function BadgeScore({ userId }) {
       </div>
       <div>
         <div style={{ fontWeight: '700', fontSize: '14px', color: '#1B2B22' }}>
-          Score de confiance
+          {t('badgeScore.titre')}
         </div>
         <div style={{ fontSize: '12px', color: couleur, fontWeight: '600' }}>
-          {badgeLabel[score.badge] || 'Nouveau'}
+          {badgeLabel[score.badge] || t('badgeScore.badges.nouveau')}
         </div>
         <div style={{ fontSize: '11px', color: '#888', marginTop: '2px' }}>
-          {score.nb_paiements_a_temps || 0} paiements a temps
-          {score.nb_reclamations_resolues > 0 && ' · ' + score.nb_reclamations_resolues + ' reclamations resolues'}
+          {t('badgeScore.paiementsATemps', { count: score.nb_paiements_a_temps || 0 })}
+          {score.nb_reclamations_resolues > 0 && ' · ' + t('badgeScore.reclamationsResolues', { count: score.nb_reclamations_resolues })}
         </div>
       </div>
     </div>
@@ -149,17 +153,18 @@ function BadgeScore({ userId }) {
 // COMPOSANT : Panneau de notifications
 // ================================================
 function NotifPanel(props) {
+  var t = useTranslation('dashboard').t;
   var alertes = props.alertes;
   var onClose = props.onClose;
   return (
     <div className="notif-panel">
       <div className="notif-header">
-        <span>Notifications</span>
-        <span style={{ cursor: 'pointer', color: '#1B6B3A', fontSize: 12 }} onClick={onClose}>Fermer</span>
+        <span>{t('notifPanel.titre')}</span>
+        <span style={{ cursor: 'pointer', color: '#1B6B3A', fontSize: 12 }} onClick={onClose}>{t('notifPanel.fermer')}</span>
       </div>
       {alertes.length === 0 && (
         <div style={{ padding: '20px', textAlign: 'center', color: '#888', fontSize: 13 }}>
-          Aucune notification
+          {t('notifPanel.aucuneNotification')}
         </div>
       )}
       {alertes.map(function(a, i) {
@@ -182,6 +187,7 @@ function NotifPanel(props) {
 // OVERVIEW LOCATAIRE
 // ════════════════════════════════════════════════════════════════
 function OngletOverviewLocataire(props) {
+  var t = useTranslation('dashboard').t;
   var stats    = props.stats;
   var user     = props.user;
   var setOnglet = props.setOnglet;
@@ -197,10 +203,10 @@ function OngletOverviewLocataire(props) {
       {/* KPIs */}
       <div className="stats-grid-4" style={{ marginBottom: 24 }}>
         {[
-          { label: 'Locations actives',  val: String(locationsActives.length),         icon: <Home size={22} strokeWidth={1.5}/>,         color: '#1B6B3A', bg: '#E8F5E9' },
-          { label: 'Candidatures',       val: String(candidatures.length),              icon: <CalendarCheck size={22} strokeWidth={1.5}/>, color: '#1565C0', bg: '#E3F2FD' },
-          { label: 'Loyers payés',       val: String(paiementsOk.length),               icon: <CreditCard size={22} strokeWidth={1.5}/>,    color: '#7B1FA2', bg: '#F3E5F5' },
-          { label: 'Total versé',        val: GNF(totalPaye) + ' GNF',                 icon: <Banknote size={22} strokeWidth={1.5}/>,      color: '#E65100', bg: '#FFF3E0' },
+          { label: t('ongletOverviewLocataire.kpi.locationsActives'), val: String(locationsActives.length),         icon: <Home size={22} strokeWidth={1.5}/>,         color: '#1B6B3A', bg: '#E8F5E9' },
+          { label: t('ongletOverviewLocataire.kpi.candidatures'),     val: String(candidatures.length),              icon: <CalendarCheck size={22} strokeWidth={1.5}/>, color: '#1565C0', bg: '#E3F2FD' },
+          { label: t('ongletOverviewLocataire.kpi.loyersPayes'),      val: String(paiementsOk.length),               icon: <CreditCard size={22} strokeWidth={1.5}/>,    color: '#7B1FA2', bg: '#F3E5F5' },
+          { label: t('ongletOverviewLocataire.kpi.totalVerse'),       val: GNF(totalPaye) + ' GNF',                 icon: <Banknote size={22} strokeWidth={1.5}/>,      color: '#E65100', bg: '#FFF3E0' },
         ].map(function(s, i) {
           return (
             <div key={i} className="stat-card-colored" style={{ background: s.bg, borderLeft: '4px solid ' + s.color }}>
@@ -239,12 +245,12 @@ function OngletOverviewLocataire(props) {
               <div style={{ padding: '14px 18px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
                   <div>
-                    <div style={{ fontSize: 11, color: '#888' }}>Loyer mensuel</div>
+                    <div style={{ fontSize: 11, color: '#888' }}>{t('ongletOverviewLocataire.loyerMensuel')}</div>
                     <div style={{ fontSize: 18, fontWeight: 800, color: '#1B6B3A' }}>{GNF(r.prix_mensuel)} <span style={{ fontSize: 12, color: '#888', fontWeight: 400 }}>GNF</span></div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 11, color: '#888' }}>Durée du bail</div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{moisEcoules}/{duree} mois</div>
+                    <div style={{ fontSize: 11, color: '#888' }}>{t('ongletOverviewLocataire.dureeDuBail')}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{t('ongletOverviewLocataire.moisSurDuree', { mois: moisEcoules, duree: duree })}</div>
                   </div>
                 </div>
 
@@ -252,15 +258,15 @@ function OngletOverviewLocataire(props) {
                   <div style={{ background: '#F0F0F0', borderRadius: 6, height: 6, overflow: 'hidden' }}>
                     <div style={{ background: 'linear-gradient(90deg,#1B6B3A,#34A853)', width: pct + '%', height: '100%', borderRadius: 6 }} />
                   </div>
-                  <div style={{ fontSize: 10, color: '#888', marginTop: 3 }}>Progression : {pct}%</div>
+                  <div style={{ fontSize: 10, color: '#888', marginTop: 3 }}>{t('ongletOverviewLocataire.progression', { pct: pct })}</div>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8 }}>
                   {[
-                    { icon: <FileText size={16} strokeWidth={1.5}/>,      label: 'Docs',      path: '/dashboard/documents'    },
-                    { icon: <MessageCircle size={16} strokeWidth={1.5}/>, label: 'Messages',  path: '/dashboard/messages'     },
-                    { icon: <CreditCard size={16} strokeWidth={1.5}/>,    label: 'Paiements', path: '/dashboard/paiements'    },
-                    { icon: <Clock size={16} strokeWidth={1.5}/>,         label: 'Historique',path: '/dashboard/historique'   },
+                    { icon: <FileText size={16} strokeWidth={1.5}/>,      label: t('ongletOverviewLocataire.actions.docs'),       path: '/dashboard/documents'    },
+                    { icon: <MessageCircle size={16} strokeWidth={1.5}/>, label: t('ongletOverviewLocataire.actions.messages'),   path: '/dashboard/messages'     },
+                    { icon: <CreditCard size={16} strokeWidth={1.5}/>,    label: t('ongletOverviewLocataire.actions.paiements'),  path: '/dashboard/paiements'    },
+                    { icon: <Clock size={16} strokeWidth={1.5}/>,         label: t('ongletOverviewLocataire.actions.historique'), path: '/dashboard/historique'   },
                   ].map(function(a, i) {
                     return (
                       <button key={i} onClick={function() { if(setOnglet) setOnglet(a.path); }}
@@ -280,9 +286,9 @@ function OngletOverviewLocataire(props) {
       ) : (
         <div className="dash-empty-state">
           <Home size={48} strokeWidth={1} color="#C8E6C9" />
-          <h3>Aucune location active</h3>
-          <p>Trouvez votre prochain logement sur Werdhe</p>
-          <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>🔍 Chercher un logement</Link>
+          <h3>{t('ongletOverviewLocataire.aucuneLocation.titre')}</h3>
+          <p>{t('ongletOverviewLocataire.aucuneLocation.description')}</p>
+          <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>{t('ongletOverviewLocataire.aucuneLocation.chercherBouton')}</Link>
         </div>
       )}
     </div>
@@ -292,6 +298,7 @@ function OngletOverviewLocataire(props) {
 // ONGLET : Vue d'ensemble (tableau de bord principal)
 // ================================================
 function OngletOverview(props) {
+  var t = useTranslation('dashboard').t;
   var user     = props.user;
   var setOnglet = props.setOnglet;
   var estProprio = user && (user.role === 'proprietaire' || user.role === 'les_deux');
@@ -330,32 +337,32 @@ function OngletOverview(props) {
       <div className="stats-grid-4" style={{ marginBottom: 20 }}>
         {[
           {
-            label: 'Revenus du mois',
+            label: t('ongletOverview.kpi.revenusDuMois'),
             val:   GNF(k.revenus_mois) + ' GNF',
-            sub:   k.tendance_revenus > 0 ? '↑ +' + k.tendance_revenus + '% vs mois dernier'
-                 : k.tendance_revenus < 0 ? '↓ ' + k.tendance_revenus + '% vs mois dernier'
-                 : 'Stable vs mois dernier',
+            sub:   k.tendance_revenus > 0 ? t('ongletOverview.kpi.tendanceHausse', { pct: k.tendance_revenus })
+                 : k.tendance_revenus < 0 ? t('ongletOverview.kpi.tendanceBaisse', { pct: k.tendance_revenus })
+                 : t('ongletOverview.kpi.tendanceStable'),
             subColor: k.tendance_revenus > 0 ? '#1B6B3A' : k.tendance_revenus < 0 ? '#E53935' : '#888',
             icon:  <Banknote size={22} strokeWidth={1.5}/>, color: '#1B6B3A', bg: '#E8F5E9'
           },
           {
-            label: 'Taux d\'occupation',
+            label: t('ongletOverview.kpi.tauxOccupation'),
             val:   k.taux_occupation + '%',
-            sub:   k.biens_loues + '/' + k.total_biens + ' biens occupés',
+            sub:   t('ongletOverview.kpi.biensOccupes', { loues: k.biens_loues, total: k.total_biens }),
             subColor: '#888',
             icon:  <Home size={22} strokeWidth={1.5}/>, color: '#1565C0', bg: '#E3F2FD'
           },
           {
-            label: 'Candidatures',
+            label: t('ongletOverview.kpi.candidatures'),
             val:   String(k.candidatures_attente),
-            sub:   k.nouvelles_candidatures_7j + ' nouvelles cette semaine',
+            sub:   t('ongletOverview.kpi.nouvellesCetteSemaine', { count: k.nouvelles_candidatures_7j }),
             subColor: k.nouvelles_candidatures_7j > 0 ? '#E65100' : '#888',
             icon:  <CalendarCheck size={22} strokeWidth={1.5}/>, color: '#7B1FA2', bg: '#F3E5F5'
           },
           {
-            label: 'Biens gérés',
+            label: t('ongletOverview.kpi.biensGeres'),
             val:   String(k.total_biens),
-            sub:   k.biens_loues + ' loués · ' + (k.total_biens - k.biens_loues) + ' libres',
+            sub:   t('ongletOverview.kpi.louesEtLibres', { loues: k.biens_loues, libres: (k.total_biens - k.biens_loues) }),
             subColor: '#888',
             icon:  <Building2 size={22} strokeWidth={1.5}/>, color: '#E65100', bg: '#FFF3E0'
           },
@@ -376,14 +383,14 @@ function OngletOverview(props) {
         {/* ─── GRAPHIQUE REVENUS 6 MOIS ──────────────────────── */}
         <div style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', margin: 0 }}>Revenus 6 mois</h3>
+            <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('ongletOverview.revenus6mois.titre')}</h3>
             <button onClick={function() { if(setOnglet) setOnglet('/dashboard/rapports'); }}
               style={{ background: 'none', border: 'none', color: '#1B6B3A', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
-              Voir tout →
+              {t('ongletOverview.revenus6mois.voirTout')}
             </button>
           </div>
           {overview.revenus6mois.length === 0 ? (
-            <div style={{ textAlign: 'center', color: '#ccc', padding: '20px', fontSize: 13 }}>Aucune donnée</div>
+            <div style={{ textAlign: 'center', color: '#ccc', padding: '20px', fontSize: 13 }}>{t('ongletOverview.aucuneDonnee')}</div>
           ) : (
             <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end', height: 80 }}>
               {overview.revenus6mois.map(function(m, i) {
@@ -406,17 +413,17 @@ function OngletOverview(props) {
         {/* ─── ALERTES + ÉVÉNEMENTS ──────────────────────────── */}
         <div style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-            <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', margin: 0 }}>À faire</h3>
+            <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('ongletOverview.aFaire.titre')}</h3>
             <button onClick={function() { if(setOnglet) setOnglet('/dashboard/alertes'); }}
               style={{ background: 'none', border: 'none', color: '#1B6B3A', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
-              Tout voir →
+              {t('ongletOverview.aFaire.toutVoir')}
             </button>
           </div>
 
           {overview.alertes.length === 0 && overview.evenements.length === 0 && (
             <div style={{ textAlign: 'center', color: '#ccc', fontSize: 13, padding: '12px 0' }}>
               <CheckCircle size={28} strokeWidth={1} color="#C8E6C9" style={{ display: 'block', margin: '0 auto 8px' }} />
-              Tout est en ordre !
+              {t('ongletOverview.aFaire.toutEnOrdre')}
             </div>
           )}
 
@@ -438,9 +445,9 @@ function OngletOverview(props) {
               <div key={'ev' + i} style={{ display: 'flex', gap: 10, padding: '8px 0', alignItems: 'center' }}>
                 <div style={{ width: 8, height: 8, background: '#1565C0', borderRadius: '50%', flexShrink: 0 }} />
                 <div style={{ flex: 1, fontSize: 12, color: '#1B2B22' }}>
-                  Bail expire - {e.logement_titre}
+                  {t('ongletOverview.aFaire.bailExpire', { logement: e.logement_titre })}
                   <span style={{ color: joursRestants <= 15 ? '#E53935' : '#888', fontWeight: 700, marginLeft: 6 }}>
-                    dans {joursRestants}j
+                    {t('ongletOverview.aFaire.dansNJours', { n: joursRestants })}
                   </span>
                 </div>
               </div>
@@ -452,19 +459,19 @@ function OngletOverview(props) {
       {/* ─── MES BIENS ─────────────────────────────────────────── */}
       <div style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-          <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', margin: 0 }}>Mes biens</h3>
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('ongletOverview.mesBiens.titre')}</h3>
           <button onClick={function() { if(setOnglet) setOnglet('/dashboard/biens'); }}
             style={{ background: 'none', border: 'none', color: '#1B6B3A', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
-            Gérer →
+            {t('ongletOverview.mesBiens.gerer')}
           </button>
         </div>
         {overview.biens.length === 0 && (
           <div style={{ textAlign: 'center', padding: 20 }}>
             <Home size={36} strokeWidth={1} color="#C8E6C9" style={{ marginBottom: 8 }} />
-            <div style={{ fontSize: 13, color: '#888', marginBottom: 12 }}>Aucun bien publié</div>
+            <div style={{ fontSize: 13, color: '#888', marginBottom: 12 }}>{t('ongletOverview.mesBiens.aucunBien')}</div>
             <button onClick={function() { if(setOnglet) setOnglet('/dashboard/biens'); }}
               style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '9px 20px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-              + Ajouter un bien
+              {t('ongletOverview.mesBiens.ajouterBien')}
             </button>
           </div>
         )}
@@ -487,12 +494,12 @@ function OngletOverview(props) {
                   </div>
                   {estLoue && b.loc_prenom && (
                     <div style={{ fontSize: 11, color: '#1B6B3A', marginTop: 1 }}>
-                      Locataire : {b.loc_prenom} {b.loc_nom}
+                      {t('ongletOverview.mesBiens.locataire', { prenom: b.loc_prenom, nom: b.loc_nom })}
                     </div>
                   )}
                 </div>
                 <span style={{ background: estLoue ? '#E8F5E9' : '#FFF8E1', color: estLoue ? '#1B5E20' : '#7B4F00', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
-                  {estLoue ? 'Loué' : 'Libre'}
+                  {estLoue ? t('ongletOverview.mesBiens.loue') : t('ongletOverview.mesBiens.libre')}
                 </span>
               </div>
             );
@@ -504,20 +511,20 @@ function OngletOverview(props) {
       {overview.candidatures.length > 0 && (
         <div style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-            <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', margin: 0 }}>Dernières candidatures</h3>
+            <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('ongletOverview.candidatures.titre')}</h3>
             <button onClick={function() { if(setOnglet) setOnglet('/dashboard/reservations'); }}
               style={{ background: 'none', border: 'none', color: '#1B6B3A', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
-              Toutes voir →
+              {t('ongletOverview.candidatures.toutesVoir')}
             </button>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {overview.candidatures.map(function(r, i) {
               var cfgStatuts = {
-                en_attente:  { label: 'Nouvelle',  color: '#E65100', bg: '#FFF3E0' },
-                dossier_requis: { label: 'Dossier demandé', color: '#1565C0', bg: '#E3F2FD' },
-                en_examen:   { label: 'En examen', color: '#7B1FA2', bg: '#F3E5F5' },
-                acceptee:    { label: 'Acceptée',  color: '#1B6B3A', bg: '#E8F5E9' },
-                refusee:     { label: 'Refusée',   color: '#888',    bg: '#F5F5F5' },
+                en_attente:  { label: t('ongletOverview.candidatures.statuts.nouvelle'),       color: '#E65100', bg: '#FFF3E0' },
+                dossier_requis: { label: t('ongletOverview.candidatures.statuts.dossierDemande'), color: '#1565C0', bg: '#E3F2FD' },
+                en_examen:   { label: t('ongletOverview.candidatures.statuts.enExamen'),       color: '#7B1FA2', bg: '#F3E5F5' },
+                acceptee:    { label: t('ongletOverview.candidatures.statuts.acceptee'),       color: '#1B6B3A', bg: '#E8F5E9' },
+                refusee:     { label: t('ongletOverview.candidatures.statuts.refusee'),        color: '#888',    bg: '#F5F5F5' },
               };
               var cfg = cfgStatuts[r.statut] || { label: r.statut, color: '#888', bg: '#F5F5F5' };
               return (
@@ -535,7 +542,7 @@ function OngletOverview(props) {
                       {cfg.label}
                     </span>
                     {r.score_confiance > 0 && (
-                      <span style={{ fontSize: 10, color: '#888' }}>Score : {r.score_confiance}/100</span>
+                      <span style={{ fontSize: 10, color: '#888' }}>{t('ongletOverview.candidatures.score', { score: r.score_confiance })}</span>
                     )}
                   </div>
                 </div>
@@ -551,6 +558,7 @@ function OngletOverview(props) {
 // ONGLET : Mes biens
 // ================================================
 function OngletBiens(props) {
+  var t = useTranslation('dashboard').t;
   var stats     = props.stats;
   var recharger = props.recharger;
   var user      = props.user;
@@ -589,25 +597,25 @@ function OngletBiens(props) {
 
   function handleDelete(id) {
     api.delete('/logements/' + id)
-      .then(function() { toast.success('Bien supprimé !'); setShowConfirm(null); recharger(); })
-      .catch(function() { toast.error('Erreur suppression'); });
+      .then(function() { toast.success(t('ongletBiens.toastBienSupprime')); setShowConfirm(null); recharger(); })
+      .catch(function() { toast.error(t('ongletBiens.toastErreurSuppression')); });
   }
 
   function handleSave(id) {
     api.put('/logements/' + id, formEdit)
-      .then(function() { toast.success('Bien modifié !'); setModeEdit(null); recharger(); })
-      .catch(function() { toast.error('Erreur modification'); });
+      .then(function() { toast.success(t('ongletBiens.toastBienModifie')); setModeEdit(null); recharger(); })
+      .catch(function() { toast.error(t('ongletBiens.toastErreurModification')); });
   }
 
   function libererBien(id) {
   api.patch('/logements/' + id + '/liberer')
     .then(function() {
-      toast.success('Bien libéré immédiatement !');
+      toast.success(t('ongletBiens.toastBienLibere'));
       setShowLiberer(null);
       recharger();
     })
     .catch(function(err) {
-      toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur');
+      toast.error(err.response && err.response.data ? err.response.data.erreur : t('ongletBiens.toastErreur'));
     });
   }
 
@@ -617,19 +625,19 @@ function OngletBiens(props) {
     return (
       <div>
         <div className="dash-page-header">
-          <div><h1>Mes locations</h1><p>{locationsActives.length} location(s) active(s)</p></div>
+          <div><h1>{t('ongletBiens.locataire.titre')}</h1><p>{t('ongletBiens.locataire.locationsActives', { count: locationsActives.length })}</p></div>
           <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>
-            Chercher un logement
+            {t('ongletBiens.locataire.chercherLogement')}
           </Link>
         </div>
 
         {locationsActives.length === 0 && (
           <div className="dash-empty-state">
             <span>🏠</span>
-            <h3>Aucune location active</h3>
-            <p>Réservez un logement pour commencer</p>
+            <h3>{t('ongletBiens.locataire.aucuneLocation.titre')}</h3>
+            <p>{t('ongletBiens.locataire.aucuneLocation.description')}</p>
             <Link to="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
-              Trouver un logement
+              {t('ongletBiens.locataire.aucuneLocation.trouverLogement')}
             </Link>
           </div>
         )}
@@ -642,14 +650,14 @@ function OngletBiens(props) {
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{r.logement_titre}</div>
                   <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>
-                    {r.logement_ville} · Depuis le {r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A'}
+                    {t('ongletBiens.locataire.depuisLe', { ville: r.logement_ville, date: r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : t('ongletBiens.locataire.na') })}
                   </div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: '#1B6B3A', marginTop: 6 }}>
                     {new Intl.NumberFormat('fr-FR').format(r.prix_mensuel || 0)} GNF/mois
                   </div>
                 </div>
                 <div style={{ background: '#E8F5E9', color: '#1B5E20', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
-                  • Active
+                  {t('ongletBiens.locataire.active')}
                 </div>
               </div>
 
@@ -657,25 +665,25 @@ function OngletBiens(props) {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <Link to={'/reservation/' + r.id}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E8F5E9', color: '#1B5E20', textDecoration: 'none', fontSize: 13, fontWeight: 600, border: '0.5px solid #A5D6A7' }}>
-                  Détails
+                  {t('ongletBiens.locataire.details')}
                 </Link>
                 <button onClick={function() { if (setOnglet) setOnglet('/dashboard/documents'); }}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', fontSize: 13, fontWeight: 600, border: '0.5px solid #90CAF9', cursor: 'pointer' }}>
-                  <span style={{display:'flex',alignItems:'center',gap:5}}><FileText size={14} strokeWidth={1.5}/> Documents</span>
+                  <span style={{display:'flex',alignItems:'center',gap:5}}><FileText size={14} strokeWidth={1.5}/> {t('ongletBiens.locataire.documents')}</span>
                 </button>
               </div>
               {limiteAtteinte ? (
   <div style={{ background: '#FFF3E0', border: '1px solid #FFE082', borderRadius: 10, padding: '10px 16px', fontSize: 13, color: '#7B4F00', display: 'flex', alignItems: 'center', gap: 10 }}>
     <AlertCircle size={16} strokeWidth={1.5} color="#E65100" />
-    Limite de 20 logements atteinte.{' '}
+    {t('ongletBiens.limiteAtteinte20')}{' '}
     <button onClick={function() { navigate('/pricing'); }}
       style={{ background: 'none', border: 'none', color: '#7B1FA2', fontWeight: 700, cursor: 'pointer', padding: 0, fontSize: 13 }}>
-      Passer au plan Agence →
+      {t('ongletBiens.passerPlanAgence')}
     </button>
   </div>
 ) : (
   <Link to="/logements/ajouter" className="btn-green" style={{ textDecoration: 'none' }}>
-    + Ajouter un bien
+    {t('ongletBiens.ajouterBien')}
   </Link>
 )}
             </div>
@@ -691,11 +699,11 @@ function OngletBiens(props) {
       {showConfirm && (
         <div className="modal-overlay">
           <div className="modal-box">
-            <h3 style={{ color: '#B71C1C' }}>Confirmer la suppression</h3>
-            <p>Voulez-vous vraiment supprimer ce bien ? Cette action est irréversible.</p>
+            <h3 style={{ color: '#B71C1C' }}>{t('ongletBiens.confirmSuppression.titre')}</h3>
+            <p>{t('ongletBiens.confirmSuppression.description')}</p>
             <div className="modal-actions">
-              <button className="btn-green" style={{ background: '#B71C1C' }} onClick={function() { handleDelete(showConfirm); }}>Supprimer</button>
-              <button className="btn-outline-green" onClick={function() { setShowConfirm(null); }}>Annuler</button>
+              <button className="btn-green" style={{ background: '#B71C1C' }} onClick={function() { handleDelete(showConfirm); }}>{t('ongletBiens.confirmSuppression.supprimer')}</button>
+              <button className="btn-outline-green" onClick={function() { setShowConfirm(null); }}>{t('ongletBiens.confirmSuppression.annuler')}</button>
             </div>
           </div>
         </div>
@@ -704,21 +712,21 @@ function OngletBiens(props) {
     {showLiberer && (
   <div className="modal-overlay">
     <div className="modal-box">
-      <h3 style={{ color: '#C62828' }}>⚡ Libérer immédiatement</h3>
+      <h3 style={{ color: '#C62828' }}>{t('ongletBiens.libererModal.titre')}</h3>
       <p style={{ fontSize: 13, color: '#555', lineHeight: 1.6 }}>
-        Cette action va <b>terminer la location en cours</b> et remettre le bien en "Disponible" immédiatement, sans délai de préavis.
+        {t('ongletBiens.libererModal.descAvant')}<b>{t('ongletBiens.libererModal.descGras')}</b>{t('ongletBiens.libererModal.descApres')}
       </p>
       <div style={{ background: '#FFEBEE', borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 12, color: '#B71C1C' }}>
-        <span style={{display:'flex',alignItems:'center',gap:6}}><AlertTriangle size={14} strokeWidth={1.5} /> Le locataire sera notifié. Cette action est irréversible.</span>
+        <span style={{display:'flex',alignItems:'center',gap:6}}><AlertTriangle size={14} strokeWidth={1.5} /> {t('ongletBiens.libererModal.avertissement')}</span>
       </div>
       <div className="modal-actions">
         <button
           style={{ background: '#C62828', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontWeight: 700, cursor: 'pointer' }}
           onClick={function() { libererBien(showLiberer); }}>
-          Libérer maintenant
+          {t('ongletBiens.libererModal.libererMaintenant')}
         </button>
         <button className="btn-outline-green" onClick={function() { setShowLiberer(null); }}>
-          Annuler
+          {t('ongletBiens.confirmSuppression.annuler')}
         </button>
       </div>
     </div>
@@ -727,17 +735,17 @@ function OngletBiens(props) {
 
       <div className="dash-page-header">
         <div>
-          <h1>Mes biens</h1>
-          <p>{stats.logements.length} bien(s) en gestion</p>
+          <h1>{t('ongletBiens.titre')}</h1>
+          <p>{t('ongletBiens.biensEnGestion', { count: stats.logements.length })}</p>
         </div>
         {limiteAtteinte ? (
           <button onClick={function() { window.location.href = '/pricing'; }}
             style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 16px', borderRadius: 10, background: '#F5A623', color: '#1B2B22', border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-            <Lock size={14} strokeWidth={1.5} /> Limite atteinte - Upgrader
+            <Lock size={14} strokeWidth={1.5} /> {t('ongletBiens.limiteAtteinteUpgrader')}
           </button>
         ) : (
           <Link to="/logements/ajouter" className="btn-green" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            + Ajouter un bien
+            {t('ongletBiens.ajouterBien')}
           </Link>
         )}
       </div>
@@ -745,9 +753,9 @@ function OngletBiens(props) {
       {stats.logements.length === 0 && (
         <div className="dash-empty-state">
           <span>🏠</span>
-          <h3>Aucun bien enregistré</h3>
+          <h3>{t('ongletBiens.aucunBienEnregistre')}</h3>
           <Link to="/logements/ajouter" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
-            + Ajouter mon premier bien
+            {t('ongletBiens.ajouterMonPremierBien')}
           </Link>
         </div>
       )}
@@ -767,17 +775,17 @@ function OngletBiens(props) {
           if (modeEdit === b.id) {
             return (
               <div key={b.id} style={{ background: '#fff', borderRadius: 16, padding: 18, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid #1565C0' }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>Modifier - {b.titre}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>{t('ongletBiens.editForm.modifierTitre', { titre: b.titre })}</div>
                 <div className="form-row-2">
-                  <div className="form-group"><label>Titre</label><input type="text" value={formEdit.titre} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { titre: e.target.value })); }} /></div>
-                  <div className="form-group"><label>Prix (GNF)</label><input type="number" value={formEdit.prix_mensuel} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { prix_mensuel: e.target.value })); }} /></div>
-                  <div className="form-group"><label>Adresse</label><input type="text" value={formEdit.adresse} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { adresse: e.target.value })); }} /></div>
+                  <div className="form-group"><label>{t('ongletBiens.editForm.titre')}</label><input type="text" value={formEdit.titre} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { titre: e.target.value })); }} /></div>
+                  <div className="form-group"><label>{t('ongletBiens.editForm.prix')}</label><input type="number" value={formEdit.prix_mensuel} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { prix_mensuel: e.target.value })); }} /></div>
+                  <div className="form-group"><label>{t('ongletBiens.editForm.adresse')}</label><input type="text" value={formEdit.adresse} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { adresse: e.target.value })); }} /></div>
                   <div className="form-group">
-                    <label>Statut</label>
+                    <label>{t('ongletBiens.editForm.statut')}</label>
                     <select value={formEdit.statut} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { statut: e.target.value })); }}>
-                      <option value="disponible">Disponible</option>
-                      <option value="loue">Loué</option>
-                      <option value="suspendu">Suspendu</option>
+                      <option value="disponible">{t('ongletBiens.editForm.statutDisponible')}</option>
+                      <option value="loue">{t('ongletBiens.editForm.statutLoue')}</option>
+                      <option value="suspendu">{t('ongletBiens.editForm.statutSuspendu')}</option>
                     </select>
                   </div>
                 </div>
@@ -787,13 +795,13 @@ function OngletBiens(props) {
       logementId={b.id}
       photosInitiales={b.photos || []}
       onUpdate={function(nouvPhotos) {
-        toast.success(nouvPhotos.length + ' photo(s) enregistrée(s)');
+        toast.success(t('ongletBiens.editForm.photosEnregistrees', { count: nouvPhotos.length }));
       }} />
   </div>
 )}
                 <div style={{ display: 'flex', gap: 10 }}>
-                  <button className="btn-bien-primary" onClick={function() { handleSave(b.id); }}>Sauvegarder</button>
-                  <button className="btn-bien-secondary" onClick={function() { setModeEdit(null); }}>Annuler</button>
+                  <button className="btn-bien-primary" onClick={function() { handleSave(b.id); }}>{t('ongletBiens.editForm.sauvegarder')}</button>
+                  <button className="btn-bien-secondary" onClick={function() { setModeEdit(null); }}>{t('ongletBiens.editForm.annuler')}</button>
                 </div>
               </div>
             );
@@ -811,7 +819,7 @@ function OngletBiens(props) {
                   <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{b.titre}</div>
                   <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>
                     {locataire
-                      ? locataire.locataire_prenom + ' ' + locataire.locataire_nom + ' · Depuis le ' + (locataire.date_debut ? new Date(locataire.date_debut).toLocaleDateString('fr-FR') : 'N/A')
+                      ? t('ongletBiens.locataireDepuisLe', { prenom: locataire.locataire_prenom, nom: locataire.locataire_nom, date: locataire.date_debut ? new Date(locataire.date_debut).toLocaleDateString('fr-FR') : t('ongletBiens.locataire.na') })
                       : (b.adresse ? b.adresse + ', ' : '') + (b.ville || '')}
                   </div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: '#1B6B3A', marginTop: 6 }}>
@@ -821,15 +829,15 @@ function OngletBiens(props) {
                 <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
                   {preavisActif ? (
                     <div style={{ background: '#FFEBEE', color: '#B71C1C', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
-                      <span style={{display:'flex',alignItems:'center',gap:4}}><AlertCircle size={12} strokeWidth={1.5}/> Préavis envoyé</span>
+                      <span style={{display:'flex',alignItems:'center',gap:4}}><AlertCircle size={12} strokeWidth={1.5}/> {t('ongletBiens.preavisEnvoye')}</span>
                     </div>
                   ) : estOccupe ? (
                     <div style={{ background: '#E8F5E9', color: '#1B5E20', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
-                      • Occupé
+                      {t('ongletBiens.occupe')}
                     </div>
                   ) : (
                     <div style={{ background: '#FFF8E1', color: '#C8860A', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
-                      Libre
+                      {t('ongletBiens.locataire.libre')}
                     </div>
                   )}
                   {preavisActif && joursRestants !== null && (
@@ -850,8 +858,8 @@ function OngletBiens(props) {
                 <div style={{ background: '#FFEBEE', borderRadius: 10, padding: '10px 14px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#B71C1C' }}>
                   <span>📋</span>
                   <span>
-                    Préavis de départ envoyé à <b>{locataire && locataire.locataire_prenom + ' ' + locataire.locataire_nom}</b>. En attente d'accusé de réception.
-                    {' '}<span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={function() { if (setOnglet) setOnglet('/dashboard/preavis'); }}>Voir le préavis</span>
+                    {t('ongletBiens.preavisBanniere.avant')}<b>{locataire && locataire.locataire_prenom + ' ' + locataire.locataire_nom}</b>{t('ongletBiens.preavisBanniere.apres')}
+                    {' '}<span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={function() { if (setOnglet) setOnglet('/dashboard/preavis'); }}>{t('ongletBiens.preavisBanniere.voirLePreavis')}</span>
                   </span>
                 </div>
               )}
@@ -861,21 +869,21 @@ function OngletBiens(props) {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                   <button onClick={function() { if (setOnglet) setOnglet('/dashboard/messages'); }}
                     style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#E8F5E9', color: '#1B5E20', border: '0.5px solid #A5D6A7', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                    <span style={{display:'flex',alignItems:'center',gap:5}}><MessageCircle size={14} strokeWidth={1.5}/> Messagerie</span>
+                    <span style={{display:'flex',alignItems:'center',gap:5}}><MessageCircle size={14} strokeWidth={1.5}/> {t('ongletBiens.boutons.messagerie')}</span>
                   </button>
                   <button onClick={function() { if (setOnglet) setOnglet('/dashboard/documents'); }}
                     style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', border: '0.5px solid #90CAF9', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                    <FileText size={14} strokeWidth={1.5} /> Documents
+                    <FileText size={14} strokeWidth={1.5} /> {t('ongletBiens.boutons.documents')}
                   </button>
                   {!preavisActif && (
                     <button onClick={function() { if (setOnglet) setOnglet('/dashboard/preavis'); }}
                       style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                      <span style={{display:'flex',alignItems:'center',gap:5}}><Send size={14} strokeWidth={1.5}/> Préavis</span>
+                      <span style={{display:'flex',alignItems:'center',gap:5}}><Send size={14} strokeWidth={1.5}/> {t('ongletBiens.boutons.preavis')}</span>
                     </button>
                   )}
                   {preavisActif && (
                     <button style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#F5F5F5', color: '#888', border: '0.5px solid #E0E0E0', fontSize: 12, cursor: 'not-allowed' }} disabled>
-                      Préavis envoyé
+                      {t('ongletBiens.preavisEnvoye')}
                     </button>
                   )}
                   {estOccupe && (
@@ -884,12 +892,12 @@ function OngletBiens(props) {
     <button
       onClick={function() { proposerRenouvellement(b); }}
       style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', border: '0.5px solid #90CAF9', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-      <RefreshCw size={13} strokeWidth={1.5} /> Renouveler
+      <RefreshCw size={13} strokeWidth={1.5} /> {t('ongletBiens.boutons.renouveler')}
     </button>
     <button
       onClick={function() { setShowLiberer(b.id); }}
       style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#FFEBEE', color: '#C62828', border: '0.5px solid #FFCDD2', fontSize: 12, fontWeight: 600, cursor: 'pointer', gridColumn: '1 / -1' }}>
-      Libérer immédiatement
+      {t('ongletBiens.libererModal.libererMaintenant')}
     </button>
   </div>
 )}
@@ -897,33 +905,33 @@ function OngletBiens(props) {
 {showRenouv && (
   <div className="modal-overlay">
     <div className="modal-box">
-      <h3 style={{ color: '#1565C0' }}>Proposer un renouvellement</h3>
+      <h3 style={{ color: '#1565C0' }}>{t('ongletBiens.renouvModal.titre')}</h3>
       <p style={{ fontSize: 13, color: '#555', marginBottom: 16 }}>
-        Logement : <b>{showRenouv.nom}</b>
+        {t('ongletBiens.renouvModal.logement')} <b>{showRenouv.nom}</b>
       </p>
       <div className="form-group">
-        <label>Durée du renouvellement *</label>
+        <label>{t('ongletBiens.renouvModal.dureeLabel')}</label>
         <select value={renouvForm.duree} onChange={function(e) { setRenouvForm(Object.assign({}, renouvForm, { duree: e.target.value })); }}>
-          {['3','6','12','18','24'].map(function(d) { return <option key={d} value={d}>{d} mois</option>; })}
+          {['3','6','12','18','24'].map(function(d) { return <option key={d} value={d}>{t('ongletBiens.renouvModal.dureeMois', { n: d })}</option>; })}
         </select>
       </div>
       <div className="form-group">
-        <label>Nouveau loyer mensuel (GNF) - laisser vide pour conserver le même</label>
+        <label>{t('ongletBiens.renouvModal.nouveauLoyerLabel')}</label>
         <input type="number" placeholder={showRenouv.loyer} value={renouvForm.prix}
           onChange={function(e) { setRenouvForm(Object.assign({}, renouvForm, { prix: e.target.value })); }} />
       </div>
       <div className="form-group">
-        <label>Message au locataire (optionnel)</label>
+        <label>{t('ongletBiens.renouvModal.messageLabel')}</label>
         <textarea value={renouvForm.message} onChange={function(e) { setRenouvForm(Object.assign({}, renouvForm, { message: e.target.value })); }}
-          placeholder="Ex: Renouvellement aux mêmes conditions..." rows="2"
+          placeholder={t('ongletBiens.renouvModal.messagePlaceholder')} rows="2"
           style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 13, resize: 'none', fontFamily: 'inherit', outline: 'none' }} />
       </div>
       <div className="modal-actions">
         <button onClick={envoyerRenouvellement} disabled={renouvLoading}
           style={{ background: '#1565C0', color: '#fff', border: 'none', borderRadius: 10, padding: '11px 20px', fontWeight: 700, cursor: 'pointer', flex: 1 }}>
-          {renouvLoading ? 'Envoi...' : 'Envoyer la proposition'}
+          {renouvLoading ? t('ongletBiens.renouvModal.envoiEnCours') : t('ongletBiens.renouvModal.envoyerLaProposition')}
         </button>
-        <button className="btn-outline-green" onClick={function() { setShowRenouv(null); }}>Annuler</button>
+        <button className="btn-outline-green" onClick={function() { setShowRenouv(null); }}>{t('ongletBiens.confirmSuppression.annuler')}</button>
       </div>
     </div>
   </div>
@@ -935,10 +943,10 @@ function OngletBiens(props) {
                     setModeEdit(b.id);
                     setFormEdit({ titre: b.titre, adresse: b.adresse, prix_mensuel: b.prix_mensuel, statut: b.statut });
                   }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Pencil size={14} strokeWidth={1.5} /> Modifier</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Pencil size={14} strokeWidth={1.5} /> {t('ongletBiens.editForm.modifier')}</span>
                   </button>
                   <button className="btn-bien-secondary" onClick={function() { setShowConfirm(b.id); }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Trash2 size={14} strokeWidth={1.5} /> Supprimer</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Trash2 size={14} strokeWidth={1.5} /> {t('ongletBiens.editForm.supprimer')}</span>
                   </button>
                 </div>
               )}
@@ -977,6 +985,7 @@ function envoyerRenouvellement() {
 // ONGLET : Locataires
 // ================================================
 function OngletLocataires(props) {
+  var t = useTranslation('dashboard').t;
   var stats = props.stats;
   var logements = props.logements;
   var [showForm, setShowForm] = useState(false);
@@ -996,21 +1005,21 @@ function OngletLocataires(props) {
       ? api.put('/locataires-manuels/' + modeEdit, form)
       : api.post('/locataires-manuels', form);
     req.then(function() {
-      toast.success(modeEdit ? 'Locataire modifie !' : 'Locataire ajoute !');
+      toast.success(modeEdit ? t('ongletLocataires.toastModifie') : t('ongletLocataires.toastAjoute'));
       setShowForm(false);
       setModeEdit(null);
       setForm({ nom: '', prenom: '', telephone: '', email: '', logement_id: '', loyer_mensuel: '', date_entree: '' });
       api.get('/locataires-manuels').then(function(res) { setLocatairesManue(res.data.locataires); });
-    }).catch(function(err) { toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur'); });
+    }).catch(function(err) { toast.error(err.response && err.response.data ? err.response.data.erreur : t('ongletLocataires.toastErreur')); });
   }
 
   function handleDelete(id) {
-    if (!window.confirm('Supprimer ce locataire ?')) return;
+    if (!window.confirm(t('ongletLocataires.confirmSuppression'))) return;
     api.delete('/locataires-manuels/' + id)
       .then(function() {
-        toast.success('Locataire supprime !');
+        toast.success(t('ongletLocataires.toastSupprime'));
         api.get('/locataires-manuels').then(function(res) { setLocatairesManue(res.data.locataires); });
-      }).catch(function() { toast.error('Erreur'); });
+      }).catch(function() { toast.error(t('ongletLocataires.toastErreur')); });
   }
 
   var locatairesReservations = stats.reservations.reduce(function(acc, r) {
@@ -1024,36 +1033,36 @@ function OngletLocataires(props) {
     <div>
       <div className="dash-page-header">
         <div>
-          <h1>Locataires</h1>
-          <p>{locatairesReservations.length + locatairesManue.length} locataire(s)</p>
+          <h1>{t('ongletLocataires.titre')}</h1>
+          <p>{t('ongletLocataires.nbLocataires', { count: locatairesReservations.length + locatairesManue.length })}</p>
         </div>
         <button className="btn-green" onClick={function() { setShowForm(!showForm); setModeEdit(null); setForm({ nom: '', prenom: '', telephone: '', email: '', logement_id: '', loyer_mensuel: '', date_entree: '' }); }}>
-          + Ajouter un locataire
+          {t('ongletLocataires.ajouterLocataire')}
         </button>
       </div>
 
       {showForm && (
         <div className="dash-form-card">
-          <h3>{modeEdit ? 'Modifier le locataire' : 'Nouveau locataire'}</h3>
+          <h3>{modeEdit ? t('ongletLocataires.form.modifierTitre') : t('ongletLocataires.form.nouveauTitre')}</h3>
           <form onSubmit={handleSubmit}>
             <div className="form-row-2">
-              <div className="form-group"><label>Prenom *</label><input type="text" value={form.prenom} onChange={function(e) { setForm(Object.assign({}, form, { prenom: e.target.value })); }} required /></div>
-              <div className="form-group"><label>Nom *</label><input type="text" value={form.nom} onChange={function(e) { setForm(Object.assign({}, form, { nom: e.target.value })); }} required /></div>
-              <div className="form-group"><label>Telephone</label><input type="tel" value={form.telephone} onChange={function(e) { setForm(Object.assign({}, form, { telephone: e.target.value })); }} /></div>
-              <div className="form-group"><label>Email</label><input type="email" value={form.email} onChange={function(e) { setForm(Object.assign({}, form, { email: e.target.value })); }} /></div>
+              <div className="form-group"><label>{t('ongletLocataires.form.prenom')}</label><input type="text" value={form.prenom} onChange={function(e) { setForm(Object.assign({}, form, { prenom: e.target.value })); }} required /></div>
+              <div className="form-group"><label>{t('ongletLocataires.form.nom')}</label><input type="text" value={form.nom} onChange={function(e) { setForm(Object.assign({}, form, { nom: e.target.value })); }} required /></div>
+              <div className="form-group"><label>{t('ongletLocataires.form.telephone')}</label><input type="tel" value={form.telephone} onChange={function(e) { setForm(Object.assign({}, form, { telephone: e.target.value })); }} /></div>
+              <div className="form-group"><label>{t('ongletLocataires.form.email')}</label><input type="email" value={form.email} onChange={function(e) { setForm(Object.assign({}, form, { email: e.target.value })); }} /></div>
               <div className="form-group">
-                <label>Logement</label>
+                <label>{t('ongletLocataires.form.logement')}</label>
                 <select value={form.logement_id} onChange={function(e) { setForm(Object.assign({}, form, { logement_id: e.target.value })); }}>
-                  <option value="">Aucun</option>
+                  <option value="">{t('ongletLocataires.form.aucun')}</option>
                   {logements.map(function(l) { return <option key={l.id} value={l.id}>{l.titre}</option>; })}
                 </select>
               </div>
-              <div className="form-group"><label>Loyer (GNF)</label><input type="number" value={form.loyer_mensuel} onChange={function(e) { setForm(Object.assign({}, form, { loyer_mensuel: e.target.value })); }} /></div>
-              <div className="form-group"><label>Date d'entree</label><input type="date" value={form.date_entree} onChange={function(e) { setForm(Object.assign({}, form, { date_entree: e.target.value })); }} /></div>
+              <div className="form-group"><label>{t('ongletLocataires.form.loyer')}</label><input type="number" value={form.loyer_mensuel} onChange={function(e) { setForm(Object.assign({}, form, { loyer_mensuel: e.target.value })); }} /></div>
+              <div className="form-group"><label>{t('ongletLocataires.form.dateEntree')}</label><input type="date" value={form.date_entree} onChange={function(e) { setForm(Object.assign({}, form, { date_entree: e.target.value })); }} /></div>
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button type="submit" className="btn-green">{modeEdit ? 'Sauvegarder' : 'Ajouter'}</button>
-              <button type="button" className="btn-outline-green" onClick={function() { setShowForm(false); }}>Annuler</button>
+              <button type="submit" className="btn-green">{modeEdit ? t('ongletLocataires.form.sauvegarder') : t('ongletLocataires.form.ajouter')}</button>
+              <button type="button" className="btn-outline-green" onClick={function() { setShowForm(false); }}>{t('ongletLocataires.form.annuler')}</button>
             </div>
           </form>
         </div>
@@ -1061,7 +1070,7 @@ function OngletLocataires(props) {
 
       {locatairesReservations.length > 0 && (
         <div style={{ marginBottom: 20 }}>
-          <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>Locataires via Werdhe</h3>
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>{t('ongletLocataires.viaWerdhe')}</h3>
           {locatairesReservations.map(function(l, i) {
             var initiales = (l.prenom ? l.prenom.charAt(0) : '') + (l.nom ? l.nom.charAt(0) : '');
             return (
@@ -1077,7 +1086,7 @@ function OngletLocataires(props) {
                   <div>
                     <div className="locataire-loyer">{GNF(l.loyer)}/mois</div>
                   </div>
-                  <button className="btn-outline-green">Voir fiche</button>
+                  <button className="btn-outline-green">{t('ongletLocataires.voirFiche')}</button>
                 </div>
               </div>
             );
@@ -1085,12 +1094,12 @@ function OngletLocataires(props) {
         </div>
       )}
 
-      <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>Locataires manuels</h3>
+      <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>{t('ongletLocataires.manuels')}</h3>
       {locatairesManue.length === 0 && !showForm && (
         <div className="dash-empty-state">
           <span>👥</span>
-          <h3>Aucun locataire manuel</h3>
-          <p>Ajoutez des locataires sans compte Werdhe</p>
+          <h3>{t('ongletLocataires.aucunManuel.titre')}</h3>
+          <p>{t('ongletLocataires.aucunManuel.description')}</p>
         </div>
       )}
       {locatairesManue.map(function(l) {
@@ -1117,8 +1126,8 @@ function OngletLocataires(props) {
                 setModeEdit(l.id);
                 setForm({ nom: l.nom, prenom: l.prenom, telephone: l.telephone || '', email: l.email || '', logement_id: l.logement_id || '', loyer_mensuel: l.loyer_mensuel || '', date_entree: l.date_entree ? l.date_entree.split('T')[0] : '' });
                 setShowForm(true);
-              }}>Modifier</button>
-              <button style={{ background: '#FFEBEE', color: '#B71C1C', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: 13, cursor: 'pointer', fontWeight: 600 }} onClick={function() { handleDelete(l.id); }}>Supprimer</button>
+              }}>{t('ongletLocataires.form.modifier')}</button>
+              <button style={{ background: '#FFEBEE', color: '#B71C1C', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: 13, cursor: 'pointer', fontWeight: 600 }} onClick={function() { handleDelete(l.id); }}>{t('ongletLocataires.form.supprimer')}</button>
             </div>
           </div>
         );
@@ -1131,6 +1140,7 @@ function OngletLocataires(props) {
 // ONGLET : Reservations
 // ================================================
 function OngletReservations(props) {
+  var t = useTranslation('dashboard').t;
   var stats = props.stats;
   var user = props.user;
   var recharger = props.recharger;
@@ -1142,43 +1152,43 @@ function OngletReservations(props) {
     console.log('[Debug] Candidatures locataire:', reservationsLoc.length, reservationsLoc);
 
     var statutsLoc = {
-      en_attente:         { label: 'Candidature envoyée',     couleur: '#F5A623', bg: '#FFF8E1', action: 'Suivre ma candidature',   urgent: true  },
-      dossier_requis:     { label: 'Dossier demandé',           couleur: '#1565C0', bg: '#E3F2FD', action: 'Soumettre mon dossier',   urgent: true  },
-      en_examen:          { label: 'Dossier en cours d\'examen', couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Voir l\'avancement',      urgent: false },
-      acceptee:           { label: 'Candidature acceptée',       couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Démarrer les échanges',  urgent: true  },
-      echanges:           { label: 'En discussion',             couleur: '#1565C0', bg: '#E3F2FD', action: 'Voir la discussion',     urgent: false },
-      caution_requise:    { label: 'Caution à payer',           couleur: '#E65100', bg: '#FFF3E0', action: 'Payer la caution',       urgent: true  },
-      caution_payee:      { label: 'Caution versée',            couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir l\'avancement',      urgent: false },
-      bail_en_cours:      { label: 'Bail à signer',             couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer le bail',        urgent: true  },
-      bail_signe_proprio: { label: 'À mon tour de signer',      couleur: '#7B1FA2', bg: '#F3E5F5', action: 'Signer maintenant',     urgent: true  },
-      confirmee:          { label: 'Location active',           couleur: '#1B6B3A', bg: '#E8F5E9', action: 'Voir le récapitulatif', urgent: false },
-      refusee:            { label: 'Candidature non retenue',    couleur: '#B71C1C', bg: '#FFEBEE', action: null,                    urgent: false },
+      en_attente:         { label: t('ongletReservations.locataire.statuts.enAttente.label'),         couleur: '#F5A623', bg: '#FFF8E1', action: t('ongletReservations.locataire.statuts.enAttente.action'),         urgent: true  },
+      dossier_requis:     { label: t('ongletReservations.locataire.statuts.dossierRequis.label'),     couleur: '#1565C0', bg: '#E3F2FD', action: t('ongletReservations.locataire.statuts.dossierRequis.action'),     urgent: true  },
+      en_examen:          { label: t('ongletReservations.locataire.statuts.enExamen.label'),          couleur: '#7B1FA2', bg: '#F3E5F5', action: t('ongletReservations.locataire.statuts.enExamen.action'),          urgent: false },
+      acceptee:           { label: t('ongletReservations.locataire.statuts.acceptee.label'),           couleur: '#1B6B3A', bg: '#E8F5E9', action: t('ongletReservations.locataire.statuts.acceptee.action'),           urgent: true  },
+      echanges:           { label: t('ongletReservations.locataire.statuts.echanges.label'),           couleur: '#1565C0', bg: '#E3F2FD', action: t('ongletReservations.locataire.statuts.echanges.action'),           urgent: false },
+      caution_requise:    { label: t('ongletReservations.locataire.statuts.cautionRequise.label'),    couleur: '#E65100', bg: '#FFF3E0', action: t('ongletReservations.locataire.statuts.cautionRequise.action'),    urgent: true  },
+      caution_payee:      { label: t('ongletReservations.locataire.statuts.cautionPayee.label'),      couleur: '#1B6B3A', bg: '#E8F5E9', action: t('ongletReservations.locataire.statuts.cautionPayee.action'),      urgent: false },
+      bail_en_cours:      { label: t('ongletReservations.locataire.statuts.bailEnCours.label'),       couleur: '#7B1FA2', bg: '#F3E5F5', action: t('ongletReservations.locataire.statuts.bailEnCours.action'),       urgent: true  },
+      bail_signe_proprio: { label: t('ongletReservations.locataire.statuts.bailSigneProprio.label'),  couleur: '#7B1FA2', bg: '#F3E5F5', action: t('ongletReservations.locataire.statuts.bailSigneProprio.action'),  urgent: true  },
+      confirmee:          { label: t('ongletReservations.locataire.statuts.confirmee.label'),         couleur: '#1B6B3A', bg: '#E8F5E9', action: t('ongletReservations.locataire.statuts.confirmee.action'),         urgent: false },
+      refusee:            { label: t('ongletReservations.locataire.statuts.refusee.label'),           couleur: '#B71C1C', bg: '#FFEBEE', action: null,                    urgent: false },
     };
 
     return (
       <div>
         <div className="dash-page-header">
           <div>
-            <h1>Mes Candidatures</h1><p>{reservationsLoc.length} candidature(s)</p>
+            <h1>{t('ongletReservations.locataire.titre')}</h1><p>{t('ongletReservations.locataire.nbCandidatures', { count: reservationsLoc.length })}</p>
           </div>
           <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>
-            + Chercher un logement
+            {t('ongletReservations.locataire.chercherLogement')}
           </Link>
         </div>
 
         {reservationsLoc.length === 0 && (
           <div className="dash-empty-state">
             <CalendarCheck size={48} strokeWidth={1} color="#C8E6C9" />
-            <h3>Aucune réservation</h3>
-            <p>Trouvez un logement et envoyez une demande au propriétaire</p>
+            <h3>{t('ongletReservations.locataire.aucuneReservation.titre')}</h3>
+            <p>{t('ongletReservations.locataire.aucuneReservation.description')}</p>
             <Link to="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
-              Trouver un logement
+              {t('ongletReservations.locataire.aucuneReservation.trouverLogement')}
             </Link>
           </div>
         )}
 
         {reservationsLoc.map(function(r) {
-          var cfg = statutsLoc[r.statut] || { label: r.statut, couleur: '#888', bg: '#F5F5F5', action: 'Voir', urgent: false };
+          var cfg = statutsLoc[r.statut] || { label: r.statut, couleur: '#888', bg: '#F5F5F5', action: t('ongletReservations.locataire.voir'), urgent: false };
           return (
             <div key={r.id} style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderLeft: '4px solid ' + cfg.couleur }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
@@ -1187,7 +1197,7 @@ function OngletReservations(props) {
                     {r.logement_titre}
                   </div>
                   <div style={{ fontSize: 12, color: '#888' }}>
-                    {r.date_debut ? 'Demande du ' + new Date(r.created_at).toLocaleDateString('fr-FR') : 'Demande en cours'}
+                    {r.date_debut ? t('ongletReservations.locataire.demandeDu', { date: new Date(r.created_at).toLocaleDateString('fr-FR') }) : t('ongletReservations.locataire.demandeEnCours')}
                   </div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6B3A', marginTop: 4 }}>
                     {new Intl.NumberFormat('fr-FR').format(r.prix_mensuel || 0)} GNF / mois
@@ -1200,7 +1210,7 @@ function OngletReservations(props) {
 
               {cfg.urgent && (
                 <div style={{ background: '#FFF8E1', borderRadius: 8, padding: '7px 12px', marginBottom: 10, fontSize: 12, color: '#7B4F00', fontWeight: 600 }}>
-                  ⚡ Une action est attendue de votre part
+                  {t('ongletReservations.locataire.actionAttendue')}
                 </div>
               )}
 
@@ -1222,6 +1232,7 @@ function OngletReservations(props) {
   return <OngletReservationsProprio stats={stats} recharger={recharger} user={user} />;
 }
 function ScoreLocataire({ locataireId }) {
+  var t = useTranslation('dashboard').t;
   var [score, setScore] = useState(null);
 
   useEffect(function() {
@@ -1241,7 +1252,7 @@ function ScoreLocataire({ locataireId }) {
       </div>
       <div style={{ width: 1, height: 32, background: 'rgba(0,0,0,0.1)' }} />
       <div>
-        <div style={{ fontSize: 12, color: '#888', marginBottom: 2 }}>Score de confiance</div>
+        <div style={{ fontSize: 12, color: '#888', marginBottom: 2 }}>{t('scoreLocataire.titre')}</div>
         <div style={{ fontSize: 13, fontWeight: 700, color: score.couleur }}>{score.emoji} {score.label}</div>
       </div>
     </div>
@@ -1249,6 +1260,7 @@ function ScoreLocataire({ locataireId }) {
 }
 // ─── Séparé pour garder le code propre ────────────────────────────
 function OngletReservationsProprio(props) {
+  var t = useTranslation('dashboard').t;
   var stats = props.stats;
   var recharger = props.recharger;
   var user = props.user;
@@ -1300,7 +1312,7 @@ useEffect(function() {
       .catch(function(err) {
        var msg = err.response && err.response.data && err.response.data.erreur
        ? err.response.data.erreur
-       : 'Erreur serveur';
+       : t('ongletReservationsProprio.erreurServeur');
        toast.error(msg);
        console.error('Détail erreur:', err.response && err.response.data);
       });
@@ -1313,12 +1325,12 @@ useEffect(function() {
         setBailSigne(true);
         setSignatureProcessing(false);
         setShowSignatureProprio(false);
-        toast.success('Bail signé ! En attente de la signature du locataire.');
+        toast.success(t('ongletReservationsProprio.toastBailSigneAttenteLocataire'));
         if (recharger) recharger();
       })
       .catch(function(err) {
         setSignatureProcessing(false);
-        toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur signature bail');
+        toast.error(err.response && err.response.data ? err.response.data.erreur : t('ongletReservationsProprio.toastErreurSignatureBail'));
       });
   }
 
@@ -1326,7 +1338,7 @@ useEffect(function() {
     api.get('/documents?type=contrat_bail')
       .then(function(res) {
         var docs = (res.data.documents || []).filter(function(d) { return d.reservation_id === reservationId; });
-        if (docs.length === 0) { toast.error('Bail non trouvé pour cette location'); return; }
+        if (docs.length === 0) { toast.error(t('ongletReservationsProprio.toastBailNonTrouve')); return; }
         return api.get('/documents/' + docs[0].id + '/telecharger?format=pdf', { responseType: 'blob' })
           .then(function(res2) {
             var typePdf = (res2.headers && res2.headers['content-type'] || '').indexOf('pdf') !== -1;
@@ -1338,10 +1350,10 @@ useEffect(function() {
             document.body.appendChild(link);
             link.click();
             link.remove();
-            toast.success('Bail téléchargé');
+            toast.success(t('ongletReservationsProprio.toastBailTelecharge'));
           });
       })
-      .catch(function() { toast.error('Erreur téléchargement'); });
+      .catch(function() { toast.error(t('ongletReservationsProprio.toastErreurTelechargement')); });
   }
 
   function envoyerMessage() {
@@ -1355,7 +1367,7 @@ useEffect(function() {
         setMsgs(function(prev) { return prev.concat(res.data.data || { contenu: newMsg, expedition_id: user && user.id, created_at: new Date().toISOString() }); });
         setNewMsg('');
       })
-      .catch(function() { toast.error('Erreur envoi'); });
+      .catch(function() { toast.error(t('ongletReservationsProprio.toastErreurEnvoi')); });
   }
 
   var reservations = stats.reservations || [];
@@ -1364,17 +1376,17 @@ useEffect(function() {
   });
 
   var cfgStatuts = {
-    en_attente         : { label: 'Nouvelle candidature', couleur: '#E53935', urgent: true },
-    dossier_requis     : { label: 'Attente du dossier',           couleur: '#F5A623', urgent: false },
-    en_examen          : { label: 'Dossier à examiner',           couleur: '#7B1FA2', urgent: true  },
-    acceptee           : { label: 'Acceptée',                      couleur: '#1B6B3A', urgent: false },
-    echanges           : { label: 'En discussion',         couleur: '#1565C0', urgent: false },
-    caution_requise    : { label: 'Caution en attente',            couleur: '#F5A623', urgent: false },
-    caution_payee      : { label: 'Caution reçue',                 couleur: '#1B6B3A', urgent: true  },
-    bail_en_cours      : { label: 'Bail à signer',                couleur: '#7B1FA2', urgent: true  },
-    bail_signe_proprio : { label: 'Attente signature locataire',  couleur: '#F5A623', urgent: false },
-    confirmee          : { label: 'Location active',              couleur: '#1B6B3A', urgent: false },
-    refusee            : { label: 'Refusée',                       couleur: '#888',    urgent: false },
+    en_attente         : { label: t('ongletReservationsProprio.statuts.enAttente'),         couleur: '#E53935', urgent: true },
+    dossier_requis     : { label: t('ongletReservationsProprio.statuts.dossierRequis'),     couleur: '#F5A623', urgent: false },
+    en_examen          : { label: t('ongletReservationsProprio.statuts.enExamen'),          couleur: '#7B1FA2', urgent: true  },
+    acceptee           : { label: t('ongletReservationsProprio.statuts.acceptee'),          couleur: '#1B6B3A', urgent: false },
+    echanges           : { label: t('ongletReservationsProprio.statuts.echanges'),          couleur: '#1565C0', urgent: false },
+    caution_requise    : { label: t('ongletReservationsProprio.statuts.cautionRequise'),    couleur: '#F5A623', urgent: false },
+    caution_payee      : { label: t('ongletReservationsProprio.statuts.cautionPayee'),      couleur: '#1B6B3A', urgent: true  },
+    bail_en_cours      : { label: t('ongletReservationsProprio.statuts.bailEnCours'),        couleur: '#7B1FA2', urgent: true  },
+    bail_signe_proprio : { label: t('ongletReservationsProprio.statuts.bailSigneProprio'),  couleur: '#F5A623', urgent: false },
+    confirmee          : { label: t('ongletReservationsProprio.statuts.confirmee'),         couleur: '#1B6B3A', urgent: false },
+    refusee            : { label: t('ongletReservationsProprio.statuts.refusee'),           couleur: '#888',    urgent: false },
   };
 
   // ── VUE DÉTAIL ──────────────────────────────────────────────────
@@ -1389,7 +1401,7 @@ useEffect(function() {
         <button
           onClick={function() { setSelectionne(null); setBailSigne(false); setMotifRefus(''); setMsgs([]); }}
           style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', color: '#1B6B3A', fontWeight: 700, fontSize: 14, cursor: 'pointer', marginBottom: 16, padding: 0 }}>
-          ← Retour à la liste
+          {t('ongletReservationsProprio.retourListe')}
         </button>
 
         {/* En-tête locataire */}
@@ -1417,16 +1429,16 @@ useEffect(function() {
         {/* ─ NOUVELLE DEMANDE ─ */}
         {r.statut === 'en_attente' && (
           <div style={{ background: '#fff', borderRadius: 14, padding: 18, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>📩 Demande reçue</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>{t('ongletReservationsProprio.demandeRecue.titre')}</div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 16 }}>
               {[
-                ['Logement', r.logement_titre],
-                ['Loyer', new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF/mois'],
-                ['Date souhaitée', r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'Non précisée'],
-                ['Durée', r.duree_mois ? r.duree_mois + ' mois' : 'Non précisée'],
-                ['Reçue le', new Date(r.created_at).toLocaleDateString('fr-FR')],
-                ['Email', r.locataire_email || 'N/A'],
+                [t('ongletReservationsProprio.demandeRecue.labels.logement'), r.logement_titre],
+                [t('ongletReservationsProprio.demandeRecue.labels.loyer'), new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF/mois'],
+                [t('ongletReservationsProprio.demandeRecue.labels.dateSouhaitee'), r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : t('ongletReservationsProprio.demandeRecue.nonPrecisee')],
+                [t('ongletReservationsProprio.demandeRecue.labels.duree'), r.duree_mois ? t('ongletReservationsProprio.nMois', { n: r.duree_mois }) : t('ongletReservationsProprio.demandeRecue.nonPrecisee')],
+                [t('ongletReservationsProprio.demandeRecue.labels.recueLe'), new Date(r.created_at).toLocaleDateString('fr-FR')],
+                [t('ongletReservationsProprio.demandeRecue.labels.email'), r.locataire_email || t('ongletReservationsProprio.na')],
               ].map(function(row) {
                 return (
                   <div key={row[0]} style={{ background: '#F8F8F8', borderRadius: 10, padding: '10px 12px' }}>
@@ -1439,36 +1451,36 @@ useEffect(function() {
 
             {r.message_locataire && (
               <div style={{ background: '#F0F7FF', borderRadius: 10, padding: 12, marginBottom: 16 }}>
-                <div style={{ fontSize: 11, color: '#888', marginBottom: 4, fontWeight: 600 }}>Message du locataire</div>
+                <div style={{ fontSize: 11, color: '#888', marginBottom: 4, fontWeight: 600 }}>{t('ongletReservationsProprio.demandeRecue.messageLocataire')}</div>
                 <div style={{ fontSize: 13, color: '#333', fontStyle: 'italic' }}>"{r.message_locataire}"</div>
               </div>
             )}
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <button
-                onClick={function() { action('/decision', { decision: 'dossier_requis' }, 'Dossier demandé ! Le locataire va uploader ses documents.'); }}
+                onClick={function() { action('/decision', { decision: 'dossier_requis' }, t('ongletReservationsProprio.toastDossierDemande')); }}
                 style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-                Demander le dossier complet
+                {t('ongletReservationsProprio.demanderDossierComplet')}
               </button>
               <button
-                onClick={function() { action('/decision', { decision: 'acceptee' }, 'Candidature acceptée ! Le locataire est notifié.'); }}
+                onClick={function() { action('/decision', { decision: 'acceptee' }, t('ongletReservationsProprio.toastCandidatureAcceptee')); }}
                 style={{ background: '#E8F5E9', color: '#1B5E20', border: '1px solid #A5D6A7', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-                <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><CheckCircle size={15} strokeWidth={1.5}/> Accepter directement (sans dossier)</span>
+                <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><CheckCircle size={15} strokeWidth={1.5}/> {t('ongletReservationsProprio.accepterSansDossier')}</span>
               </button>
               <div style={{ display: 'flex', gap: 10 }}>
                 <input
                   type="text"
                   value={motifRefus}
                   onChange={function(e) { setMotifRefus(e.target.value); }}
-                  placeholder="Motif du refus (obligatoire)"
+                  placeholder={t('ongletReservationsProprio.motifRefusPlaceholder')}
                   style={{ flex: 1, padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none' }} />
                 <button
                   onClick={function() {
-                    if (!motifRefus.trim()) { toast.error('Indiquez un motif de refus'); return; }
-                    action('/decision', { decision: 'refusee', motif: motifRefus }, 'Candidature refusée. Le locataire est notifié.');
+                    if (!motifRefus.trim()) { toast.error(t('ongletReservationsProprio.toastIndiquerMotif')); return; }
+                    action('/decision', { decision: 'refusee', motif: motifRefus }, t('ongletReservationsProprio.toastCandidatureRefusee'));
                   }}
                   style={{ background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
-                  <span style={{display:'flex',alignItems:'center',gap:4}}><XCircle size={14} strokeWidth={1.5}/> Refuser</span>
+                  <span style={{display:'flex',alignItems:'center',gap:4}}><XCircle size={14} strokeWidth={1.5}/> {t('ongletReservationsProprio.refuser')}</span>
                 </button>
               </div>
             </div>
@@ -1483,35 +1495,31 @@ useEffect(function() {
 {r.statut === 'en_examen' && (
   <div style={{ background: '#fff', borderRadius: 14, padding: 18, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
     <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>
-      Dossier soumis par {r.locataire_prenom}
+      {t('ongletReservationsProprio.dossierSoumisPar', { prenom: r.locataire_prenom })}
     </div>
 
     {/* Documents avec liens de téléchargement */}
     <div style={{ marginBottom: 16 }}>
       {[
-        { label: 'Pièce d\'identité (CNI)',  url: r.doc_cni_url,    ok: true },
-        { label: 'Attestation d\'emploi',    url: r.doc_emploi_url, ok: true },
-        { label: 'Fiches de paie (3 mois)', url: r.doc_paie_url,   ok: Boolean(r.doc_paie_url) },
-        { label: 'Contact garant',          url: r.doc_garant_url, ok: Boolean(r.doc_garant_url) },
+        { label: t('ongletReservationsProprio.docs.cni'),    key: 'cni',    url: r.doc_cni_url,    ok: true },
+        { label: t('ongletReservationsProprio.docs.emploi'), key: 'emploi', url: r.doc_emploi_url, ok: true },
+        { label: t('ongletReservationsProprio.docs.paie'),   key: 'paie',   url: r.doc_paie_url,   ok: Boolean(r.doc_paie_url) },
+        { label: t('ongletReservationsProprio.docs.garant'), key: 'garant', url: r.doc_garant_url, ok: Boolean(r.doc_garant_url) },
       ].map(function(d) {
         return (
           <div key={d.label} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0', borderBottom: '0.5px solid #F5F5F5' }}>
             <span style={{ flexShrink: 0, display:'flex', alignItems:'center' }}>{d.ok ? <CheckCircle size={18} strokeWidth={1.5} color="#1B6B3A"/> : <Clock size={18} strokeWidth={1.5} color="#888"/>}</span>
             <span style={{ fontSize: 13, color: d.ok ? '#1B2B22' : '#888', flex: 1 }}>{d.label}</span>
             {d.ok && d.url && (
-              <a href={'https://werdhe-backend.onrender.com/reservations/' + r.id + '/document/' + (
-                 d.label.includes('CNI') ? 'cni' :
-                 d.label.includes('emploi') ? 'emploi' :
-                 d.label.includes('paie') ? 'paie' : 'garant'
-              ) + '?token=' + localStorage.getItem('token')}
+              <a href={'https://werdhe-backend.onrender.com/reservations/' + r.id + '/document/' + d.key + '?token=' + localStorage.getItem('token')}
               target="_blank"
               rel="noreferrer"
               style={{ padding: '5px 12px', borderRadius: 8, background: '#E8F5E9', color: '#1B6B3A', textDecoration: 'none', fontSize: 12, fontWeight: 600, border: '0.5px solid #A5D6A7', flexShrink: 0 }}>
-              Voir →
+              {t('ongletReservationsProprio.voir')}
               </a>
             )}
             {d.ok && !d.url && (
-              <span style={{ fontSize: 11, color: '#1B6B3A', fontWeight: 600 }}>Soumis ✓</span>
+              <span style={{ fontSize: 11, color: '#1B6B3A', fontWeight: 600 }}>{t('ongletReservationsProprio.soumis')}</span>
             )}
           </div>
         );
@@ -1520,15 +1528,15 @@ useEffect(function() {
 
     {/* Infos locataire */}
     <div style={{ background: '#F8F8F8', borderRadius: 10, padding: 12, marginBottom: 16 }}>
-      <div style={{ fontSize: 12, color: '#888', marginBottom: 8, fontWeight: 600 }}>Informations du candidat</div>
+      <div style={{ fontSize: 12, color: '#888', marginBottom: 8, fontWeight: 600 }}>{t('ongletReservationsProprio.infosCandidat.titre')}</div>
       {[
-        ['Nom complet', r.locataire_prenom + ' ' + r.locataire_nom],
-        ['Email',       r.locataire_email || 'N/A'],
-        ['Téléphone',  r.locataire_telephone || 'N/A'],
-        ['Logement',   r.logement_titre],
-        ['Loyer',      GNF(loyer) + '/mois'],
-        ['Date souhaitée', r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A'],
-        ['Durée',      r.duree_mois ? r.duree_mois + ' mois' : 'N/A'],
+        [t('ongletReservationsProprio.infosCandidat.nomComplet'), r.locataire_prenom + ' ' + r.locataire_nom],
+        [t('ongletReservationsProprio.demandeRecue.labels.email'),       r.locataire_email || t('ongletReservationsProprio.na')],
+        [t('ongletReservationsProprio.infosCandidat.telephone'),  r.locataire_telephone || t('ongletReservationsProprio.na')],
+        [t('ongletReservationsProprio.demandeRecue.labels.logement'),   r.logement_titre],
+        [t('ongletReservationsProprio.infosCandidat.loyer'),      GNF(loyer) + '/mois'],
+        [t('ongletReservationsProprio.demandeRecue.labels.dateSouhaitee'), r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : t('ongletReservationsProprio.na')],
+        [t('ongletReservationsProprio.demandeRecue.labels.duree'),      r.duree_mois ? t('ongletReservationsProprio.nMois', { n: r.duree_mois }) : t('ongletReservationsProprio.na')],
       ].map(function(row) {
         return (
           <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0', borderBottom: '0.5px solid #EFEFEF' }}>
@@ -1540,24 +1548,24 @@ useEffect(function() {
     </div>
 
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      <button onClick={function() { action('/decision', { decision: 'acceptee' }, 'Dossier validé ! Candidature acceptée.'); }}
+      <button onClick={function() { action('/decision', { decision: 'acceptee' }, t('ongletReservationsProprio.toastDossierValide')); }}
         style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-        <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><CheckCircle size={15} strokeWidth={1.5}/> Valider le dossier - Accepter la candidature</span>
+        <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><CheckCircle size={15} strokeWidth={1.5}/> {t('ongletReservationsProprio.validerDossier')}</span>
       </button>
-      <button onClick={function() { action('/decision', { decision: 'dossier_requis' }, 'Informations complémentaires demandées.'); }}
+      <button onClick={function() { action('/decision', { decision: 'dossier_requis' }, t('ongletReservationsProprio.toastInfosComplementaires')); }}
         style={{ background: '#E3F2FD', color: '#1565C0', border: '1px solid #90CAF9', borderRadius: 12, padding: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-        <MessageCircle size={14} strokeWidth={1.5} /> Demander des informations complémentaires
+        <MessageCircle size={14} strokeWidth={1.5} /> {t('ongletReservationsProprio.demanderInfosComplementaires')}
       </button>
       <div style={{ display: 'flex', gap: 10 }}>
         <input type="text" value={motifRefus} onChange={function(e) { setMotifRefus(e.target.value); }}
-          placeholder="Motif du refus"
+          placeholder={t('ongletReservationsProprio.motifRefusCourt')}
           style={{ flex: 1, padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none' }} />
         <button onClick={function() {
-          if (!motifRefus.trim()) { toast.error('Indiquez un motif'); return; }
-          action('/decision', { decision: 'refusee', motif: motifRefus }, 'Candidature refusée.');
+          if (!motifRefus.trim()) { toast.error(t('ongletReservationsProprio.toastIndiquerMotifCourt')); return; }
+          action('/decision', { decision: 'refusee', motif: motifRefus }, t('ongletReservationsProprio.toastCandidatureRefuseeCourt'));
         }}
           style={{ background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-          <XCircle size={14} strokeWidth={1.5} /> Refuser
+          <XCircle size={14} strokeWidth={1.5} /> {t('ongletReservationsProprio.refuser')}
         </button>
       </div>
     </div>
@@ -1570,8 +1578,8 @@ useEffect(function() {
             <div style={{ background: '#E8F5E9', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
               <span>🎉</span>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#1B5E20' }}>Candidature acceptée !</div>
-                <div style={{ fontSize: 12, color: '#2E7D32' }}>Discutez des conditions. Le locataire paiera la caution quand il sera prêt.</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#1B5E20' }}>{t('ongletReservationsProprio.echanges.candidatureAcceptee')}</div>
+                <div style={{ fontSize: 12, color: '#2E7D32' }}>{t('ongletReservationsProprio.echanges.discutezConditions')}</div>
               </div>
             </div>
             <div style={{ background: '#fff', borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
@@ -1583,7 +1591,7 @@ useEffect(function() {
               </div>
               <div style={{ height: 240, overflowY: 'auto', padding: 12, display: 'flex', flexDirection: 'column', gap: 8, background: '#F8F9F8' }}>
                 {msgs.length === 0 && (
-                  <div style={{ textAlign: 'center', color: '#ccc', fontSize: 13, paddingTop: 30 }}>Commencez la discussion</div>
+                  <div style={{ textAlign: 'center', color: '#ccc', fontSize: 13, paddingTop: 30 }}>{t('ongletReservationsProprio.echanges.commencerDiscussion')}</div>
                 )}
                 {msgs.map(function(m, i) {
                   var isMoi = m.expedition_id === (user && user.id);
@@ -1604,7 +1612,7 @@ useEffect(function() {
                   value={newMsg}
                   onChange={function(e) { setNewMsg(e.target.value); }}
                   onKeyDown={function(e) { if (e.key === 'Enter') envoyerMessage(); }}
-                  placeholder="Écrivez un message..."
+                  placeholder={t('ongletReservationsProprio.echanges.messagePlaceholder')}
                   style={{ flex: 1, padding: '9px 14px', borderRadius: 20, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: '#F8F8F8' }} />
                 <button onClick={envoyerMessage} style={{ width: 38, height: 38, borderRadius: '50%', background: '#1B6B3A', border: 'none', color: '#fff', fontSize: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>↗</button>
               </div>
@@ -1617,10 +1625,10 @@ useEffect(function() {
           <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <div style={{ fontSize: 36, marginBottom: 12 }}>⏳</div>
             <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>
-              {r.locataire_prenom} est en train de payer la caution
+              {t('ongletReservationsProprio.cautionEnAttente.enTrainDePayer', { prenom: r.locataire_prenom })}
             </div>
             <div style={{ fontSize: 13, color: '#666' }}>
-              Vous serez notifié(e) dès que le paiement de <strong>{new Intl.NumberFormat('fr-FR').format(loyer)} GNF</strong> est confirmé.
+              {t('ongletReservationsProprio.cautionEnAttente.serezNotifieAvant')}<strong>{new Intl.NumberFormat('fr-FR').format(loyer)} GNF</strong>{t('ongletReservationsProprio.cautionEnAttente.serezNotifieApres')}
             </div>
           </div>
         )}
@@ -1632,23 +1640,23 @@ useEffect(function() {
               <CheckCircle size={32} strokeWidth={1.5} color="#1B6B3A" />
               <div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#1B5E20' }}>
-                  Caution reçue : {new Intl.NumberFormat('fr-FR').format(loyer)} GNF
+                  {t('ongletReservationsProprio.cautionRecue.titre', { montant: new Intl.NumberFormat('fr-FR').format(loyer) })}
                 </div>
                 <div style={{ fontSize: 12, color: '#2E7D32' }}>
-                  Préparez maintenant le bail pour les deux signatures.
+                  {t('ongletReservationsProprio.cautionRecue.preparerBail')}
                 </div>
               </div>
             </div>
             <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>
-                Le bail sera généré avec :
+                {t('ongletReservationsProprio.cautionRecue.bailSeraGenere')}
               </div>
               {[
-                'Identités des deux parties',
-                'Adresse complète du logement',
-                'Loyer mensuel : ' + new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF',
-                'Date de début et durée du bail',
-                'Caution versée : ' + new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF ✓',
+                t('ongletReservationsProprio.cautionRecue.items.identites'),
+                t('ongletReservationsProprio.cautionRecue.items.adresse'),
+                t('ongletReservationsProprio.cautionRecue.items.loyerMensuel', { montant: new Intl.NumberFormat('fr-FR').format(loyer) }),
+                t('ongletReservationsProprio.cautionRecue.items.dateEtDuree'),
+                t('ongletReservationsProprio.cautionRecue.items.cautionVersee', { montant: new Intl.NumberFormat('fr-FR').format(loyer) }),
               ].map(function(item) {
                 return (
                   <div key={item} style={{ display: 'flex', gap: 8, padding: '5px 0', fontSize: 13, color: '#555' }}>
@@ -1659,9 +1667,9 @@ useEffect(function() {
               })}
             </div>
             <button
-              onClick={function() { action('/statut', { statut: 'bail_en_cours' }, 'Bail généré ! Les deux parties peuvent signer.'); }}
+              onClick={function() { action('/statut', { statut: 'bail_en_cours' }, t('ongletReservationsProprio.toastBailGenere')); }}
               style={{ width: '100%', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
-              Générer et préparer le bail
+              {t('ongletReservationsProprio.genererPreparerBail')}
             </button>
           </div>
         )}
@@ -1669,15 +1677,15 @@ useEffect(function() {
         {/* ─ BAIL À SIGNER ─ */}
         {r.statut === 'bail_en_cours' && (
           <div style={{ background: '#fff', borderRadius: 14, padding: 18, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>📝 Bail prêt à signer</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>{t('ongletReservationsProprio.bailASigner.titre')}</div>
             <div style={{ background: '#F8F8F8', borderRadius: 10, padding: 12, marginBottom: 16, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
               {[
-                ['Locataire', r.locataire_prenom + ' ' + r.locataire_nom],
-                ['Logement', r.logement_titre],
-                ['Loyer', new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF/mois'],
-                ['Début', r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A'],
-                ['Durée', r.duree_mois ? r.duree_mois + ' mois' : 'N/A'],
-                ['Caution', new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF ✓'],
+                [t('ongletReservationsProprio.infosCandidat.locataireLabel'), r.locataire_prenom + ' ' + r.locataire_nom],
+                [t('ongletReservationsProprio.demandeRecue.labels.logement'), r.logement_titre],
+                [t('ongletReservationsProprio.demandeRecue.labels.loyer'), new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF/mois'],
+                [t('ongletReservationsProprio.bailASigner.debut'), r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : t('ongletReservationsProprio.na')],
+                [t('ongletReservationsProprio.demandeRecue.labels.duree'), r.duree_mois ? t('ongletReservationsProprio.nMois', { n: r.duree_mois }) : t('ongletReservationsProprio.na')],
+                [t('ongletReservationsProprio.bailASigner.caution'), new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF ✓'],
               ].map(function(row) {
                 return (
                   <div key={row[0]} style={{ fontSize: 11, color: '#666' }}>
@@ -1691,14 +1699,14 @@ useEffect(function() {
               {bailSigne ? (
                 <div>
                   <CheckCircle size={22} strokeWidth={1.5} color="#1B6B3A" style={{ marginBottom: 4 }} />
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#1B6B3A' }}>Vous avez signé !</div>
-                  <div style={{ fontSize: 12, color: '#2E7D32', marginTop: 4 }}>En attente de la signature du locataire...</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#1B6B3A' }}>{t('ongletReservationsProprio.bailASigner.vousAvezSigne')}</div>
+                  <div style={{ fontSize: 12, color: '#2E7D32', marginTop: 4 }}>{t('ongletReservationsProprio.bailASigner.attenteSignatureLocataire')}</div>
                 </div>
               ) : (
                 <div>
                   <div style={{ fontSize: 28, marginBottom: 6 }}>✍️</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#1B6B3A' }}>Appuyer pour signer le bail</div>
-                  <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>Signature numérique sécurisée</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#1B6B3A' }}>{t('ongletReservationsProprio.bailASigner.appuyerPourSigner')}</div>
+                  <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{t('ongletReservationsProprio.bailASigner.signatureSecurisee')}</div>
                 </div>
               )}
             </div>
@@ -1718,10 +1726,10 @@ useEffect(function() {
           <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <div style={{ fontSize: 36, marginBottom: 12 }}>⏳</div>
             <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>
-              En attente de la signature de {r.locataire_prenom}
+              {t('ongletReservationsProprio.attenteSignature.titre', { prenom: r.locataire_prenom })}
             </div>
             <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6 }}>
-              Vous avez signé. Le locataire doit maintenant signer à son tour. La page se met à jour automatiquement.
+              {t('ongletReservationsProprio.attenteSignature.description')}
             </div>
           </div>
         )}
@@ -1731,17 +1739,17 @@ useEffect(function() {
           <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <div style={{ textAlign: 'center', marginBottom: 16 }}>
               <div style={{ fontSize: 40, marginBottom: 8 }}><Key size={14} strokeWidth={1.5} /></div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: '#1B6B3A' }}>Location active</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#1B6B3A' }}>{t('ongletReservationsProprio.locationActive.titre')}</div>
               <div style={{ fontSize: 13, color: '#666', marginTop: 6 }}>
-                {r.locataire_prenom} {r.locataire_nom} occupe votre logement.
+                {t('ongletReservationsProprio.locationActive.occupeVotreLogement', { prenom: r.locataire_prenom, nom: r.locataire_nom })}
               </div>
             </div>
             {[
-              ['Locataire',       r.locataire_prenom + ' ' + r.locataire_nom],
-              ['Téléphone',       r.locataire_telephone || 'N/A'],
-              ['Logement',        r.logement_titre],
-              ['Loyer mensuel',   new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF'],
-              ['Caution versée',  new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF'],
+              [t('ongletReservationsProprio.infosCandidat.locataireLabel'),       r.locataire_prenom + ' ' + r.locataire_nom],
+              [t('ongletReservationsProprio.infosCandidat.telephone'),       r.locataire_telephone || t('ongletReservationsProprio.na')],
+              [t('ongletReservationsProprio.demandeRecue.labels.logement'),        r.logement_titre],
+              [t('ongletReservationsProprio.locationActive.loyerMensuel'),   new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF'],
+              [t('ongletReservationsProprio.locationActive.cautionVersee'),  new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF'],
             ].map(function(row) {
               return (
                 <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '7px 0', borderBottom: '0.5px solid #F5F5F5' }}>
@@ -1752,7 +1760,7 @@ useEffect(function() {
             })}
             <button type="button" onClick={function() { telechargerBailSigne(r.id); }}
               style={{ width: '100%', marginTop: 16, padding: 12, borderRadius: 10, border: '1.5px solid #1B6B3A', background: '#fff', color: '#1B6B3A', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-              Télécharger le bail signé (PDF)
+              {t('ongletReservationsProprio.locationActive.telechargerBail')}
             </button>
           </div>
         )}
@@ -1761,8 +1769,8 @@ useEffect(function() {
         {r.statut === 'refusee' && (
           <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <XCircle size={36} strokeWidth={1.5} color="#B71C1C" style={{ marginBottom: 12 }} />
-            <div style={{ fontSize: 15, fontWeight: 700, color: '#B71C1C' }}>Demande refusée</div>
-            <div style={{ fontSize: 13, color: '#666', marginTop: 8 }}>Le locataire a été notifié du refus.</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#B71C1C' }}>{t('ongletReservationsProprio.refusee.titre')}</div>
+            <div style={{ fontSize: 13, color: '#666', marginTop: 8 }}>{t('ongletReservationsProprio.refusee.description')}</div>
           </div>
         )}
       </div>
@@ -1774,7 +1782,7 @@ useEffect(function() {
     <div>
       <div className="dash-page-header">
         <div>
-          <h1>Candidatures reçues</h1><p>{reservations.length} candidature(s)</p>
+          <h1>{t('ongletReservationsProprio.liste.titre')}</h1><p>{t('ongletReservationsProprio.liste.nbCandidatures', { count: reservations.length })}</p>
         </div>
       </div>
 
@@ -1783,10 +1791,10 @@ useEffect(function() {
           <span style={{ fontSize: 20 }}>⚡</span>
           <div>
             <div style={{ fontSize: 14, fontWeight: 700, color: '#B71C1C' }}>
-              {actionsRequises.length} action(s) requise(s) de votre part
+              {t('ongletReservationsProprio.liste.actionsRequises', { count: actionsRequises.length })}
             </div>
             <div style={{ fontSize: 12, color: '#C62828' }}>
-              Répondez aux demandes en attente pour ne pas faire patienter vos locataires.
+              {t('ongletReservationsProprio.liste.repondezAuxDemandes')}
             </div>
           </div>
         </div>
@@ -1795,8 +1803,8 @@ useEffect(function() {
       {reservations.length === 0 && (
         <div className="dash-empty-state">
           <span>📅</span>
-          <h3>Aucune demande reçue</h3>
-          <p>Les demandes de réservation apparaîtront ici</p>
+          <h3>{t('ongletReservationsProprio.liste.aucuneDemande.titre')}</h3>
+          <p>{t('ongletReservationsProprio.liste.aucuneDemande.description')}</p>
         </div>
       )}
 
@@ -1828,13 +1836,13 @@ useEffect(function() {
             </div>
             {cfg.urgent && (
               <div style={{ background: '#FFF8E1', borderRadius: 8, padding: '7px 12px', marginBottom: 10, fontSize: 12, color: '#7B4F00', fontWeight: 600 }}>
-                Votre intervention est requise
+                {t('ongletReservationsProprio.liste.interventionRequise')}
               </div>
             )}
             <button
               onClick={function() { setSelectionne(r); }}
               style={{ width: '100%', background: cfg.urgent ? '#1B6B3A' : '#F0F0F0', color: cfg.urgent ? '#fff' : '#555', border: 'none', borderRadius: 10, padding: 10, fontSize: 13, fontWeight: cfg.urgent ? 700 : 400, cursor: 'pointer' }}>
-              {cfg.urgent ? 'Répondre maintenant →' : 'Voir le détail →'}
+              {cfg.urgent ? t('ongletReservationsProprio.liste.repondreMaintenant') : t('ongletReservationsProprio.liste.voirLeDetail')}
             </button>
           </div>
         );
@@ -1848,6 +1856,7 @@ useEffect(function() {
 // ================================================
 
 function OngletPaiements(props) {
+  var t = useTranslation('dashboard').t;
   var stats = props.stats;
   var user  = props.user;
   var estLocataire = user && user.role === 'locataire';
@@ -1868,34 +1877,34 @@ function OngletPaiements(props) {
     if (loadPay) return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 60, gap: 12 }}>
         <div style={{ width: 28, height: 28, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-        <span style={{ color: '#888', fontSize: 14 }}>Chargement...</span>
+        <span style={{ color: '#888', fontSize: 14 }}>{t('ongletPaiementsDash.chargement')}</span>
       </div>
     );
     return (
       <div>
         <div className="dash-page-header">
-          <div><h1>Mes paiements</h1><p>{paiements.length} paiement(s)</p></div>
+          <div><h1>{t('ongletPaiementsDash.locataire.titre')}</h1><p>{t('ongletPaiementsDash.locataire.nbPaiements', { count: paiements.length })}</p></div>
         </div>
 
         {paiements.length === 0 && (
           <div className="dash-empty-state">
             <Banknote size={48} strokeWidth={1} color="#C8E6C9" />
-            <h3>Aucun paiement enregistré</h3>
-            <p>Vos paiements apparaîtront ici</p>
+            <h3>{t('ongletPaiementsDash.locataire.aucunPaiement.titre')}</h3>
+            <p>{t('ongletPaiementsDash.locataire.aucunPaiement.description')}</p>
           </div>
         )}
 
         {paiements.map(function(p, i) {
-          var statut = p.statut === 'complete' ? { label: 'Payé', color: '#1B6B3A', bg: '#E8F5E9' }
-            : p.statut === 'retard'   ? { label: 'En retard', color: '#B71C1C', bg: '#FFEBEE' }
-            : { label: 'En attente', color: '#E65100', bg: '#FFF3E0' };
+          var statut = p.statut === 'complete' ? { label: t('ongletPaiementsDash.statuts.paye'), color: '#1B6B3A', bg: '#E8F5E9' }
+            : p.statut === 'retard'   ? { label: t('ongletPaiementsDash.statuts.enRetard'), color: '#B71C1C', bg: '#FFEBEE' }
+            : { label: t('ongletPaiementsDash.statuts.enAttente'), color: '#E65100', bg: '#FFF3E0' };
           return (
             <div key={i} style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderLeft: '4px solid ' + statut.color }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{p.logement_titre}</div>
                   <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>{new Date(p.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}</div>
-                  {p.mode_paiement && <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>Via {p.mode_paiement}</div>}
+                  {p.mode_paiement && <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{t('ongletPaiementsDash.locataire.via', { mode: p.mode_paiement })}</div>}
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ fontSize: 16, fontWeight: 800, color: statut.color }}>
@@ -1917,6 +1926,7 @@ function OngletPaiements(props) {
 }
 
 function PaiementsProprietaire(props) {
+  var t = useTranslation('dashboard').t;
   var stats = props.stats;
   var [filterStatut, setFilterStatut] = useState('tous');
   var [modal, setModal] = useState(null);
@@ -1925,10 +1935,10 @@ function PaiementsProprietaire(props) {
   var [done, setDone] = useState(false);
   var [biensList, setBiensList] = useState(null);
   var PAY_MODES = [
-    { id: 'om', label: 'Orange Money', sub: 'Instantane', color: '#FF6600', text: '#fff', abbr: 'OM' },
-    { id: 'mtn', label: 'MTN MoMo', sub: 'Instantane', color: '#FFCC00', text: '#1B2B22', abbr: 'MM' },
-    { id: 'cash', label: 'Especes', sub: 'Recu PDF auto', abbr: 'ESP' },
-    { id: 'bank', label: 'Virement bancaire', sub: 'BICIGUI · Ecobank', abbr: 'VIR' }
+    { id: 'om', label: t('ongletPaiementsDash.payModes.om.label'), sub: t('ongletPaiementsDash.payModes.om.sub'), color: '#FF6600', text: '#fff', abbr: 'OM' },
+    { id: 'mtn', label: t('ongletPaiementsDash.payModes.mtn.label'), sub: t('ongletPaiementsDash.payModes.mtn.sub'), color: '#FFCC00', text: '#1B2B22', abbr: 'MM' },
+    { id: 'cash', label: t('ongletPaiementsDash.payModes.cash.label'), sub: t('ongletPaiementsDash.payModes.cash.sub'), abbr: 'ESP' },
+    { id: 'bank', label: t('ongletPaiementsDash.payModes.bank.label'), sub: t('ongletPaiementsDash.payModes.bank.sub'), abbr: 'VIR' }
   ];
   useEffect(function() {
     var bl = stats.logements.map(function(l) {
@@ -2006,7 +2016,7 @@ return {
     setProcessing(false);
     var msg = err.response && err.response.data
       ? err.response.data.erreur
-      : 'Erreur lors du paiement';
+      : t('ongletPaiementsDash.erreurPaiement');
     toast.error(msg);
     console.error('[Paiement]', err);
   });
@@ -2017,50 +2027,50 @@ return {
   var tauxRecouv = totalAttendu > 0 ? Math.round(totalPercu / totalAttendu * 100) : 0;
   var moisActuel = new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
   var filtered = filterStatut === 'tous' ? biensList : biensList.filter(function(b) { return b.statut === filterStatut; });
-  var SCFG = { paye: { label: 'Paye', bg: '#E8F5E9', color: '#1B5E20', border: '#A5D6A7', bar: '#1B6B3A' }, impaye: { label: 'Non paye', bg: '#FFEBEE', color: '#B71C1C', border: '#FFCDD2', bar: '#E53935' }, en_retard: { label: 'En retard', bg: '#FFF8E1', color: '#7B4F00', border: '#FFE082', bar: '#C8860A' } };
+  var SCFG = { paye: { label: t('ongletPaiementsDash.statuts.paye'), bg: '#E8F5E9', color: '#1B5E20', border: '#A5D6A7', bar: '#1B6B3A' }, impaye: { label: t('ongletPaiementsDash.statuts.nonPaye'), bg: '#FFEBEE', color: '#B71C1C', border: '#FFCDD2', bar: '#E53935' }, en_retard: { label: t('ongletPaiementsDash.statuts.enRetard'), bg: '#FFF8E1', color: '#7B4F00', border: '#FFE082', bar: '#C8860A' } };
   return (
     <div style={{fontFamily:'system-ui,sans-serif'}}>
       <div style={{background:'#1B6B3A',borderRadius:'14px',padding:'14px 18px',marginBottom:'18px'}}>
-        <div style={{color:'#fff',fontWeight:'700',fontSize:'16px'}}>Gestion des paiements</div>
-        <div style={{color:'rgba(255,255,255,.7)',fontSize:'12px',marginTop:'2px'}}>{moisActuel} · {biensList.length} biens</div>
+        <div style={{color:'#fff',fontWeight:'700',fontSize:'16px'}}>{t('ongletPaiementsDash.proprio.titre')}</div>
+        <div style={{color:'rgba(255,255,255,.7)',fontSize:'12px',marginTop:'2px'}}>{t('ongletPaiementsDash.proprio.sousTitre', { mois: moisActuel, count: biensList.length })}</div>
       </div>
       <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'10px',marginBottom:'18px'}}>
-        {[{label:'Encaisse',val:GNF(totalPercu),sub:'Taux : '+tauxRecouv+'%',bg:'#E8F5E9',border:'#1B6B3A',color:'#1B6B3A'},{label:'Impayes',val:GNF(totalImpaye),sub:biensList.filter(function(b){return b.statut!=='paye';}).length+' locataire(s)',bg:'#FFEBEE',border:'#E53935',color:'#C62828'},{label:'Attendu',val:GNF(totalAttendu),sub:'Total du mois',bg:'#F0F4F1',border:'#888',color:'#333'}].map(function(k){return(<div key={k.label} style={{background:k.bg,borderRadius:'12px',padding:'12px 14px',borderLeft:'3px solid '+k.border}}><div style={{fontSize:'11px',color:k.color,marginBottom:'4px'}}>{k.label}</div><div style={{fontSize:'15px',fontWeight:'700',color:k.color}}>{k.val}</div><div style={{fontSize:'10px',color:k.color,marginTop:'2px',opacity:0.7}}>{k.sub}</div></div>);})}
+        {[{label:t('ongletPaiementsDash.proprio.kpi.encaisse'),val:GNF(totalPercu),sub:t('ongletPaiementsDash.proprio.kpi.taux', { taux: tauxRecouv }),bg:'#E8F5E9',border:'#1B6B3A',color:'#1B6B3A'},{label:t('ongletPaiementsDash.proprio.kpi.impayes'),val:GNF(totalImpaye),sub:t('ongletPaiementsDash.proprio.kpi.locataires', { count: biensList.filter(function(b){return b.statut!=='paye';}).length }),bg:'#FFEBEE',border:'#E53935',color:'#C62828'},{label:t('ongletPaiementsDash.proprio.kpi.attendu'),val:GNF(totalAttendu),sub:t('ongletPaiementsDash.proprio.kpi.totalDuMois'),bg:'#F0F4F1',border:'#888',color:'#333'}].map(function(k){return(<div key={k.label} style={{background:k.bg,borderRadius:'12px',padding:'12px 14px',borderLeft:'3px solid '+k.border}}><div style={{fontSize:'11px',color:k.color,marginBottom:'4px'}}>{k.label}</div><div style={{fontSize:'15px',fontWeight:'700',color:k.color}}>{k.val}</div><div style={{fontSize:'10px',color:k.color,marginTop:'2px',opacity:0.7}}>{k.sub}</div></div>);})}
       </div>
       <div style={{background:'#fff',borderRadius:'12px',padding:'14px 16px',marginBottom:'16px',boxShadow:'0 2px 8px rgba(0,0,0,.04)'}}>
-        <div style={{display:'flex',justifyContent:'space-between',marginBottom:'8px'}}><span style={{fontSize:'13px',fontWeight:'600'}}>Taux de recouvrement</span><span style={{fontSize:'13px',fontWeight:'700',color:'#1B6B3A'}}>{tauxRecouv}%</span></div>
+        <div style={{display:'flex',justifyContent:'space-between',marginBottom:'8px'}}><span style={{fontSize:'13px',fontWeight:'600'}}>{t('ongletPaiementsDash.proprio.tauxRecouvrement')}</span><span style={{fontSize:'13px',fontWeight:'700',color:'#1B6B3A'}}>{tauxRecouv}%</span></div>
         <div style={{background:'#F0F0F0',borderRadius:'6px',height:'10px',overflow:'hidden'}}><div style={{background:'linear-gradient(90deg,#1B6B3A,#34A853)',width:tauxRecouv+'%',height:'100%',borderRadius:'6px',transition:'width .5s'}}/></div>
       </div>
       <div style={{display:'flex',gap:'8px',marginBottom:'14px',flexWrap:'wrap'}}>
-        {[['tous','Tous','#1B6B3A'],['paye','Payes','#1B6B3A'],['impaye','Non payes','#C62828'],['en_retard','En retard','#C8860A']].map(function(f){return(<button key={f[0]} type="button" onClick={function(){setFilterStatut(f[0]);}} style={{padding:'7px 16px',borderRadius:'20px',fontSize:'12px',cursor:'pointer',border:filterStatut===f[0]?'1.5px solid '+f[2]:'0.5px solid #E0E0E0',background:filterStatut===f[0]?f[2]:'#fff',color:filterStatut===f[0]?'#fff':'#666',fontWeight:filterStatut===f[0]?700:400}}>{f[1]}</button>);})}
+        {[['tous',t('ongletPaiementsDash.proprio.filtres.tous'),'#1B6B3A'],['paye',t('ongletPaiementsDash.proprio.filtres.payes'),'#1B6B3A'],['impaye',t('ongletPaiementsDash.proprio.filtres.nonPayes'),'#C62828'],['en_retard',t('ongletPaiementsDash.proprio.filtres.enRetard'),'#C8860A']].map(function(f){return(<button key={f[0]} type="button" onClick={function(){setFilterStatut(f[0]);}} style={{padding:'7px 16px',borderRadius:'20px',fontSize:'12px',cursor:'pointer',border:filterStatut===f[0]?'1.5px solid '+f[2]:'0.5px solid #E0E0E0',background:filterStatut===f[0]?f[2]:'#fff',color:filterStatut===f[0]?'#fff':'#666',fontWeight:filterStatut===f[0]?700:400}}>{f[1]}</button>);})}
       </div>
       <div style={{display:'flex',flexDirection:'column',gap:'10px',marginBottom:'20px'}}>
-        {filtered.length===0&&<div style={{textAlign:'center',padding:'30px',color:'#888'}}>Aucun bien dans cette categorie</div>}
+        {filtered.length===0&&<div style={{textAlign:'center',padding:'30px',color:'#888'}}>{t('ongletPaiementsDash.proprio.aucunBien')}</div>}
         {filtered.map(function(b){var s=SCFG[b.statut]||SCFG.impaye;return(<div key={b.id} style={{background:'#fff',borderRadius:'14px',padding:'16px',boxShadow:'0 2px 8px rgba(0,0,0,.04)',borderLeft:'4px solid '+s.bar}}>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'10px'}}>
             <div style={{display:'flex',gap:'10px',alignItems:'center'}}><div style={{width:'40px',height:'40px',background:'#F0F4F1',borderRadius:'10px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'22px'}}>{b.icon}</div><div><div style={{fontWeight:'700',fontSize:'14px',color:'#1B2B22'}}>{b.nom}</div><div style={{fontSize:'12px',color:'#888'}}>{b.locataire} · {b.quartier}</div></div></div>
             <span style={{padding:'4px 10px',borderRadius:'20px',fontSize:'11px',fontWeight:'700',background:s.bg,color:s.color,border:'0.5px solid '+s.border}}>{s.label}</span>
           </div>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px',marginBottom:'12px'}}>
-            <div style={{background:'#F8F8F8',borderRadius:'8px',padding:'8px 10px'}}><div style={{fontSize:'10px',color:'#888'}}>Loyer mensuel</div><div style={{fontSize:'14px',fontWeight:'700',color:'#1B6B3A'}}>{GNF(b.loyer)}</div></div>
-            <div style={{background:'#F8F8F8',borderRadius:'8px',padding:'8px 10px'}}><div style={{fontSize:'10px',color:'#888'}}>Situation</div><div style={{fontSize:'13px',fontWeight:'600',color:s.color}}>{b.statut==='paye'?'Paye ce mois':b.statut==='en_retard'?'Retard : '+b.jours+' jours':'Non paye'}</div></div>
+            <div style={{background:'#F8F8F8',borderRadius:'8px',padding:'8px 10px'}}><div style={{fontSize:'10px',color:'#888'}}>{t('ongletPaiementsDash.proprio.loyerMensuel')}</div><div style={{fontSize:'14px',fontWeight:'700',color:'#1B6B3A'}}>{GNF(b.loyer)}</div></div>
+            <div style={{background:'#F8F8F8',borderRadius:'8px',padding:'8px 10px'}}><div style={{fontSize:'10px',color:'#888'}}>{t('ongletPaiementsDash.proprio.situation')}</div><div style={{fontSize:'13px',fontWeight:'600',color:s.color}}>{b.statut==='paye'?t('ongletPaiementsDash.proprio.payeCeMois'):b.statut==='en_retard'?t('ongletPaiementsDash.proprio.retardJours', { jours: b.jours }):t('ongletPaiementsDash.proprio.nonPaye')}</div></div>
           </div>
-          {b.statut==='paye'?(<div style={{display:'flex',gap:'8px'}}><button type="button" style={{flex:1,background:'#F0F4F1',color:'#1B6B3A',border:'0.5px solid #A5D6A7',borderRadius:'10px',padding:'9px',fontSize:'13px',cursor:'pointer',fontWeight:'600'}}>Voir quittance</button><button type="button" style={{flex:1,background:'#F5F5F5',color:'#555',border:'0.5px solid #E0E0E0',borderRadius:'10px',padding:'9px',fontSize:'13px',cursor:'pointer'}}>Contacter</button></div>):(<div style={{display:'flex',gap:'8px'}}><button type="button" onClick={function(){ouvrirModal(b);}} style={{flex:2,background:'#1B6B3A',color:'#fff',border:'none',borderRadius:'10px',padding:'10px',fontSize:'13px',fontWeight:'700',cursor:'pointer'}}>Enregistrer le paiement</button><button type="button" style={{flex:1,background:'#FFEBEE',color:'#B71C1C',border:'0.5px solid #FFCDD2',borderRadius:'10px',padding:'10px',fontSize:'13px',cursor:'pointer',fontWeight:'600'}}>Relancer</button></div>)}
+          {b.statut==='paye'?(<div style={{display:'flex',gap:'8px'}}><button type="button" style={{flex:1,background:'#F0F4F1',color:'#1B6B3A',border:'0.5px solid #A5D6A7',borderRadius:'10px',padding:'9px',fontSize:'13px',cursor:'pointer',fontWeight:'600'}}>{t('ongletPaiementsDash.proprio.voirQuittance')}</button><button type="button" style={{flex:1,background:'#F5F5F5',color:'#555',border:'0.5px solid #E0E0E0',borderRadius:'10px',padding:'9px',fontSize:'13px',cursor:'pointer'}}>{t('ongletPaiementsDash.proprio.contacter')}</button></div>):(<div style={{display:'flex',gap:'8px'}}><button type="button" onClick={function(){ouvrirModal(b);}} style={{flex:2,background:'#1B6B3A',color:'#fff',border:'none',borderRadius:'10px',padding:'10px',fontSize:'13px',fontWeight:'700',cursor:'pointer'}}>{t('ongletPaiementsDash.proprio.enregistrerPaiement')}</button><button type="button" style={{flex:1,background:'#FFEBEE',color:'#B71C1C',border:'0.5px solid #FFCDD2',borderRadius:'10px',padding:'10px',fontSize:'13px',cursor:'pointer',fontWeight:'600'}}>{t('ongletPaiementsDash.proprio.relancer')}</button></div>)}
         </div>);})}
       </div>
       {modal&&(<div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.5)',display:'flex',alignItems:'flex-end',zIndex:1000}} onClick={function(e){if(e.target===e.currentTarget)fermerModal();}}>
         <div style={{background:'#fff',borderRadius:'20px 20px 0 0',padding:'24px 20px 32px',width:'100%',maxWidth:'600px',margin:'0 auto',maxHeight:'90vh',overflowY:'auto'}}>
           {!done?(<div>
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}}><div><div style={{fontSize:'16px',fontWeight:'700'}}>Enregistrer un paiement</div><div style={{fontSize:'12px',color:'#888'}}>{modal.nom} · {modal.locataire}</div></div><button type="button" onClick={fermerModal} style={{width:'32px',height:'32px',borderRadius:'50%',border:'none',background:'#F5F5F5',cursor:'pointer'}}>x</button></div>
-            <div style={{background:'#F0F4F1',borderRadius:'12px',padding:'14px',marginBottom:'18px',display:'flex',justifyContent:'space-between',alignItems:'center'}}><div><div style={{fontSize:'12px',color:'#555'}}>Montant du loyer</div></div><div style={{fontSize:'22px',fontWeight:'700',color:'#1B6B3A'}}>{GNF(modal.loyer)}</div></div>
-            <div style={{fontSize:'13px',fontWeight:'700',marginBottom:'12px'}}>Mode de paiement</div>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}}><div><div style={{fontSize:'16px',fontWeight:'700'}}>{t('ongletPaiementsDash.modal.titre')}</div><div style={{fontSize:'12px',color:'#888'}}>{modal.nom} · {modal.locataire}</div></div><button type="button" onClick={fermerModal} style={{width:'32px',height:'32px',borderRadius:'50%',border:'none',background:'#F5F5F5',cursor:'pointer'}}>x</button></div>
+            <div style={{background:'#F0F4F1',borderRadius:'12px',padding:'14px',marginBottom:'18px',display:'flex',justifyContent:'space-between',alignItems:'center'}}><div><div style={{fontSize:'12px',color:'#555'}}>{t('ongletPaiementsDash.proprio.loyerMensuel')}</div></div><div style={{fontSize:'22px',fontWeight:'700',color:'#1B6B3A'}}>{GNF(modal.loyer)}</div></div>
+            <div style={{fontSize:'13px',fontWeight:'700',marginBottom:'12px'}}>{t('ongletPaiementsDash.modal.modePaiement')}</div>
             {PAY_MODES.map(function(p){return(<div key={p.id} onClick={function(){setSelectedMode(p.id);}} style={{display:'flex',alignItems:'center',gap:'12px',padding:'12px 14px',border:selectedMode===p.id?'2px solid #1B6B3A':'0.5px solid #E0E0E0',background:selectedMode===p.id?'#E8F5E9':'#fff',borderRadius:'12px',marginBottom:'8px',cursor:'pointer'}}><div style={{width:'40px',height:'40px',background:p.color||'#E8F5E9',borderRadius:'10px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:p.icon?'20px':'13px',fontWeight:'700',color:p.text||'#1B6B3A'}}>{p.icon||p.abbr}</div><div style={{flex:1}}><div style={{fontSize:'14px',fontWeight:'600'}}>{p.label}</div><div style={{fontSize:'11px',color:'#888'}}>{p.sub}</div></div><div style={{width:'22px',height:'22px',borderRadius:'50%',border:selectedMode===p.id?'none':'1.5px solid #E0E0E0',background:selectedMode===p.id?'#1B6B3A':'transparent',display:'flex',alignItems:'center',justifyContent:'center'}}>{selectedMode===p.id&&<span style={{color:'#fff',fontSize:'12px'}}>✓</span>}</div></div>);})}
-            <button type="button" onClick={confirmerPaiement} disabled={processing} style={{width:'100%',background:processing?'#999':'#1B6B3A',color:'#fff',border:'none',borderRadius:'12px',padding:'14px',fontSize:'15px',fontWeight:'700',cursor:processing?'not-allowed':'pointer',marginTop:'6px'}}>{processing?'Traitement...':'Confirmer - '+GNF(modal.loyer)}</button>
+            <button type="button" onClick={confirmerPaiement} disabled={processing} style={{width:'100%',background:processing?'#999':'#1B6B3A',color:'#fff',border:'none',borderRadius:'12px',padding:'14px',fontSize:'15px',fontWeight:'700',cursor:processing?'not-allowed':'pointer',marginTop:'6px'}}>{processing?t('ongletPaiementsDash.modal.traitementEnCours'):t('ongletPaiementsDash.modal.confirmer', { montant: GNF(modal.loyer) })}</button>
           </div>):(<div style={{textAlign:'center',padding:'20px 0'}}>
             <div style={{width:'70px',height:'70px',background:'#E8F5E9',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px',fontSize:'36px'}}><CheckCircle size={36} strokeWidth={1.5} color="#1B6B3A"/></div>
-            <div style={{fontSize:'20px',fontWeight:'700',color:'#1B6B3A',marginBottom:'8px'}}>Paiement enregistre !</div>
-            <div style={{fontSize:'13px',color:'#666',marginBottom:'20px'}}>Quittance envoyee au locataire.</div>
-            <div style={{display:'flex',gap:'10px'}}><button type="button" style={{flex:1,background:'#F0F4F1',color:'#1B6B3A',border:'0.5px solid #A5D6A7',borderRadius:'10px',padding:'12px',fontSize:'13px',cursor:'pointer',fontWeight:'600'}}>Voir quittance</button><button type="button" onClick={fermerModal} style={{flex:1,background:'#1B6B3A',color:'#fff',border:'none',borderRadius:'10px',padding:'12px',fontSize:'13px',cursor:'pointer',fontWeight:'700'}}>Retour</button></div>
+            <div style={{fontSize:'20px',fontWeight:'700',color:'#1B6B3A',marginBottom:'8px'}}>{t('ongletPaiementsDash.modal.succes.titre')}</div>
+            <div style={{fontSize:'13px',color:'#666',marginBottom:'20px'}}>{t('ongletPaiementsDash.modal.succes.description')}</div>
+            <div style={{display:'flex',gap:'10px'}}><button type="button" style={{flex:1,background:'#F0F4F1',color:'#1B6B3A',border:'0.5px solid #A5D6A7',borderRadius:'10px',padding:'12px',fontSize:'13px',cursor:'pointer',fontWeight:'600'}}>{t('ongletPaiementsDash.proprio.voirQuittance')}</button><button type="button" onClick={fermerModal} style={{flex:1,background:'#1B6B3A',color:'#fff',border:'none',borderRadius:'10px',padding:'12px',fontSize:'13px',cursor:'pointer',fontWeight:'700'}}>{t('ongletPaiementsDash.modal.retour')}</button></div>
           </div>)}
         </div>
       </div>)}
@@ -2069,12 +2079,13 @@ return {
 }
 
 function PaiementsLocataire(props) {
+  var t = useTranslation('dashboard').t;
   var stats = props.stats;
   var PAY_MODES = [
-    { id: 'om', label: 'Orange Money', sub: 'Instantane', color: '#FF6600', text: '#fff', abbr: 'OM' },
-    { id: 'mtn', label: 'MTN MoMo', sub: 'Instantane', color: '#FFCC00', text: '#1B2B22', abbr: 'MM' },
-    { id: 'cash', label: 'Especes', sub: 'Recu PDF auto', abbr: 'ESP' },
-    { id: 'bank', label: 'Virement bancaire', sub: 'BICIGUI · Ecobank', abbr: 'VIR' }
+    { id: 'om', label: t('ongletPaiementsDash.payModes.om.label'), sub: t('ongletPaiementsDash.payModes.om.sub'), color: '#FF6600', text: '#fff', abbr: 'OM' },
+    { id: 'mtn', label: t('ongletPaiementsDash.payModes.mtn.label'), sub: t('ongletPaiementsDash.payModes.mtn.sub'), color: '#FFCC00', text: '#1B2B22', abbr: 'MM' },
+    { id: 'cash', label: t('ongletPaiementsDash.payModes.cash.label'), sub: t('ongletPaiementsDash.payModes.cash.sub'), abbr: 'ESP' },
+    { id: 'bank', label: t('ongletPaiementsDash.payModes.bank.label'), sub: t('ongletPaiementsDash.payModes.bank.sub'), abbr: 'VIR' }
   ];
   var [nbMois, setNbMois] = useState(1);
   var [mode, setMode] = useState('om');
@@ -2082,18 +2093,18 @@ function PaiementsLocataire(props) {
   var [logement, setLogement] = useState(null);
   useEffect(function() {
     var r = (stats.reservations||[]).find(function(r){return r.statut==='confirmee';});
-    if(r){setLogement({nom:r.logement_titre||'Mon logement',proprio:(r.proprietaire_prenom||'')+' '+(r.proprietaire_nom||''),propIni:((r.proprietaire_prenom||'').charAt(0)+(r.proprietaire_nom||'').charAt(0)).toUpperCase()||'P',quartier:r.logement_ville||'Conakry',loyer:Number(r.prix_mensuel)||0,debut:r.date_debut?new Date(r.date_debut).toLocaleDateString('fr-FR'):'-',fin:r.date_fin?new Date(r.date_fin).toLocaleDateString('fr-FR'):'-'});}
+    if(r){setLogement({nom:r.logement_titre||t('ongletPaiementsDash.locataireLegacy.monLogement'),proprio:(r.proprietaire_prenom||'')+' '+(r.proprietaire_nom||''),propIni:((r.proprietaire_prenom||'').charAt(0)+(r.proprietaire_nom||'').charAt(0)).toUpperCase()||'P',quartier:r.logement_ville||'Conakry',loyer:Number(r.prix_mensuel)||0,debut:r.date_debut?new Date(r.date_debut).toLocaleDateString('fr-FR'):'-',fin:r.date_fin?new Date(r.date_fin).toLocaleDateString('fr-FR'):'-'});}
     else{setLogement({nom:'Appartement F3 - Ratoma',proprio:'Mamadou Barry',propIni:'MB',quartier:'Ratoma, Conakry',loyer:1500000,debut:'1 juillet 2025',fin:'30 juin 2026'});}
   }, [stats]);
   if (!logement) return null;
   var addMonths = function(n){var d=new Date();d.setMonth(d.getMonth()+n);return d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});};
   var moisActuel = new Date().toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
   var total = logement.loyer * nbMois;
-  var historique = (stats.paiements||[]).slice(0,3).map(function(p){return{mois:new Date(p.created_at).toLocaleDateString('fr-FR',{month:'long',year:'numeric'}),montant:Number(p.montant),mode:p.mode_paiement==='en_ligne'?'En ligne':'Especes'};});
-  if(historique.length===0){historique=[{mois:'Mois precedent',montant:logement.loyer,mode:'Orange Money'},{mois:'Il y a 2 mois',montant:logement.loyer,mode:'Especes'},{mois:'Il y a 3 mois',montant:logement.loyer,mode:'MTN MoMo'}];}
+  var historique = (stats.paiements||[]).slice(0,3).map(function(p){return{mois:new Date(p.created_at).toLocaleDateString('fr-FR',{month:'long',year:'numeric'}),montant:Number(p.montant),mode:p.mode_paiement==='en_ligne'?t('ongletPaiementsDash.locataireLegacy.enLigne'):t('ongletPaiementsDash.locataireLegacy.especes')};});
+  if(historique.length===0){historique=[{mois:t('ongletPaiementsDash.locataireLegacy.moisPrecedent'),montant:logement.loyer,mode:'Orange Money'},{mois:t('ongletPaiementsDash.locataireLegacy.ilYA2Mois'),montant:logement.loyer,mode:t('ongletPaiementsDash.locataireLegacy.especes')},{mois:t('ongletPaiementsDash.locataireLegacy.ilYA3Mois'),montant:logement.loyer,mode:'MTN MoMo'}];}
   return (
     <div style={{fontFamily:'system-ui,sans-serif'}}>
-      <div style={{background:'#1A4FA0',borderRadius:'14px',padding:'16px 18px',marginBottom:'18px'}}><div style={{color:'#fff',fontWeight:'700',fontSize:'16px'}}>Mes paiements</div><div style={{color:'rgba(255,255,255,.75)',fontSize:'12px',marginTop:'2px'}}>{moisActuel}</div></div>
+      <div style={{background:'#1A4FA0',borderRadius:'14px',padding:'16px 18px',marginBottom:'18px'}}><div style={{color:'#fff',fontWeight:'700',fontSize:'16px'}}>{t('ongletPaiementsDash.locataireLegacy.mesPaiements')}</div><div style={{color:'rgba(255,255,255,.75)',fontSize:'12px',marginTop:'2px'}}>{moisActuel}</div></div>
       <div style={{background:'#fff',borderRadius:'14px',padding:'16px',marginBottom:'14px',boxShadow:'0 2px 10px rgba(0,0,0,.06)'}}>
         <div style={{display:'flex',gap:'12px',alignItems:'flex-start',marginBottom:'14px'}}>
           <div style={{width:'52px',height:'52px',background:'#E3F2FD',borderRadius:'12px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'28px'}}>🏢</div>
@@ -2101,39 +2112,39 @@ function PaiementsLocataire(props) {
           <div style={{textAlign:'right'}}><div style={{fontSize:'16px',fontWeight:'700',color:'#1A4FA0'}}>{GNF(logement.loyer)}</div><div style={{fontSize:'10px',color:'#888'}}>/ mois</div></div>
         </div>
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'8px',marginBottom:'14px'}}>
-          {[['Debut',logement.debut],['Fin',logement.fin],['Caution',GNF(logement.loyer)]].map(function(row){return <div key={row[0]} style={{background:'#F8F8F8',borderRadius:'8px',padding:'8px 10px'}}><div style={{fontSize:'10px',color:'#888'}}>{row[0]}</div><div style={{fontSize:'11px',fontWeight:'600',color:'#333',marginTop:'2px'}}>{row[1]}</div></div>;})}
+          {[[t('ongletPaiementsDash.locataireLegacy.debut'),logement.debut],[t('ongletPaiementsDash.locataireLegacy.fin'),logement.fin],[t('ongletPaiementsDash.locataireLegacy.caution'),GNF(logement.loyer)]].map(function(row){return <div key={row[0]} style={{background:'#F8F8F8',borderRadius:'8px',padding:'8px 10px'}}><div style={{fontSize:'10px',color:'#888'}}>{row[0]}</div><div style={{fontSize:'11px',fontWeight:'600',color:'#333',marginTop:'2px'}}>{row[1]}</div></div>;})}
         </div>
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 14px',background:stepPay==='success'?'#E8F5E9':'#FFEBEE',borderRadius:'10px',marginBottom:'14px',border:'0.5px solid '+(stepPay==='success'?'#A5D6A7':'#FFCDD2')}}>
-          <div><div style={{fontSize:'13px',fontWeight:'700',color:stepPay==='success'?'#1B6B3A':'#B71C1C'}}>{stepPay==='success'?'Loyer paye - '+moisActuel:'Loyer impaye - '+moisActuel}</div><div style={{fontSize:'11px',color:'#888',marginTop:'2px'}}>{stepPay==='success'?'Quittance envoyee':'Du depuis 3 jours'}</div></div>
+          <div><div style={{fontSize:'13px',fontWeight:'700',color:stepPay==='success'?'#1B6B3A':'#B71C1C'}}>{stepPay==='success'?t('ongletPaiementsDash.locataireLegacy.loyerPaye', { mois: moisActuel }):t('ongletPaiementsDash.locataireLegacy.loyerImpaye', { mois: moisActuel })}</div><div style={{fontSize:'11px',color:'#888',marginTop:'2px'}}>{stepPay==='success'?t('ongletPaiementsDash.locataireLegacy.quittanceEnvoyee'):t('ongletPaiementsDash.locataireLegacy.duDepuis3Jours')}</div></div>
           <div style={{fontSize:'16px',fontWeight:'700',color:stepPay==='success'?'#1B6B3A':'#C62828'}}>{GNF(logement.loyer)}</div>
         </div>
-        <div style={{fontSize:'13px',fontWeight:'600',marginBottom:'8px'}}>Historique recent</div>
-        {historique.map(function(h,i){return(<div key={i} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'8px 10px',background:'#F8F8F8',borderRadius:'8px',marginBottom:'6px'}}><div><div style={{fontSize:'12px',fontWeight:'600'}}>{h.mois}</div><div style={{fontSize:'11px',color:'#888'}}>{h.mode}</div></div><div style={{display:'flex',alignItems:'center',gap:'8px'}}><span style={{fontSize:'12px',fontWeight:'700',color:'#1B6B3A'}}>{GNF(h.montant)}</span><span style={{background:'#E8F5E9',color:'#1B5E20',padding:'2px 8px',borderRadius:'20px',fontSize:'10px',fontWeight:'700'}}>Paye</span></div></div>);})}
+        <div style={{fontSize:'13px',fontWeight:'600',marginBottom:'8px'}}>{t('ongletPaiementsDash.locataireLegacy.historiqueRecent')}</div>
+        {historique.map(function(h,i){return(<div key={i} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'8px 10px',background:'#F8F8F8',borderRadius:'8px',marginBottom:'6px'}}><div><div style={{fontSize:'12px',fontWeight:'600'}}>{h.mois}</div><div style={{fontSize:'11px',color:'#888'}}>{h.mode}</div></div><div style={{display:'flex',alignItems:'center',gap:'8px'}}><span style={{fontSize:'12px',fontWeight:'700',color:'#1B6B3A'}}>{GNF(h.montant)}</span><span style={{background:'#E8F5E9',color:'#1B5E20',padding:'2px 8px',borderRadius:'20px',fontSize:'10px',fontWeight:'700'}}>{t('ongletPaiementsDash.locataireLegacy.paye')}</span></div></div>);})}
       </div>
       {stepPay!=='success'?(<div style={{background:'#fff',borderRadius:'14px',padding:'16px',marginBottom:'14px',boxShadow:'0 2px 10px rgba(0,0,0,.06)'}}>
-        <div style={{fontSize:'14px',fontWeight:'700',marginBottom:'14px'}}>Effectuer un paiement</div>
+        <div style={{fontSize:'14px',fontWeight:'700',marginBottom:'14px'}}>{t('ongletPaiementsDash.locataireLegacy.effectuerPaiement')}</div>
         <div style={{marginBottom:'18px'}}>
-          <div style={{fontSize:'13px',fontWeight:'600',marginBottom:'10px'}}>Nombre de mois a payer</div>
+          <div style={{fontSize:'13px',fontWeight:'600',marginBottom:'10px'}}>{t('ongletPaiementsDash.locataireLegacy.nbMoisAPayer')}</div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'8px',marginBottom:'10px'}}>
-            {[[1,'1 mois'],[2,'2 mois'],[3,'3 mois'],[6,'6 mois'],[12,'1 an']].map(function(opt){return(<button key={opt[0]} type="button" onClick={function(){setNbMois(opt[0]);}} style={{padding:'10px 4px',borderRadius:'10px',fontSize:'13px',cursor:'pointer',border:nbMois===opt[0]?'2px solid #1A4FA0':'0.5px solid #E0E0E0',background:nbMois===opt[0]?'#E3F2FD':'#FAFAFA',color:nbMois===opt[0]?'#0D47A1':'#555',fontWeight:nbMois===opt[0]?700:400}}>{opt[1]}</button>);})}
+            {[[1,t('ongletPaiementsDash.locataireLegacy.unMois')],[2,t('ongletPaiementsDash.delaiMois', { n: 2 })],[3,t('ongletPaiementsDash.delaiMois', { n: 3 })],[6,t('ongletPaiementsDash.delaiMois', { n: 6 })],[12,t('ongletPaiementsDash.locataireLegacy.unAn')]].map(function(opt){return(<button key={opt[0]} type="button" onClick={function(){setNbMois(opt[0]);}} style={{padding:'10px 4px',borderRadius:'10px',fontSize:'13px',cursor:'pointer',border:nbMois===opt[0]?'2px solid #1A4FA0':'0.5px solid #E0E0E0',background:nbMois===opt[0]?'#E3F2FD':'#FAFAFA',color:nbMois===opt[0]?'#0D47A1':'#555',fontWeight:nbMois===opt[0]?700:400}}>{opt[1]}</button>);})}
           </div>
           <div style={{background:'#E3F2FD',borderRadius:'10px',padding:'10px 14px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-            <div><div style={{fontSize:'12px',color:'#0D47A1',fontWeight:'600'}}>Periode couverte</div><div style={{fontSize:'11px',color:'#1565C0',marginTop:'2px'}}>{moisActuel} vers {addMonths(nbMois-1)}</div></div>
+            <div><div style={{fontSize:'12px',color:'#0D47A1',fontWeight:'600'}}>{t('ongletPaiementsDash.locataireLegacy.periodeCouverte')}</div><div style={{fontSize:'11px',color:'#1565C0',marginTop:'2px'}}>{t('ongletPaiementsDash.locataireLegacy.moisVers', { debut: moisActuel, fin: addMonths(nbMois-1) })}</div></div>
             <div style={{textAlign:'right'}}><div style={{fontSize:'11px',color:'#888'}}>{nbMois} x {GNF(logement.loyer)}</div><div style={{fontSize:'18px',fontWeight:'700',color:'#1A4FA0'}}>{GNF(total)}</div></div>
           </div>
         </div>
         <div style={{marginBottom:'16px'}}>
-          <div style={{fontSize:'13px',fontWeight:'600',marginBottom:'10px'}}>Mode de paiement</div>
+          <div style={{fontSize:'13px',fontWeight:'600',marginBottom:'10px'}}>{t('ongletPaiementsDash.modal.modePaiement')}</div>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
             {PAY_MODES.map(function(p){return(<div key={p.id} onClick={function(){setMode(p.id);}} style={{display:'flex',alignItems:'center',gap:'10px',padding:'11px 12px',cursor:'pointer',border:mode===p.id?'2px solid #1A4FA0':'0.5px solid #E0E0E0',background:mode===p.id?'#E3F2FD':'#fff',borderRadius:'10px'}}><div style={{width:'34px',height:'34px',background:p.color||'#E8F5E9',borderRadius:'8px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:p.icon?'18px':'11px',fontWeight:'700',color:p.text||'#1B6B3A',flexShrink:0}}>{p.icon||p.abbr}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:'12px',fontWeight:'600',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.label}</div><div style={{fontSize:'10px',color:'#888'}}>{p.sub}</div></div>{mode===p.id&&<span style={{color:'#1A4FA0',fontSize:'14px',flexShrink:0}}>✓</span>}</div>);})}
           </div>
         </div>
         <div style={{background:'#F8F8F8',borderRadius:'10px',padding:'12px 14px',marginBottom:'14px'}}>
-          <div style={{fontSize:'12px',fontWeight:'600',marginBottom:'8px'}}>Recapitulatif</div>
-          {[['Bien',logement.nom],['Mois payes',nbMois+' mois'],['Mode',(PAY_MODES.find(function(p){return p.id===mode;})||{}).label],['Total',GNF(total)]].map(function(row){return(<div key={row[0]} style={{display:'flex',justifyContent:'space-between',fontSize:'12px',padding:'4px 0',borderBottom:'0.5px solid #EFEFEF'}}><span style={{color:'#888'}}>{row[0]}</span><span style={{fontWeight:'600',color:row[0]==='Total'?'#1A4FA0':'#333'}}>{row[1]}</span></div>);})}
+          <div style={{fontSize:'12px',fontWeight:'600',marginBottom:'8px'}}>{t('ongletPaiementsDash.locataireLegacy.recapitulatif')}</div>
+          {[[t('ongletPaiementsDash.locataireLegacy.bien'),logement.nom],[t('ongletPaiementsDash.locataireLegacy.moisPayes'),t('ongletPaiementsDash.delaiMois', { n: nbMois })],[t('ongletPaiementsDash.locataireLegacy.mode'),(PAY_MODES.find(function(p){return p.id===mode;})||{}).label],[t('ongletPaiementsDash.locataireLegacy.total'),GNF(total)]].map(function(row){return(<div key={row[0]} style={{display:'flex',justifyContent:'space-between',fontSize:'12px',padding:'4px 0',borderBottom:'0.5px solid #EFEFEF'}}><span style={{color:'#888'}}>{row[0]}</span><span style={{fontWeight:'600',color:row[0]===t('ongletPaiementsDash.locataireLegacy.total')?'#1A4FA0':'#333'}}>{row[1]}</span></div>);})}
         </div>
-        <button type="button" onClick={function(){setStepPay('success');toast.success('Paiement effectue ! Quittance generee.');}} style={{width:'100%',background:'#1A4FA0',color:'#fff',border:'none',borderRadius:'12px',padding:'14px',fontSize:'15px',fontWeight:'700',cursor:'pointer'}}>Confirmer - {GNF(total)}</button>
-      </div>):(<div style={{background:'#E8F5E9',borderRadius:'14px',padding:'20px',textAlign:'center',boxShadow:'0 2px 10px rgba(0,0,0,.06)'}}><div style={{fontSize:'40px',marginBottom:'10px'}}>🎉</div><div style={{fontSize:'16px',fontWeight:'700',color:'#1B6B3A',marginBottom:'6px'}}>Paiement effectue !</div><div style={{fontSize:'13px',color:'#2E7D32',marginBottom:'16px'}}>{GNF(total)} · {nbMois} mois · Quittance envoyee</div><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}><button type="button" style={{background:'#fff',color:'#1B6B3A',border:'0.5px solid #A5D6A7',borderRadius:'10px',padding:'10px',fontSize:'13px',cursor:'pointer',fontWeight:'600'}}>Voir quittance</button><button type="button" onClick={function(){setStepPay('select');setNbMois(1);}} style={{background:'#1B6B3A',color:'#fff',border:'none',borderRadius:'10px',padding:'10px',fontSize:'13px',cursor:'pointer',fontWeight:'700'}}>Retour</button></div></div>)}
+        <button type="button" onClick={function(){setStepPay('success');toast.success(t('ongletPaiementsDash.locataireLegacy.toastPaiementEffectue'));}} style={{width:'100%',background:'#1A4FA0',color:'#fff',border:'none',borderRadius:'12px',padding:'14px',fontSize:'15px',fontWeight:'700',cursor:'pointer'}}>{t('ongletPaiementsDash.locataireLegacy.confirmerMontant', { montant: GNF(total) })}</button>
+      </div>):(<div style={{background:'#E8F5E9',borderRadius:'14px',padding:'20px',textAlign:'center',boxShadow:'0 2px 10px rgba(0,0,0,.06)'}}><div style={{fontSize:'40px',marginBottom:'10px'}}>🎉</div><div style={{fontSize:'16px',fontWeight:'700',color:'#1B6B3A',marginBottom:'6px'}}>{t('ongletPaiementsDash.locataireLegacy.paiementEffectue')}</div><div style={{fontSize:'13px',color:'#2E7D32',marginBottom:'16px'}}>{t('ongletPaiementsDash.locataireLegacy.recapSucces', { montant: GNF(total), n: nbMois })}</div><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}><button type="button" style={{background:'#fff',color:'#1B6B3A',border:'0.5px solid #A5D6A7',borderRadius:'10px',padding:'10px',fontSize:'13px',cursor:'pointer',fontWeight:'600'}}>{t('ongletPaiementsDash.proprio.voirQuittance')}</button><button type="button" onClick={function(){setStepPay('select');setNbMois(1);}} style={{background:'#1B6B3A',color:'#fff',border:'none',borderRadius:'10px',padding:'10px',fontSize:'13px',cursor:'pointer',fontWeight:'700'}}>{t('ongletPaiementsDash.modal.retour')}</button></div></div>)}
     </div>
   );
 }
@@ -2143,6 +2154,7 @@ function PaiementsLocataire(props) {
 // ================================================
 
 function OngletPreavis(props) {
+  var t = useTranslation('dashboard').t;
   var [renouvellements, setRenouvellements] = useState([]);
 
 useEffect(function() {
@@ -2156,10 +2168,10 @@ useEffect(function() {
 function repondreRenouvellement(id, reponse) {
   api.patch('/renouvellements/' + id + '/repondre', { reponse: reponse })
     .then(function() {
-      toast.success(reponse === 'accepte' ? 'Renouvellement accepté !' : 'Renouvellement refusé');
+      toast.success(reponse === 'accepte' ? t('ongletPreavisDash.renouvellementAccepte') : t('ongletPreavisDash.renouvellementRefuse'));
       setRenouvellements(function(prev) { return prev.filter(function(r) { return r.id !== id; }); });
     })
-    .catch(function(err) { toast.error(err.response?.data?.erreur || 'Erreur'); });
+    .catch(function(err) { toast.error(err.response?.data?.erreur || t('ongletPreavisDash.erreur')); });
 }
   var user      = props.user;
   var setOnglet = props.setOnglet;
@@ -2183,9 +2195,12 @@ function repondreRenouvellement(id, reponse) {
     return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
   };
 
-  var motifsList = estProprietaire
-    ? ['Vente du bien immobilier', 'Reprise pour usage personnel', 'Travaux de rénovation importants', 'Non-paiement répété des loyers', 'Troubles de voisinage', 'Fin de bail non renouvelé', 'Autre motif']
-    : ['Changement de ville ou de pays', 'Achat d\'un bien immobilier', 'Logement inadapté à mes besoins', 'Raisons professionnelles', 'Raisons familiales', 'Conditions du logement insatisfaisantes', 'Autre raison'];
+  var motifsKeysProprio = ['venteBien', 'repriseUsagePersonnel', 'travauxRenovation', 'nonPaiementRepete', 'troublesVoisinage', 'finBailNonRenouvele', 'autreMotif'];
+  var motifsKeysLocataire = ['changementVille', 'achatBien', 'logementInadapte', 'raisonsProfessionnelles', 'raisonsFamiliales', 'conditionsInsatisfaisantes', 'autreRaison'];
+  var tFr = i18n.getFixedT('fr', 'dashboard');
+  var motifsList = (estProprietaire ? motifsKeysProprio : motifsKeysLocataire).map(function(k) {
+    return { value: tFr('ongletPreavisDash.motifs.' + k), label: t('ongletPreavisDash.motifs.' + k) };
+  });
 
   useEffect(function() {
     if (estProprietaire) {
@@ -2234,7 +2249,7 @@ function repondre(preavisId, reponse) {
     console.log('delai:', delai);
     console.log('type:', estProprietaire ? 'proprietaire' : 'locataire');
     console.log('reservation:', reservation);
-    if (!reservationId) { toast.error('Aucune réservation active trouvée'); return; }
+    if (!reservationId) { toast.error(t('ongletPreavisDash.toastAucuneReservation')); return; }
     setLoading(true);
     api.post('/preavis', {
       reservation_id: reservationId,
@@ -2246,10 +2261,10 @@ function repondre(preavisId, reponse) {
     .then(function(res) {
       setResultat(res.data);
       setStep('sent');
-      toast.success('Préavis envoyé ! Email + notification envoyés.');
+      toast.success(t('ongletPreavisDash.toastPreavisEnvoye'));
     })
     .catch(function(err) {
-      toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur envoi préavis');
+      toast.error(err.response && err.response.data ? err.response.data.erreur : t('ongletPreavisDash.toastErreurEnvoi'));
     })
     .finally(function() { setLoading(false); });
   }
@@ -2269,25 +2284,25 @@ function repondre(preavisId, reponse) {
               document.body.appendChild(link);
               link.click();
               link.remove();
-              toast.success('PDF téléchargé !');
+              toast.success(t('ongletPreavisDash.toastPdfTelecharge'));
             });
         } else {
           // Générer un PDF minimal depuis les données locales
           var contenu = `
-            <html><head><meta charset="UTF-8"><title>Préavis</title>
+            <html><head><meta charset="UTF-8"><title>${t('ongletPreavisDash.pdf.titre')}</title>
             <style>body{font-family:sans-serif;padding:40px;max-width:600px;margin:0 auto}
             h1{color:#1B6B3A}.box{background:#FFF8E1;border:1px solid #FFE082;border-radius:8px;padding:16px;margin:16px 0}
             .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #FFE082;font-size:14px}</style></head>
             <body>
-              <h1>Werdhe - Préavis de départ</h1>
-              <p>Date : ${new Date().toLocaleDateString('fr-FR')}</p>
+              <h1>${t('ongletPreavisDash.pdf.entete')}</h1>
+              <p>${t('ongletPreavisDash.pdf.date', { date: new Date().toLocaleDateString('fr-FR') })}</p>
               <div class="box">
-                <div class="row"><span>Motif</span><b>${motif}</b></div>
-                <div class="row"><span>Délai</span><b>${delai} mois</b></div>
-                <div class="row"><span>Date de sortie estimée</span><b>${addDays(parseInt(delai) * 30)}</b></div>
+                <div class="row"><span>${t('ongletPreavisDash.pdf.motif')}</span><b>${motif}</b></div>
+                <div class="row"><span>${t('ongletPreavisDash.pdf.delai')}</span><b>${t('ongletPaiementsDash.delaiMois', { n: delai })}</b></div>
+                <div class="row"><span>${t('ongletPreavisDash.pdf.dateSortieEstimee')}</span><b>${addDays(parseInt(delai) * 30)}</b></div>
               </div>
               ${note ? '<p style="font-style:italic">"' + note + '"</p>' : ''}
-              <p>Généré par Werdhe · werdhe.com</p>
+              <p>${t('ongletPreavisDash.pdf.genereParWerdhe')}</p>
             </body></html>
           `;
           var blob = new Blob([contenu], { type: 'text/html' });
@@ -2298,10 +2313,10 @@ function repondre(preavisId, reponse) {
           document.body.appendChild(link);
           link.click();
           link.remove();
-          toast.success('Préavis téléchargé !');
+          toast.success(t('ongletPreavisDash.toastPreavisTelecharge'));
         }
       })
-      .catch(function() { toast.error('Erreur téléchargement'); });
+      .catch(function() { toast.error(t('ongletPreavisDash.toastErreurTelechargement')); });
   }
   function contacter() {
     if (setOnglet) setOnglet('/dashboard/messages');
@@ -2313,7 +2328,7 @@ function repondre(preavisId, reponse) {
       {renouvellements.length > 0 && (
         <div style={{ marginBottom: 20 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: '#1565C0', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
-            <RefreshCw size={16} strokeWidth={1.5} /> Proposition(s) de renouvellement ({renouvellements.length})
+            <RefreshCw size={16} strokeWidth={1.5} /> {t('ongletPreavisDash.renouv.titre', { count: renouvellements.length })}
           </div>
           {renouvellements.map(function(rn) {
             return (
@@ -2323,10 +2338,10 @@ function repondre(preavisId, reponse) {
                 </div>
                 <div style={{ background: '#E3F2FD', borderRadius: 10, padding: 12, marginBottom: 14 }}>
                   {[
-                    ['Proposé par', rn.prop_prenom + ' ' + rn.prop_nom],
-                    ['Durée', rn.nouvelle_duree_mois + ' mois supplémentaires'],
-                    ['Nouveau loyer', rn.nouveau_prix ? new Intl.NumberFormat('fr-FR').format(rn.nouveau_prix) + ' GNF/mois' : 'Inchangé'],
-                    ['Reçu le', new Date(rn.created_at).toLocaleDateString('fr-FR')],
+                    [t('ongletPreavisDash.renouv.proposePar'), rn.prop_prenom + ' ' + rn.prop_nom],
+                    [t('ongletPreavisDash.renouv.duree'), t('ongletPreavisDash.renouv.moisSupplementaires', { n: rn.nouvelle_duree_mois })],
+                    [t('ongletPreavisDash.renouv.nouveauLoyer'), rn.nouveau_prix ? new Intl.NumberFormat('fr-FR').format(rn.nouveau_prix) + ' GNF/mois' : t('ongletPreavisDash.renouv.inchange')],
+                    [t('ongletPreavisDash.renouv.recuLe'), new Date(rn.created_at).toLocaleDateString('fr-FR')],
                   ].map(function(row) {
                     return (
                       <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0', borderBottom: '0.5px solid #BBDEFB' }}>
@@ -2340,11 +2355,11 @@ function repondre(preavisId, reponse) {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                   <button onClick={function() { repondreRenouvellement(rn.id, 'refuse'); }}
                     style={{ padding: 12, borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#888', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-                    Refuser
+                    {t('ongletPreavisDash.renouv.refuser')}
                   </button>
                   <button onClick={function() { repondreRenouvellement(rn.id, 'accepte'); }}
                     style={{ padding: 12, borderRadius: 10, border: 'none', background: '#1565C0', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-                    Accepter
+                    {t('ongletPreavisDash.renouv.accepter')}
                   </button>
                 </div>
               </div>
@@ -2354,12 +2369,12 @@ function repondre(preavisId, reponse) {
       )}
       <div className="dash-page-header">
         <div>
-          <span style={{display:'flex',alignItems:'center',gap:5}}><Send size={14} strokeWidth={1.5}/> Préavis de départ</span>
-          <p>{estProprietaire ? 'Notifier un locataire' : 'Notifier votre propriétaire'}</p>
+          <span style={{display:'flex',alignItems:'center',gap:5}}><Send size={14} strokeWidth={1.5}/> {t('ongletPreavisDash.titre')}</span>
+          <p>{estProprietaire ? t('ongletPreavisDash.notifierLocataire') : t('ongletPreavisDash.notifierProprietaire')}</p>
         </div>
         {step !== 'form' && (
           <button className="btn-outline-green" onClick={function() { setStep('form'); setMotif(''); setDelai(''); setNote(''); setBien(null); setResultat(null); }}>
-            + Nouveau préavis
+            {t('ongletPreavisDash.nouveauPreavis')}
           </button>
         )}
       </div>
@@ -2372,27 +2387,27 @@ function repondre(preavisId, reponse) {
               {estProprietaire ? <Send size={32} strokeWidth={1.5}/> : <CheckCircle size={32} strokeWidth={1.5}/>}
             </div>
             <div style={{ fontSize: 20, fontWeight: 700, color: estProprietaire ? '#C62828' : '#1B6B3A', marginBottom: 8 }}>
-              {estProprietaire ? 'Préavis officiel envoyé' : 'Préavis envoyé !'}
+              {estProprietaire ? t('ongletPreavisDash.sent.titreOfficiel') : t('ongletPreavisDash.sent.titre')}
             </div>
             <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6 }}>
               {estProprietaire
-                ? <span><b>{resultat.dest_prenom} {resultat.dest_nom}</b> a été notifié par SMS et email. Il a <b>48h</b> pour accuser réception.</span>
-                : <span>Votre propriétaire a été notifié par email et notification. Il a <b>48h</b> pour accuser réception.</span>
+                ? <span><b>{resultat.dest_prenom} {resultat.dest_nom}</b> {t('ongletPreavisDash.sent.notifieSmsEmail')}<b>48h</b>{t('ongletPreavisDash.sent.pourAccuserReception')}</span>
+                : <span>{t('ongletPreavisDash.sent.proprioNotifie')}<b>48h</b>{t('ongletPreavisDash.sent.pourAccuserReception')}</span>
               }
             </div>
           </div>
 
           {/* Récap préavis */}
           <div style={{ background: '#FFF8E1', borderRadius: 12, padding: 16, marginBottom: 16 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#7B4F00', marginBottom: 10 }}>📋 {estProprietaire ? 'Préavis officiel' : 'Votre préavis officiel'}</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#7B4F00', marginBottom: 10 }}>📋 {estProprietaire ? t('ongletPreavisDash.sent.recapTitreProprio') : t('ongletPreavisDash.sent.recapTitreLocataire')}</div>
             {[
-              estProprietaire ? ['Bien', bien && bien.logement_titre] : ['Logement', reservation && reservation.logement_titre],
-              estProprietaire ? ['Locataire notifié', resultat.dest_prenom + ' ' + resultat.dest_nom] : null,
-              estProprietaire ? ['Contact', resultat.dest_tel || 'N/A'] : null,
-              ['Motif', motif],
-              [estProprietaire ? 'Délai accordé' : 'Délai de préavis', delai + ' mois'],
-              ['Date de sortie estimée', resultat.date_sortie || addDays(parseInt(delai) * 30)],
-              ['Statut', 'En attente d\'accusé de réception'],
+              estProprietaire ? [t('ongletPreavisDash.sent.bien'), bien && bien.logement_titre] : [t('ongletReservationsProprio.demandeRecue.labels.logement'), reservation && reservation.logement_titre],
+              estProprietaire ? [t('ongletPreavisDash.sent.locataireNotifie'), resultat.dest_prenom + ' ' + resultat.dest_nom] : null,
+              estProprietaire ? [t('ongletPreavisDash.sent.contact'), resultat.dest_tel || t('ongletReservationsProprio.na')] : null,
+              [t('ongletPreavisDash.sent.motif'), motif],
+              [estProprietaire ? t('ongletPreavisDash.sent.delaiAccorde') : t('ongletPreavisDash.sent.delaiDePreavis'), t('ongletPaiementsDash.delaiMois', { n: delai })],
+              [t('ongletPreavisDash.sent.dateSortieEstimee'), resultat.date_sortie || addDays(parseInt(delai) * 30)],
+              [t('ongletPreavisDash.sent.statut'), t('ongletPreavisDash.sent.enAttenteAccuse')],
             ].filter(Boolean).map(function(row) {
               return (
                 <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '5px 0', borderBottom: '0.5px solid #FFE082', flexWrap: 'wrap', gap: 4 }}>
@@ -2408,8 +2423,8 @@ function repondre(preavisId, reponse) {
             <span>ℹ️</span>
             <span style={{ lineHeight: 1.5 }}>
               {estProprietaire
-                ? 'Continuez à encaisser les loyers normalement jusqu\'à la date de sortie. L\'état des lieux de sortie sera planifié automatiquement dans ' + delai + ' mois.'
-                : 'Continuez à payer vos loyers normalement jusqu\'à la date de sortie. Un état des lieux de sortie sera planifié avec le propriétaire.'}
+                ? t('ongletPreavisDash.sent.infoProprio', { n: delai })
+                : t('ongletPreavisDash.sent.infoLocataire')}
             </span>
           </div>
 
@@ -2417,11 +2432,11 @@ function repondre(preavisId, reponse) {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             <button onClick={contacter}
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '12px', borderRadius: 10, background: '#F5F5F5', color: '#555', border: '0.5px solid #E0E0E0', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-              <MessageCircle size={14} strokeWidth={1.5} /> {estProprietaire ? 'Contacter le locataire' : 'Contacter le proprio'}
+              <MessageCircle size={14} strokeWidth={1.5} /> {estProprietaire ? t('ongletPreavisDash.sent.contacterLocataire') : t('ongletPreavisDash.sent.contacterProprio')}
             </button>
             <button onClick={telechargerPDF}
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '12px', borderRadius: 10, background: estProprietaire ? '#C62828' : '#1B6B3A', color: '#fff', border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-              <FileText size={14} strokeWidth={1.5} /> Télécharger PDF
+              <FileText size={14} strokeWidth={1.5} /> {t('ongletPreavisDash.sent.telechargerPdf')}
             </button>
           </div>
         </div>
@@ -2430,16 +2445,16 @@ function repondre(preavisId, reponse) {
       {/* ── CONFIRMATION AVANT ENVOI ─────────────────────────── */}
       {step === 'confirm' && (
         <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}><span style={{display:'flex',alignItems:'center',gap:6}}><AlertTriangle size={15} strokeWidth={1.5}/> Confirmer l'envoi du préavis</span></div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}><span style={{display:'flex',alignItems:'center',gap:6}}><AlertTriangle size={15} strokeWidth={1.5}/> {t('ongletPreavis.confirmerEnvoiTitre')}</span></div>
           <div style={{ background: '#FFEBEE', borderRadius: 10, padding: 14, marginBottom: 16, fontSize: 13, color: '#B71C1C', fontWeight: 600 }}>
-            Action officielle et irréversible. Le destinataire recevra un email + une notification sur la plateforme.
+            {t('ongletPreavisDash.confirm.actionIrreversible')}
           </div>
           {[
-            estProprietaire ? ['Bien', bien && bien.logement_titre] : ['Logement', reservation && reservation.logement_titre],
-            ['Motif', motif],
-            ['Délai', delai + ' mois'],
-            ['Date de sortie estimée', addDays(parseInt(delai) * 30)],
-            note ? ['Message', note] : null,
+            estProprietaire ? [t('ongletPreavisDash.sent.bien'), bien && bien.logement_titre] : [t('ongletReservationsProprio.demandeRecue.labels.logement'), reservation && reservation.logement_titre],
+            [t('ongletPreavisDash.sent.motif'), motif],
+            [t('ongletPreavis.locataire.confirm.labels.delai'), t('ongletPaiementsDash.delaiMois', { n: delai })],
+            [t('ongletPreavisDash.sent.dateSortieEstimee'), addDays(parseInt(delai) * 30)],
+            note ? [t('ongletPreavisDash.confirm.message'), note] : null,
           ].filter(Boolean).map(function(row) {
             return (
               <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '6px 0', borderBottom: '0.5px solid #f0f0f0', flexWrap: 'wrap', gap: 4 }}>
@@ -2450,10 +2465,10 @@ function repondre(preavisId, reponse) {
           })}
           <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
             <button onClick={function() { setStep('form'); }}
-              style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer' }}>← Modifier</button>
+              style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer' }}>{t('ongletPreavis.modifier')}</button>
             <button onClick={envoyer} disabled={loading}
               style={{ flex: 2, background: loading ? '#999' : (estProprietaire ? '#C62828' : '#1B6B3A'), color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
-              {loading ? 'Envoi en cours...' : <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><Send size={14} strokeWidth={1.5}/> Envoyer le préavis officiel</span>}
+              {loading ? t('ongletPreavisDash.confirm.envoiEnCours') : <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><Send size={14} strokeWidth={1.5}/> {t('ongletPreavisDash.confirm.envoyerOfficiel')}</span>}
             </button>
           </div>
         </div>
@@ -2463,22 +2478,22 @@ function repondre(preavisId, reponse) {
 {preavisRecus.length > 0 && (
   <div style={{ marginBottom: 20 }}>
     <div style={{ fontSize: 14, fontWeight: 700, color: '#B71C1C', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
-      <span>📩</span> Préavis reçu{preavisRecus.length > 1 ? 's' : ''} ({preavisRecus.length})
+      <span>📩</span> {t('ongletPreavisDash.recus.titre', { count: preavisRecus.length, s: preavisRecus.length > 1 ? 's' : '' })}
     </div>
     {preavisRecus.map(function(p) {
-      var dateSortie = p.date_sortie_estimee ? new Date(p.date_sortie_estimee).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : 'N/A';
+      var dateSortie = p.date_sortie_estimee ? new Date(p.date_sortie_estimee).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : t('ongletReservationsProprio.na');
       var maintenant = new Date();
       var diff       = p.date_sortie_estimee ? Math.ceil((new Date(p.date_sortie_estimee) - maintenant) / 86400000) : null;
       var expediteur = p.type === 'locataire'
-        ? p.loc_prenom + ' ' + p.loc_nom + ' (locataire)'
-        : p.prop_prenom + ' ' + p.prop_nom + ' (propriétaire)';
+        ? t('ongletPreavisDash.recus.expediteurLocataire', { prenom: p.loc_prenom, nom: p.loc_nom })
+        : t('ongletPreavisDash.recus.expediteurProprietaire', { prenom: p.prop_prenom, nom: p.prop_nom });
 
       return (
         <div key={p.id} style={{ background: '#fff', borderRadius: 14, padding: 18, marginBottom: 12, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid #C62828' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>📋 Préavis - {p.logement_titre}</div>
-              <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>De : {expediteur}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{t('ongletPreavisDash.recus.preavisDe', { logement: p.logement_titre })}</div>
+              <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>{t('ongletPreavisDash.recus.de', { expediteur: expediteur })}</div>
             </div>
             {diff !== null && (
               <div style={{ background: diff <= 5 ? '#FFEBEE' : '#FFF8E1', color: diff <= 5 ? '#C62828' : '#7B4F00', borderRadius: 20, padding: '4px 12px', fontSize: 13, fontWeight: 800 }}>
@@ -2489,10 +2504,10 @@ function repondre(preavisId, reponse) {
 
           <div style={{ background: '#FFF8E1', borderRadius: 10, padding: 12, marginBottom: 14 }}>
             {[
-              ['Motif',               p.motif],
-              ['Délai',               p.delai_mois + ' mois'],
-              ['Date de sortie',      dateSortie],
-              ['Reçu le',             new Date(p.created_at).toLocaleDateString('fr-FR')],
+              [t('ongletPreavisDash.sent.motif'),               p.motif],
+              [t('ongletPreavis.locataire.confirm.labels.delai'),               t('ongletPaiementsDash.delaiMois', { n: p.delai_mois })],
+              [t('ongletPreavisDash.recus.dateDeSortie'),      dateSortie],
+              [t('ongletPreavisDash.renouv.recuLe'),             new Date(p.created_at).toLocaleDateString('fr-FR')],
             ].map(function(row) {
               return (
                 <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0', borderBottom: '0.5px solid #FFE082' }}>
@@ -2508,32 +2523,32 @@ function repondre(preavisId, reponse) {
               <textarea
                 value={messageReponse}
                 onChange={function(e) { setMessageReponse(e.target.value); }}
-                placeholder="Message optionnel pour expliquer votre réponse..."
+                placeholder={t('ongletPreavisDash.recus.messageOptionnel')}
                 style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 70, fontFamily: 'system-ui', boxSizing: 'border-box', outline: 'none', marginBottom: 10 }} />
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <button
                   onClick={function() { repondre(p.id, 'renouveler'); }}
                   disabled={reponseLoading}
                   style={{ padding: 12, borderRadius: 10, border: '1.5px solid #1565C0', background: '#E3F2FD', color: '#1565C0', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-                  Demander le renouvellement
+                  {t('ongletPreavisDash.recus.demanderRenouvellement')}
                 </button>
                 <button
                   onClick={function() { repondre(p.id, 'accepte'); }}
                   disabled={reponseLoading}
                   style={{ padding: 12, borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-                  <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><CheckCircle size={14} strokeWidth={1.5}/> Accepter le départ</span>
+                  <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><CheckCircle size={14} strokeWidth={1.5}/> {t('ongletPreavisDash.recus.accepterDepart')}</span>
                 </button>
               </div>
               <button onClick={function() { setReponseModal(null); setMessageReponse(''); }}
                 style={{ width: '100%', marginTop: 8, padding: 8, borderRadius: 8, border: 'none', background: '#F5F5F5', color: '#888', fontSize: 12, cursor: 'pointer' }}>
-                Annuler
+                {t('ongletLocataires.form.annuler')}
               </button>
             </div>
           ) : (
             <button
               onClick={function() { setReponseModal(p.id); }}
               style={{ width: '100%', background: '#C62828', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-              Répondre au préavis →
+              {t('ongletPreavisDash.recus.repondreAuPreavis')}
             </button>
           )}
         </div>
@@ -2547,14 +2562,14 @@ function repondre(preavisId, reponse) {
         <div style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
           <div style={{ background: '#FFF8E1', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#7B4F00', display: 'flex', gap: 6 }}>
             <span>⚖️</span>
-            <span>Le préavis sera envoyé officiellement par email et notification à la partie concernée.</span>
+            <span>{t('ongletPreavisDash.form.alerteInfo')}</span>
           </div>
 
           {/* Sélection bien (proprio) */}
           {estProprietaire && (
             <div style={{ marginBottom: 18 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>Bien concerné *</div>
-              {biens.length === 0 && <div style={{ color: '#888', fontSize: 13 }}>Aucune location active</div>}
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>{t('ongletPreavis.proprio.form.bienLabel')}</div>
+              {biens.length === 0 && <div style={{ color: '#888', fontSize: 13 }}>{t('ongletPreavisDash.form.aucuneLocationActive')}</div>}
               {biens.map(function(b) {
                 return (
                   <div key={b.id} onClick={function() { setBien(b); }}
@@ -2573,15 +2588,16 @@ function repondre(preavisId, reponse) {
 
           {/* Motif */}
           <div style={{ marginBottom: 18 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>Motif de départ *</div>
-            {motifsList.map(function(m) {
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>{t('ongletPreavis.locataire.form.motifLabel')}</div>
+            {motifsList.map(function(opt) {
+              var m = opt.value;
               return (
                 <div key={m} onClick={function() { setMotif(m); }}
                   style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', border: motif === m ? '1.5px solid #1B6B3A' : '0.5px solid #E0E0E0', background: motif === m ? '#E8F5E9' : '#FAFAFA', borderRadius: 10, marginBottom: 6, cursor: 'pointer' }}>
                   <div style={{ width: 18, height: 18, borderRadius: '50%', border: motif === m ? 'none' : '1.5px solid #CCC', background: motif === m ? '#1B6B3A' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     {motif === m && <span style={{ color: '#fff', fontSize: 11 }}>✓</span>}
                   </div>
-                  <span style={{ fontSize: 13, color: motif === m ? '#1B5E20' : '#555' }}>{m}</span>
+                  <span style={{ fontSize: 13, color: motif === m ? '#1B5E20' : '#555' }}>{opt.label}</span>
                 </div>
               );
             })}
@@ -2590,21 +2606,21 @@ function repondre(preavisId, reponse) {
           {/* Délai */}
           <div style={{ marginBottom: 18 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>
-              {estProprietaire ? 'Délai accordé au locataire *' : 'Délai de préavis *'}
+              {estProprietaire ? t('ongletPreavis.proprio.form.delaiLabel') : t('ongletPreavis.locataire.form.delaiLabel')}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-              {[['1', '1 mois'], ['2', '2 mois'], ['3', '3 mois']].map(function(opt) {
+              {['1', '2', '3'].map(function(n) {
                 return (
-                  <button key={opt[0]} onClick={function() { setDelai(opt[0]); }}
-                    style={{ padding: 10, borderRadius: 10, border: delai === opt[0] ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: delai === opt[0] ? '#E8F5E9' : '#FAFAFA', color: delai === opt[0] ? '#1B5E20' : '#555', fontSize: 13, fontWeight: delai === opt[0] ? 700 : 400, cursor: 'pointer' }}>
-                    {opt[1]}
+                  <button key={n} onClick={function() { setDelai(n); }}
+                    style={{ padding: 10, borderRadius: 10, border: delai === n ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: delai === n ? '#E8F5E9' : '#FAFAFA', color: delai === n ? '#1B5E20' : '#555', fontSize: 13, fontWeight: delai === n ? 700 : 400, cursor: 'pointer' }}>
+                    {t('ongletPaiementsDash.delaiMois', { n: n })}
                   </button>
                 );
               })}
             </div>
             {delai && (
               <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginTop: 10, display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
-                <span style={{ color: '#555' }}>Date de sortie estimée</span>
+                <span style={{ color: '#555' }}>{t('ongletPreavisDash.sent.dateSortieEstimee')}</span>
                 <span style={{ fontWeight: 700, color: '#1B6B3A' }}>{addDays(parseInt(delai) * 30)}</span>
               </div>
             )}
@@ -2612,20 +2628,20 @@ function repondre(preavisId, reponse) {
 
           {/* Note */}
           <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>Message (optionnel)</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>{t('ongletPreavisDash.form.messageOptionnel')}</div>
             <textarea value={note} onChange={function(e) { setNote(e.target.value); }}
-              placeholder={estProprietaire ? 'Message pour expliquer la situation au locataire...' : 'Message personnel pour votre propriétaire...'}
+              placeholder={estProprietaire ? t('ongletPreavis.proprio.form.messagePlaceholder') : t('ongletPreavisDash.form.messagePersonnelPlaceholder')}
               style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 80, fontFamily: 'system-ui', boxSizing: 'border-box', outline: 'none' }} />
           </div>
 
           <button
             onClick={function() {
               var ok = motif && delai && (!estProprietaire || bien);
-              if (!ok) { toast.error('Sélectionnez ' + (estProprietaire && !bien ? 'un bien, ' : '') + (motif ? '' : 'un motif et ') + (!delai ? 'un délai' : '')); return; }
+              if (!ok) { toast.error(t('ongletPreavisDash.form.selectionnez', { bien: estProprietaire && !bien ? t('ongletPreavisDash.form.unBienVirgule') : '', motif: motif ? '' : t('ongletPreavisDash.form.unMotifEt'), delai: !delai ? t('ongletPreavisDash.form.unDelai') : '' })); return; }
               setStep('confirm');
             }}
             style={{ width: '100%', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-            Préparer le préavis officiel →
+            {t('ongletPreavisDash.form.preparerBouton')}
           </button>
         </div>
       )}
@@ -2638,6 +2654,7 @@ function repondre(preavisId, reponse) {
 // ================================================
 
 function OngletAlertes() {
+  var t = useTranslation('dashboard').t;
   var [data, setData] = useState({ alertes: [], signalements: [] });
   var [loading, setLoading] = useState(true);
 
@@ -2651,30 +2668,30 @@ function OngletAlertes() {
   function traiter(id, statut) {
     api.patch('/alertes/' + id, { statut: statut })
       .then(function() {
-        toast.success('Alerte mise a jour !');
+        toast.success(t('ongletAlertes.toastMiseAJour'));
         setData(function(prev) {
           return Object.assign({}, prev, { alertes: prev.alertes.filter(function(a) { return a.id !== id; }) });
         });
-      }).catch(function() { toast.error('Erreur'); });
+      }).catch(function() { toast.error(t('ongletAlertes.toastErreur')); });
   }
 
-  if (loading) return <div style={{ padding: 40, textAlign: 'center', color: '#888' }}>Chargement...</div>;
+  if (loading) return <div style={{ padding: 40, textAlign: 'center', color: '#888' }}>{t('ongletAlertes.chargement')}</div>;
 
   var total = data.alertes.length + (data.signalements ? data.signalements.length : 0);
 
   return (
     <div style={{ maxWidth: 700 }}>
       <div className="dash-page-header">
-        <div><h1>Alertes</h1><p>{total} alerte(s) active(s)</p></div>
+        <div><h1>{t('ongletAlertes.titre')}</h1><p>{t('ongletAlertes.nbAlertes', { count: total })}</p></div>
       </div>
       {total === 0 && (
         <div className="dash-empty-state">
-          <CheckCircle size={48} strokeWidth={1} color="#C8E6C9"/><h3>Aucune alerte</h3><p>Tout est en ordre !</p>
+          <CheckCircle size={48} strokeWidth={1} color="#C8E6C9"/><h3>{t('ongletAlertes.aucuneAlerte')}</h3><p>{t('ongletAlertes.toutEnOrdre')}</p>
         </div>
       )}
       {data.alertes.map(function(a) {
         var borderColor = a.type === 'loyer_retard' ? '#E53935' : a.type === 'bail_bientot' ? '#F5A623' : '#1565C0';
-        var btnLabel = a.type === 'loyer_retard' ? 'Relancer' : a.type === 'bail_bientot' ? 'Renouveler' : 'Traiter';
+        var btnLabel = a.type === 'loyer_retard' ? t('ongletAlertes.relancer') : a.type === 'bail_bientot' ? t('ongletAlertes.renouveler') : t('ongletAlertes.traiter');
         return (
           <div key={a.id} className="alerte-card-proto" style={{ borderLeft: '5px solid ' + borderColor }}>
             <div className="alerte-card-icon">
@@ -2698,11 +2715,12 @@ function OngletAlertes() {
 // ONGLET : Documents
 // ================================================
 function OngletDocuments(props) {
+  var t = useTranslation('dashboard').t;
   var plan = props.plan || { plan: 'gratuit', droits: { documents_pdf: false } };
 if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
   return (
     <div>
-      <div className="dash-page-header"><div><h1>Documents</h1></div></div>
+      <div className="dash-page-header"><div><h1>{t('ongletDocuments.titre')}</h1></div></div>
       <UpgradeBanner fonctionnalite="documents_pdf" planRequis="Pro" />
     </div>
   );
@@ -2730,11 +2748,11 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
     e.preventDefault();
     api.post('/documents/generer', genForm)
       .then(function() {
-        toast.success('Document genere !');
+        toast.success(t('ongletDocuments.toastDocumentGenere'));
         setShowForm(false);
         api.get('/documents').then(function(res) { setDocuments(res.data.documents || []); });
       })
-      .catch(function(err) { toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur'); });
+      .catch(function(err) { toast.error(err.response && err.response.data ? err.response.data.erreur : t('ongletDocuments.toastErreur')); });
   }
 
   function telecharger(doc) {
@@ -2749,8 +2767,8 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
         document.body.appendChild(link);
         link.click();
         link.remove();
-        toast.success('Document téléchargé');
-      }).catch(function() { toast.error('Erreur téléchargement'); });
+        toast.success(t('ongletDocuments.toastDocumentTelecharge'));
+      }).catch(function() { toast.error(t('ongletDocuments.toastErreurTelechargement')); });
   }
 
   // Types selon le rôle
@@ -2761,10 +2779,10 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
   return (
     <div>
       <div className="dash-page-header">
-        <div><h1>Documents</h1><p>{documents.length} document(s)</p></div>
+        <div><h1>{t('ongletDocuments.titre')}</h1><p>{t('ongletDocuments.nbDocuments', { count: documents.length })}</p></div>
         <div style={{ display: 'flex', gap: 10 }}>
-          <button className="btn-outline-green" onClick={function() { setShowUpload(!showUpload); setShowForm(false); }}>Ajouter</button>
-          <button className="btn-green" onClick={function() { setShowForm(!showForm); setShowUpload(false); }}>Generer</button>
+          <button className="btn-outline-green" onClick={function() { setShowUpload(!showUpload); setShowForm(false); }}>{t('ongletDocuments.ajouter')}</button>
+          <button className="btn-green" onClick={function() { setShowForm(!showForm); setShowUpload(false); }}>{t('ongletDocuments.generer')}</button>
         </div>
       </div>
 
@@ -2773,13 +2791,13 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
           return (
             <div key={i} className="doc-card-proto">
               <div className="doc-card-icon">{d.icon}</div>
-              <div className="doc-card-title">{d.titre}</div>
-              <div className="doc-card-desc">{d.desc}</div>
+              <div className="doc-card-title">{t('ongletDocuments.docsTypes.' + d.labelKey + '.titre')}</div>
+              <div className="doc-card-desc">{t('ongletDocuments.docsTypes.' + d.labelKey + '.desc')}</div>
               <button
                 className="doc-card-btn"
                 style={{ background: d.color }}
                 onClick={function() { setGenForm(Object.assign({}, genForm, { type: d.type })); setShowForm(true); setShowUpload(false); }}
-              >Generer</button>
+              >{t('ongletDocuments.generer')}</button>
             </div>
           );
         })}
@@ -2787,19 +2805,19 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
 
       {showForm && (
         <div className="dash-form-card" style={{ marginTop: 16 }}>
-          <h3>Generer un document</h3>
+          <h3>{t('ongletDocuments.genererUnDocument')}</h3>
           <form onSubmit={generer}>
             <div className="form-row-2">
               <div className="form-group">
-                <label>Type de document</label>
+                <label>{t('ongletDocuments.typeDeDocument')}</label>
                 <select value={genForm.type} onChange={function(e) { setGenForm(Object.assign({}, genForm, { type: e.target.value })); }}>
-                  {typesAffiches.map(function(d) { return <option key={d.type} value={d.type}>{d.titre}</option>; })}
+                  {typesAffiches.map(function(d) { return <option key={d.type} value={d.type}>{t('ongletDocuments.docsTypes.' + d.labelKey + '.titre')}</option>; })}
                 </select>
               </div>
               <div className="form-group">
-                <label>Reservation concernee *</label>
+                <label>{t('ongletDocuments.reservationConcernee')}</label>
                 <select value={genForm.reservation_id} onChange={function(e) { setGenForm(Object.assign({}, genForm, { reservation_id: e.target.value })); }} required>
-                  <option value="">Selectionnez une reservation</option>
+                  <option value="">{t('ongletDocuments.selectionnezReservation')}</option>
                   {reservations.map(function(r) {
                     return <option key={r.id} value={r.id}>{r.logement_titre} - {new Date(r.date_debut).toLocaleDateString('fr-FR')}</option>;
                   })}
@@ -2807,8 +2825,8 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button type="submit" className="btn-green">Generer et envoyer</button>
-              <button type="button" className="btn-outline-green" onClick={function() { setShowForm(false); }}>Annuler</button>
+              <button type="submit" className="btn-green">{t('ongletDocuments.genererEtEnvoyer')}</button>
+              <button type="button" className="btn-outline-green" onClick={function() { setShowForm(false); }}>{t('ongletLocataires.form.annuler')}</button>
             </div>
           </form>
         </div>
@@ -2816,17 +2834,17 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
 
       {documents.length > 0 && (
         <div className="dash-white-card" style={{ marginTop: 16 }}>
-          <h3 style={{ marginBottom: 14 }}>Historique des documents</h3>
+          <h3 style={{ marginBottom: 14 }}>{t('ongletDocuments.historique')}</h3>
           {documents.map(function(doc) {
             var cfgDoc = {
-              contrat_bail:    { icon: '📜', color: '#1B6B3A', bg: '#E8F5E9', label: 'Contrat de bail'    },
-              quittance:       { icon: '🧾', color: '#1565C0', bg: '#E3F2FD', label: 'Quittance'           },
-              etat_lieux:      { icon: '📋', color: '#E65100', bg: '#FFF3E0', label: 'État des lieux'      },
-              mise_en_demeure: { icon: '⚠️', color: '#B71C1C', bg: '#FFEBEE', label: 'Mise en demeure'     },
-              preavis:         { icon: '📤', color: '#37474F', bg: '#ECEFF1', label: 'Préavis'              },
-              facture:         { icon: '💰', color: '#7B1FA2', bg: '#F3E5F5', label: 'Facture'              },
-              caution:         { icon: '🔐', color: '#1B6B3A', bg: '#E8F5E9', label: 'Reçu de caution'     },
-            }[doc.type] || { icon: '📄', color: '#888', bg: '#F5F5F5', label: 'Document' };
+              contrat_bail:    { icon: '📜', color: '#1B6B3A', bg: '#E8F5E9', label: t('ongletDocuments.cfgDoc.contratBail')    },
+              quittance:       { icon: '🧾', color: '#1565C0', bg: '#E3F2FD', label: t('ongletDocuments.cfgDoc.quittance')           },
+              etat_lieux:      { icon: '📋', color: '#E65100', bg: '#FFF3E0', label: t('ongletDocuments.cfgDoc.etatLieux')      },
+              mise_en_demeure: { icon: '⚠️', color: '#B71C1C', bg: '#FFEBEE', label: t('ongletDocuments.cfgDoc.miseEnDemeure')     },
+              preavis:         { icon: '📤', color: '#37474F', bg: '#ECEFF1', label: t('ongletDocuments.cfgDoc.preavis')              },
+              facture:         { icon: '💰', color: '#7B1FA2', bg: '#F3E5F5', label: t('ongletDocuments.cfgDoc.facture')              },
+              caution:         { icon: '🔐', color: '#1B6B3A', bg: '#E8F5E9', label: t('ongletDocuments.cfgDoc.caution')     },
+            }[doc.type] || { icon: '📄', color: '#888', bg: '#F5F5F5', label: t('ongletDocuments.cfgDoc.document') };
             return (
               <div key={doc.id} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', borderRadius: 12, background: '#F7F8F7', marginBottom: 8 }}>
                 <div style={{ width: 42, height: 42, background: cfgDoc.bg, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>
@@ -2846,11 +2864,11 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
                   </button>
                   <button onClick={function() {
                     api.post('/documents/' + doc.id + '/renvoyer-email')
-                      .then(function() { toast.success('Email envoyé !'); })
-                      .catch(function() { toast.error('Erreur'); });
+                      .then(function() { toast.success(t('ongletDocuments.toastEmailEnvoye')); })
+                      .catch(function() { toast.error(t('ongletDocuments.toastErreur')); });
                   }}
                     style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
-                    <Mail size={13} strokeWidth={2} /> Email
+                    <Mail size={13} strokeWidth={2} /> {t('ongletDocuments.email')}
                   </button>
                 </div>
               </div>
@@ -2866,6 +2884,7 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
 // ONGLET : Messagerie avec fichiers
 // ================================================
 function OngletMessages() {
+  var t = useTranslation('dashboard').t;
   var auth = useAuth();
   var user = auth.user;
   var [conversations, setConversations] = useState([]);
@@ -2921,10 +2940,10 @@ function OngletMessages() {
         setMessages(function(prev) { return prev.concat(res.data.data); });
         setMessage('');
         setFichier(null);
-        setReplyTo(null); 
-        toast.success('Message envoye !');
+        setReplyTo(null);
+        toast.success(t('ongletMessages.toastMessageEnvoye'));
       })
-      .catch(function() { toast.error('Erreur envoi'); });
+      .catch(function() { toast.error(t('ongletMessages.toastErreurEnvoi')); });
   }
 
   var convCourante = conversations.find(function(c) { return c.interlocuteur_id === convActive; });
@@ -2932,8 +2951,8 @@ function OngletMessages() {
   if (loading) {
     return (
       <div>
-        <div className="dash-page-header"><div><h1>Messages</h1></div></div>
-        <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>Chargement...</div>
+        <div className="dash-page-header"><div><h1>{t('ongletMessages.titre')}</h1></div></div>
+        <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>{t('ongletMessages.chargement')}</div>
       </div>
     );
   }
@@ -2941,11 +2960,11 @@ function OngletMessages() {
   if (conversations.length === 0) {
     return (
       <div>
-        <div className="dash-page-header"><div><h1>Messages</h1><p>Partagez textes, photos et documents</p></div></div>
+        <div className="dash-page-header"><div><h1>{t('ongletMessages.titre')}</h1><p>{t('ongletMessages.sousTitre')}</p></div></div>
         <div className="dash-empty-state">
           <span><MessageCircle size={14} strokeWidth={1.5} /></span>
-          <h3>Aucune conversation</h3>
-          <p>{user && user.role === 'locataire' ? 'Reservez un logement pour contacter le proprietaire' : 'Les messages de vos locataires apparaitront ici'}</p>
+          <h3>{t('ongletMessages.aucuneConversation')}</h3>
+          <p>{user && user.role === 'locataire' ? t('ongletMessages.reservezLogement') : t('ongletMessages.messagesLocataires')}</p>
         </div>
       </div>
     );
@@ -2953,16 +2972,16 @@ function OngletMessages() {
 
   return (
     <div>
-      <div className="dash-page-header"><div><h1>Messages</h1><p>Partagez textes, photos et documents</p></div></div>
+      <div className="dash-page-header"><div><h1>{t('ongletMessages.titre')}</h1><p>{t('ongletMessages.sousTitre')}</p></div></div>
       <div className="messages-container">
         <div className="messages-list">
           <div style={{ padding: '14px 16px', borderBottom: '1px solid #f0f0f0', fontWeight: 700, fontSize: 13, color: '#1B2B22' }}>
-            Conversations ({conversations.length})
+            {t('ongletMessages.conversations', { count: conversations.length })}
           </div>
           <div style={{ padding: '8px 12px', borderBottom: '0.5px solid #F0F0F0' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#F7F8F7', borderRadius: 10, padding: '7px 12px' }}>
               <Search size={14} strokeWidth={1.5} color="#888" />
-              <input type="text" placeholder="Rechercher..." value={recherche}
+              <input type="text" placeholder={t('ongletMessages.rechercherPlaceholder')} value={recherche}
                 onChange={function(e) { setRecherche(e.target.value); }}
                 style={{ border: 'none', background: 'transparent', outline: 'none', fontSize: 13, flex: 1, color: '#1B2B22' }} />
             </div>
@@ -2986,7 +3005,7 @@ function OngletMessages() {
                     )}
                   </div>
                   <div className="msg-thread-preview">
-                    {c.type === 'photo' ? '📷 Photo' : c.type === 'document' ? '📎 Document' : (c.contenu || 'Nouvelle conversation')}
+                    {c.type === 'photo' ? t('ongletMessages.photo') : c.type === 'document' ? t('ongletMessages.document') : (c.contenu || t('ongletMessages.nouvelleConversation'))}
                   </div>
                   {c.logement_titre && <div style={{ fontSize: '11px', color: '#1B6B3A' }}>{c.logement_titre}</div>}
                 </div>
@@ -2998,7 +3017,7 @@ function OngletMessages() {
         <div className="messages-chat">
           {!convActive && (
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ccc', fontSize: '14px' }}>
-              Selectionnez une conversation
+              {t('ongletMessages.selectionnezConversation')}
             </div>
           )}
           {convActive && (
@@ -3016,14 +3035,14 @@ function OngletMessages() {
                     {convCourante.telephone && (
                       <a href={'tel:' + convCourante.telephone}
                         style={{ marginLeft: 'auto', background: '#E8F5E9', color: '#1B6B3A', borderRadius: '20px', padding: '6px 14px', fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
-                        Appeler
+                        {t('ongletMessages.appeler')}
                       </a>
                     )}
                   </div>
                 )}
               </div>
               <div className="messages-chat-body">
-                {messages.length === 0 && <div style={{ textAlign: 'center', color: '#ccc', fontSize: 13, padding: '40px 20px' }}>Demarrez la conversation...</div>}
+                {messages.length === 0 && <div style={{ textAlign: 'center', color: '#ccc', fontSize: 13, padding: '40px 20px' }}>{t('ongletMessages.demarrezConversation')}</div>}
                 {messages.map(function(m) {
                   var estMoi = m.expedition_id === (user && user.id);
                   return (
@@ -3047,7 +3066,7 @@ function OngletMessages() {
                         {m.type === 'document' && m.fichier_url && (
                           <a href={m.fichier_url} target="_blank" rel="noreferrer"
                             style={{ display: 'flex', alignItems: 'center', gap: 8, color: estMoi ? '#fff' : '#1B6B3A', textDecoration: 'none', padding: '8px', background: estMoi ? 'rgba(255,255,255,0.15)' : '#f0f0f0', borderRadius: 8, fontSize: 13 }}>
-                            <span>📎</span><span>{m.fichier_nom || 'Document'}</span>
+                            <span>📎</span><span>{m.fichier_nom || t('ongletMessages.document')}</span>
                           </a>
                         )}
                         {m.contenu && <div>{m.contenu}</div>}
@@ -3111,9 +3130,9 @@ function OngletMessages() {
               {replyTo && (
                 <div style={{ padding: '8px 14px', background: '#F0FBF0', borderTop: '1px solid #E0E0E0', display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div style={{ flex: 1, borderLeft: '3px solid #1B6B3A', paddingLeft: 10 }}>
-                    <div style={{ fontSize: 11, color: '#1B6B3A', fontWeight: 700, marginBottom: 2 }}>Répondre à</div>
+                    <div style={{ fontSize: 11, color: '#1B6B3A', fontWeight: 700, marginBottom: 2 }}>{t('ongletMessages.repondreA')}</div>
                     <div style={{ fontSize: 13, color: '#555', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {replyTo.contenu ? replyTo.contenu.slice(0, 60) : '📎 Fichier'}
+                      {replyTo.contenu ? replyTo.contenu.slice(0, 60) : t('ongletMessages.fichier')}
                     </div>
                   </div>
                   <button onClick={function() { setReplyTo(null); }}
@@ -3133,7 +3152,7 @@ function OngletMessages() {
                     onChange={function(e) { if (e.target.files && e.target.files[0]) setFichier(e.target.files[0]); }} />
                   <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#F0F4F1', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', cursor: 'pointer' }}>📎</div>
                 </label>
-                <input type="text" placeholder="Ecrire un message..." value={message}
+                <input type="text" placeholder={t('ongletMessages.ecrireMessage')} value={message}
                   onChange={function(e) { setMessage(e.target.value); }}
                   onKeyDown={function(e) { if (e.key === 'Enter') envoyerMessage(); }} />
                 <button className="btn-send" onClick={envoyerMessage} type="button">
@@ -3154,6 +3173,7 @@ function OngletMessages() {
 // ONGLET : Reclamations avec timeline
 // ================================================
 function OngletReclamations() {
+  var t = useTranslation('dashboard').t;
   var auth = useAuth();
   var user = auth.user;
   var [reclamations, setReclamations] = useState([]);
@@ -3205,90 +3225,90 @@ function OngletReclamations() {
     fd.append('logement_id', form.logement_id);
     if (photo) fd.append('photo', photo);
     api.post('/reclamations', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
-      .then(function() { toast.success('Reclamation envoyee !'); setShowForm(false); setForm({ titre: '', description: '', categorie: 'autre', priorite: 'normale', logement_id: '' }); setPhoto(null); charger(); })
-      .catch(function() { toast.error('Erreur'); });
+      .then(function() { toast.success(t('ongletReclamations.toastEnvoyee')); setShowForm(false); setForm({ titre: '', description: '', categorie: 'autre', priorite: 'normale', logement_id: '' }); setPhoto(null); charger(); })
+      .catch(function() { toast.error(t('ongletReclamations.toastErreur')); });
   }
 
   function changerStatut(id, statut) {
     api.patch('/reclamations/' + id + '/statut', { statut: statut, commentaire: commentaire })
-      .then(function() { toast.success('Statut mis a jour !'); setCommentaire(''); charger(); if (activeTimeline === id) voirTimeline(id); })
-      .catch(function() { toast.error('Erreur'); });
+      .then(function() { toast.success(t('ongletReclamations.toastStatutMisAJour')); setCommentaire(''); charger(); if (activeTimeline === id) voirTimeline(id); })
+      .catch(function() { toast.error(t('ongletReclamations.toastErreur')); });
   }
 
   var categorieLabels = {
-    panne_eau: 'Panne eau', panne_electricite: 'Panne electricite',
-    panne_equipement: 'Panne equipement', securite: 'Securite',
-    nuisances: 'Nuisances', autre: 'Autre'
+    panne_eau: t('ongletReclamations.categories.panneEau'), panne_electricite: t('ongletReclamations.categories.panneElectricite'),
+    panne_equipement: t('ongletReclamations.categories.panneEquipement'), securite: t('ongletReclamations.categories.securite'),
+    nuisances: t('ongletReclamations.categories.nuisances'), autre: t('ongletReclamations.categories.autre')
   };
 
   var statutColors = { ouverte: '#E53935', en_cours: '#F5A623', resolue: '#1B6B3A', fermee: '#888' };
-  var statutLabels = { ouverte: 'Ouverte', en_cours: 'En cours', resolue: 'Resolue', fermee: 'Fermee' };
+  var statutLabels = { ouverte: t('ongletReclamations.statuts.ouverte'), en_cours: t('ongletReclamations.statuts.enCours'), resolue: t('ongletReclamations.statuts.resolue'), fermee: t('ongletReclamations.statuts.fermee') };
 
   return (
     <div>
       <div className="dash-page-header">
-        <div><h1>Reclamations</h1><p>{reclamations.length} reclamation(s)</p></div>
+        <div><h1>{t('ongletReclamations.titre')}</h1><p>{t('ongletReclamations.nbReclamations', { count: reclamations.length })}</p></div>
         {user && user.role === 'locataire' && (
-          <button className="btn-green" onClick={function() { setShowForm(!showForm); }}>+ Signaler un probleme</button>
+          <button className="btn-green" onClick={function() { setShowForm(!showForm); }}>{t('ongletReclamations.signalerProbleme')}</button>
         )}
       </div>
 
       {showForm && user && user.role === 'locataire' && (
         <div className="dash-form-card">
-          <h3>Signaler un probleme</h3>
+          <h3>{t('ongletReclamations.form.titreCard')}</h3>
           <form onSubmit={soumettre}>
             <div className="form-row-2">
               <div className="form-group">
-                <label>Logement *</label>
+                <label>{t('ongletReclamations.form.logement')}</label>
                 <select value={form.logement_id} onChange={function(e) { setForm(Object.assign({}, form, { logement_id: e.target.value })); }} required>
-                  <option value="">Selectionnez</option>
+                  <option value="">{t('ongletReclamations.form.selectionnez')}</option>
                   {logements.map(function(l) { return <option key={l.id} value={l.id}>{l.titre}</option>; })}
                 </select>
               </div>
               <div className="form-group">
-                <label>Categorie</label>
+                <label>{t('ongletReclamations.form.categorie')}</label>
                 <select value={form.categorie} onChange={function(e) { setForm(Object.assign({}, form, { categorie: e.target.value })); }}>
                   {Object.entries(categorieLabels).map(function(entry) { return <option key={entry[0]} value={entry[0]}>{entry[1]}</option>; })}
                 </select>
               </div>
             </div>
             <div className="form-group">
-              <label>Titre du probleme *</label>
-              <input type="text" value={form.titre} placeholder="Ex: Fuite d'eau dans la cuisine" onChange={function(e) { setForm(Object.assign({}, form, { titre: e.target.value })); }} required />
+              <label>{t('ongletReclamations.form.titreProbleme')}</label>
+              <input type="text" value={form.titre} placeholder={t('ongletReclamations.form.titreProblemePlaceholder')} onChange={function(e) { setForm(Object.assign({}, form, { titre: e.target.value })); }} required />
             </div>
             <div className="form-group">
-              <label>Description</label>
-              <textarea rows="3" value={form.description} placeholder="Decrivez le probleme..."
+              <label>{t('ongletReclamations.form.description')}</label>
+              <textarea rows="3" value={form.description} placeholder={t('ongletReclamations.form.descriptionPlaceholder')}
                 onChange={function(e) { setForm(Object.assign({}, form, { description: e.target.value })); }}
                 style={{ padding: '9px 12px', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', resize: 'vertical', fontFamily: 'inherit', width: '100%' }} />
             </div>
             <div className="form-row-2">
               <div className="form-group">
-                <label>Priorite</label>
+                <label>{t('ongletReclamations.form.priorite')}</label>
                 <select value={form.priorite} onChange={function(e) { setForm(Object.assign({}, form, { priorite: e.target.value })); }}>
-                  <option value="basse">Basse</option>
-                  <option value="normale">Normale</option>
-                  <option value="haute">Haute - Urgent</option>
+                  <option value="basse">{t('ongletReclamations.form.prioriteBasse')}</option>
+                  <option value="normale">{t('ongletReclamations.form.prioriteNormale')}</option>
+                  <option value="haute">{t('ongletReclamations.form.prioriteHaute')}</option>
                 </select>
               </div>
               <div className="form-group">
-                <label>Photo (optionnel)</label>
+                <label>{t('ongletReclamations.form.photo')}</label>
                 <input type="file" accept="image/*" onChange={function(e) { if (e.target.files[0]) setPhoto(e.target.files[0]); }} />
               </div>
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button type="submit" className="btn-green">Envoyer</button>
-              <button type="button" className="btn-outline-green" onClick={function() { setShowForm(false); }}>Annuler</button>
+              <button type="submit" className="btn-green">{t('ongletReclamations.form.envoyer')}</button>
+              <button type="button" className="btn-outline-green" onClick={function() { setShowForm(false); }}>{t('ongletLocataires.form.annuler')}</button>
             </div>
           </form>
         </div>
       )}
 
-      {loading && <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>Chargement...</div>}
+      {loading && <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>{t('ongletReclamations.chargement')}</div>}
 
       {!loading && reclamations.length === 0 && (
         <div className="dash-empty-state">
-          <CheckCircle size={48} strokeWidth={1} color="#C8E6C9"/><h3>Aucune réclamation</h3><p>Tout est en ordre !</p>
+          <CheckCircle size={48} strokeWidth={1} color="#C8E6C9"/><h3>{t('ongletReclamations.aucuneReclamation')}</h3><p>{t('ongletAlertes.toutEnOrdre')}</p>
         </div>
       )}
 
@@ -3315,14 +3335,14 @@ function OngletReclamations() {
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flexShrink: 0 }}>
                 <button className="btn-outline-green" onClick={function() { if (activeTimeline === r.id) { setActiveTimeline(null); } else { voirTimeline(r.id); } }}>
-                  {activeTimeline === r.id ? 'Fermer' : 'Timeline'}
+                  {activeTimeline === r.id ? t('ongletReclamations.fermer') : t('ongletReclamations.timeline')}
                 </button>
                 {user && user.role !== 'locataire' && r.statut !== 'resolue' && r.statut !== 'fermee' && (
                   <div style={{ display: 'flex', gap: 6, flexDirection: 'column' }}>
                     {r.statut === 'ouverte' && (
-                      <button className="btn-green" style={{ fontSize: '12px', padding: '6px 12px' }} onClick={function() { changerStatut(r.id, 'en_cours'); }}>En cours</button>
+                      <button className="btn-green" style={{ fontSize: '12px', padding: '6px 12px' }} onClick={function() { changerStatut(r.id, 'en_cours'); }}>{t('ongletReclamations.statuts.enCours')}</button>
                     )}
-                    <button className="btn-green" style={{ fontSize: '12px', padding: '6px 12px', background: '#1565C0' }} onClick={function() { changerStatut(r.id, 'resolue'); }}>Resolue</button>
+                    <button className="btn-green" style={{ fontSize: '12px', padding: '6px 12px', background: '#1565C0' }} onClick={function() { changerStatut(r.id, 'resolue'); }}>{t('ongletReclamations.statuts.resolue')}</button>
                   </div>
                 )}
               </div>
@@ -3330,31 +3350,31 @@ function OngletReclamations() {
 
             {activeTimeline === r.id && (
               <div style={{ marginTop: '14px', borderTop: '1px solid #f0f0f0', paddingTop: '14px' }}>
-                <div style={{ fontSize: '13px', fontWeight: '700', color: '#1B2B22', marginBottom: '10px' }}>Timeline</div>
-                {timeline.map(function(t) {
+                <div style={{ fontSize: '13px', fontWeight: '700', color: '#1B2B22', marginBottom: '10px' }}>{t('ongletReclamations.timeline')}</div>
+                {timeline.map(function(tl) {
                   return (
-                    <div key={t.id} style={{ display: 'flex', gap: 10, marginBottom: '10px' }}>
-                      <div style={{ width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0, background: t.type === 'creation' ? '#E8F5E9' : t.type === 'statut_change' ? '#FFF3E0' : '#E3F2FD', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>
-                        {t.type === 'creation' ? '🔧' : t.type === 'statut_change' ? '🔄' : '<MessageCircle size={14} strokeWidth={1.5} />'}
+                    <div key={tl.id} style={{ display: 'flex', gap: 10, marginBottom: '10px' }}>
+                      <div style={{ width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0, background: tl.type === 'creation' ? '#E8F5E9' : tl.type === 'statut_change' ? '#FFF3E0' : '#E3F2FD', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>
+                        {tl.type === 'creation' ? '🔧' : tl.type === 'statut_change' ? '🔄' : '<MessageCircle size={14} strokeWidth={1.5} />'}
                       </div>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: '13px', color: '#333' }}>{t.contenu}</div>
-                        {t.photo_url && <img src={t.photo_url} alt="photo" style={{ maxHeight: '80px', borderRadius: '6px', marginTop: '4px', cursor: 'pointer' }} onClick={function() { window.open(t.photo_url, '_blank'); }} />}
-                        <div style={{ fontSize: '11px', color: '#aaa', marginTop: '2px' }}>{t.prenom} {t.nom} · {new Date(t.created_at).toLocaleDateString('fr-FR')}</div>
+                        <div style={{ fontSize: '13px', color: '#333' }}>{tl.contenu}</div>
+                        {tl.photo_url && <img src={tl.photo_url} alt="photo" style={{ maxHeight: '80px', borderRadius: '6px', marginTop: '4px', cursor: 'pointer' }} onClick={function() { window.open(tl.photo_url, '_blank'); }} />}
+                        <div style={{ fontSize: '11px', color: '#aaa', marginTop: '2px' }}>{tl.prenom} {tl.nom} · {new Date(tl.created_at).toLocaleDateString('fr-FR')}</div>
                       </div>
                     </div>
                   );
                 })}
                 <div style={{ marginTop: '10px', display: 'flex', gap: 8 }}>
-                  <input type="text" placeholder="Ajouter un commentaire..." value={commentaire}
+                  <input type="text" placeholder={t('ongletReclamations.ajouterCommentaire')} value={commentaire}
                     onChange={function(e) { setCommentaire(e.target.value); }}
                     style={{ flex: 1, padding: '8px 12px', border: '1px solid #e0e0e0', borderRadius: '8px', fontSize: '13px', outline: 'none', margin: 0 }} />
                   <button className="btn-green" style={{ padding: '8px 14px', fontSize: '13px' }}
                     onClick={function() {
                       api.post('/reclamations/' + r.id + '/commentaire', { commentaire: commentaire })
-                        .then(function() { toast.success('Commentaire ajoute !'); setCommentaire(''); voirTimeline(r.id); })
-                        .catch(function() { toast.error('Erreur'); });
-                    }}>Envoyer</button>
+                        .then(function() { toast.success(t('ongletReclamations.toastCommentaireAjoute')); setCommentaire(''); voirTimeline(r.id); })
+                        .catch(function() { toast.error(t('ongletReclamations.toastErreur')); });
+                    }}>{t('ongletReclamations.form.envoyer')}</button>
                 </div>
               </div>
             )}
@@ -3366,6 +3386,7 @@ function OngletReclamations() {
 }
 
 function PushToggle() {
+  var t = useTranslation('dashboard').t;
   var [abonne, setAbonne] = useState(false);
   var [loading, setLoading] = useState(false);
 
@@ -3377,13 +3398,13 @@ function PushToggle() {
     setLoading(true);
     if (abonne) {
       desactiverNotifications()
-        .then(function() { setAbonne(false); toast.success('Notifications désactivées'); })
+        .then(function() { setAbonne(false); toast.success(t('pushToggle.toastDesactivees')); })
         .finally(function() { setLoading(false); });
     } else {
       activerNotificationsPush()
         .then(function(ok) {
-          if (ok) { setAbonne(true); toast.success('Notifications activées ! 🔔'); }
-          else toast.error('Permission refusée ou non supporté');
+          if (ok) { setAbonne(true); toast.success(t('pushToggle.toastActivees')); }
+          else toast.error(t('pushToggle.toastPermissionRefusee'));
         })
         .finally(function() { setLoading(false); });
     }
@@ -3392,17 +3413,18 @@ function PushToggle() {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderBottom: '1px solid #f0f0f0', marginBottom: 8 }}>
       <div>
-        <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>Notifications push</div>
-        <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>Alertes même quand l'app est fermée</div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{t('pushToggle.titre')}</div>
+        <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{t('pushToggle.sousTitre')}</div>
       </div>
       <button onClick={toggle} disabled={loading}
         style={{ padding: '8px 16px', borderRadius: 20, border: 'none', background: abonne ? '#1B6B3A' : '#F0F0F0', color: abonne ? '#fff' : '#888', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-        {loading ? '...' : abonne ? 'Activées' : 'Désactivées'}
+        {loading ? '...' : abonne ? t('pushToggle.activees') : t('pushToggle.desactivees')}
       </button>
     </div>
   );
 }
 function BoutonNotifPush() {
+  var t = useTranslation('dashboard').t;
   var [abonne, setAbonne]     = useState(false);
   var [loading, setLoading]   = useState(true);
 
@@ -3421,16 +3443,16 @@ function BoutonNotifPush() {
       if (abonne) {
         m.desactiverNotifications().then(function() {
           setAbonne(false);
-          toast.success('Notifications désactivées');
+          toast.success(t('pushToggle.toastDesactivees'));
         }).catch(function() {
-          toast.error('Erreur désactivation');
+          toast.error(t('boutonNotifPush.toastErreurDesactivation'));
         }).finally(function() { setLoading(false); });
       } else {
         m.activerNotificationsPush().then(function() {
           setAbonne(true);
-          toast.success('Notifications activées');
+          toast.success(t('boutonNotifPush.toastActivees'));
         }).catch(function() {
-          toast.error('Autorisez les notifications dans votre navigateur');
+          toast.error(t('boutonNotifPush.toastAutorisez'));
         }).finally(function() { setLoading(false); });
       }
     });
@@ -3444,21 +3466,21 @@ function BoutonNotifPush() {
         </div>
         <div>
           <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>
-            Notifications push {abonne ? '(Activées)' : '(Désactivées)'}
+            {abonne ? t('boutonNotifPush.titreActivees') : t('boutonNotifPush.titreDesactivees')}
           </div>
           <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
-            Candidatures, paiements, messages
+            {t('boutonNotifPush.sousTitre')}
           </div>
         </div>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
         {[
-          'Nouvelle candidature reçue',
-          'Candidature acceptée',
-          'Paiement confirmé',
-          'Nouveau message',
-          'Rappel de loyer',
+          t('boutonNotifPush.items.nouvelleCandidature'),
+          t('boutonNotifPush.items.candidatureAcceptee'),
+          t('boutonNotifPush.items.paiementConfirme'),
+          t('boutonNotifPush.items.nouveauMessage'),
+          t('boutonNotifPush.items.rappelLoyer'),
         ].map(function(item, i) {
           return (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#555' }}>
@@ -3471,7 +3493,7 @@ function BoutonNotifPush() {
 
       <button onClick={toggleNotifs} disabled={loading}
         style={{ width: '100%', padding: '12px', borderRadius: 12, border: 'none', background: loading ? '#aaa' : abonne ? '#FFEBEE' : '#1B6B3A', color: loading ? '#fff' : abonne ? '#B71C1C' : '#fff', fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
-        {loading ? '⏳ ...' : abonne ? 'Désactiver les notifications' : '🔔 Activer les notifications'}
+        {loading ? t('boutonNotifPush.chargement') : abonne ? t('boutonNotifPush.desactiverBouton') : t('boutonNotifPush.activerBouton')}
       </button>
     </div>
   );
@@ -3480,6 +3502,7 @@ function BoutonNotifPush() {
 // ONGLET : Historique locataire
 // ════════════════════════════════════════════════════════════════
 function OngletHistorique(props) {
+  var t = useTranslation('dashboard').t;
   var user = props.user;
   var [data, setData]         = useState(null);
   var [loading, setLoading]   = useState(true);
@@ -3495,7 +3518,7 @@ function OngletHistorique(props) {
   if (loading) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 60, gap: 12 }}>
       <div style={{ width: 32, height: 32, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-      <span style={{ color: '#888' }}>Chargement de votre historique...</span>
+      <span style={{ color: '#888' }}>{t('ongletHistorique.chargement')}</span>
     </div>
   );
 
@@ -3504,16 +3527,16 @@ function OngletHistorique(props) {
   var s           = data.stats;
   var GNFf        = function(n) { return new Intl.NumberFormat('fr-FR').format(Number(n)); };
   var noteLocataire = Number(s.note_moyenne_recue);
-  var badge = Number(s.nb_terminees) >= 3 ? 'Locataire expérimenté'
-            : Number(s.nb_terminees) >= 1 ? 'Locataire vérifié'
-            : 'Nouveau locataire';
+  var badge = Number(s.nb_terminees) >= 3 ? t('ongletHistorique.badges.experimente')
+            : Number(s.nb_terminees) >= 1 ? t('ongletHistorique.badges.verifie')
+            : t('ongletHistorique.badges.nouveau');
 
   return (
     <div>
       <div className="dash-page-header">
         <div>
-          <h1>Mon historique</h1>
-          <p>Toutes vos locations et paiements</p>
+          <h1>{t('ongletHistorique.titre')}</h1>
+          <p>{t('ongletHistorique.sousTitre')}</p>
         </div>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#E8F5E9', borderRadius: 20, padding: '6px 14px', fontSize: 13, fontWeight: 700, color: '#1B5E20' }}>
           {badge}
@@ -3523,10 +3546,10 @@ function OngletHistorique(props) {
       {/* KPIs */}
       <div className="stats-grid-4" style={{ marginBottom: 24 }}>
         {[
-          { label: 'Locations totales',  val: s.nb_locations_total,                      icon: <Home size={22} strokeWidth={1.5}/>,        color: '#1B6B3A', bg: '#E8F5E9' },
-          { label: 'Locations actives',  val: s.nb_actives,                               icon: <CheckCircle size={22} strokeWidth={1.5}/>,  color: '#1565C0', bg: '#E3F2FD' },
-          { label: 'Total payé',         val: GNFf(s.total_paye) + ' GNF',               icon: <Banknote size={22} strokeWidth={1.5}/>,     color: '#7B1FA2', bg: '#F3E5F5' },
-          { label: 'Note reçue',         val: noteLocataire > 0 ? noteLocataire.toFixed(1) + '/5' : 'Pas encore', icon: <Star size={22} strokeWidth={1.5}/>, color: '#F5A623', bg: '#FFF8E1' },
+          { label: t('ongletHistorique.kpi.locationsTotales'),  val: s.nb_locations_total,                      icon: <Home size={22} strokeWidth={1.5}/>,        color: '#1B6B3A', bg: '#E8F5E9' },
+          { label: t('ongletHistorique.kpi.locationsActives'),  val: s.nb_actives,                               icon: <CheckCircle size={22} strokeWidth={1.5}/>,  color: '#1565C0', bg: '#E3F2FD' },
+          { label: t('ongletHistorique.kpi.totalPaye'),         val: GNFf(s.total_paye) + ' GNF',               icon: <Banknote size={22} strokeWidth={1.5}/>,     color: '#7B1FA2', bg: '#F3E5F5' },
+          { label: t('ongletHistorique.kpi.noteRecue'),         val: noteLocataire > 0 ? noteLocataire.toFixed(1) + '/5' : t('ongletHistorique.kpi.pasEncore'), icon: <Star size={22} strokeWidth={1.5}/>, color: '#F5A623', bg: '#FFF8E1' },
         ].map(function(k, i) {
           return (
             <div key={i} className="stat-card-colored" style={{ background: k.bg, borderLeft: '4px solid ' + k.color }}>
@@ -3541,14 +3564,14 @@ function OngletHistorique(props) {
       {/* Onglets locaux */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
         {[
-          { id: 'locations', label: 'Locations (' + data.locations.length + ')' },
-          { id: 'paiements', label: 'Paiements (' + data.paiements.length + ')' },
-          { id: 'notations', label: 'Avis (' + data.notations.length + ')' },
-        ].map(function(t) {
+          { id: 'locations', label: t('ongletHistorique.tabs.locations', { count: data.locations.length }) },
+          { id: 'paiements', label: t('ongletHistorique.tabs.paiements', { count: data.paiements.length }) },
+          { id: 'notations', label: t('ongletHistorique.tabs.avis', { count: data.notations.length }) },
+        ].map(function(tab) {
           return (
-            <button key={t.id} onClick={function() { setOngletLocal(t.id); }}
-              style={{ padding: '8px 16px', borderRadius: 20, border: 'none', background: ongletLocal === t.id ? '#1B6B3A' : '#F0F0F0', color: ongletLocal === t.id ? '#fff' : '#555', fontSize: 13, fontWeight: ongletLocal === t.id ? 700 : 500, cursor: 'pointer', transition: 'all .2s' }}>
-              {t.label}
+            <button key={tab.id} onClick={function() { setOngletLocal(tab.id); }}
+              style={{ padding: '8px 16px', borderRadius: 20, border: 'none', background: ongletLocal === tab.id ? '#1B6B3A' : '#F0F0F0', color: ongletLocal === tab.id ? '#fff' : '#555', fontSize: 13, fontWeight: ongletLocal === tab.id ? 700 : 500, cursor: 'pointer', transition: 'all .2s' }}>
+              {tab.label}
             </button>
           );
         })}
@@ -3560,17 +3583,17 @@ function OngletHistorique(props) {
           {data.locations.length === 0 && (
             <div className="dash-empty-state">
               <Home size={48} strokeWidth={1} color="#C8E6C9" />
-              <h3>Aucune location</h3>
-              <p>Vos locations apparaîtront ici</p>
+              <h3>{t('ongletHistorique.locations.aucune')}</h3>
+              <p>{t('ongletHistorique.locations.apparaitront')}</p>
             </div>
           )}
           {data.locations.map(function(r) {
             var photo = r.photos && r.photos.length > 0 ? r.photos[0] : null;
             var statuts = {
-              confirmee:  { label: 'Active',      color: '#1B6B3A', bg: '#E8F5E9' },
-              terminee:   { label: 'Terminée',    color: '#888',    bg: '#F5F5F5' },
-              en_attente: { label: 'En attente',  color: '#E65100', bg: '#FFF3E0' },
-              refusee:    { label: 'Refusée',     color: '#B71C1C', bg: '#FFEBEE' },
+              confirmee:  { label: t('ongletHistorique.locations.statuts.active'),      color: '#1B6B3A', bg: '#E8F5E9' },
+              terminee:   { label: t('ongletHistorique.locations.statuts.terminee'),    color: '#888',    bg: '#F5F5F5' },
+              en_attente: { label: t('ongletHistorique.locations.statuts.enAttente'),  color: '#E65100', bg: '#FFF3E0' },
+              refusee:    { label: t('ongletHistorique.locations.statuts.refusee'),     color: '#B71C1C', bg: '#FFEBEE' },
             };
             var cfg = statuts[r.statut] || { label: r.statut, color: '#888', bg: '#F5F5F5' };
 
@@ -3601,12 +3624,12 @@ function OngletHistorique(props) {
 
                     <div style={{ display: 'flex', gap: 16, fontSize: 12, color: '#555' }}>
                       <span style={{ fontWeight: 700, color: '#1B6B3A' }}>{GNFf(r.prix_mensuel)} GNF/mois</span>
-                      {r.date_debut && <span>Depuis {new Date(r.date_debut).toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' })}</span>}
+                      {r.date_debut && <span>{t('ongletHistorique.locations.depuis', { date: new Date(r.date_debut).toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' }) })}</span>}
                       {r.nb_chambres && <span>🛏 {r.nb_chambres} ch.</span>}
                     </div>
 
                     <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>
-                      Propriétaire : {r.prop_prenom} {r.prop_nom}
+                      {t('ongletHistorique.locations.proprietaire')} {r.prop_prenom} {r.prop_nom}
                       {r.prop_telephone && <span> · <a href={'tel:' + r.prop_telephone} style={{ color: '#1B6B3A', textDecoration: 'none' }}>{r.prop_telephone}</a></span>}
                     </div>
                   </div>
@@ -3623,14 +3646,14 @@ function OngletHistorique(props) {
           {data.paiements.length === 0 && (
             <div className="dash-empty-state">
               <Banknote size={48} strokeWidth={1} color="#C8E6C9" />
-              <h3>Aucun paiement</h3>
-              <p>Vos paiements apparaîtront ici</p>
+              <h3>{t('ongletHistorique.paiements.aucun')}</h3>
+              <p>{t('ongletHistorique.paiements.apparaitront')}</p>
             </div>
           )}
           {data.paiements.map(function(p, i) {
             var cfg = p.statut === 'complete'
-              ? { label: 'Payé', color: '#1B6B3A', bg: '#E8F5E9' }
-              : { label: 'En attente', color: '#E65100', bg: '#FFF3E0' };
+              ? { label: t('ongletHistorique.paiements.paye'), color: '#1B6B3A', bg: '#E8F5E9' }
+              : { label: t('ongletHistorique.paiements.enAttente'), color: '#E65100', bg: '#FFF3E0' };
             return (
               <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 18px', borderBottom: i < data.paiements.length - 1 ? '0.5px solid #F5F5F5' : 'none', background: i % 2 === 0 ? '#fff' : '#FAFAFA' }}>
                 <div>
@@ -3652,7 +3675,7 @@ function OngletHistorique(props) {
 
           {data.paiements.length > 0 && (
             <div style={{ padding: '14px 18px', background: '#1B2B22', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>Total payé</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>{t('ongletHistorique.paiements.totalPaye')}</span>
               <span style={{ fontSize: 18, fontWeight: 900, color: '#F5A623' }}>{GNFf(s.total_paye)} GNF</span>
             </div>
           )}
@@ -3665,8 +3688,8 @@ function OngletHistorique(props) {
           {data.notations.length === 0 && (
             <div className="dash-empty-state">
               <Star size={48} strokeWidth={1} color="#C8E6C9" />
-              <h3>Aucun avis</h3>
-              <p>Les avis apparaîtront après vos locations</p>
+              <h3>{t('ongletHistorique.notations.aucun')}</h3>
+              <p>{t('ongletHistorique.notations.apparaitront')}</p>
             </div>
           )}
           {data.notations.map(function(n, i) {
@@ -3676,7 +3699,7 @@ function OngletHistorique(props) {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                   <div>
                     <div style={{ fontSize: 11, fontWeight: 700, color: estRecu ? '#1B6B3A' : '#1565C0', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                      {estRecu ? 'Avis reçu' : 'Avis donné'}
+                      {estRecu ? t('ongletHistorique.notations.avisRecu') : t('ongletHistorique.notations.avisDonne')}
                     </div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22', marginTop: 2 }}>
                       {n.auteur_prenom} {n.auteur_nom} · {n.logement_titre}
@@ -3708,6 +3731,7 @@ function OngletHistorique(props) {
 // ONGLET : Rapports financiers
 // ════════════════════════════════════════════════════════════════
 function OngletRapports(props) {
+  var t = useTranslation('dashboard').t;
   var user = props.user;
   var [data, setData]         = useState(null);
   var [loading, setLoading]   = useState(true);
@@ -3723,7 +3747,7 @@ function OngletRapports(props) {
   function exportCSV() {
     if (!data) return;
     var lignes = [
-      ['Mois', 'Revenus GNF', 'Paiements', 'Impayés GNF'],
+      [t('ongletRapports.csv.mois'), t('ongletRapports.csv.revenusGnf'), t('ongletRapports.csv.paiements'), t('ongletRapports.csv.impayesGnf')],
       ...data.evolution.map(function(m) {
         return [m.mois_label, m.revenus, m.nb_paiements, m.impayes];
       })
@@ -3736,21 +3760,21 @@ function OngletRapports(props) {
     a.download  = 'werdhe-rapport-' + new Date().toISOString().slice(0,7) + '.csv';
     a.click();
     URL.revokeObjectURL(url);
-    toast.success('Export CSV téléchargé !');
+    toast.success(t('ongletRapports.toastCsvTelecharge'));
   }
 
   if (loading) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 60, gap: 12 }}>
       <div style={{ width: 32, height: 32, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-      <span style={{ color: '#888' }}>Chargement des données...</span>
+      <span style={{ color: '#888' }}>{t('ongletRapports.chargementDonnees')}</span>
     </div>
   );
 
   if (!data) return (
     <div className="dash-empty-state">
       <TrendingUp size={48} strokeWidth={1} color="#E0E0E0" />
-      <h3>Aucune donnée financière</h3>
-      <p>Les données apparaîtront dès que vous aurez des paiements enregistrés.</p>
+      <h3>{t('ongletRapports.aucuneDonneeFinanciere')}</h3>
+      <p>{t('ongletRapports.donneesApparaitront')}</p>
     </div>
   );
 
@@ -3760,15 +3784,15 @@ function OngletRapports(props) {
     <div>
       <div className="dash-page-header">
         <div>
-          <h1>Rapports financiers</h1>
-          <p>Vue complète de vos revenus locatifs</p>
+          <h1>{t('ongletRapports.titre')}</h1>
+          <p>{t('ongletRapports.sousTitre')}</p>
         </div>
         <select value={periode} onChange={function(e) { setPeriode(e.target.value); }}
             style={{ padding: '8px 14px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 13, color: '#555', cursor: 'pointer', outline: 'none', background: '#fff' }}>
-            <option value="3mois">3 derniers mois</option>
-            <option value="6mois">6 derniers mois</option>
-            <option value="12mois">12 derniers mois</option>
-            <option value="annee">Cette année</option>
+            <option value="3mois">{t('ongletRapports.periodes.3mois')}</option>
+            <option value="6mois">{t('ongletRapports.periodes.6mois')}</option>
+            <option value="12mois">{t('ongletRapports.periodes.12mois')}</option>
+            <option value="annee">{t('ongletRapports.periodes.annee')}</option>
           </select>
         <div style={{ display: 'flex', gap: 8 }}>
   <button onClick={exportCSV} className="btn-outline-green" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -3780,7 +3804,7 @@ function OngletRapports(props) {
       window.open('https://api.werdhe.com/rapports/financier/pdf?token=' + token, '_blank');
     }}
     style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, border: 'none', background: '#B71C1C', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-    <FileText size={14} strokeWidth={1.5} /> Export PDF
+    <FileText size={14} strokeWidth={1.5} /> {t('ongletRapports.exportPdf')}
   </button>
 </div>
       </div>
@@ -3788,10 +3812,10 @@ function OngletRapports(props) {
       {/* KPIs */}
       <div className="stats-grid-4" style={{ marginBottom: 24 }}>
         {[
-          { label: 'Encaissé ce mois',    val: GNF(r.encaisse) + ' GNF',    icon: <Banknote size={22} strokeWidth={1.5}/>,  color: '#1B6B3A', bg: '#E8F5E9' },
-          { label: 'En attente',          val: GNF(r.en_attente) + ' GNF',  icon: <Clock size={22} strokeWidth={1.5}/>,     color: '#E65100', bg: '#FFF3E0' },
-          { label: 'Total annuel',        val: GNF(r.total_annuel) + ' GNF', icon: <TrendingUp size={22} strokeWidth={1.5}/>, color: '#1565C0', bg: '#E3F2FD' },
-          { label: 'Paiements ce mois',   val: r.nb_paiements + ' reçus',    icon: <Receipt size={22} strokeWidth={1.5}/>,   color: '#7B1FA2', bg: '#F3E5F5' },
+          { label: t('ongletRapports.kpi.encaisseCeMois'),    val: GNF(r.encaisse) + ' GNF',    icon: <Banknote size={22} strokeWidth={1.5}/>,  color: '#1B6B3A', bg: '#E8F5E9' },
+          { label: t('ongletRapports.kpi.enAttente'),          val: GNF(r.en_attente) + ' GNF',  icon: <Clock size={22} strokeWidth={1.5}/>,     color: '#E65100', bg: '#FFF3E0' },
+          { label: t('ongletRapports.kpi.totalAnnuel'),        val: GNF(r.total_annuel) + ' GNF', icon: <TrendingUp size={22} strokeWidth={1.5}/>, color: '#1565C0', bg: '#E3F2FD' },
+          { label: t('ongletRapports.kpi.paiementsCeMois'),   val: t('ongletRapports.kpi.recus', { n: r.nb_paiements }),    icon: <Receipt size={22} strokeWidth={1.5}/>,   color: '#7B1FA2', bg: '#F3E5F5' },
         ].map(function(s, i) {
           return (
             <div key={i} className="stat-card-colored" style={{ background: s.bg, borderLeft: '4px solid ' + s.color }}>
@@ -3806,11 +3830,11 @@ function OngletRapports(props) {
       {/* Graphique revenus 12 mois */}
       <div style={{ background: '#fff', borderRadius: 16, padding: 24, marginBottom: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <h3 style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', margin: 0 }}>Évolution des revenus</h3>
-          <span style={{ fontSize: 12, color: '#888' }}>12 derniers mois</span>
+          <h3 style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('ongletRapports.evolutionRevenus')}</h3>
+          <span style={{ fontSize: 12, color: '#888' }}>{t('ongletRapports.periodes.12mois')}</span>
         </div>
         {data.evolution.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>Aucune donnée</div>
+          <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>{t('ongletRapports.aucuneDonnee')}</div>
         ) : (
           <ResponsiveContainer width="100%" height={240}>
             <AreaChart data={data.evolution} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
@@ -3827,7 +3851,7 @@ function OngletRapports(props) {
               <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" />
               <XAxis dataKey="mois_label" tick={{ fontSize: 11, fill: '#888' }} />
               <YAxis tick={{ fontSize: 11, fill: '#888' }} tickFormatter={function(v) { return new Intl.NumberFormat('fr-FR', { notation: 'compact' }).format(v); }} />
-              <Tooltip formatter={function(v, n) { return [new Intl.NumberFormat('fr-FR').format(v) + ' GNF', n === 'revenus' ? 'Encaissé' : 'Impayés']; }} labelStyle={{ fontWeight: 700 }} />
+              <Tooltip formatter={function(v, n) { return [new Intl.NumberFormat('fr-FR').format(v) + ' GNF', n === 'revenus' ? t('ongletRapports.encaisse') : t('ongletRapports.impayes')]; }} labelStyle={{ fontWeight: 700 }} />
               <Area type="monotone" dataKey="revenus" stroke="#1B6B3A" strokeWidth={2.5} fill="url(#colorRevenus)" dot={false} />
               <Area type="monotone" dataKey="impayes" stroke="#E53935" strokeWidth={1.5} fill="url(#colorImpayes)" dot={false} strokeDasharray="4 4" />
             </AreaChart>
@@ -3835,10 +3859,10 @@ function OngletRapports(props) {
         )}
         <div style={{ display: 'flex', gap: 20, marginTop: 12, justifyContent: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#555' }}>
-            <div style={{ width: 24, height: 3, background: '#1B6B3A', borderRadius: 2 }} /> Revenus encaissés
+            <div style={{ width: 24, height: 3, background: '#1B6B3A', borderRadius: 2 }} /> {t('ongletRapports.revenusEncaisses')}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#555' }}>
-            <div style={{ width: 24, height: 2, background: '#E53935', borderRadius: 2, borderTop: '2px dashed #E53935' }} /> Impayés
+            <div style={{ width: 24, height: 2, background: '#E53935', borderRadius: 2, borderTop: '2px dashed #E53935' }} /> {t('ongletRapports.impayes')}
           </div>
         </div>
       </div>
@@ -3847,16 +3871,16 @@ function OngletRapports(props) {
 
         {/* Taux d'occupation */}
         <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>Taux d'occupation</h3>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>{t('ongletRapports.tauxOccupation')}</h3>
           {data.occupation.length === 0 ? (
-            <div style={{ color: '#888', fontSize: 13 }}>Aucune donnée</div>
+            <div style={{ color: '#888', fontSize: 13 }}>{t('ongletRapports.aucuneDonnee')}</div>
           ) : (
             <ResponsiveContainer width="100%" height={180}>
               <BarChart data={data.occupation} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
                 <XAxis dataKey="mois_label" tick={{ fontSize: 10, fill: '#888' }} />
                 <YAxis tick={{ fontSize: 10, fill: '#888' }} domain={[0, 100]} tickFormatter={function(v) { return v + '%'; }} />
-                <Tooltip formatter={function(v) { return [v + '%', 'Occupation']; }} />
+                <Tooltip formatter={function(v) { return [v + '%', t('ongletRapports.occupation')]; }} />
                 <Bar dataKey={function(d) { return d.total_biens > 0 ? Math.round(d.biens_loues / d.total_biens * 100) : 0; }}
                   name="occupation" fill="#1B6B3A" radius={[6, 6, 0, 0]} />
               </BarChart>
@@ -3866,9 +3890,9 @@ function OngletRapports(props) {
 
         {/* Revenus par bien */}
         <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>Revenus par bien</h3>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>{t('ongletRapports.revenusParBien')}</h3>
           {data.par_bien.length === 0 && (
-            <div style={{ color: '#888', fontSize: 13 }}>Aucun logement</div>
+            <div style={{ color: '#888', fontSize: 13 }}>{t('ongletRapports.aucunLogement')}</div>
           )}
           {data.par_bien.map(function(b, i) {
             var max = Math.max.apply(null, data.par_bien.map(function(x) { return Number(x.total_encaisse); }));
@@ -3891,14 +3915,14 @@ function OngletRapports(props) {
       {data.candidatures && (
         <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', marginBottom: 20 }}>
           <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>
-            Analyse des candidatures
+            {t('ongletRapports.analyseCandidatures')}
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12, marginBottom: 16 }}>
             {[
-              { label: 'Total reçues',      val: data.candidatures.total_candidatures, color: '#1B2B22', bg: '#F5F5F5' },
-              { label: 'Acceptées',         val: data.candidatures.acceptees,          color: '#1B6B3A', bg: '#E8F5E9' },
-              { label: 'Refusées',          val: data.candidatures.refusees,           color: '#E53935', bg: '#FFEBEE' },
-              { label: 'En attente',        val: data.candidatures.en_attente,         color: '#E65100', bg: '#FFF3E0' },
+              { label: t('ongletRapports.candidatures.totalRecues'),      val: data.candidatures.total_candidatures, color: '#1B2B22', bg: '#F5F5F5' },
+              { label: t('ongletRapports.candidatures.acceptees'),         val: data.candidatures.acceptees,          color: '#1B6B3A', bg: '#E8F5E9' },
+              { label: t('ongletRapports.candidatures.refusees'),          val: data.candidatures.refusees,           color: '#E53935', bg: '#FFEBEE' },
+              { label: t('ongletRapports.candidatures.enAttente'),        val: data.candidatures.en_attente,         color: '#E65100', bg: '#FFF3E0' },
             ].map(function(s, i) {
               return (
                 <div key={i} style={{ background: s.bg, borderRadius: 12, padding: '14px', textAlign: 'center' }}>
@@ -3912,7 +3936,7 @@ function OngletRapports(props) {
           {/* Taux d'acceptation */}
           <div style={{ background: '#F7F8F7', borderRadius: 12, padding: '14px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <span style={{ fontSize: 13, color: '#555', fontWeight: 600 }}>Taux d'acceptation</span>
+              <span style={{ fontSize: 13, color: '#555', fontWeight: 600 }}>{t('ongletRapports.tauxAcceptation')}</span>
               <span style={{ fontSize: 16, fontWeight: 800, color: Number(data.candidatures.taux_acceptation) >= 50 ? '#1B6B3A' : '#E65100' }}>
                 {data.candidatures.taux_acceptation || 0}%
               </span>
@@ -3927,7 +3951,7 @@ function OngletRapports(props) {
             {data.meilleur_mois && (
               <div style={{ marginTop: 10, fontSize: 12, color: '#888', display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span>🏆</span>
-                <span>Meilleur mois : <strong style={{ color: '#1B6B3A' }}>{data.meilleur_mois.mois}</strong> - {GNF(data.meilleur_mois.total)} GNF</span>
+                <span>{t('ongletRapports.meilleurMoisAvant')}<strong style={{ color: '#1B6B3A' }}>{data.meilleur_mois.mois}</strong> - {GNF(data.meilleur_mois.total)} GNF</span>
               </div>
             )}
           </div>
@@ -3943,13 +3967,13 @@ function OngletRapports(props) {
         return (
           <div style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', borderRadius: 16, padding: '20px', marginBottom: 20 }}>
             <h3 style={{ fontSize: 15, fontWeight: 700, color: '#fff', margin: '0 0 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
-              Prévisions basées sur vos 3 derniers mois
+              {t('ongletRapports.previsionsTitre')}
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
               {[
-                { label: 'Mois prochain',    val: GNF(Math.round(moyenneMensuelle)) + ' GNF' },
-                { label: 'Trimestre',        val: GNF(prevision3mois) + ' GNF'               },
-                { label: 'Projection annuelle', val: GNF(prevision12mois) + ' GNF'           },
+                { label: t('ongletRapports.moisProchain'),    val: GNF(Math.round(moyenneMensuelle)) + ' GNF' },
+                { label: t('ongletRapports.trimestre'),        val: GNF(prevision3mois) + ' GNF'               },
+                { label: t('ongletRapports.projectionAnnuelle'), val: GNF(prevision12mois) + ' GNF'           },
               ].map(function(p, i) {
                 return (
                   <div key={i} style={{ background: 'rgba(255,255,255,0.1)', borderRadius: 12, padding: '14px', textAlign: 'center' }}>
@@ -3960,7 +3984,7 @@ function OngletRapports(props) {
               })}
             </div>
             <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', margin: '12px 0 0', textAlign: 'center' }}>
-              * Estimation basée sur la moyenne mensuelle des 3 derniers mois
+              {t('ongletRapports.estimationNote')}
             </p>
           </div>
         );
@@ -3968,16 +3992,16 @@ function OngletRapports(props) {
 
       {/* Historique paiements */}
       <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>Historique des paiements</h3>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px' }}>{t('ongletRapports.historiquePaiements')}</h3>
         {data.paiements.length === 0 && (
-          <div style={{ color: '#888', fontSize: 13, textAlign: 'center', padding: 20 }}>Aucun paiement enregistré</div>
+          <div style={{ color: '#888', fontSize: 13, textAlign: 'center', padding: 20 }}>{t('ongletRapports.aucunPaiementEnregistre')}</div>
         )}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {data.paiements.map(function(p, i) {
             var cfg = p.statut === 'complete'
-              ? { label: 'Payé', color: '#1B6B3A', bg: '#E8F5E9' }
+              ? { label: t('ongletHistorique.paiements.paye'), color: '#1B6B3A', bg: '#E8F5E9' }
               : p.statut === 'en_attente'
-              ? { label: 'En attente', color: '#E65100', bg: '#FFF3E0' }
+              ? { label: t('ongletHistorique.paiements.enAttente'), color: '#E65100', bg: '#FFF3E0' }
               : { label: p.statut, color: '#888', bg: '#F5F5F5' };
             return (
               <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', borderRadius: 10, background: i % 2 === 0 ? '#FAFAFA' : '#fff', border: '0.5px solid #F0F0F0' }}>
@@ -4003,6 +4027,7 @@ function OngletRapports(props) {
   );
 }
 function SupprimerCompte({ onRetour, user }) {
+  var t = useTranslation('dashboard').t;
   var auth     = useAuth();
   var navigate = useNavigate();
   var [etape, setEtape]     = useState(1); // 1=avertissement, 2=confirmation, 3=succès
@@ -4012,7 +4037,7 @@ function SupprimerCompte({ onRetour, user }) {
 
   function confirmer() {
     if (etape === 1) { setEtape(2); return; }
-    if (!motDePasse) { setErreur('Entrez votre mot de passe pour confirmer'); return; }
+    if (!motDePasse) { setErreur(t('supprimerCompte.erreurMotDePasseRequis')); return; }
     setLoading(true);
     api.delete('/auth/compte', { data: { mot_de_passe: motDePasse } })
       .then(function() {
@@ -4023,7 +4048,7 @@ function SupprimerCompte({ onRetour, user }) {
         }, 3000);
       })
       .catch(function(err) {
-        setErreur(err.response && err.response.data ? err.response.data.erreur : 'Erreur lors de la suppression');
+        setErreur(err.response && err.response.data ? err.response.data.erreur : t('supprimerCompte.erreurSuppression'));
         setLoading(false);
       });
   }
@@ -4034,8 +4059,8 @@ function SupprimerCompte({ onRetour, user }) {
         <div style={{ width: 64, height: 64, background: '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
           <CheckCircle size={32} strokeWidth={1.5} color="#1B6B3A" />
         </div>
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1B2B22', margin: '0 0 10px' }}>Compte supprimé</h3>
-        <p style={{ fontSize: 14, color: '#888' }}>Vos données ont été supprimées. Vous allez être redirigé...</p>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1B2B22', margin: '0 0 10px' }}>{t('supprimerCompte.compteSupprime')}</h3>
+        <p style={{ fontSize: 14, color: '#888' }}>{t('supprimerCompte.donneesSupprimees')}</p>
       </div>
     );
   }
@@ -4044,22 +4069,22 @@ function SupprimerCompte({ onRetour, user }) {
     <div className="dash-form-card" style={{ maxWidth: 500 }}>
       <h3 style={{ fontSize: 18, fontWeight: 800, color: '#E53935', margin: '0 0 20px', display: 'flex', alignItems: 'center', gap: 10 }}>
         <Trash2 size={20} strokeWidth={2} color="#E53935" />
-        Supprimer mon compte
+        {t('supprimerCompte.titre')}
       </h3>
 
       {etape === 1 && (
         <>
           <div style={{ background: '#FFEBEE', borderRadius: 12, padding: '16px 18px', marginBottom: 20, border: '1px solid #FFCDD2' }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: '#B71C1C', marginBottom: 10 }}>
-              Attention - Action irréversible
+              {t('supprimerCompte.attentionIrreversible')}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {[
-                'Votre profil sera anonymisé',
-                'Vos logements seront masqués',
-                'Vos candidatures actives seront annulées',
-                'Vos messages seront conservés 30 jours',
-                'Les données contractuelles (baux, paiements) sont conservées 5 ans',
+                t('supprimerCompte.consequences.profilAnonymise'),
+                t('supprimerCompte.consequences.logementsMasques'),
+                t('supprimerCompte.consequences.candidaturesAnnulees'),
+                t('supprimerCompte.consequences.messagesConserves'),
+                t('supprimerCompte.consequences.donneesContractuelles'),
               ].map(function(item, i) {
                 return (
                   <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: '#C62828' }}>
@@ -4074,11 +4099,11 @@ function SupprimerCompte({ onRetour, user }) {
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={onRetour}
               style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-              Annuler
+              {t('ongletLocataires.form.annuler')}
             </button>
             <button onClick={confirmer}
               style={{ flex: 1, padding: '12px', borderRadius: 10, border: 'none', background: '#E53935', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-              Continuer
+              {t('supprimerCompte.continuer')}
             </button>
           </div>
         </>
@@ -4087,7 +4112,7 @@ function SupprimerCompte({ onRetour, user }) {
       {etape === 2 && (
         <>
           <p style={{ fontSize: 14, color: '#555', marginBottom: 20, lineHeight: 1.6 }}>
-            Pour confirmer la suppression de votre compte <strong>{user && user.email}</strong>, entrez votre mot de passe.
+            {t('supprimerCompte.confirmerAvecEmailAvant')}<strong>{user && user.email}</strong>{t('supprimerCompte.confirmerAvecEmailApres')}
           </p>
 
           {erreur && (
@@ -4098,9 +4123,9 @@ function SupprimerCompte({ onRetour, user }) {
 
           <div style={{ marginBottom: 20 }}>
             <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>
-              Mot de passe actuel *
+              {t('supprimerCompte.motDePasseActuel')}
             </label>
-            <input type="password" placeholder="Votre mot de passe" value={motDePasse}
+            <input type="password" placeholder={t('supprimerCompte.votreMotDePasse')} value={motDePasse}
               onChange={function(e) { setMotDePasse(e.target.value); setErreur(''); }}
               style={{ width: '100%', padding: '11px 14px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
           </div>
@@ -4108,13 +4133,13 @@ function SupprimerCompte({ onRetour, user }) {
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={function() { setEtape(1); setMotDePasse(''); setErreur(''); }}
               style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-              Retour
+              {t('supprimerCompte.retour')}
             </button>
             <button onClick={confirmer} disabled={loading}
               style={{ flex: 1, padding: '12px', borderRadius: 10, border: 'none', background: loading ? '#aaa' : '#E53935', color: '#fff', fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               {loading
-                ? <><div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Suppression...</>
-                : 'Supprimer définitivement'
+                ? <><div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> {t('supprimerCompte.suppressionEnCours')}</>
+                : t('supprimerCompte.supprimerDefinitivement')
               }
             </button>
           </div>
@@ -4127,6 +4152,7 @@ function SupprimerCompte({ onRetour, user }) {
 // ONGLET : Parametres
 // ================================================
 function OngletParametres(props) {
+  var t = useTranslation('dashboard').t;
   var user = props.user;
   var auth = useAuth();
   var navigate = useNavigate();
@@ -4144,9 +4170,9 @@ function OngletParametres(props) {
 
   var PRIX_ABONNEMENT = { pro: 120000, agence: 300000 };
   var CYCLES_ABONNEMENT = {
-    mensuel:    { label: 'Mensuel', mois: 1,  reduction: 0    },
-    semestriel: { label: '6 mois',  mois: 6,  reduction: 0.10 },
-    annuel:     { label: 'Annuel',  mois: 12, reduction: 0.20 },
+    mensuel:    { label: t('ongletParametres.cycles.mensuel'), mois: 1,  reduction: 0    },
+    semestriel: { label: t('ongletParametres.cycles.semestriel'),  mois: 6,  reduction: 0.10 },
+    annuel:     { label: t('ongletParametres.cycles.annuel'),  mois: 12, reduction: 0.20 },
   };
 
   function chargerAbonnement() {
@@ -4166,11 +4192,11 @@ function OngletParametres(props) {
     setEssaiEnCours(plan);
     api.post('/abonnements/essai', { plan: plan })
       .then(function() {
-        toast.success('Essai ' + (plan === 'pro' ? 'Pro' : 'Agence') + ' démarré ! 1 mois gratuit.');
+        toast.success(plan === 'pro' ? t('ongletParametres.toastEssaiProDemarre') : t('ongletParametres.toastEssaiAgenceDemarre'));
         chargerAbonnement();
       })
       .catch(function(err) {
-        toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur');
+        toast.error(err.response && err.response.data ? err.response.data.erreur : t('ongletParametres.erreur'));
       })
       .finally(function() { setEssaiEnCours(null); });
   }
@@ -4178,38 +4204,38 @@ function OngletParametres(props) {
     e.preventDefault();
     setSaving(true);
     api.put('/auth/profil', formProfil)
-      .then(function() { toast.success('Profil mis a jour !'); setSection(null); })
-      .catch(function() { toast.error('Erreur mise a jour'); })
+      .then(function() { toast.success(t('ongletParametres.toastProfilMisAJour')); setSection(null); })
+      .catch(function() { toast.error(t('ongletParametres.toastErreurMiseAJour')); })
       .finally(function() { setSaving(false); });
   }
 
   function saveMdp(e) {
     e.preventDefault();
-    if (formMdp.nouveau !== formMdp.confirmer) { toast.error('Les mots de passe ne correspondent pas'); return; }
-    if (formMdp.nouveau.length < 6) { toast.error('Minimum 6 caracteres'); return; }
+    if (formMdp.nouveau !== formMdp.confirmer) { toast.error(t('ongletParametres.toastMdpNeCorrespondentPas')); return; }
+    if (formMdp.nouveau.length < 6) { toast.error(t('ongletParametres.toastMinimum6Caracteres')); return; }
     setSaving(true);
     api.put('/auth/changer-mot-de-passe', { ancien_mot_de_passe: formMdp.ancien, nouveau_mot_de_passe: formMdp.nouveau })
-      .then(function() { toast.success('Mot de passe change !'); setFormMdp({ ancien: '', nouveau: '', confirmer: '' }); setSection(null); })
-      .catch(function(err) { toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur'); })
+      .then(function() { toast.success(t('ongletParametres.toastMdpChange')); setFormMdp({ ancien: '', nouveau: '', confirmer: '' }); setSection(null); })
+      .catch(function(err) { toast.error(err.response && err.response.data ? err.response.data.erreur : t('ongletParametres.erreur')); })
       .finally(function() { setSaving(false); });
   }
 
   var menuItems = [
-    { id: 'profil', icon: <UserCheck size={22} strokeWidth={1.5} />, titre: 'Mon profil', desc: 'Modifier mes informations personnelles' },
-    { id: 'mdp', icon: <Shield size={22} strokeWidth={1.5} />, titre: 'Mot de passe', desc: 'Changer mon mot de passe' },
-    { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: 'Notifications', desc: 'Gerer mes preferences de notifications' },
-    { id: 'langue', icon: '🌐', titre: 'Langue', desc: 'Francais (Guinee)' },
-    { id: 'score', icon: <Star size={22} strokeWidth={1.5} />, titre: 'Score de confiance', desc: 'Votre réputation sur Werdhe' },
-    { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: 'Notifications', desc: 'Gérer mes préférences de notifications' },
-    { id: 'supprimer', icon: <Trash2 size={22} strokeWidth={1.5} color="#E53935" />, titre: 'Supprimer mon compte', desc: 'Action irréversible - toutes vos données seront effacées', danger: true },
-    { id: 'tour', icon: <HelpCircle size={22} strokeWidth={1.5} />, titre: 'Tutoriel interactif', desc: 'Relancer la visite guidée du dashboard' },
+    { id: 'profil', icon: <UserCheck size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.profil.titre'), desc: t('ongletParametres.menu.profil.desc') },
+    { id: 'mdp', icon: <Shield size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.mdp.titre'), desc: t('ongletParametres.menu.mdp.desc') },
+    { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.notifs.titre'), desc: t('ongletParametres.menu.notifs.desc') },
+    { id: 'langue', icon: '🌐', titre: t('ongletParametres.menu.langue.titre'), desc: t('ongletParametres.menu.langue.desc') },
+    { id: 'score', icon: <Star size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.score.titre'), desc: t('ongletParametres.menu.score.desc') },
+    { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.notifs.titre'), desc: t('ongletParametres.menu.notifs.desc') },
+    { id: 'supprimer', icon: <Trash2 size={22} strokeWidth={1.5} color="#E53935" />, titre: t('ongletParametres.menu.supprimer.titre'), desc: t('ongletParametres.menu.supprimer.desc'), danger: true },
+    { id: 'tour', icon: <HelpCircle size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.tour.titre'), desc: t('ongletParametres.menu.tour.desc') },
   ];
 
   return (
     <div>
       <div className="dash-page-header">
-        <div><h1>Parametres</h1></div>
-        {section && <button className="btn-outline-green" onClick={function() { setSection(null); }}>Retour</button>}
+        <div><h1>{t('ongletParametres.titre')}</h1></div>
+        {section && <button className="btn-outline-green" onClick={function() { setSection(null); }}>{t('supprimerCompte.retour')}</button>}
       </div>
 
       {!section && (
@@ -4235,27 +4261,27 @@ function OngletParametres(props) {
 <div style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginBottom: 12 }}>
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
     <div>
-      <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>Mon abonnement</div>
+      <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{t('ongletParametres.monAbonnement')}</div>
       <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
-        {user && user.role !== 'locataire' ? 'Plan actuel' : 'Accès locataire gratuit'}
+        {user && user.role !== 'locataire' ? t('ongletParametres.planActuel') : t('ongletParametres.accesLocataireGratuit')}
       </div>
     </div>
     <div style={{ background: user && user.plan === 'pro' ? '#E8F5E9' : user && user.plan === 'agence' ? '#E3F2FD' : '#F5F5F5', color: user && user.plan === 'pro' ? '#1B6B3A' : user && user.plan === 'agence' ? '#1565C0' : '#888', borderRadius: 20, padding: '4px 14px', fontSize: 13, fontWeight: 700, textTransform: 'capitalize' }}>
-      {user && user.plan ? user.plan : 'Gratuit'}
+      {user && user.plan ? user.plan : t('ongletParametres.gratuit')}
     </div>
   </div>
 
   {monAbonnement && monAbonnement.abonnement && monAbonnement.abonnement.statut === 'impaye' && (
     <div style={{ background: '#FFEBEE', border: '1px solid #FFCDD2', borderRadius: 10, padding: '10px 14px', marginTop: 12, fontSize: 12, color: '#B71C1C' }}>
-      Abonnement impayé - accès restreint. Réglez votre abonnement pour retrouver toutes les fonctionnalités.
+      {t('ongletParametres.abonnementImpaye')}
     </div>
   )}
 
   {monAbonnement && monAbonnement.jours_restants !== null && monAbonnement.plan !== 'gratuit' && monAbonnement.abonnement && monAbonnement.abonnement.statut !== 'impaye' && (
     <div style={{ fontSize: 12, color: monAbonnement.jours_restants <= 5 ? '#E65100' : '#888', marginTop: 8, fontWeight: monAbonnement.jours_restants <= 5 ? 700 : 400 }}>
       {monAbonnement.jours_restants > 0
-        ? (monAbonnement.abonnement.statut === 'essai' ? 'Essai gratuit' : 'Abonnement') + ' - ' + monAbonnement.jours_restants + ' jour(s) restant(s)'
-        : 'Abonnement expiré'}
+        ? t('ongletParametres.joursRestants', { type: monAbonnement.abonnement.statut === 'essai' ? t('ongletParametres.essaiGratuit') : t('ongletParametres.abonnement'), n: monAbonnement.jours_restants })
+        : t('ongletParametres.abonnementExpire')}
     </div>
   )}
 
@@ -4263,18 +4289,18 @@ function OngletParametres(props) {
     <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
       <button onClick={function() { demarrerEssai('pro'); }} disabled={essaiEnCours === 'pro'}
         style={{ flex: 1, background: essaiEnCours === 'pro' ? '#aaa' : '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-        {essaiEnCours === 'pro' ? '...' : 'Essai Pro - 1 mois gratuit'}
+        {essaiEnCours === 'pro' ? '...' : t('ongletParametres.essaiProBouton')}
       </button>
       <button onClick={function() { demarrerEssai('agence'); }} disabled={essaiEnCours === 'agence'}
         style={{ flex: 1, background: essaiEnCours === 'agence' ? '#aaa' : '#7B1FA2', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-        {essaiEnCours === 'agence' ? '...' : 'Essai Agence - 1 mois gratuit'}
+        {essaiEnCours === 'agence' ? '...' : t('ongletParametres.essaiAgenceBouton')}
       </button>
     </div>
   )}
 
   {user && user.role !== 'locataire' && monAbonnement && ['pro', 'agence'].includes(monAbonnement.plan) && (
     <div style={{ marginTop: 12, paddingTop: 12, borderTop: '0.5px solid #F0F0F0' }}>
-      <div style={{ fontSize: 11, color: '#888', fontWeight: 600, marginBottom: 6 }}>Cycle de facturation</div>
+      <div style={{ fontSize: 11, color: '#888', fontWeight: 600, marginBottom: 6 }}>{t('ongletParametres.cycleFacturation')}</div>
       <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
         {Object.keys(CYCLES_ABONNEMENT).map(function(c) {
           var actif = cycleChoisi === c;
@@ -4288,7 +4314,7 @@ function OngletParametres(props) {
       </div>
       <button onClick={function() { setShowPaiementAbo(monAbonnement.plan); }}
         style={{ width: '100%', background: '#1B2B22', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-        💳 Payer par Mobile Money
+        {t('ongletParametres.payerMobileMoney')}
       </button>
     </div>
   )}
@@ -4297,7 +4323,7 @@ function OngletParametres(props) {
 {showPaiementAbo && (
   <ModalPaiementMobile
     montant={Math.round(PRIX_ABONNEMENT[showPaiementAbo] * CYCLES_ABONNEMENT[cycleChoisi].mois * (1 - CYCLES_ABONNEMENT[cycleChoisi].reduction))}
-    titre={'Abonnement ' + (showPaiementAbo === 'pro' ? 'Pro' : 'Agence') + ' - ' + CYCLES_ABONNEMENT[cycleChoisi].label}
+    titre={t('ongletParametres.abonnementTitre', { plan: showPaiementAbo === 'pro' ? 'Pro' : 'Agence', cycle: CYCLES_ABONNEMENT[cycleChoisi].label })}
     payload={{ plan: showPaiementAbo, cycle: cycleChoisi }}
     endpoints={{
       orange:    '/abonnements/orange-money/initier',
@@ -4309,37 +4335,37 @@ function OngletParametres(props) {
   />
 )}
           <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontSize: 12, color: '#888', marginBottom: 10, fontWeight: 600 }}>Informations du compte</div>
-            <div style={{ fontSize: 14, color: '#333', marginBottom: 4 }}>Email : {user && user.email}</div>
-            <div style={{ fontSize: 14, color: '#333' }}>Role : {user && user.role}</div>
+            <div style={{ fontSize: 12, color: '#888', marginBottom: 10, fontWeight: 600 }}>{t('ongletParametres.infosCompte')}</div>
+            <div style={{ fontSize: 14, color: '#333', marginBottom: 4 }}>{t('ongletParametres.emailLabel')} {user && user.email}</div>
+            <div style={{ fontSize: 14, color: '#333' }}>{t('ongletParametres.roleLabel')} {user && user.role}</div>
           </div>
       {user && user.role === 'admin' && (
         <button
           onClick={function() { window.location.href = '/admin'; }}
           style={{ background: '#1B2B22', color: '#fff', border: 'none', borderRadius: 12, padding: '14px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-          <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><Settings size={16} strokeWidth={1.5}/> Panneau administrateur</span>
+          <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><Settings size={16} strokeWidth={1.5}/> {t('ongletParametres.panneauAdmin')}</span>
         </button>
       )}
           <button onClick={function() { auth.logout(); }}
             style={{ background: '#FFEBEE', color: '#B71C1C', border: 'none', borderRadius: 12, padding: '14px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-            Se deconnecter
+            {t('ongletParametres.seDeconnecter')}
           </button>
         </div>
       )}
 
       {section === 'profil' && (
         <div className="dash-form-card" style={{ maxWidth: 560 }}>
-          <h3>Modifier mon profil</h3>
+          <h3>{t('ongletParametres.modifierProfil')}</h3>
           <form onSubmit={saveProfil}>
             <div className="form-row-2">
-              <div className="form-group"><label>Prenom</label><input type="text" value={formProfil.prenom} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { prenom: e.target.value })); }} required /></div>
-              <div className="form-group"><label>Nom</label><input type="text" value={formProfil.nom} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { nom: e.target.value })); }} required /></div>
+              <div className="form-group"><label>{t('ongletLocataires.form.prenom').replace(' *','')}</label><input type="text" value={formProfil.prenom} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { prenom: e.target.value })); }} required /></div>
+              <div className="form-group"><label>{t('ongletLocataires.form.nom').replace(' *','')}</label><input type="text" value={formProfil.nom} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { nom: e.target.value })); }} required /></div>
             </div>
-            <div className="form-group"><label>Email</label><input type="email" value={formProfil.email} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { email: e.target.value })); }} required /></div>
-            <div className="form-group"><label>Telephone</label><input type="tel" placeholder="+224 622 00 00 00" value={formProfil.telephone} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { telephone: e.target.value })); }} /></div>
+            <div className="form-group"><label>{t('ongletLocataires.form.email')}</label><input type="email" value={formProfil.email} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { email: e.target.value })); }} required /></div>
+            <div className="form-group"><label>{t('ongletLocataires.form.telephone')}</label><input type="tel" placeholder="+224 622 00 00 00" value={formProfil.telephone} onChange={function(e) { setFormProfil(Object.assign({}, formProfil, { telephone: e.target.value })); }} /></div>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button type="submit" className="btn-green" disabled={saving}>{saving ? 'Sauvegarde...' : 'Sauvegarder'}</button>
-              <button type="button" className="btn-outline-green" onClick={function() { setSection(null); }}>Annuler</button>
+              <button type="submit" className="btn-green" disabled={saving}>{saving ? t('ongletParametres.sauvegardeEnCours') : t('ongletLocataires.form.sauvegarder')}</button>
+              <button type="button" className="btn-outline-green" onClick={function() { setSection(null); }}>{t('ongletLocataires.form.annuler')}</button>
             </div>
           </form>
         </div>
@@ -4347,30 +4373,30 @@ function OngletParametres(props) {
   {section === 'tour' && (
   <div className="dash-form-card" style={{ maxWidth: 480, textAlign: 'center' }}>
     <HelpCircle size={48} strokeWidth={1} color="#1B6B3A" style={{ marginBottom: 16 }} />
-    <h3 style={{ fontSize: 17, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>Tutoriel interactif</h3>
+    <h3 style={{ fontSize: 17, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>{t('ongletParametres.menu.tour.titre')}</h3>
     <p style={{ fontSize: 14, color: '#888', margin: '0 0 24px', lineHeight: 1.6 }}>
-      Relancez la visite guidée pour (re)découvrir toutes les fonctionnalités du dashboard.
+      {t('ongletParametres.tour.description')}
     </p>
     <button onClick={function() { tour.relancer(); setSection(null); }}
       style={{ padding: '12px 24px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-      Lancer le tutoriel
+      {t('ongletParametres.tour.lancer')}
     </button>
   </div>
   )}
 
       {section === 'mdp' && (
         <div className="dash-form-card" style={{ maxWidth: 480 }}>
-          <h3>Changer le mot de passe</h3>
+          <h3>{t('ongletParametres.changerMdp')}</h3>
           <form onSubmit={saveMdp}>
-            <div className="form-group"><label>Mot de passe actuel</label><input type="password" value={formMdp.ancien} onChange={function(e) { setFormMdp(Object.assign({}, formMdp, { ancien: e.target.value })); }} required /></div>
-            <div className="form-group"><label>Nouveau mot de passe</label><input type="password" placeholder="Minimum 6 caracteres" value={formMdp.nouveau} onChange={function(e) { setFormMdp(Object.assign({}, formMdp, { nouveau: e.target.value })); }} required /></div>
-            <div className="form-group"><label>Confirmer</label><input type="password" value={formMdp.confirmer} onChange={function(e) { setFormMdp(Object.assign({}, formMdp, { confirmer: e.target.value })); }} required /></div>
+            <div className="form-group"><label>{t('supprimerCompte.motDePasseActuel').replace(' *','')}</label><input type="password" value={formMdp.ancien} onChange={function(e) { setFormMdp(Object.assign({}, formMdp, { ancien: e.target.value })); }} required /></div>
+            <div className="form-group"><label>{t('ongletParametres.nouveauMdp')}</label><input type="password" placeholder={t('ongletParametres.minimum6Caracteres')} value={formMdp.nouveau} onChange={function(e) { setFormMdp(Object.assign({}, formMdp, { nouveau: e.target.value })); }} required /></div>
+            <div className="form-group"><label>{t('ongletParametres.confirmer')}</label><input type="password" value={formMdp.confirmer} onChange={function(e) { setFormMdp(Object.assign({}, formMdp, { confirmer: e.target.value })); }} required /></div>
             {formMdp.nouveau && formMdp.confirmer && formMdp.nouveau !== formMdp.confirmer && (
-              <div style={{ fontSize: 12, color: '#B71C1C', marginBottom: 10 }}>Les mots de passe ne correspondent pas</div>
+              <div style={{ fontSize: 12, color: '#B71C1C', marginBottom: 10 }}>{t('ongletParametres.toastMdpNeCorrespondentPas')}</div>
             )}
             <div style={{ display: 'flex', gap: 10 }}>
-              <button type="submit" className="btn-green" disabled={saving}>{saving ? 'Changement...' : 'Changer'}</button>
-              <button type="button" className="btn-outline-green" onClick={function() { setSection(null); }}>Annuler</button>
+              <button type="submit" className="btn-green" disabled={saving}>{saving ? t('ongletParametres.changementEnCours') : t('ongletParametres.changer')}</button>
+              <button type="button" className="btn-outline-green" onClick={function() { setSection(null); }}>{t('ongletLocataires.form.annuler')}</button>
             </div>
           </form>
         </div>
@@ -4378,14 +4404,14 @@ function OngletParametres(props) {
 
       {section === 'notifs' && (
         <div className="dash-form-card" style={{ maxWidth: 480 }}>
-          <h3>Preferences de notifications</h3>
+          <h3>{t('ongletParametres.preferencesNotifs')}</h3>
           <PushToggle />
           {[
-            { key: 'email', label: 'Notifications par email' },
-            { key: 'sms', label: 'Notifications par SMS' },
-            { key: 'loyers', label: 'Alertes loyers en retard' },
-            { key: 'bails', label: 'Alertes baux expirants' },
-            { key: 'pannes', label: 'Signalements de pannes' }
+            { key: 'email', label: t('ongletParametres.notifs.email') },
+            { key: 'sms', label: t('ongletParametres.notifs.sms') },
+            { key: 'loyers', label: t('ongletParametres.notifs.loyers') },
+            { key: 'bails', label: t('ongletParametres.notifs.bails') },
+            { key: 'pannes', label: t('ongletParametres.notifs.pannes') }
           ].map(function(n) {
             return (
               <div key={n.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #f0f0f0' }}>
@@ -4398,30 +4424,30 @@ function OngletParametres(props) {
             );
           })}
           <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-            <button className="btn-green" onClick={function() { toast.success('Preferences sauvegardees !'); setSection(null); }}>Sauvegarder</button>
-            <button className="btn-outline-green" onClick={function() { setSection(null); }}>Annuler</button>
+            <button className="btn-green" onClick={function() { toast.success(t('ongletParametres.toastPreferencesSauvegardees')); setSection(null); }}>{t('ongletLocataires.form.sauvegarder')}</button>
+            <button className="btn-outline-green" onClick={function() { setSection(null); }}>{t('ongletLocataires.form.annuler')}</button>
           </div>
         </div>
-        
+
       )}
       {section === 'notifs' && (
   <div className="dash-form-card" style={{ maxWidth: 560 }}>
-    <h3>Notifications</h3>
+    <h3>{t('ongletMessages.titre')}</h3>
     <p style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>
-      Recevez des alertes en temps réel même quand Werdhe est fermé.
+      {t('ongletParametres.notifsPushDescription')}
     </p>
     <BoutonNotifPush />
     <button className="btn-outline-green" style={{ width: '100%', marginTop: 14 }}
       onClick={function() { setSection(null); }}>
-      ← Retour
+      {t('ongletReservationsProprio.retourListe')}
     </button>
   </div>
 )}
 
       {section === 'langue' && (
         <div className="dash-form-card" style={{ maxWidth: 480 }}>
-          <h3>Langue de l'interface</h3>
-          {[{ code: 'fr', label: 'Francais (Guinee)', flag: '🇬🇳' }, { code: 'fr-fr', label: 'Francais (France)', flag: '🇫🇷' }, { code: 'en', label: 'English', flag: '🇬🇧' }].map(function(l) {
+          <h3>{t('ongletParametres.langueInterface')}</h3>
+          {[{ code: 'fr', label: t('ongletParametres.langueFrGuinee'), flag: '🇬🇳' }, { code: 'fr-fr', label: t('ongletParametres.langueFrFrance'), flag: '🇫🇷' }, { code: 'en', label: 'English', flag: '🇬🇧' }].map(function(l) {
             return (
               <div key={l.code} onClick={function() { setLangue(l.code); }}
                 style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 10, cursor: 'pointer', border: langue === l.code ? '2px solid #1B6B3A' : '1px solid #e0e0e0', background: langue === l.code ? '#E8F5E9' : '#fff', marginBottom: 8, transition: 'all 0.15s' }}>
@@ -4432,14 +4458,14 @@ function OngletParametres(props) {
             );
           })}
           <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-            <button className="btn-green" onClick={function() { toast.success('Langue sauvegardee !'); setSection(null); }}>Sauvegarder</button>
-            <button className="btn-outline-green" onClick={function() { setSection(null); }}>Annuler</button>
+            <button className="btn-green" onClick={function() { toast.success(t('ongletParametres.toastLangueSauvegardee')); setSection(null); }}>{t('ongletLocataires.form.sauvegarder')}</button>
+            <button className="btn-outline-green" onClick={function() { setSection(null); }}>{t('ongletLocataires.form.annuler')}</button>
           </div>
         </div>
       )}
       {section === 'score' && scoreData && (
         <div className="dash-form-card" style={{ maxWidth: 560 }}>
-          <h3>Mon score de confiance</h3>
+          <h3>{t('ongletParametres.monScoreConfiance')}</h3>
           <div style={{ textAlign: 'center', padding: '24px 0', marginBottom: 20 }}>
             <div style={{ position: 'relative', width: 120, height: 120, margin: '0 auto 16px' }}>
               <svg width="120" height="120" viewBox="0 0 120 120">
@@ -4479,11 +4505,11 @@ function OngletParametres(props) {
             })}
           </div>
           <div style={{ background: '#FFF8E1', borderRadius: 10, padding: '12px 16px', fontSize: 13, color: '#7B4F00', marginBottom: 14 }}>
-            Améliorez votre score en complétant votre profil, payant à temps et recevant de bonnes notes.
+            {t('ongletParametres.ameliorerScore')}
           </div>
           <button className="btn-outline-green" style={{ width: '100%' }}
             onClick={function() { setSection(null); }}>
-            ← Retour
+            {t('ongletReservationsProprio.retourListe')}
           </button>
         </div>
       )}
@@ -4497,6 +4523,7 @@ function OngletParametres(props) {
 // ONGLET : Mes locations (locataire)
 // ================================================
 function OngletMesLocations(props) {
+  var t = useTranslation('dashboard').t;
   var stats    = props.stats;
   var setOnglet = props.setOnglet;
   var locationsActives = stats.reservations.filter(function(r) { return r.statut === 'confirmee'; });
@@ -4504,19 +4531,19 @@ function OngletMesLocations(props) {
   return (
     <div>
       <div className="dash-page-header">
-        <div><h1>Mes locations</h1><p>{locationsActives.length} location(s) active(s)</p></div>
+        <div><h1>{t('ongletBiens.locataire.titre')}</h1><p>{t('ongletBiens.locataire.locationsActives', { count: locationsActives.length })}</p></div>
         <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>
-          Chercher un logement
+          {t('ongletBiens.locataire.chercherLogement')}
         </Link>
       </div>
 
       {locationsActives.length === 0 && (
         <div className="dash-empty-state">
           <Home size={48} strokeWidth={1} color="#C8E6C9" />
-          <h3>Aucune location active</h3>
-          <p>Réservez un logement pour commencer</p>
+          <h3>{t('ongletBiens.locataire.aucuneLocation.titre')}</h3>
+          <p>{t('ongletBiens.locataire.aucuneLocation.description')}</p>
           <Link to="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
-            Trouver un logement
+            {t('ongletBiens.locataire.aucuneLocation.trouverLogement')}
           </Link>
         </div>
       )}
@@ -4530,7 +4557,7 @@ function OngletMesLocations(props) {
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{r.logement_titre}</div>
                   <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>
-                    Depuis le {r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A'}
+                    {t('ongletMesLocations.depuisLe', { date: r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : t('ongletReservationsProprio.na') })}
                   </div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: '#1B6B3A', marginTop: 6 }}>
                     {new Intl.NumberFormat('fr-FR').format(r.prix_mensuel || 0)} GNF/mois
@@ -4538,7 +4565,7 @@ function OngletMesLocations(props) {
                   </div>
                 </div>
                 <div style={{ background: '#E8F5E9', color: '#1B5E20', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
-                  Active
+                  {t('ongletMesLocations.active')}
                 </div>
               </div>
 
@@ -4546,11 +4573,11 @@ function OngletMesLocations(props) {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <Link to={'/reservation/' + r.id}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E8F5E9', color: '#1B5E20', textDecoration: 'none', fontSize: 13, fontWeight: 600, border: '0.5px solid #A5D6A7' }}>
-                  Détails
+                  {t('ongletBiens.locataire.details')}
                 </Link>
                 <button onClick={function() { if (setOnglet) setOnglet('/dashboard/documents'); }}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', fontSize: 13, fontWeight: 600, border: '0.5px solid #90CAF9', cursor: 'pointer' }}>
-                  <FileText size={14} strokeWidth={1.5} /> Documents
+                  <FileText size={14} strokeWidth={1.5} /> {t('ongletBiens.locataire.documents')}
                 </button>
               </div>
             </div>
@@ -4561,24 +4588,25 @@ function OngletMesLocations(props) {
   );
 }
 function UpgradePrompt({ fonctionnalite, planRequis, setOnglet }) {
+  var t = useTranslation('dashboard').t;
   var navigate = useNavigate();
   var CONFIGS = {
     multi_users: {
-      titre:  'Multi-utilisateurs',
-      desc:   'Ajoutez jusqu\'à 5 comptes pour votre équipe. Disponible avec le plan Agence.',
+      titre:  t('upgradePrompt.multiUtilisateurs.titre'),
+      desc:   t('upgradePrompt.multiUtilisateurs.desc'),
       icon:   <Users size={36} strokeWidth={1} color="#7B1FA2" />,
       bg:     '#F3E5F5',
       color:  '#7B1FA2',
     },
     logements_illimites: {
-      titre:  'Logements illimités',
-      desc:   'Vous avez atteint la limite de 20 logements du plan Pro. Passez au plan Agence pour des biens illimités.',
+      titre:  t('upgradePrompt.logementsIllimites.titre'),
+      desc:   t('upgradePrompt.logementsIllimites.desc'),
       icon:   <Building2 size={36} strokeWidth={1} color="#7B1FA2" />,
       bg:     '#F3E5F5',
       color:  '#7B1FA2',
     },
   };
-  var cfg = CONFIGS[fonctionnalite] || { titre: 'Fonctionnalité Agence', desc: 'Disponible avec le plan Agence.', icon: <Zap size={36} strokeWidth={1} color="#7B1FA2" />, bg: '#F3E5F5', color: '#7B1FA2' };
+  var cfg = CONFIGS[fonctionnalite] || { titre: t('upgradePrompt.defaut.titre'), desc: t('upgradePrompt.defaut.desc'), icon: <Zap size={36} strokeWidth={1} color="#7B1FA2" />, bg: '#F3E5F5', color: '#7B1FA2' };
 
   return (
     <div style={{ background: '#fff', borderRadius: 16, padding: 32, textAlign: 'center', maxWidth: 420, margin: '40px auto', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
@@ -4590,11 +4618,11 @@ function UpgradePrompt({ fonctionnalite, planRequis, setOnglet }) {
       <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
         <button onClick={function() { navigate('/pricing'); }}
           style={{ padding: '12px 20px', borderRadius: 10, border: 'none', background: '#7B1FA2', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-          Passer au plan Agence
+          {t('upgradePrompt.passerPlanAgence')}
         </button>
         <button onClick={function() { setOnglet('/dashboard'); }}
           style={{ padding: '12px 20px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 14, cursor: 'pointer' }}>
-          Retour
+          {t('supprimerCompte.retour')}
         </button>
       </div>
     </div>
@@ -4604,6 +4632,7 @@ function UpgradePrompt({ fonctionnalite, planRequis, setOnglet }) {
 // COMPOSANT PRINCIPAL : Dashboard
 // ================================================
 export default function Dashboard() {
+  var t = useTranslation('dashboard').t;
   var auth = useAuth();
   var user = auth.user;
   var navigate = useNavigate();
@@ -4641,7 +4670,7 @@ function installerApp() {
   installPrompt.prompt();
   installPrompt.userChoice.then(function(result) {
     if (result.outcome === 'accepted') {
-      toast.success('Werdhe installé sur votre écran d\'accueil ! 🏠');
+      toast.success(t('dashboardMain.toastInstalle'));
     }
     setShowInstall(false);
     setInstallPrompt(null);
@@ -4655,20 +4684,20 @@ function installerApp() {
   // Titres et icones des onglets
   // ================================================
  var pageTitle = {
-  '/dashboard':              t('tableau_bord'),
-  '/dashboard/biens':        t('mes_biens'),
-  '/dashboard/locataires':   t('locataires'),
-  '/dashboard/reservations': user && (user.role === 'proprietaire' || user.role === 'les_deux') ? 'Candidatures reçues' : 'Mes Candidatures',
-  '/dashboard/paiements':    t('paiements'),
-  '/dashboard/documents':    t('documents'),
-  '/dashboard/alertes':      'Alertes',
-  '/dashboard/messages':     t('messages'),
-  '/dashboard/reclamations': t('reclamations'),
-  '/dashboard/preavis':      t('preavis'),
-  '/dashboard/parametres':   t('parametres'),
-  '/dashboard/mes-locations': t('mes_locations'),
-  '/dashboard/rapports':      t('Rapports financiers'),
-  '/dashboard/historique': t('Mon historique'),
+  '/dashboard':              t('sidebar.nav.tableauDeBord'),
+  '/dashboard/biens':        t('sidebar.nav.mesBiens'),
+  '/dashboard/locataires':   t('sidebar.nav.locataires'),
+  '/dashboard/reservations': user && (user.role === 'proprietaire' || user.role === 'les_deux') ? t('ongletReservationsProprio.liste.titre') : t('ongletReservations.locataire.titre'),
+  '/dashboard/paiements':    t('sidebar.nav.paiements'),
+  '/dashboard/documents':    t('sidebar.nav.documents'),
+  '/dashboard/alertes':      t('ongletAlertes.titre'),
+  '/dashboard/messages':     t('sidebar.nav.messages'),
+  '/dashboard/reclamations': t('sidebar.nav.reclamations'),
+  '/dashboard/preavis':      t('sidebar.nav.preavis'),
+  '/dashboard/parametres':   t('sidebar.nav.parametres'),
+  '/dashboard/mes-locations': t('sidebar.nav.mesLocations'),
+  '/dashboard/rapports':      t('ongletRapports.titre'),
+  '/dashboard/historique': t('ongletHistorique.titre'),
 };
   var pageIcon = {
     '/dashboard':              '',
@@ -4699,8 +4728,8 @@ useEffect(function() {
 }, []);
 
 useEffect(function() {
-  function handleOnline()  { setEnLigne(true);  toast.success('Connexion rétablie ✅'); }
-  function handleOffline() { setEnLigne(false); toast.error('Connexion perdue 📡');    }
+  function handleOnline()  { setEnLigne(true);  toast.success(t('dashboardMain.connexionRetablie')); }
+  function handleOffline() { setEnLigne(false); toast.error(t('dashboardMain.connexionPerdue'));    }
   window.addEventListener('online',  handleOnline);
   window.addEventListener('offline', handleOffline);
   return function() {
@@ -4731,15 +4760,15 @@ useEffect(function() {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       // G + B → Mes biens
-      if (e.key === 'b') { setOnglet('/dashboard/biens');        toast('Mes biens',        { duration: 800 }); }
+      if (e.key === 'b') { setOnglet('/dashboard/biens');        toast(t('sidebar.nav.mesBiens'),        { duration: 800 }); }
       // G + R → Réservations
-      if (e.key === 'r') { setOnglet('/dashboard/reservations'); toast('Réservations',      { duration: 800 }); }
+      if (e.key === 'r') { setOnglet('/dashboard/reservations'); toast(t('dashboardMain.raccourciReservations'),      { duration: 800 }); }
       // G + M → Messages
-      if (e.key === 'm') { setOnglet('/dashboard/messages');     toast('<MessageCircle size={14} strokeWidth={1.5} /> Messages',          { duration: 800 }); }
+      if (e.key === 'm') { setOnglet('/dashboard/messages');     toast('<MessageCircle size={14} strokeWidth={1.5} /> ' + t('sidebar.nav.messages'),          { duration: 800 }); }
       // G + P → Paiements
-      if (e.key === 'p') { setOnglet('/dashboard/paiements');    toast('Paiements',         { duration: 800 }); }
+      if (e.key === 'p') { setOnglet('/dashboard/paiements');    toast(t('sidebar.nav.paiements'),         { duration: 800 }); }
       // G + H → Accueil (overview)
-      if (e.key === 'h') { setOnglet('/dashboard');              toast('Tableau de bord',   { duration: 800 }); }
+      if (e.key === 'h') { setOnglet('/dashboard');              toast(t('sidebar.nav.tableauDeBord'),   { duration: 800 }); }
     }
     window.addEventListener('keydown', handleRaccourcis);
 
@@ -4803,8 +4832,8 @@ function chargerDonnees() {
 
   function traiterReservation(id, statut) {
     api.patch('/reservations/' + id + '/traiter', { statut: statut })
-      .then(function() { toast.success(statut === 'confirmee' ? 'Reservation confirmee !' : 'Reservation annulee'); chargerDonnees(); })
-      .catch(function() { toast.error('Erreur'); });
+      .then(function() { toast.success(statut === 'confirmee' ? t('dashboardMain.toastReservationConfirmee') : t('dashboardMain.toastReservationAnnulee')); chargerDonnees(); })
+      .catch(function() { toast.error(t('ongletParametres.erreur')); });
   }
 
 // ================================================
@@ -4843,7 +4872,7 @@ function chargerDonnees() {
       <div className="dashboard-wrapper">
         <div className="dash-loading">
           <div style={{ width: 40, height: 40, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-          Chargement...
+          {t('dashboardMain.chargement')}
         </div>
       </div>
     );
@@ -4866,17 +4895,17 @@ function chargerDonnees() {
   <div style={{ position: 'fixed', bottom: isMobile ? 70 : 20, left: '50%', transform: 'translateX(-50%)', background: '#1B2B22', color: '#fff', borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.25)', zIndex: 9999, maxWidth: 380, width: 'calc(100% - 32px)' }}>
     <div style={{ fontSize: 28, flexShrink: 0 }}>🏠</div>
     <div style={{ flex: 1 }}>
-      <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 3 }}>Installer Werdhe</div>
-      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>Accès rapide depuis votre écran d'accueil</div>
+      <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 3 }}>{t('dashboardMain.installerWerdhe')}</div>
+      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>{t('dashboardMain.accesRapide')}</div>
     </div>
     <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
       <button onClick={function() { setShowInstall(false); }}
         style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', borderRadius: 8, padding: '6px 10px', fontSize: 12, cursor: 'pointer' }}>
-        Plus tard
+        {t('dashboardMain.plusTard')}
       </button>
       <button onClick={installerApp}
         style={{ background: '#F5A623', border: 'none', color: '#1B2B22', borderRadius: 8, padding: '6px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-        Installer
+        {t('dashboardMain.installer')}
       </button>
     </div>
   </div>
@@ -4908,19 +4937,19 @@ function chargerDonnees() {
           {!isMobile && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 2, background: '#F5F6FA', borderRadius: 12, padding: '3px' }}>
               {(user && (user.role === 'proprietaire' || user.role === 'les_deux') ? [
-                { path: '/dashboard',              label: 'Accueil'      },
-                { path: '/dashboard/biens',        label: 'Mes biens'    },
-                { path: '/dashboard/reservations', label: 'Candidatures' },
-                { path: '/dashboard/messages',     label: 'Messages'     },
-                { path: '/dashboard/rapports',     label: 'Rapports'     },
-                { path: '/dashboard/documents',    label: 'Documents'    },
+                { path: '/dashboard',              label: t('dashboardMain.nav.accueil')      },
+                { path: '/dashboard/biens',        label: t('sidebar.nav.mesBiens')    },
+                { path: '/dashboard/reservations', label: t('sidebar.nav.candidatures') },
+                { path: '/dashboard/messages',     label: t('sidebar.nav.messages')     },
+                { path: '/dashboard/rapports',     label: t('dashboardMain.nav.rapports')     },
+                { path: '/dashboard/documents',    label: t('sidebar.nav.documents')    },
               ] : [
-                { path: '/dashboard',               label: 'Accueil'      },
-                { path: '/dashboard/mes-locations', label: 'Locations'    },
-                { path: '/dashboard/reservations',  label: 'Candidatures' },
-                { path: '/dashboard/messages',      label: 'Messages'     },
-                { path: '/dashboard/paiements',     label: 'Paiements'    },
-                { path: '/dashboard/documents',     label: 'Documents'    },
+                { path: '/dashboard',               label: t('dashboardMain.nav.accueil')      },
+                { path: '/dashboard/mes-locations', label: t('dashboardMain.nav.locations')    },
+                { path: '/dashboard/reservations',  label: t('sidebar.nav.candidatures') },
+                { path: '/dashboard/messages',      label: t('sidebar.nav.messages')     },
+                { path: '/dashboard/paiements',     label: t('sidebar.nav.paiements')    },
+                { path: '/dashboard/documents',     label: t('sidebar.nav.documents')    },
               ]).map(function(item) {
                 var actif = onglet === item.path;
                 return (
@@ -4940,7 +4969,7 @@ function chargerDonnees() {
 
             {!enLigne && (
               <div style={{ background: '#E53935', color: '#fff', fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20 }}>
-                Hors ligne
+                {t('dashboardMain.horsLigne')}
               </div>
             )}
 
@@ -5003,8 +5032,8 @@ function chargerDonnees() {
     zIndex: 500, boxShadow: '0 -4px 12px rgba(0,0,0,0.08)'
   }}>
     {(user && user.role === 'locataire' ? [
-      { path: '/dashboard',               icon: <LayoutDashboard size={22} strokeWidth={1.5} />, label: 'Accueil'   },
-      { path: '/dashboard/mes-locations', icon: <Home            size={22} strokeWidth={1.5} />, label: 'Locations' },
+      { path: '/dashboard',               icon: <LayoutDashboard size={22} strokeWidth={1.5} />, label: t('dashboardMain.nav.accueil')   },
+      { path: '/dashboard/mes-locations', icon: <Home            size={22} strokeWidth={1.5} />, label: t('dashboardMain.nav.locations') },
             { path: '/dashboard/messages', icon: (
         <div style={{ position: 'relative' }}>
           <MessageCircle size={22} strokeWidth={1.5} />
@@ -5012,14 +5041,14 @@ function chargerDonnees() {
             <div style={{ position: 'absolute', top: -4, right: -4, width: 8, height: 8, background: '#E53935', borderRadius: '50%' }} />
           )}
         </div>
-      ), label: 'Messages' },
-      { path: '/dashboard/paiements',     icon: <CreditCard      size={22} strokeWidth={1.5} />, label: 'Paiements' },
-      { path: '/dashboard/historique', icon: <Clock size={22} strokeWidth={1.5} />, label: 'Historique' },
-      { path: '/dashboard/parametres',    icon: <Settings        size={22} strokeWidth={1.5} />, label: 'Profil'    },
+      ), label: t('sidebar.nav.messages') },
+      { path: '/dashboard/paiements',     icon: <CreditCard      size={22} strokeWidth={1.5} />, label: t('sidebar.nav.paiements') },
+      { path: '/dashboard/historique', icon: <Clock size={22} strokeWidth={1.5} />, label: t('sidebar.nav.historique') },
+      { path: '/dashboard/parametres',    icon: <Settings        size={22} strokeWidth={1.5} />, label: t('dashboardMain.nav.profil')    },
     ] : [
-      { path: '/dashboard',               icon: <LayoutDashboard size={22} strokeWidth={1.5} />, label: 'Accueil'   },
-      { path: '/dashboard/biens',         icon: <Home            size={22} strokeWidth={1.5} />, label: 'Biens'     },
-      { path: '/dashboard/reservations',  icon: <CalendarCheck   size={22} strokeWidth={1.5} />, label: 'Résas'     },
+      { path: '/dashboard',               icon: <LayoutDashboard size={22} strokeWidth={1.5} />, label: t('dashboardMain.nav.accueil')   },
+      { path: '/dashboard/biens',         icon: <Home            size={22} strokeWidth={1.5} />, label: t('dashboardMain.nav.biens')     },
+      { path: '/dashboard/reservations',  icon: <CalendarCheck   size={22} strokeWidth={1.5} />, label: t('dashboardMain.nav.resas')     },
             { path: '/dashboard/messages', icon: (
         <div style={{ position: 'relative' }}>
           <MessageCircle size={22} strokeWidth={1.5} />
@@ -5027,8 +5056,8 @@ function chargerDonnees() {
             <div style={{ position: 'absolute', top: -4, right: -4, width: 8, height: 8, background: '#E53935', borderRadius: '50%' }} />
           )}
         </div>
-      ), label: 'Messages' },
-      { path: '/dashboard/parametres',    icon: <Settings        size={22} strokeWidth={1.5} />, label: 'Profil'    },
+      ), label: t('sidebar.nav.messages') },
+      { path: '/dashboard/parametres',    icon: <Settings        size={22} strokeWidth={1.5} />, label: t('dashboardMain.nav.profil')    },
     ]).map(function(item) {
       var actif = onglet === item.path;
       return (

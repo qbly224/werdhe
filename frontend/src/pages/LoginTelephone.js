@@ -4,17 +4,22 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
-var INDICATIFS = [
-  { code: '+224', pays: 'Guinée', flag: '🇬🇳' },
-  { code: '+221', pays: 'Sénégal', flag: '🇸🇳' },
-  { code: '+223', pays: 'Mali', flag: '🇲🇱' },
-  { code: '+225', pays: "Côte d'Ivoire", flag: '🇨🇮' },
-  { code: '+33',  pays: 'France', flag: '🇫🇷' },
-  { code: '+241',  pays: 'Gabon', flag: 'GA' },
-];
+function getIndicatifs(t) {
+  return [
+    { code: '+224', pays: t('loginTelephone.pays.guinee'), flag: '🇬🇳' },
+    { code: '+221', pays: t('loginTelephone.pays.senegal'), flag: '🇸🇳' },
+    { code: '+223', pays: t('loginTelephone.pays.mali'), flag: '🇲🇱' },
+    { code: '+225', pays: t('loginTelephone.pays.coteIvoire'), flag: '🇨🇮' },
+    { code: '+33',  pays: t('loginTelephone.pays.france'), flag: '🇫🇷' },
+    { code: '+241',  pays: t('loginTelephone.pays.gabon'), flag: 'GA' },
+  ];
+}
 
 export default function LoginTelephone() {
+  var t          = useTranslation('public').t;
+  var INDICATIFS = getIndicatifs(t);
   var navigate   = useNavigate();
   var auth       = useAuth();
 
@@ -41,29 +46,29 @@ export default function LoginTelephone() {
   }, [timer]);
 
   function envoyerOTP() {
-    if (telephone.length < 6) { toast.error('Numéro invalide'); return; }
+    if (telephone.length < 6) { toast.error(t('loginTelephone.numeroInvalide')); return; }
     var tel = indicatif + telephone.replace(/^0/, '');
     setTelComplet(tel);
     setLoading(true);
 
     api.post('/auth/telephone/envoyer-otp', { telephone: tel })
       .then(function(res) {
-        toast.success('Code envoyé !');
+        toast.success(t('loginTelephone.codeEnvoye'));
         setEtape('otp');
         setTimer(60);
         // Mode dev : afficher le code automatiquement
         // Le code est maintenant envoyé par email
-         toast.success('Code envoyé par email !');
+         toast.success(t('loginTelephone.codeEnvoyeParEmail'));
       })
       .catch(function(err) {
-        toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur envoi');
+        toast.error(err.response && err.response.data ? err.response.data.erreur : t('loginTelephone.erreurEnvoi'));
       })
       .finally(function() { setLoading(false); });
   }
 
   function verifierOTP() {
     var code = otp.join('');
-    if (code.length !== 6) { toast.error('Entrez les 6 chiffres'); return; }
+    if (code.length !== 6) { toast.error(t('loginTelephone.entrezChiffres')); return; }
     setLoading(true);
 
     api.post('/auth/telephone/verifier-otp', { telephone: telComplet, code: code })
@@ -76,17 +81,17 @@ export default function LoginTelephone() {
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('user',  JSON.stringify(res.data.user));
         auth.login && auth.login(res.data.user, res.data.token);
-        toast.success('Bienvenue ' + res.data.user.prenom + ' !');
+        toast.success(t('loginTelephone.bienvenue', { prenom: res.data.user.prenom }));
         navigate('/dashboard');
       })
       .catch(function(err) {
-        toast.error(err.response && err.response.data ? err.response.data.erreur : 'Code invalide');
+        toast.error(err.response && err.response.data ? err.response.data.erreur : t('loginTelephone.codeInvalide'));
       })
       .finally(function() { setLoading(false); });
   }
 
   function creerCompte() {
-    if (!nom.trim()) { toast.error('Entrez votre nom'); return; }
+    if (!nom.trim()) { toast.error(t('loginTelephone.entrezNom')); return; }
     var code = otp.join('');
     setLoading(true);
 
@@ -101,11 +106,11 @@ export default function LoginTelephone() {
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('user',  JSON.stringify(res.data.user));
         auth.login && auth.login(res.data.user, res.data.token);
-        toast.success('Compte créé ! Bienvenue ' + (prenom || nom) + ' !');
+        toast.success(t('loginTelephone.compteCreeBienvenue', { nom: prenom || nom }));
         navigate('/dashboard');
       })
       .catch(function(err) {
-        toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur');
+        toast.error(err.response && err.response.data ? err.response.data.erreur : t('loginTelephone.erreur'));
       })
       .finally(function() { setLoading(false); });
   }
@@ -137,14 +142,14 @@ export default function LoginTelephone() {
             🏠
           </div>
           <div style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', marginBottom: 6 }}>
-            {etape === 'telephone' ? 'Connexion par téléphone'
-             : etape === 'otp'      ? 'Entrez votre code'
-             : 'Créer votre compte'}
+            {etape === 'telephone' ? t('loginTelephone.connexionParTelephone')
+             : etape === 'otp'      ? t('loginTelephone.entrezVotreCode')
+             : t('loginTelephone.creerVotreCompte')}
           </div>
           <div style={{ fontSize: 13, color: '#888' }}>
-            {etape === 'telephone' ? 'Entrez votre numéro de téléphone'
-             : etape === 'otp'      ? 'Code envoyé au ' + telComplet
-             : 'Quelques informations pour finir'}
+            {etape === 'telephone' ? t('loginTelephone.entrezNumero')
+             : etape === 'otp'      ? t('loginTelephone.codeEnvoyeAu', { tel: telComplet })
+             : t('loginTelephone.quelquesInfos')}
           </div>
         </div>
 
@@ -152,7 +157,7 @@ export default function LoginTelephone() {
         {etape === 'telephone' && (
           <div>
             <div style={{ fontSize: 12, fontWeight: 600, color: '#555', marginBottom: 8 }}>
-              Numéro de téléphone
+              {t('loginTelephone.numeroDeTelephone')}
             </div>
 
             {/* Sélecteur indicatif */}
@@ -171,7 +176,7 @@ export default function LoginTelephone() {
   </select>
   <input
     type="tel"
-    placeholder="Ex: 621 41 42 85"
+    placeholder={t('loginTelephone.placeholderTelephone')}
     value={telephone}
     onChange={function(e) { setTelephone(e.target.value.replace(/\D/g, '')); }}
     onKeyDown={function(e) { if (e.key === 'Enter') envoyerOTP(); }}
@@ -190,13 +195,13 @@ export default function LoginTelephone() {
               onClick={envoyerOTP}
               disabled={loading || telephone.length < 6}
               style={{ width: '100%', background: loading || telephone.length < 6 ? '#CCC' : '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: loading || telephone.length < 6 ? 'not-allowed' : 'pointer' }}>
-              {loading ? '⏳ Envoi...' : 'Recevoir le code →'}
+              {loading ? t('loginTelephone.envoiEnCours') : t('loginTelephone.recevoirCode')}
             </button>
 
             <div style={{ textAlign: 'center', marginTop: 20, fontSize: 13, color: '#888' }}>
-              Ou{' '}
+              {t('loginTelephone.ou')}{' '}
               <span style={{ color: '#1B6B3A', fontWeight: 600, cursor: 'pointer' }} onClick={function() { navigate('/login'); }}>
-                connexion par email
+                {t('loginTelephone.connexionParEmail')}
               </span>
             </div>
           </div>
@@ -243,17 +248,17 @@ export default function LoginTelephone() {
               onClick={verifierOTP}
               disabled={loading || otp.join('').length !== 6}
               style={{ width: '100%', background: otp.join('').length === 6 ? '#1B6B3A' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: otp.join('').length === 6 ? 'pointer' : 'not-allowed', marginBottom: 14 }}>
-              {loading ? '⏳ Vérification...' : '✅ Confirmer le code'}
+              {loading ? t('loginTelephone.verificationEnCours') : t('loginTelephone.confirmerCode')}
             </button>
 
             <div style={{ textAlign: 'center', fontSize: 13, color: '#888' }}>
               {timer > 0 ? (
-                <span>Renvoyer dans <b style={{ color: '#1B6B3A' }}>{timer}s</b></span>
+                <span>{t('loginTelephone.renvoyerDans')} <b style={{ color: '#1B6B3A' }}>{timer}s</b></span>
               ) : (
                 <span
                   style={{ color: '#1B6B3A', fontWeight: 600, cursor: 'pointer' }}
                   onClick={function() { setOtp(['','','','','','']); envoyerOTP(); }}>
-                  Renvoyer le code
+                  {t('loginTelephone.renvoyerCode')}
                 </span>
               )}
             </div>
@@ -262,7 +267,7 @@ export default function LoginTelephone() {
               <span
                 style={{ fontSize: 12, color: '#888', cursor: 'pointer' }}
                 onClick={function() { setEtape('telephone'); setOtp(['','','','','','']); }}>
-                ← Changer de numéro
+                ← {t('loginTelephone.changerNumero')}
               </span>
             </div>
           </div>
@@ -272,12 +277,12 @@ export default function LoginTelephone() {
         {etape === 'infos' && (
           <div>
             <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#1B5E20', fontWeight: 600 }}>
-              ✅ Numéro vérifié : {telComplet}
+              ✅ {t('loginTelephone.numeroVerifie', { tel: telComplet })}
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
               <div>
-                <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>Prénom</div>
+                <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>{t('loginTelephone.champPrenom')}</div>
                 <input
                   type="text"
                   placeholder="Mamadou"
@@ -286,7 +291,7 @@ export default function LoginTelephone() {
                   style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
               </div>
               <div>
-                <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>Nom *</div>
+                <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>{t('loginTelephone.champNom')}</div>
                 <input
                   type="text"
                   placeholder="Diallo"
@@ -297,11 +302,11 @@ export default function LoginTelephone() {
             </div>
 
             <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 11, color: '#888', marginBottom: 8, fontWeight: 600 }}>Je suis *</div>
+              <div style={{ fontSize: 11, color: '#888', marginBottom: 8, fontWeight: 600 }}>{t('loginTelephone.jeSuis')}</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 {[
-                  { val: 'locataire',   label: '🏠 Locataire',    sub: 'Je cherche un logement' },
-                  { val: 'proprietaire', label: '🔑 Propriétaire', sub: 'Je loue des biens' },
+                  { val: 'locataire',   label: t('loginTelephone.roleLocataire'),    sub: t('loginTelephone.roleLocataireDesc') },
+                  { val: 'proprietaire', label: t('loginTelephone.roleProprietaire'), sub: t('loginTelephone.roleProprietaireDesc') },
                 ].map(function(r) {
                   return (
                     <div key={r.val} onClick={function() { setRole(r.val); }}
@@ -318,7 +323,7 @@ export default function LoginTelephone() {
               onClick={creerCompte}
               disabled={loading || !nom.trim()}
               style={{ width: '100%', background: nom.trim() ? '#1B6B3A' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: nom.trim() ? 'pointer' : 'not-allowed' }}>
-              {loading ? '⏳ Création...' : '🚀 Créer mon compte'}
+              {loading ? t('loginTelephone.creationEnCours') : t('loginTelephone.creerMonCompte')}
             </button>
           </div>
         )}

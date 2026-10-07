@@ -7,6 +7,7 @@ import api from '../services/api';
 import MapView from '../components/MapView';
 import SEO from '../components/SEO';
 import { SkeletonLogement } from '../components/Skeleton';
+import { useTranslation } from 'react-i18next';
 
 var GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 
@@ -25,6 +26,7 @@ function optimiserImage(url, width, quality) {
 
 export default function Logements() {
   var navigate = useNavigate();
+  var t = useTranslation('logements').t;
   var [logements, setLogements]   = useState([]);
   var [loading, setLoading]       = useState(true);
   var [total, setTotal]           = useState(0);
@@ -86,8 +88,8 @@ export default function Logements() {
           <Logo size={34} showText={true} darkBg={false} />
         </Link>
         <div style={{ display: 'flex', gap: 10 }}>
-          <Link to="/login" style={{ padding: '7px 14px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>Connexion</Link>
-          <Link to="/dashboard" style={{ padding: '7px 14px', borderRadius: 8, background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>Dashboard</Link>
+          <Link to="/login" style={{ padding: '7px 14px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>{t('logements.nav.connexion')}</Link>
+          <Link to="/dashboard" style={{ padding: '7px 14px', borderRadius: 8, background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>{t('logements.nav.dashboard')}</Link>
         </div>
       </nav>
 
@@ -95,19 +97,19 @@ export default function Logements() {
       <div style={{ background: 'linear-gradient(135deg, #1B2B22 0%, #1B6B3A 100%)', padding: '28px 24px 20px', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
   <div style={{ maxWidth: 900, margin: '0 auto' }}>
     <h1 style={{ color: '#fff', fontSize: 'clamp(22px,4vw,30px)', fontWeight: 900, margin: '0 0 6px', letterSpacing: -0.5 }}>
-      Logements disponibles en Guinée
+      {t('logements.header.titre')}
     </h1>
     <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 14, margin: 0 }}>
-      {total} logement(s) trouvé(s) · Sans intermédiaire
+      {t('logements.header.sousTitre', { total: total })}
     </p>
   </div>
 </div>
       {/* Sélecteur de tri */}
 <select value={tri} onChange={function(e) { setTri(e.target.value); }}
   style={{ padding: '8px 14px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', fontSize: 13, color: '#555', cursor: 'pointer', outline: 'none' }}>
-  <option value="recent">Plus récent</option>
-  <option value="prix_asc">Prix croissant</option>
-  <option value="prix_desc">Prix décroissant</option>
+  <option value="recent">{t('logements.tri.recent')}</option>
+  <option value="prix_asc">{t('logements.tri.prixAsc')}</option>
+  <option value="prix_desc">{t('logements.tri.prixDesc')}</option>
 </select>
       {/* Toggle vue liste / carte */}
 <div style={{ display: 'flex', gap: 6, background: '#F0F0F0', borderRadius: 10, padding: 4 }}>
@@ -115,13 +117,13 @@ export default function Logements() {
     onClick={function() { setVueMode('liste'); }}
     style={{ padding: '7px 14px', borderRadius: 7, border: 'none', background: vueMode === 'liste' ? '#1B6B3A' : 'transparent', color: vueMode === 'liste' ? '#fff' : '#888', fontSize: 13, fontWeight: vueMode === 'liste' ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, transition: 'all .2s' }}>
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-    Liste
+    {t('logements.vue.liste')}
   </button>
   <button
     onClick={function() { setVueMode('carte'); }}
     style={{ padding: '7px 14px', borderRadius: 7, border: 'none', background: vueMode === 'carte' ? '#1B6B3A' : 'transparent', color: vueMode === 'carte' ? '#fff' : '#888', fontSize: 13, fontWeight: vueMode === 'carte' ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, transition: 'all .2s' }}>
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
-    Carte
+    {t('logements.vue.carte')}
   </button>
 </div>
 
@@ -132,7 +134,7 @@ export default function Logements() {
              <Search size={15} strokeWidth={1.5} color="#aaa" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
             <input
               type="text"
-              placeholder="Rechercher : titre, quartier, adresse..."
+              placeholder={t('logements.recherche.placeholder')}
               value={search}
               onChange={function(e) { setSearch(e.target.value); setPage(1); }}
               style={{ width: '100%', padding: '10px 12px 10px 36px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box', background: '#F8F8F8' }} />
@@ -140,7 +142,7 @@ export default function Logements() {
           <button
             onClick={function() { setShowFiltres(!showFiltres); }}
             style={{ padding: '10px 16px', borderRadius: 10, border: nbFiltresActifs > 0 ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: nbFiltresActifs > 0 ? '#E8F5E9' : '#F8F8F8', color: nbFiltresActifs > 0 ? '#1B6B3A' : '#555', fontSize: 13, fontWeight: nbFiltresActifs > 0 ? 700 : 400, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-              <SlidersHorizontal size={15} strokeWidth={1.5} /> Filtres {nbFiltresActifs > 0 && <span style={{ background: '#1B6B3A', color: '#fff', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>{nbFiltresActifs}</span>}
+              <SlidersHorizontal size={15} strokeWidth={1.5} /> {t('logements.recherche.filtres')} {nbFiltresActifs > 0 && <span style={{ background: '#1B6B3A', color: '#fff', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>{nbFiltresActifs}</span>}
           </button>
         </div>
 
@@ -151,7 +153,7 @@ export default function Logements() {
             return (
               <button key={v} onClick={function() { setVille(v === 'Toutes' ? '' : v); setPage(1); }}
                 style={{ padding: '5px 14px', borderRadius: 20, border: actif ? '1.5px solid #1B6B3A' : '0.5px solid #E0E0E0', background: actif ? '#1B6B3A' : '#fff', color: actif ? '#fff' : '#555', fontSize: 12, fontWeight: actif ? 700 : 400, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}>
-                {v}
+                {v === 'Toutes' ? t('logements.villes.toutes') : v}
               </button>
             );
           })}
@@ -162,10 +164,10 @@ export default function Logements() {
       {showFiltres && (
         <div style={{ background: '#fff', padding: '16px', borderBottom: '0.5px solid #F0F0F0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', overflowY: 'auto', maxHeight: '80vh' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>Filtres avancés</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{t('logements.filtresAvances.titre')}</div>
             {nbFiltresActifs > 0 && (
               <button onClick={reinitialiser} style={{ background: 'none', border: 'none', color: '#E53935', fontSize: 13, cursor: 'pointer', fontWeight: 600 }}>
-                Réinitialiser tout
+                {t('logements.filtresAvances.reinitialiserTout')}
               </button>
             )}
           </div>
@@ -174,54 +176,54 @@ export default function Logements() {
 
             {/* Ville */}
             <div>
-              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>Ville</div>
+              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>{t('logements.filtresAvances.ville')}</div>
               <select value={ville} onChange={function(e) { setVille(e.target.value); setPage(1); }}
                 style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: ville ? '#E8F5E9' : '#FAFAFA' }}>
-                <option value="">Toutes les villes</option>
+                <option value="">{t('logements.filtresAvances.toutesLesVilles')}</option>
                 {VILLES_GN.map(function(v) { return <option key={v} value={v}>{v}</option>; })}
               </select>
             </div>
 
             {/* Catégorie */}
             <div>
-              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>Type</div>
+              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>{t('logements.filtresAvances.type')}</div>
               <select value={categorie} onChange={function(e) { setCategorie(e.target.value); setPage(1); }}
                 style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: categorie ? '#E8F5E9' : '#FAFAFA' }}>
-                <option value="">Tous les types</option>
+                <option value="">{t('logements.filtresAvances.tousLesTypes')}</option>
                 {CATEGORIES.map(function(c) { return <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>; })}
               </select>
             </div>
 
             {/* Prix min */}
             <div>
-              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>Prix minimum (GNF)</div>
-              <input type="number" placeholder="Ex: 500000" value={prixMin}
+              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>{t('logements.filtresAvances.prixMinimum')}</div>
+              <input type="number" placeholder={t('logements.filtresAvances.prixMinimumPlaceholder')} value={prixMin}
                 onChange={function(e) { setPrixMin(e.target.value); setPage(1); }}
                 style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box', background: prixMin ? '#E8F5E9' : '#FAFAFA' }} />
             </div>
 
             {/* Prix max */}
             <div>
-              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>Prix maximum (GNF)</div>
-              <input type="number" placeholder="Ex: 2000000" value={prixMax}
+              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>{t('logements.filtresAvances.prixMaximum')}</div>
+              <input type="number" placeholder={t('logements.filtresAvances.prixMaximumPlaceholder')} value={prixMax}
                 onChange={function(e) { setPrixMax(e.target.value); setPage(1); }}
                 style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box', background: prixMax ? '#E8F5E9' : '#FAFAFA' }} />
             </div>
 
             {/* Chambres */}
             <div>
-              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>Chambres minimum</div>
+              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>{t('logements.filtresAvances.chambresMinimum')}</div>
               <select value={nbChambres} onChange={function(e) { setNbChambres(e.target.value); setPage(1); }}
                 style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: nbChambres ? '#E8F5E9' : '#FAFAFA' }}>
-                <option value="">Peu importe</option>
+                <option value="">{t('logements.filtresAvances.peuImporte')}</option>
                 {[1,2,3,4,5].map(function(n) { return <option key={n} value={n}>{n}+</option>; })}
               </select>
             </div>
 
             {/* Superficie */}
             <div>
-              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>Superficie min (m²)</div>
-              <input type="number" placeholder="Ex: 30" value={superficieMin}
+              <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>{t('logements.filtresAvances.superficieMin')}</div>
+              <input type="number" placeholder={t('logements.filtresAvances.superficieMinPlaceholder')} value={superficieMin}
                 onChange={function(e) { setSuperficieMin(e.target.value); setPage(1); }}
                 style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box', background: superficieMin ? '#E8F5E9' : '#FAFAFA' }} />
             </div>
@@ -230,7 +232,7 @@ export default function Logements() {
           {/* Fourchette prix visuelle */}
           {(prixMin || prixMax) && (
             <div style={{ marginTop: 12, padding: '10px 14px', background: '#E8F5E9', borderRadius: 10, fontSize: 13, color: '#1B5E20', fontWeight: 600 }}>
-              Fourchette : {prixMin ? GNF(prixMin) : '0'} - {prixMax ? GNF(prixMax) : 'illimité'}
+              {t('logements.filtresAvances.fourchette', { min: prixMin ? GNF(prixMin) : '0', max: prixMax ? GNF(prixMax) : t('logements.filtresAvances.illimite') })}
             </div>
           )}
         </div>
@@ -241,19 +243,19 @@ export default function Logements() {
         {loading && (
           <div style={{ textAlign: 'center', padding: '40px 0', color: '#888' }}>
             <div style={{ fontSize: 36, marginBottom: 10 }}>🔍</div>
-            Recherche en cours...
+            {t('logements.etatRecherche.enCours')}
           </div>
         )}
 
         {!loading && logements.length === 0 && (
           <div style={{ textAlign: 'center', padding: '50px 20px' }}>
             <div style={{ fontSize: 48, marginBottom: 14 }}>🏠</div>
-            <div style={{ fontSize: 17, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>Aucun logement trouvé</div>
-            <div style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>Essayez avec d'autres critères</div>
+            <div style={{ fontSize: 17, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>{t('logements.etatRecherche.aucunResultat')}</div>
+            <div style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>{t('logements.etatRecherche.autresCriteres')}</div>
             {nbFiltresActifs > 0 && (
               <button onClick={reinitialiser}
                 style={{ padding: '10px 24px', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-                Réinitialiser les filtres
+                {t('logements.etatRecherche.reinitialiserFiltres')}
               </button>
             )}
           </div>
@@ -300,16 +302,16 @@ export default function Logements() {
        : '🏠'}
     </span>
     <div style={{ color: 'rgba(255,255,255,0.9)', fontSize: 12, fontWeight: 600, marginTop: 8, textTransform: 'capitalize', letterSpacing: 0.5 }}>
-      {l.categorie ? l.categorie.replace(/_/g, ' ') : 'Logement'}
+      {l.categorie ? l.categorie.replace(/_/g, ' ') : t('logements.carte.logementParDefaut')}
     </div>
   </div>
 )}
                   <div style={{ position: 'absolute', top: 10, right: 10, background: '#1B6B3A', color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
-                    Disponible
+                    {t('logements.carte.disponible')}
                   </div>
                   {estNouveau && (
   <div style={{ position: 'absolute', top: 10, left: 10, background: '#F5A623', color: '#1B2B22', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 800 }}>
-    Nouveau
+    {t('logements.carte.nouveau')}
   </div>
 )}
                   {l.categorie && (
@@ -322,22 +324,22 @@ export default function Logements() {
                 <div style={{ padding: '14px 16px' }}>
                   <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 4 }}>{l.titre}</div>
                   <div style={{ fontSize: 12, color: '#888', marginBottom: 8 }}>📍 {l.adresse}, {l.ville}</div>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: '#1B6B3A', marginBottom: 10 }}>{GNF(l.prix_mensuel)}<span style={{ fontSize: 12, fontWeight: 400, color: '#888' }}>/mois</span></div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: '#1B6B3A', marginBottom: 10 }}>{GNF(l.prix_mensuel)}<span style={{ fontSize: 12, fontWeight: 400, color: '#888' }}>{t('logements.carte.prixParMois')}</span></div>
 
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
                     {l.nb_chambres && (
                       <span style={{ background: '#F5F5F5', color: '#555', padding: '3px 8px', borderRadius: 6, fontSize: 11, display: 'flex', alignItems: 'center', gap: 3 }}>
-                        <BedDouble size={11} strokeWidth={1.5} /> {l.nb_chambres} ch.
+                        <BedDouble size={11} strokeWidth={1.5} /> {t('logements.carte.chambresAbrev', { count: l.nb_chambres })}
                       </span>
                     )}
                     {l.nb_salles_bain && (
                       <span style={{ background: '#F5F5F5', color: '#555', padding: '3px 8px', borderRadius: 6, fontSize: 11, display: 'flex', alignItems: 'center', gap: 3 }}>
-                        <Bath size={11} strokeWidth={1.5} /> {l.nb_salles_bain} SdB
+                        <Bath size={11} strokeWidth={1.5} /> {t('logements.carte.sdbAbrev', { count: l.nb_salles_bain })}
                       </span>
                     )}
                     {l.superficie && (
                       <span style={{ background: '#F5F5F5', color: '#555', padding: '3px 8px', borderRadius: 6, fontSize: 11, display: 'flex', alignItems: 'center', gap: 3 }}>
-                        <Maximize2 size={11} strokeWidth={1.5} /> {l.superficie}m²
+                        <Maximize2 size={11} strokeWidth={1.5} /> {t('logements.carte.superficieAbrev', { superficie: l.superficie })}
                       </span>
                     )}
                   </div>
@@ -347,12 +349,12 @@ export default function Logements() {
                     <button
                       onClick={function(e) { e.stopPropagation(); navigate('/logements/' + l.id); }}
                       style={{ flex: 1, padding: '9px', borderRadius: 10, border: '1.5px solid #1B6B3A', background: 'transparent', color: '#1B6B3A', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-                      Voir
+                      {t('logements.carte.voir')}
                     </button>
                     <button
                       onClick={function(e) { e.stopPropagation(); navigate('/logements/' + l.id + '/reserver'); }}
                       style={{ flex: 2, padding: '9px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-                      <ArrowRight size={13} strokeWidth={2.5} /> Candidater
+                      <ArrowRight size={13} strokeWidth={2.5} /> {t('logements.carte.candidater')}
                     </button>
                   </div>
                     </div>
@@ -367,14 +369,14 @@ export default function Logements() {
           <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 24 }}>
             <button onClick={function() { setPage(function(p) { return Math.max(1, p - 1); }); }} disabled={page === 1}
               style={{ padding: '8px 16px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: page === 1 ? '#F5F5F5' : '#fff', color: page === 1 ? '#ccc' : '#555', cursor: page === 1 ? 'not-allowed' : 'pointer', fontSize: 13 }}>
-              ← Précédent
+              {t('logements.pagination.precedent')}
             </button>
             <div style={{ padding: '8px 16px', fontSize: 13, color: '#888', display: 'flex', alignItems: 'center' }}>
-              Page {page} / {Math.ceil(total / 12)}
+              {t('logements.pagination.page', { page: page, total: Math.ceil(total / 12) })}
             </div>
             <button onClick={function() { setPage(function(p) { return p + 1; }); }} disabled={page >= Math.ceil(total / 12)}
               style={{ padding: '8px 16px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: page >= Math.ceil(total / 12) ? '#F5F5F5' : '#1B6B3A', color: page >= Math.ceil(total / 12) ? '#ccc' : '#fff', cursor: page >= Math.ceil(total / 12) ? 'not-allowed' : 'pointer', fontSize: 13, fontWeight: 700 }}>
-              Suivant →
+              {t('logements.pagination.suivant')}
             </button>
           </div>
         )}

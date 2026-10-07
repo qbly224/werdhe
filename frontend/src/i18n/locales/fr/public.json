@@ -1,0 +1,877 @@
+{
+  "landingPage": {
+    "seo": {
+      "titre": "Location immobilière en Guinée sans intermédiaire",
+      "description": "Trouvez ou louez un logement en Guinée facilement. Werdhe connecte propriétaires et locataires directement. 100% gratuit pour les locataires."
+    },
+    "nav": {
+      "fonctionnalites": "Fonctionnalités",
+      "commentCaMarche": "Comment ça marche",
+      "tarifs": "Tarifs",
+      "avis": "Avis",
+      "faq": "FAQ",
+      "connexion": "Connexion",
+      "demarrer": "Démarrer",
+      "demarrerGratuit": "Démarrer gratuitement"
+    },
+    "search": {
+      "toutesLesVilles": "Toutes les villes",
+      "typeDeBien": "Type de bien",
+      "budget": "Budget",
+      "moins500": "Moins de 500K GNF",
+      "500a1M": "500K – 1M GNF",
+      "1Ma3M": "1M – 3M GNF",
+      "plus3M": "Plus de 3M GNF",
+      "rechercher": "Rechercher"
+    },
+    "quickBadges": {
+      "appartements": "Appartements",
+      "villas": "Villas",
+      "studios": "Studios",
+      "colocations": "Colocations"
+    },
+    "trust": {
+      "label": "Paiements acceptés",
+      "especes": "Espèces",
+      "virement": "Virement"
+    },
+    "stats": {
+      "logementsDisponibles": "Logements disponibles",
+      "utilisateursActifs": "Utilisateurs actifs",
+      "locatairesSatisfaits": "Locataires satisfaits",
+      "pourLesLocataires": "Pour les locataires"
+    },
+    "howItWorks": {
+      "overline": "Comment ça marche",
+      "title": "Simple pour tous",
+      "tabProprio": "Je suis propriétaire",
+      "tabLocataire": "Je cherche un logement",
+      "ctaProprio": "Ajouter mon premier bien",
+      "ctaLocataire": "Voir les logements disponibles"
+    },
+    "steps": {
+      "owner": [
+        { "titre": "Publiez votre bien", "desc": "Ajoutez photos, prix et description en 5 minutes." },
+        { "titre": "Recevez des candidatures", "desc": "Les locataires postulent directement depuis la plateforme." },
+        { "titre": "Signez et encaissez", "desc": "Bail numérique, quittances automatiques, alertes loyers." }
+      ],
+      "tenant": [
+        { "titre": "Cherchez", "desc": "Filtrez par ville, prix, superficie et catégorie." },
+        { "titre": "Candidatez", "desc": "Envoyez votre dossier en quelques clics, sans intermédiaire." },
+        { "titre": "Emménagez", "desc": "Signez le bail en ligne et récupérez vos clés." }
+      ]
+    },
+    "featuresSection": {
+      "overline": "Fonctionnalités",
+      "title": "Tout pour gérer vos locations"
+    },
+    "features": [
+      { "titre": "Dossiers sécurisés", "desc": "CNI, bulletins de paie, contrats stockés et accessibles en toute sécurité." },
+      { "titre": "Documents automatiques", "desc": "Baux, quittances et mises en demeure générés en un clic." },
+      { "titre": "Alertes intelligentes", "desc": "Rappels loyers, baux expirants, préavis - tout est automatisé." },
+      { "titre": "Paiements multiples", "desc": "Orange Money, MTN MoMo, espèces ou virement acceptés." },
+      { "titre": "Messagerie intégrée", "desc": "Communiquez directement avec locataires et propriétaires." },
+      { "titre": "Rapports financiers", "desc": "Suivez vos revenus mois par mois avec des graphiques clairs." },
+      { "titre": "Notations mutuelles", "desc": "Locataires et propriétaires se notent après chaque location." },
+      { "titre": "Multi-logements", "desc": "Gérez jusqu'à 25 biens depuis un seul tableau de bord." }
+    ],
+    "pricingSection": {
+      "overline": "Tarifs",
+      "title": "Transparent et sans surprise",
+      "subtitle": "L'espace locataire est toujours 100% gratuit",
+      "recommande": "Recommandé",
+      "gratuit": "Gratuit",
+      "parMois": "GNF/mois",
+      "demarrage": "Démarrage..."
+    },
+    "plans": {
+      "tenant": {
+        "nom": "Locataire",
+        "sousTitre": "Toujours gratuit",
+        "cta": "Trouver un logement",
+        "features": ["Recherche avancée", "Candidatures illimitées", "Messagerie", "Suivi de dossier", "Signature électronique"]
+      },
+      "pro": {
+        "nom": "Pro",
+        "sousTitre": "Jusqu'à 20 biens",
+        "cta": "Essai gratuit 1 mois",
+        "features": ["Orange Money + MTN MoMo", "Baux et quittances PDF", "Alertes automatiques", "Rapports financiers", "Essai 1 mois"]
+      },
+      "agency": {
+        "nom": "Agence",
+        "sousTitre": "Biens illimités",
+        "cta": "Essai gratuit 1 mois",
+        "features": ["Tout du plan Pro", "Multi-utilisateurs (5 comptes)", "Rapport mensuel automatique", "Support Mail/Message"]
+      }
+    },
+    "essaiToast": "Essai {{plan}} démarré ! 1 mois gratuit.",
+    "testimonialsSection": {
+      "overline": "Témoignages",
+      "title": "Ils font confiance à Werdhe"
+    },
+    "testimonials": {
+      "mamadou": {
+        "role": "Propriétaire, Conakry",
+        "texte": "Werdhe m'a permis de gérer mes 3 appartements depuis mon téléphone. Les paiements, les contrats, tout est centralisé."
+      },
+      "fatoumata": {
+        "role": "Locataire, Ratoma",
+        "texte": "J'ai trouvé mon appartement en 48h. Le propriétaire était sérieux, le contrat signé en ligne. Plus besoin d'intermédiaire."
+      },
+      "ibrahima": {
+        "role": "Propriétaire, Kaloum",
+        "texte": "Le système d'alertes automatiques pour les loyers en retard m'a sauvé plusieurs fois. Une vraie révolution."
+      }
+    },
+    "faqSection": {
+      "overline": "FAQ",
+      "title": "Questions fréquentes"
+    },
+    "faq": [
+      { "q": "Werdhe est-il gratuit pour les locataires ?", "r": "Oui, 100% gratuit pour toujours. Aucun frais d'agence, aucune commission." },
+      { "q": "Comment fonctionne l'essai Pro / Agence ?", "r": "1 mois complet d'accès au plan choisi, sans Mobile Money requis. À la fin, vous choisissez de continuer ou non." },
+      { "q": "Quels modes de paiement sont acceptés ?", "r": "Orange Money, MTN MoMo, espèces et virement bancaire (BICIGUI, Ecobank)." },
+      { "q": "Mes données sont-elles sécurisées ?", "r": "Oui. HTTPS, mots de passe hachés, 2FA admin, aucune donnée bancaire stockée." },
+      { "q": "Puis-je gérer plusieurs logements ?", "r": "Oui. Le plan Pro permet jusqu'à 20 biens, le plan Agence est illimité." }
+    ],
+    "ctaFinal": {
+      "title": "Prêt à commencer ?",
+      "texte": "Rejoignez des milliers de propriétaires et locataires qui gèrent leurs locations sur Werdhe.",
+      "creerCompte": "Créer mon compte",
+      "voirLogements": "Voir les logements"
+    },
+    "slides": [
+      { "titre": "Trouvez votre logement idéal", "sous": "Appartements, villas, studios à Conakry et partout en Guinée", "tag": "Conakry · Boké · Kindia · Labé · Kankan" },
+      { "titre": "Publiez votre bien en 5 minutes", "sous": "Gérez candidatures, baux et paiements depuis un seul tableau de bord", "tag": "Pour les propriétaires · Essai 1 mois gratuit" },
+      { "titre": "Des villas modernes en Guinée", "sous": "Découvrez nos logements vérifiés, sans intermédiaire, sans frais cachés", "tag": "Villas · Appartements · Studios · Bureaux" },
+      { "titre": "La location simplifiée", "sous": "Candidatez, signez votre bail et payez - tout en ligne sur Werdhe", "tag": "100% gratuit pour les locataires" }
+    ],
+    "footer": {
+      "desc": "La plateforme immobilière de référence en Guinée. Trouvez, louez et gérez vos biens en toute simplicité.",
+      "navTitle": "Navigation",
+      "nav": {
+        "accueil": "Accueil",
+        "logements": "Logements",
+        "tarifs": "Tarifs",
+        "blog": "Blog",
+        "estimation": "Estimation de loyer",
+        "aPropos": "À propos",
+        "seConnecter": "Se connecter"
+      },
+      "quickTitle": "Liens rapides",
+      "quick": {
+        "creerCompte": "Créer un compte",
+        "contact": "Contact",
+        "faq": "FAQ",
+        "cgu": "CGU",
+        "confidentialite": "Confidentialité"
+      },
+      "infosTitle": "Infos pratiques",
+      "adresse": "Conakry, Guinée",
+      "horaires": "Lun – Sam : 8h – 18h",
+      "support": "Support disponible en ligne",
+      "contactBtn": "Nous contacter",
+      "copyright": "© 2026 Werdhe. Tous droits réservés."
+    }
+  },
+  "accueil": {
+    "nav": {
+      "logements": "Logements",
+      "proprietaires": "Proprietaires",
+      "locataires": "Locataires",
+      "tarifs": "Tarifs",
+      "monEspace": "Mon espace",
+      "seConnecter": "Se connecter",
+      "essaiGratuit": "Essai gratuit"
+    },
+    "hero": {
+      "badge": "Plateforme N1 de l'immobilier locatif en Guinee",
+      "titrePrefixe": "La plateforme qui connecte",
+      "proprietaires": "proprietaires",
+      "et": "et",
+      "locataires": "locataires",
+      "desc": "Gerez vos biens ou trouvez votre logement ideal. Paiement en especes, Orange Money ou MTN MoMo.",
+      "jeSuisProprietaire": "Je suis proprietaire",
+      "descProprietaire": "Gerez biens, loyers, locataires et documents en toute simplicite.",
+      "gererMesBiens": "Gerer mes biens",
+      "jeChercheUnLogement": "Je cherche un logement",
+      "descLocataire": "Recherchez, reservez et communiquez avec les proprietaires.",
+      "trouverUnLogement": "Trouver un logement",
+      "checkGratuit": "Gratuit sans CB",
+      "checkMobile": "Mobile-first",
+      "checkPaiements": "Especes, Orange Money, MTN MoMo"
+    },
+    "stats": {
+      "proprietaires": "Proprietaires",
+      "locatairesActifs": "Locataires actifs",
+      "logementsPublies": "Logements publies",
+      "regionsCouvertes": "Regions couvertes"
+    },
+    "features": {
+      "badge": "Fonctionnalites",
+      "titre": "Tout ce dont vous avez besoin",
+      "desc": "Une plateforme complete adaptee au marche guineen",
+      "espaceProprietaire": "Espace Proprietaire",
+      "espaceLocataire": "Espace Locataire",
+      "demarrerGratuitement": "Demarrer gratuitement",
+      "proprietaire": {
+        "gestion": { "titre": "Gestion des biens", "desc": "Publiez et gerez tous vos logements depuis un tableau de bord unique" },
+        "paiements": { "titre": "Suivi des paiements", "desc": "Orange Money, MTN MoMo ou especes avec factures automatiques" },
+        "documents": { "titre": "Documents officiels", "desc": "Baux, quittances, factures et mises en demeure generes en un clic" },
+        "alertes": { "titre": "Alertes automatiques", "desc": "Loyers en retard, baux expirants et signalements de pannes" }
+      },
+      "locataire": {
+        "recherche": { "titre": "Recherche avancee", "desc": "Filtrez par quartier, budget, type de bien et equipements" },
+        "reservation": { "titre": "Reservation en ligne", "desc": "Reservez directement sans intermediaire" },
+        "historique": { "titre": "Historique et factures", "desc": "Recevez vos quittances et suivez vos paiements" },
+        "gratuit": { "titre": "100% gratuit", "desc": "L'espace locataire est toujours gratuit pour tous" }
+      }
+    },
+    "howItWorks": {
+      "badge": "Comment ca marche",
+      "titre": "Simple comme bonjour",
+      "step1": { "titre": "Creez votre compte", "desc": "Inscrivez-vous en tant que proprietaire ou locataire en 2 minutes" },
+      "step2": { "titre": "Publiez ou recherchez", "desc": "Ajoutez vos biens ou filtrez par quartier, budget et type" },
+      "step3": { "titre": "Reservez et payez", "desc": "Payez en ligne ou en especes, recevez votre facture automatiquement" }
+    },
+    "pricing": {
+      "badge": "Tarifs",
+      "titre": "Plans pour les proprietaires",
+      "sousTitre": "L'espace locataire est toujours 100% gratuit",
+      "parMois": "GNF/mois",
+      "recommande": "Recommande",
+      "demarrage": "Demarrage...",
+      "essaiGratuit": "Essai 1 mois gratuit",
+      "note": "L'espace locataire (recherche, messagerie, factures, reclamations) est toujours gratuit pour tous les locataires.",
+      "locataire": {
+        "type": "Locataire",
+        "sousTitre": "Toujours gratuit",
+        "features": ["Recherche avancee", "Candidatures illimitees", "Messagerie", "Signature electronique"]
+      },
+      "pro": {
+        "type": "Pro",
+        "sousTitre": "Jusqu'a 20 biens",
+        "features": ["Orange Money + MTN MoMo", "Baux et quittances PDF", "Annuaire logements", "Rapports financiers"]
+      },
+      "agence": {
+        "type": "Agence",
+        "sousTitre": "Biens illimites",
+        "features": ["Tout du plan Pro", "Multi-utilisateurs", "Rapport mensuel automatique", "Support Mail/Message"]
+      }
+    },
+    "essaiDemarre": "Essai {{plan}} démarré ! 1 mois gratuit.",
+    "ctaFinal": {
+      "titre": "Rejoignez Werdhe aujourd'hui",
+      "sousTitre": "Proprietaire ou locataire — la plateforme est faite pour vous"
+    },
+    "footer": {
+      "confidentialite": "Confidentialite",
+      "cgu": "CGU",
+      "contact": "Contact",
+      "copyright": "2026 Werdhe · Conakry"
+    }
+  },
+  "login": {
+    "slides": [
+      { "titre": "Bienvenue sur Werdhe", "sous": "La plateforme immobilière de référence en Guinée" },
+      { "titre": "Gérez vos biens", "sous": "Candidatures, baux et paiements depuis un seul endroit" },
+      { "titre": "Trouvez votre logement", "sous": "Des centaines de biens disponibles à Conakry et partout en Guinée" },
+      { "titre": "Un chez-vous à votre image", "sous": "Villas, bungalows, appartements — pour chaque style de vie" }
+    ],
+    "compteurs": {
+      "logements": "Logements",
+      "utilisateurs": "Utilisateurs",
+      "villesSuffixe": "villes",
+      "couvertes": "Couvertes"
+    },
+    "titre": "Connectez-vous",
+    "sousTitre": "Accédez à votre espace Werdhe",
+    "continuerGoogle": "Continuer avec Google",
+    "continuerTelephone": "Continuer par téléphone",
+    "ouParEmail": "ou par email",
+    "champEmail": "Email",
+    "placeholderEmail": "vous@email.com",
+    "champMotDePasse": "Mot de passe",
+    "oublie": "Oublié ?",
+    "placeholderMotDePasse": "Votre mot de passe",
+    "seSouvenir": "Se souvenir de moi",
+    "connexionEnCours": "Connexion...",
+    "seConnecter": "Se connecter",
+    "pasDeCompte": "Pas encore de compte ?",
+    "creerCompteGratuit": "Créer un compte gratuit",
+    "erreurChamps": "Remplissez tous les champs",
+    "code2faEnvoye": "Code 2FA envoyé à votre email",
+    "bonRetour": "Bon retour {{prenom}} !",
+    "erreurIdentifiants": "Email ou mot de passe incorrect"
+  },
+  "register": {
+    "pwd": {
+      "tropCourt": "Trop court",
+      "faible": "Faible",
+      "moyen": "Moyen",
+      "fort": "Fort"
+    },
+    "compteCreeSucces": "Compte créé avec succès ! 🎉",
+    "erreurCreation": "Erreur lors de la création du compte",
+    "etapes": {
+      "role": "Votre rôle",
+      "infos": "Vos informations",
+      "securite": "Sécurité"
+    },
+    "dejaCompte": "Déjà un compte ?",
+    "seConnecter": "Se connecter",
+    "creerMonCompte": "Créer mon compte",
+    "gratuitSansCB": "Gratuit · Sans carte bancaire",
+    "continuerGoogle": "Continuer avec Google",
+    "ouParEmail": "ou par email",
+    "jeSuis": "Je suis…",
+    "roles": {
+      "proprietaire": { "titre": "Propriétaire", "desc": "Je gère des biens locatifs" },
+      "locataire": { "titre": "Locataire", "desc": "Je cherche un logement" }
+    },
+    "plans": {
+      "pro": "Pro",
+      "agence": "Agence"
+    },
+    "essaiPlan": "Essai {{plan}} 1 mois gratuit - sans Mobile Money",
+    "gratuitLocataires": "100% gratuit pour les locataires, pour toujours",
+    "continuer": "Continuer",
+    "vosInformations": "Vos informations",
+    "compteType": "Compte {{type}}",
+    "champPrenom": "Prénom *",
+    "placeholderPrenom": "Alpha",
+    "champNom": "Nom *",
+    "placeholderNom": "Barry",
+    "champEmail": "Email *",
+    "placeholderEmail": "vous@email.com",
+    "champTelephone": "Téléphone *",
+    "placeholderTelephone": "622 00 00 00",
+    "codeParrainage": "Code parrainage",
+    "optionnel": "optionnel",
+    "placeholderParrainage": "Ex: MAMA1234",
+    "creditParrainage": "Vous recevrez 15 000 GNF de crédit à l'inscription !",
+    "retour": "Retour",
+    "securisezCompte": "Sécurisez votre compte",
+    "choisissezMotDePasse": "Choisissez un mot de passe robuste",
+    "champMotDePasse": "Mot de passe *",
+    "placeholderMotDePasse": "Minimum 6 caractères",
+    "jAccepteLes": "J'accepte les",
+    "conditionsUtilisation": "Conditions d'utilisation",
+    "etLa": "et la",
+    "politiqueConfidentialite": "Politique de confidentialité",
+    "creationEnCours": "Création...",
+    "creerMonCompteBtn": "Créer mon compte"
+  },
+  "forgotPassword": {
+    "slides": [
+      { "titre": "Pas de panique", "sous": "Récupérez l'accès à votre compte en quelques instants" },
+      { "titre": "Vos biens vous attendent", "sous": "Retrouvez vos logements, candidatures et paiements" },
+      { "titre": "En toute sécurité", "sous": "Un lien de réinitialisation valable 1 heure, envoyé par email" }
+    ],
+    "erreurEnvoi": "Erreur lors de l'envoi. Réessayez.",
+    "emailEnvoye": "Email envoyé !",
+    "verifiezBoiteMail": "Vérifiez votre boîte mail (",
+    "cliquezLien": ") et cliquez sur le lien reçu pour choisir un nouveau mot de passe.",
+    "lienExpire": "Le lien expire dans 1 heure.",
+    "retourConnexion": "Retour à la connexion",
+    "titre": "Mot de passe oublié ?",
+    "sousTitre": "Entrez votre email, on vous envoie un lien de réinitialisation",
+    "champEmail": "Email",
+    "placeholderEmail": "mamadou@email.com",
+    "envoiEnCours": "Envoi en cours...",
+    "envoyerLien": "Envoyer le lien"
+  },
+  "resetPassword": {
+    "slides": [
+      { "titre": "Un dernier pas", "sous": "Choisissez un nouveau mot de passe robuste pour sécuriser votre compte" },
+      { "titre": "Presque terminé", "sous": "Vous pourrez vous reconnecter immédiatement après" }
+    ],
+    "pwd": {
+      "tropCourt": "Trop court",
+      "faible": "Faible",
+      "moyen": "Moyen",
+      "fort": "Fort"
+    },
+    "erreurCorrespondance": "Les mots de passe ne correspondent pas",
+    "erreurLongueur": "Le mot de passe doit faire au moins 6 caractères",
+    "motDePasseMisAJour": "Mot de passe mis à jour !",
+    "lienInvalideErreur": "Lien invalide ou expiré",
+    "lienInvalide": "Lien invalide",
+    "lienPlusValable": "Ce lien de réinitialisation n'est plus valable. Faites une nouvelle demande.",
+    "nouvelleDemande": "Nouvelle demande",
+    "nouveauMotDePasse": "Nouveau mot de passe",
+    "choisissezSecurise": "Choisissez un mot de passe sécurisé",
+    "placeholderMotDePasse": "Minimum 6 caractères",
+    "confirmer": "Confirmer",
+    "placeholderConfirmation": "Répétez le mot de passe",
+    "miseAJourEnCours": "Mise à jour...",
+    "mettreAJour": "Mettre à jour",
+    "retourConnexion": "Retour à la connexion"
+  },
+  "login2fa": {
+    "entrezChiffres": "Entrez les 6 chiffres",
+    "connexionReussie": "Connexion admin réussie 🔐",
+    "codeInvalide": "Code invalide",
+    "titre": "Vérification en 2 étapes",
+    "codeEnvoyeA": "Code envoyé à",
+    "codeValideEncore": "Code valide encore",
+    "codeExpire": "Code expiré — reconnectez-vous",
+    "verificationEnCours": "⏳ Vérification...",
+    "confirmer": "🔐 Confirmer",
+    "retourConnexion": "Retour à la connexion"
+  },
+  "loginTelephone": {
+    "pays": {
+      "guinee": "Guinée",
+      "senegal": "Sénégal",
+      "mali": "Mali",
+      "coteIvoire": "Côte d'Ivoire",
+      "france": "France",
+      "gabon": "Gabon"
+    },
+    "numeroInvalide": "Numéro invalide",
+    "codeEnvoye": "Code envoyé !",
+    "codeEnvoyeParEmail": "Code envoyé par email !",
+    "erreurEnvoi": "Erreur envoi",
+    "entrezChiffres": "Entrez les 6 chiffres",
+    "bienvenue": "Bienvenue {{prenom}} !",
+    "codeInvalide": "Code invalide",
+    "entrezNom": "Entrez votre nom",
+    "compteCreeBienvenue": "Compte créé ! Bienvenue {{nom}} !",
+    "erreur": "Erreur",
+    "connexionParTelephone": "Connexion par téléphone",
+    "entrezVotreCode": "Entrez votre code",
+    "creerVotreCompte": "Créer votre compte",
+    "entrezNumero": "Entrez votre numéro de téléphone",
+    "codeEnvoyeAu": "Code envoyé au {{tel}}",
+    "quelquesInfos": "Quelques informations pour finir",
+    "numeroDeTelephone": "Numéro de téléphone",
+    "placeholderTelephone": "Ex: 621 41 42 85",
+    "envoiEnCours": "⏳ Envoi...",
+    "recevoirCode": "Recevoir le code →",
+    "ou": "Ou",
+    "connexionParEmail": "connexion par email",
+    "verificationEnCours": "⏳ Vérification...",
+    "confirmerCode": "✅ Confirmer le code",
+    "renvoyerDans": "Renvoyer dans",
+    "renvoyerCode": "Renvoyer le code",
+    "changerNumero": "Changer de numéro",
+    "numeroVerifie": "Numéro vérifié : {{tel}}",
+    "champPrenom": "Prénom",
+    "champNom": "Nom *",
+    "jeSuis": "Je suis *",
+    "roleLocataire": "🏠 Locataire",
+    "roleLocataireDesc": "Je cherche un logement",
+    "roleProprietaire": "🔑 Propriétaire",
+    "roleProprietaireDesc": "Je loue des biens",
+    "creationEnCours": "⏳ Création...",
+    "creerMonCompte": "🚀 Créer mon compte"
+  },
+  "otp": {
+    "retour": "Retour",
+    "titre": "Code de verification",
+    "codeEnvoyeParSms": "Code envoye par SMS au",
+    "expireDans": "Expire dans",
+    "codeExpire": "Code expire",
+    "verificationEnCours": "Verification...",
+    "verifierCode": "Verifier le code",
+    "pasRecu": "Pas recu ?",
+    "renvoyerCode": "Renvoyer le code"
+  },
+  "motDePasseOublie": {
+    "erreurServeur": "Erreur serveur",
+    "titre": "Mot de passe oublié",
+    "sousTitre": "Entrez votre email pour recevoir un nouveau mot de passe",
+    "motDePasseTemporaire": "Votre mot de passe temporaire :",
+    "seConnecter": "Se connecter",
+    "champEmail": "Email *",
+    "placeholderEmail": "votre@email.com",
+    "envoiEnCours": "Envoi...",
+    "reinitialiser": "Réinitialiser mon mot de passe",
+    "retourConnexion": "Retour à la connexion"
+  },
+  "authCallback": {
+    "connexionEchouee": "Connexion Google échouée. Réessayez.",
+    "bienvenue": "Bienvenue {{prenom}} ! 🎉",
+    "erreurConnexion": "Erreur de connexion",
+    "connexionEnCours": "Connexion avec Google en cours..."
+  },
+  "apropos": {
+    "seo": {
+      "titre": "À propos de Werdhe",
+      "description": "Werdhe est une des première plateforme immobilière numérique de ce type de Guinée. Découvrez notre mission, nos valeurs et notre équipe."
+    },
+    "retour": "Retour",
+    "madeInGuinea": "Made in Guinea",
+    "heroTitre1": "Réinventer la location",
+    "heroTitre2": "immobilière en Guinée",
+    "heroDesc": "Werdhe connecte propriétaires et locataires directement, sans intermédiaire, avec des outils numériques modernes adaptés au marché guinéen.",
+    "decouvrirLogements": "Découvrir les logements",
+    "stats": {
+      "logementsPublies": "Logements publiés",
+      "utilisateursActifs": "Utilisateurs actifs",
+      "villesCouvertes": "Villes couvertes",
+      "anneeCreation": "Année de création"
+    },
+    "mission": {
+      "overline": "Notre mission",
+      "titre": "Rendre la location accessible à tous",
+      "para1": "En Guinée, trouver un logement ou un locataire fiable est souvent un parcours semé d'embûches - frais d'agence exorbitants, manque de transparence, documents difficiles à gérer.",
+      "para2": "Werdhe change ça. En mettant la technologie au service des Guinéens, nous simplifions chaque étape : de la recherche à la signature du bail, en passant par le suivi des paiements.",
+      "points": ["100% gratuit pour les locataires", "Baux et quittances générés automatiquement", "Alertes loyers automatiques", "Support client réactif"],
+      "tagline1": "La plateforme de référence",
+      "tagline2": "pour la location en Guinée"
+    },
+    "valeursSection": {
+      "overline": "Nos valeurs",
+      "titre": "Ce qui nous guide"
+    },
+    "valeurs": [
+      { "titre": "Transparence", "desc": "Aucun frais caché, aucun intermédiaire. Le prix affiché est le prix payé." },
+      { "titre": "Confiance", "desc": "Dossiers vérifiés, baux officiels, notations mutuelles. La confiance se construit ensemble." },
+      { "titre": "Accessibilité", "desc": "L'espace locataire est 100% gratuit. Werdhe est fait pour tous les Guinéens." },
+      { "titre": "Innovation", "desc": "La première plateforme immobilière numérique de Guinée, pensée pour le mobile." }
+    ],
+    "histoireSection": {
+      "overline": "Notre histoire",
+      "titre": "De l'idée à la réalité"
+    },
+    "etapes": [
+      { "titre": "L'idée", "desc": "Face aux difficultés de trouver un logement sans intermédiaire et éviter des frais, arnaque , l'idée de Werdhe naît." },
+      { "titre": "Développement", "desc": "Début du développement de la plateforme avec React, Node.js et Supabase." },
+      { "titre": "Lancement", "desc": "Werdhe.com est lancé officiellement. Les premiers propriétaires publient leurs biens." },
+      { "titre": "Expansion", "desc": "Objectif : couvrir d'autre pays en afrique et lancer l'application mobile." }
+    ],
+    "equipeSection": {
+      "overline": "L'équipe",
+      "titre": "Derrière Werdhe"
+    },
+    "equipe": [
+      { "role": "Fondateur & Expert Informatique et Système d'Information", "bio": "Ingénieur IT passionné par l'impact technologique en Afrique. Créateur de Werdhe pour simplifier la location immobilière en Guinée." }
+    ],
+    "cta": {
+      "titre": "Rejoignez l'aventure Werdhe",
+      "desc": "Que vous soyez propriétaire ou locataire, Werdhe est fait pour vous. Créez votre compte gratuitement.",
+      "creerCompte": "Créer mon compte",
+      "contact": "Nous contacter"
+    }
+  },
+  "contact": {
+    "seo": {
+      "titre": "Contact et FAQ",
+      "description": "Contactez l'équipe Werdhe ou consultez notre FAQ. Nous répondons sous 24h."
+    },
+    "retour": "Retour",
+    "titre": "Comment pouvons-nous vous aider ?",
+    "sousTitre": "Consultez la FAQ ou contactez notre équipe",
+    "contacts": {
+      "email": "Email",
+      "whatsapp": "WhatsApp"
+    },
+    "horairesSupport": "Horaires support",
+    "horaires": "Lun-Sam 8h-18h",
+    "questionsFrequentes": "Questions fréquentes",
+    "faq": [
+      {
+        "categorie": "Pour les locataires",
+        "questions": [
+          { "q": "Est-ce que Werdhe est gratuit pour les locataires ?", "r": "Oui, l'espace locataire est 100% gratuit et le restera toujours. Aucun frais d'agence, aucune commission - vous payez uniquement votre loyer directement au propriétaire." },
+          { "q": "Comment postuler pour un logement ?", "r": "Cherchez un logement, cliquez sur \"Candidater\", remplissez le formulaire avec votre date d'entrée souhaitée et la durée. Le propriétaire reçoit votre candidature et peut vous demander un dossier complet (CNI, justificatif d'emploi, etc.)." },
+          { "q": "Quels documents dois-je préparer ?", "r": "En général : une pièce d'identité (CNI), un justificatif de revenus ou d'emploi, et optionnellement les coordonnées d'un garant. Certains propriétaires peuvent demander des fiches de paie." },
+          { "q": "Comment signer le bail en ligne ?", "r": "Une fois votre candidature acceptée et la caution payée, le propriétaire génère le bail. Vous recevez une notification, et vous pouvez signer électroniquement depuis votre espace \"Mes Candidatures\"." },
+          { "q": "Comment suivre l'état de ma candidature ?", "r": "Dans votre dashboard, section \"Mes Candidatures\", vous voyez en temps réel l'état de chaque candidature : en attente, dossier demandé, en examen, acceptée, etc." },
+          { "q": "Que faire si le propriétaire ne répond pas ?", "r": "Si vous n'avez pas de réponse après 48h, vous pouvez utiliser la messagerie intégrée pour relancer directement le propriétaire. Si le problème persiste, contactez notre support." }
+        ]
+      },
+      {
+        "categorie": "Pour les propriétaires",
+        "questions": [
+          { "q": "Combien coûte Werdhe pour les propriétaires ?", "r": "Le plan Gratuit permet de gérer jusqu'à 2 biens. Le plan Pro (120 000 GNF/mois) permet jusqu'à 25 biens avec des fonctionnalités avancées. Le plan Agence (300 000 GNF/mois) offre des biens illimités. Essai Pro 14 jours gratuit sans engagement." },
+          { "q": "Comment publier mon premier bien ?", "r": "Dans votre dashboard, cliquez sur \"+ Ajouter un bien\", remplissez les informations (titre, adresse, prix, superficie) et ajoutez des photos. Votre logement est publié immédiatement." },
+          { "q": "Comment fonctionne la commission Werdhe ?", "r": "Werdhe perçoit 5% sur chaque loyer encaissé via la plateforme. Cette commission est automatiquement calculée. Elle couvre l'ensemble des services : génération de documents, alertes, messagerie, etc." },
+          { "q": "Puis-je gérer plusieurs logements ?", "r": "Oui. Avec le plan Pro, gérez jusqu'à 25 biens. Le plan Agence offre des biens illimités avec gestion multi-utilisateurs. Depuis votre dashboard, chaque bien a sa propre fiche avec ses locataires et paiements." },
+          { "q": "Comment générer une quittance de loyer ?", "r": "Dans l'onglet \"Documents\", sélectionnez le bien et le locataire, choisissez \"Quittance de loyer\" et cliquez \"Générer\". La quittance est créée en PDF et envoyée automatiquement au locataire par email." },
+          { "q": "Que se passe-t-il si un locataire ne paie pas ?", "r": "Le système envoie automatiquement une alerte à J+3 et une mise en demeure à J+5. Vous recevez une notification et un email. Des modèles de lettres officielles sont disponibles dans la section Documents." }
+        ]
+      },
+      {
+        "categorie": "Paiements",
+        "questions": [
+          { "q": "Quels modes de paiement sont acceptés ?", "r": "Orange Money, MTN MoMo, espèces et virement bancaire (BICIGUI, Ecobank). Les paiements Mobile Money sont disponibles à partir du plan Pro." },
+          { "q": "Comment la caution est-elle gérée ?", "r": "La caution représente 1 mois de loyer. Elle est versée directement au propriétaire lors de la confirmation de la location. Werdhe ne détient pas les fonds en séquestre (en cours d'implémentation)." },
+          { "q": "Puis-je annuler mon abonnement ?", "r": "Oui, à tout moment depuis vos paramètres. L'annulation prend effet à la fin de la période en cours. Aucun remboursement prorata n'est effectué." }
+        ]
+      },
+      {
+        "categorie": "Sécurité et confidentialité",
+        "questions": [
+          { "q": "Mes données sont-elles sécurisées ?", "r": "Oui. Toutes les données sont chiffrées en transit (HTTPS). Les mots de passe sont hachés (bcrypt). Les comptes admin sont protégés par une authentification à deux facteurs. Consultez notre politique de confidentialité pour plus de détails." },
+          { "q": "Puis-je supprimer mon compte ?", "r": "Oui, depuis Paramètres > Supprimer mon compte. Vos données personnelles sont supprimées dans un délai de 30 jours, sous réserve des obligations légales de conservation." },
+          { "q": "Werdhe vend-il mes données ?", "r": "Non, jamais. Werdhe ne vend pas vos données à des tiers à des fins commerciales. Les seuls partages sont avec nos prestataires techniques (hébergement, paiement) dans le cadre strict de nos services." }
+        ]
+      }
+    ],
+    "nousEcrire": "Nous écrire",
+    "champNom": "Nom complet *",
+    "champEmail": "Email *",
+    "placeholderEmail": "vous@email.com",
+    "champSujet": "Sujet",
+    "selectionnerSujet": "Sélectionner un sujet",
+    "sujets": {
+      "questionLocataire": "Question locataire",
+      "questionProprietaire": "Question propriétaire",
+      "problemeTechnique": "Problème technique",
+      "abonnementFacturation": "Abonnement et facturation",
+      "signalement": "Signalement",
+      "partenariat": "Partenariat",
+      "autre": "Autre"
+    },
+    "champMessage": "Message *",
+    "placeholderMessage": "Décrivez votre question ou problème en détail...",
+    "envoiEnCours": "⏳ Envoi...",
+    "envoyerMessage": "Envoyer le message",
+    "delaiReponse": "Nous répondons généralement sous 24h les jours ouvrables",
+    "erreurChampsObligatoires": "Remplissez tous les champs obligatoires",
+    "messageEnvoye": "Message envoyé ! Nous répondrons sous 24h.",
+    "sujetParDefaut": "Contact Werdhe",
+    "ouvertureClientEmail": "Ouverture de votre client email..."
+  },
+  "cgu": {
+    "seo": {
+      "titre": "Conditions Générales d'Utilisation",
+      "description": "Conditions générales d'utilisation de la plateforme Werdhe — Location immobilière en Guinée."
+    },
+    "retour": "Retour",
+    "documentsLegaux": "Werdhe — Documents légaux",
+    "titre": "Conditions Générales d'Utilisation",
+    "derniereMiseAJour": "Dernière mise à jour : 1er août 2026",
+    "intro": "Veuillez lire attentivement ces conditions avant d'utiliser la plateforme Werdhe. En vous inscrivant, vous acceptez l'intégralité de ces conditions.",
+    "questionsContact": "Des questions sur nos conditions d'utilisation ?",
+    "sections": {
+      "1": {
+        "titre": "1. Présentation de Werdhe",
+        "contenu": "Werdhe est une plateforme numérique de gestion et de mise en relation locative, éditée par QbelyTech, dont le siège social est situé en Guinée. La plateforme est accessible à l'adresse https://werdhe.com.\n\nWerdhe permet aux propriétaires de publier et gérer leurs biens immobiliers, et aux locataires de rechercher un logement, soumettre des candidatures et suivre leur location en ligne."
+      },
+      "2": {
+        "titre": "2. Acceptation des conditions",
+        "contenu": "L'utilisation de la plateforme Werdhe implique l'acceptation pleine et entière des présentes Conditions Générales d'Utilisation (CGU). Si vous n'acceptez pas ces conditions, veuillez cesser immédiatement d'utiliser nos services.\n\nCes conditions peuvent être modifiées à tout moment. Les utilisateurs seront informés de toute modification importante par email ou par notification sur la plateforme."
+      },
+      "3": {
+        "titre": "3. Inscription et compte utilisateur",
+        "contenu": "Pour utiliser les services de Werdhe, vous devez créer un compte en fournissant des informations exactes, complètes et à jour. Vous êtes responsable de la confidentialité de vos identifiants de connexion.\n\nWerdhe se réserve le droit de suspendre ou supprimer tout compte en cas de :\n• Fourniture d'informations fausses ou trompeuses\n• Comportement frauduleux ou abusif\n• Non-respect des présentes CGU\n• Demande des autorités compétentes"
+      },
+      "4": {
+        "titre": "4. Services proposés",
+        "contenu": "Werdhe propose les services suivants :\n\nPour les propriétaires : publication de biens immobiliers, gestion des candidatures, génération de documents (baux, quittances), suivi des paiements, alertes automatiques.\n\nPour les locataires : recherche de logements, soumission de candidatures, signature électronique de bail, suivi des paiements et de la location.\n\nL'espace locataire est entièrement gratuit. Les propriétaires peuvent souscrire à des plans payants pour accéder à des fonctionnalités avancées."
+      },
+      "5": {
+        "titre": "5. Obligations des propriétaires",
+        "contenu": "Les propriétaires s'engagent à :\n• Publier uniquement des biens dont ils sont légalement propriétaires ou mandataires\n• Fournir des informations exactes sur leurs logements (superficie, prix, état)\n• Respecter la réglementation en vigueur en matière de location en Guinée\n• Répondre aux candidatures dans un délai raisonnable\n• Ne pas pratiquer de discrimination dans la sélection des locataires\n• Payer les commissions dues à Werdhe (5% sur chaque loyer encaissé)"
+      },
+      "6": {
+        "titre": "6. Obligations des locataires",
+        "contenu": "Les locataires s'engagent à :\n• Fournir des documents authentiques lors de la soumission de leur dossier\n• Respecter les conditions du bail signé\n• Payer leur loyer dans les délais convenus\n• Entretenir le logement en bon état\n• Signaler tout problème au propriétaire dans les meilleurs délais"
+      },
+      "7": {
+        "titre": "7. Paiements et commissions",
+        "contenu": "Werdhe perçoit une commission de 5% sur chaque loyer encaissé par les propriétaires utilisant la plateforme. Cette commission est automatiquement calculée lors de l'enregistrement des paiements.\n\nLes plans d'abonnement (Pro : 120 000 GNF/mois, Agence : 300 000 GNF/mois) sont facturés mensuellement. Le défaut de paiement entraîne la suspension des fonctionnalités premium.\n\nWerdhe utilise des prestataires de paiement tiers (Orange Money, MTN MoMo) et ne stocke aucune information bancaire sur ses serveurs."
+      },
+      "8": {
+        "titre": "8. Documents et signatures électroniques",
+        "contenu": "Les documents générés par Werdhe (baux, quittances, états des lieux) ont valeur contractuelle entre les parties. La signature électronique réalisée sur la plateforme est reconnue comme valide par les parties.\n\nWerdhe ne peut être tenu responsable des litiges découlant des contrats signés via la plateforme. Il incombe aux parties de vérifier le contenu des documents avant signature."
+      },
+      "9": {
+        "titre": "9. Responsabilité",
+        "contenu": "Werdhe agit en tant qu'intermédiaire entre propriétaires et locataires et ne peut être tenu responsable de :\n• La qualité ou l'état réel des logements publiés\n• L'exactitude des informations fournies par les utilisateurs\n• Les litiges entre propriétaires et locataires\n• Les problèmes de paiement entre parties\n\nWerdhe s'engage à maintenir la plateforme disponible 24h/24, mais ne peut garantir une disponibilité sans interruption."
+      },
+      "10": {
+        "titre": "10. Propriété intellectuelle",
+        "contenu": "L'ensemble des éléments constituant la plateforme Werdhe (logo, design, code, textes, images) sont protégés par les droits de propriété intellectuelle. Toute reproduction, même partielle, est interdite sans autorisation écrite de QbelyTech.\n\nLes utilisateurs conservent la propriété des contenus qu'ils publient sur la plateforme (photos de logements, documents) et accordent à Werdhe une licence d'utilisation non exclusive pour les afficher sur la plateforme."
+      },
+      "11": {
+        "titre": "11. Résiliation",
+        "contenu": "Tout utilisateur peut supprimer son compte à tout moment depuis les paramètres de son profil. La suppression entraîne la suppression de toutes les données personnelles dans un délai de 30 jours, sous réserve des obligations légales de conservation.\n\nWerdhe peut résilier un compte sans préavis en cas de violation grave des présentes CGU."
+      },
+      "12": {
+        "titre": "12. Droit applicable",
+        "contenu": "Les présentes CGU sont soumises au droit guinéen. Tout litige sera soumis à la compétence exclusive des tribunaux de Conakry, Guinée.\n\nPour toute question concernant ces conditions, vous pouvez nous contacter à : contact@werdhe.com"
+      }
+    }
+  },
+  "confidentialite": {
+    "seo": {
+      "titre": "Politique de Confidentialité",
+      "description": "Politique de confidentialité de Werdhe — Comment nous collectons et protégeons vos données personnelles."
+    },
+    "retour": "Retour",
+    "documentsLegaux": "Werdhe — Documents légaux",
+    "titre": "Politique de Confidentialité",
+    "derniereMiseAJour": "Dernière mise à jour : 1er août 2026",
+    "intro": "La protection de vos données personnelles est une priorité pour Werdhe. Cette politique explique comment nous collectons, utilisons et protégeons vos informations.",
+    "questionsContact": "Des questions sur notre politique de confidentialité ?",
+    "sections": {
+      "1": {
+        "titre": "1. Responsable du traitement",
+        "contenu": "Les données personnelles collectées sur Werdhe sont traitées par QbelyTech, éditeur de la plateforme Werdhe, dont le siège social est en Guinée.\n\nContact du responsable du traitement : contact@werdhe.com"
+      },
+      "2": {
+        "titre": "2. Données collectées",
+        "contenu": "Werdhe collecte les données suivantes :\n\nDonnées d'identification :\n• Nom, prénom, adresse email\n• Numéro de téléphone (optionnel)\n• Photo de profil (Google OAuth)\n\nDonnées professionnelles (propriétaires) :\n• Informations sur les biens immobiliers\n• Documents de location (baux, quittances)\n• Historique des transactions\n\nDonnées de candidature (locataires) :\n• Documents d'identité (CNI)\n• Justificatifs d'emploi et de revenus\n• Coordonnées du garant\n\nDonnées techniques :\n• Adresse IP\n• Données de connexion (logs)\n• Cookies de session"
+      },
+      "3": {
+        "titre": "3. Finalités du traitement",
+        "contenu": "Vos données sont utilisées pour :\n• Créer et gérer votre compte utilisateur\n• Faciliter la mise en relation entre propriétaires et locataires\n• Générer les documents contractuels (baux, quittances)\n• Traiter les paiements via nos prestataires\n• Envoyer des notifications et alertes liées à votre location\n• Améliorer nos services et l'expérience utilisateur\n• Respecter nos obligations légales\n• Lutter contre la fraude et les activités illicites"
+      },
+      "4": {
+        "titre": "4. Base légale du traitement",
+        "contenu": "Le traitement de vos données repose sur :\n• L'exécution du contrat : nécessaire pour fournir nos services\n• Votre consentement : pour les communications marketing\n• Notre intérêt légitime : amélioration des services, sécurité\n• Obligation légale : conservation des documents comptables"
+      },
+      "5": {
+        "titre": "5. Conservation des données",
+        "contenu": "Vos données sont conservées pendant les durées suivantes :\n• Données de compte : durée de vie du compte + 30 jours après suppression\n• Documents de location : 5 ans après la fin du bail (obligation légale)\n• Logs d'accès : 90 jours\n• Données de paiement : 10 ans (obligation comptable)\n• Cookies : 13 mois maximum\n\nAprès ces délais, vos données sont supprimées ou anonymisées."
+      },
+      "6": {
+        "titre": "6. Partage des données",
+        "contenu": "Vos données peuvent être partagées avec :\n\nPrestataires de services :\n• Supabase (hébergement base de données) — USA\n• Cloudinary (stockage de fichiers) — USA\n• Resend (envoi d'emails) — USA\n• Vercel (hébergement frontend) — USA\n• Render (hébergement backend) — USA\n• Orange Money / MTN MoMo (paiements) — Guinée\n\nCes prestataires sont contractuellement tenus de protéger vos données.\n\nWerdhe ne vend jamais vos données à des tiers à des fins commerciales.\n\nAutorités : En cas d'obligation légale ou de décision judiciaire."
+      },
+      "7": {
+        "titre": "7. Sécurité des données",
+        "contenu": "Werdhe met en œuvre les mesures de sécurité suivantes :\n• Chiffrement des données en transit (HTTPS/TLS)\n• Hachage des mots de passe (bcrypt)\n• Authentification à deux facteurs pour les comptes admin\n• Tokens JWT avec expiration\n• Logs d'audit des actions sensibles\n• Rate limiting pour prévenir les attaques\n• Accès restreint aux données par rôle utilisateur"
+      },
+      "8": {
+        "titre": "8. Vos droits",
+        "contenu": "Conformément à la réglementation applicable, vous disposez des droits suivants :\n\n• Droit d'accès : obtenir une copie de vos données personnelles\n• Droit de rectification : corriger des données inexactes\n• Droit à l'effacement : supprimer vos données (sous réserve des obligations légales)\n• Droit à la portabilité : recevoir vos données dans un format lisible\n• Droit d'opposition : vous opposer à certains traitements\n• Droit de limitation : limiter le traitement de vos données\n\nPour exercer ces droits, contactez-nous à : contact@werdhe.com\n\nNous répondrons à votre demande dans un délai de 30 jours."
+      },
+      "9": {
+        "titre": "9. Cookies",
+        "contenu": "Werdhe utilise les cookies suivants :\n\nCookies essentiels (non désactivables) :\n• Token d'authentification (session utilisateur)\n• Préférences de langue\n• Mode sombre/clair\n\nCookies fonctionnels :\n• Mémorisation des filtres de recherche\n• Dernier onglet visité\n\nWerdhe n'utilise pas de cookies publicitaires ou de tracking tiers."
+      },
+      "10": {
+        "titre": "10. Transferts internationaux",
+        "contenu": "Certains de nos prestataires (Supabase, Cloudinary, Vercel) sont établis aux États-Unis. Ces transferts sont encadrés par des clauses contractuelles types garantissant un niveau de protection adéquat de vos données."
+      },
+      "11": {
+        "titre": "11. Modifications de cette politique",
+        "contenu": "Cette politique de confidentialité peut être mise à jour. En cas de modification substantielle, vous serez informé par email ou notification sur la plateforme au moins 30 jours avant l'entrée en vigueur des changements."
+      },
+      "12": {
+        "titre": "12. Contact et réclamations",
+        "contenu": "Pour toute question sur cette politique ou pour exercer vos droits :\n\nEmail : contact@werdhe.com\nAdresse : QbelyTech, Conakry, Guinée\n\nSi vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès des autorités compétentes en matière de protection des données en Guinée."
+      }
+    }
+  },
+  "pricing": {
+    "seo": {
+      "titre": "Tarifs - Locataire gratuit, plans Pro et Agence",
+      "description": "Werdhe est 100% gratuit pour les locataires. Plans Pro et Agence pour les propriétaires, 1 mois d'essai gratuit. Paiement Mobile Money."
+    },
+    "connexion": "Connexion",
+    "demarrer": "Démarrer",
+    "titre": "Des tarifs transparents",
+    "sousTitre": "100% gratuit pour les locataires · Pro et Agence pour les propriétaires",
+    "paiementMobileMoney": "Paiement uniquement par Mobile Money (Orange / MTN)",
+    "cycles": {
+      "mensuel": "Mensuel",
+      "semestriel": "6 mois",
+      "annuel": "Annuel"
+    },
+    "modalTitre": "Abonnement {{plan}} - {{cycle}}",
+    "plans": {
+      "gratuit": {
+        "nom": "Locataire",
+        "sousTitre": "Pour trouver un logement",
+        "features": ["Recherche avancée de logements", "Candidatures illimitées", "Messagerie avec propriétaires", "Suivi de candidature en temps réel", "Signature électronique de bail", "Historique de locations", "Score de confiance"]
+      },
+      "pro": {
+        "nom": "Pro",
+        "badge": "1 mois gratuit",
+        "sousTitre": "Jusqu'à 20 logements",
+        "features": ["Jusqu'à 20 logements", "Candidatures et dossiers en ligne", "Paiement Orange Money + MTN MoMo", "Baux et quittances PDF auto", "Alertes loyers J-3 / J+5", "Rapports financiers + export CSV", "Messagerie avec accusé de lecture", "Score de confiance locataires", "Support email prioritaire"],
+        "nonInclus": ["Multi-utilisateurs", "Logements illimités"]
+      },
+      "agence": {
+        "nom": "Agence",
+        "badge": "1 mois gratuit",
+        "sousTitre": "Logements illimités",
+        "features": ["Logements illimités", "Tout du plan Pro", "Multi-utilisateurs (5 comptes)", "Rapport mensuel automatique", "Codes promo personnalisés", "Support Mail/Message", "Formation et onboarding équipe", "Tableau de bord agence centralisé"]
+      }
+    },
+    "faq": [
+      { "q": "Comment payer mon abonnement ?", "r": "Le paiement se fait uniquement par Mobile Money (Orange Money ou MTN MoMo). Aucun paiement en espèces n'est accepté." },
+      { "q": "L'essai est-il vraiment gratuit ?", "r": "Oui, 1 mois complet sur Pro ou Agence, sans Mobile Money requis. Accès à toutes les fonctionnalités du plan choisi. À la fin, choisissez de continuer ou non." },
+      { "q": "Quels rythmes de paiement sont proposés ?", "r": "Mensuel, tous les 6 mois (-10%) ou annuel (-20%). Vous choisissez ce qui vous convient." },
+      { "q": "Que se passe-t-il si je ne paie pas à temps ?", "r": "Vous recevez une relance 3 jours après l'échéance, puis une dernière relance à 5 jours. Sans règlement, l'accès est bloqué jusqu'à régularisation." },
+      { "q": "Puis-je changer de plan à tout moment ?", "r": "Oui. Vous pouvez upgrader ou downgrader depuis vos paramètres. Le changement prend effet immédiatement." },
+      { "q": "Quelle est la commission Werdhe ?", "r": "Werdhe prélève 5% sur chaque loyer encaissé via la plateforme." }
+    ],
+    "codeValide": "Code valide !",
+    "codeInvalide": "Code invalide",
+    "essaiDemarre": "Essai {{plan}} démarré ! 1 mois gratuit.",
+    "essaiDejaUtilise": "Essai déjà utilisé - vous pouvez payer directement",
+    "recommande": "Recommandé",
+    "gratuit": "Gratuit",
+    "economie": "Économie : {{montant}} GNF",
+    "demarrage": "Démarrage...",
+    "creerCompteGratuit": "Créer un compte gratuit",
+    "essaiGratuit1Mois": "Essai gratuit 1 mois",
+    "dejaUtiliseEssai": "Déjà utilisé votre essai ? Payer maintenant",
+    "codePromoQuestion": "Vous avez un code promo ?",
+    "placeholderCodePromo": "Ex: WERDHE50",
+    "valider": "Valider",
+    "codeValideReduction": "Code valide ! -{{pct}}% sur le plan {{plan}}",
+    "comparaison": "Comparaison",
+    "table": {
+      "fonctionnalite": "Fonctionnalité",
+      "logementsGeres": "Logements gérés",
+      "illimites": "Illimités",
+      "paiementMobileMoney": "Paiement Mobile Money",
+      "candidaturesDossiers": "Candidatures et dossiers",
+      "documentsPdfAuto": "Documents PDF auto",
+      "alertesLoyersAuto": "Alertes loyers auto",
+      "rapportsFinanciers": "Rapports financiers",
+      "scoreConfiance": "Score confiance",
+      "multiUtilisateurs": "Multi-utilisateurs",
+      "cinqComptes": "5 comptes",
+      "support": "Support",
+      "email": "Email",
+      "mailMessage": "Mail/Message"
+    },
+    "questionsFrequentes": "Questions fréquentes",
+    "pretACommencer": "Prêt à commencer ?",
+    "ctaSousTitre": "1 mois d'essai gratuit · Paiement Mobile Money uniquement",
+    "demarrerEssai": "Démarrer l'essai gratuit",
+    "footerCgu": "CGU",
+    "footerConfidentialite": "Confidentialité"
+  },
+  "notFound": {
+    "suggestions": {
+      "logements": "Logements disponibles",
+      "tarifs": "Voir les tarifs",
+      "contact": "Nous contacter"
+    },
+    "seoTitre": "Page non trouvée",
+    "titre": "Cette page n'existe pas",
+    "pagePrefixe": "La page",
+    "pageIntrouvable": "est introuvable.",
+    "redirectionAuto": "Redirection automatique dans",
+    "retour": "Retour",
+    "accueil": "Accueil",
+    "chercherLogement": "Chercher un logement",
+    "pagesUtiles": "Pages utiles"
+  },
+  "cookieBanner": {
+    "titre": "Cookies et confidentialité",
+    "sousTitre": "Werdhe respecte votre vie privée",
+    "message": "Nous utilisons des cookies essentiels au fonctionnement du site. Avec votre accord, nous utilisons aussi des cookies d'analyse pour améliorer votre expérience.",
+    "enSavoirPlus": "En savoir plus",
+    "categories": {
+      "essentiel": { "label": "Essentiels", "desc": "Authentification, session, sécurité" },
+      "analytique": { "label": "Analytiques", "desc": "Comprendre comment vous utilisez Werdhe" },
+      "marketing": { "label": "Marketing", "desc": "Publicités personnalisées (non utilisé)" }
+    },
+    "sauvegarder": "Sauvegarder",
+    "refuser": "Refuser",
+    "personnaliser": "Personnaliser",
+    "accepter": "Accepter"
+  }
+}

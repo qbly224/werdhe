@@ -1,0 +1,552 @@
+{
+  "logements": {
+    "nav": {
+      "connexion": "Log in",
+      "dashboard": "Dashboard"
+    },
+    "header": {
+      "titre": "Available properties in Guinea",
+      "sousTitre": "{{total}} listing(s) found · No middleman"
+    },
+    "tri": {
+      "recent": "Most recent",
+      "prixAsc": "Price: low to high",
+      "prixDesc": "Price: high to low"
+    },
+    "vue": {
+      "liste": "List",
+      "carte": "Map"
+    },
+    "recherche": {
+      "placeholder": "Search: title, neighborhood, address...",
+      "filtres": "Filters"
+    },
+    "villes": {
+      "toutes": "All"
+    },
+    "filtresAvances": {
+      "titre": "Advanced filters",
+      "reinitialiserTout": "Reset all",
+      "ville": "City",
+      "toutesLesVilles": "All cities",
+      "type": "Type",
+      "tousLesTypes": "All types",
+      "prixMinimum": "Minimum price (GNF)",
+      "prixMinimumPlaceholder": "E.g.: 500000",
+      "prixMaximum": "Maximum price (GNF)",
+      "prixMaximumPlaceholder": "E.g.: 2000000",
+      "chambresMinimum": "Minimum bedrooms",
+      "peuImporte": "Any",
+      "superficieMin": "Minimum area (m²)",
+      "superficieMinPlaceholder": "E.g.: 30",
+      "fourchette": "Range: {{min}} - {{max}}",
+      "illimite": "unlimited"
+    },
+    "etatRecherche": {
+      "enCours": "Searching...",
+      "aucunResultat": "No property found",
+      "autresCriteres": "Try different criteria",
+      "reinitialiserFiltres": "Reset filters"
+    },
+    "carte": {
+      "disponible": "Available",
+      "nouveau": "New",
+      "logementParDefaut": "Property",
+      "prixParMois": "/month",
+      "chambresAbrev": "{{count}} bd",
+      "sdbAbrev": "{{count}} bath",
+      "superficieAbrev": "{{superficie}}m²",
+      "voir": "View",
+      "candidater": "Apply"
+    },
+    "pagination": {
+      "precedent": "← Previous",
+      "page": "Page {{page}} / {{total}}",
+      "suivant": "Next →"
+    }
+  },
+  "logementDetail": {
+    "equipements": {
+      "electriciteSecteur": "Grid electricity",
+      "panneauSolaire": "Solar panel",
+      "eauCourante": "Running water",
+      "climatisation": "Air conditioning",
+      "gardiennage": "Security guard",
+      "parking": "Parking",
+      "jardin": "Garden"
+    },
+    "introuvable": {
+      "titre": "Property not found",
+      "retour": "← Back to listings"
+    },
+    "seo": {
+      "description": "{{titre}} in {{ville}}. {{prix}} GNF/month. Apply directly on Werdhe."
+    },
+    "nav": {
+      "retour": "Back"
+    },
+    "badge": {
+      "disponible": "✅ Available",
+      "occupe": "Occupied"
+    },
+    "compteurPhotos": "{{actuelle}} / {{total}}",
+    "caracteristiques": {
+      "titre": "Features",
+      "chambres": "Bedroom(s)",
+      "sallesDeBain": "Bathroom(s)",
+      "superficie": "m²",
+      "type": "Type"
+    },
+    "description": {
+      "titre": "Description"
+    },
+    "equipementsSection": {
+      "titre": "Amenities"
+    },
+    "similaires": {
+      "titre": "Similar properties in {{ville}}",
+      "voirTout": "See all →"
+    },
+    "prix": {
+      "parMois": "GNF/month",
+      "loyerMensuel": "Monthly rent · Deposit = 1 month"
+    },
+    "proprietaire": {
+      "titre": "Landlord",
+      "appeler": "Call"
+    },
+    "actions": {
+      "candidater": "Apply",
+      "seConnecterPourPostuler": "Log in to apply",
+      "logementOccupe": "This property is currently occupied",
+      "lienCopie": "Link copied!",
+      "partagerCeLogement": "Share this property"
+    },
+    "infosRapides": {
+      "titre": "On Werdhe",
+      "aucunFraisAgence": "No agency fees",
+      "bailElectronique": "Secure electronic lease",
+      "dossierEnLigne": "Simplified online application",
+      "messagerieDirecte": "Direct messaging"
+    }
+  },
+  "reserver": {
+    "erreurs": {
+      "logementIntrouvable": "Property not found",
+      "choisirDate": "Please choose a move-in date",
+      "ecrireMessage": "Write a message to the landlord",
+      "envoiErreur": "An error occurred while sending"
+    },
+    "succes": {
+      "demandeEnvoyee": "Application sent! The landlord has 48h to respond."
+    },
+    "chargement": {
+      "logement": "Loading property..."
+    },
+    "header": {
+      "titre": "Rental application",
+      "etape": "Step 1 / 7 — Tenant side"
+    },
+    "fiche": {
+      "disponible": "Available",
+      "chambre": "{{count}} bedroom",
+      "chambres": "{{count}} bedrooms",
+      "salleDeBain": "{{count}} bathroom",
+      "sallesDeBain": "{{count}} bathrooms",
+      "superficie": "{{superficie}} m²",
+      "proprietaire": "Landlord",
+      "proprietaireParDefaut": "Landlord",
+      "membreVerifie": "Verified member · Werdhe"
+    },
+    "formulaire": {
+      "votreDemande": "Your request",
+      "dateEntree": "Desired move-in date *",
+      "dureeEnvisagee": "Intended duration",
+      "duree6Mois": "6 months",
+      "duree12Mois": "12 months",
+      "duree24Mois": "24 months",
+      "messageProprietaire": "Message to the landlord *",
+      "messagePlaceholder": "Introduce yourself: job, household, why this property...",
+      "infoDelai": "No payment at this stage. The landlord has 48h to respond. You'll be able to track progress directly from your dashboard."
+    },
+    "bouton": {
+      "envoiEnCours": "⏳ Sending...",
+      "envoyer": "📤 Send my application to the landlord"
+    }
+  },
+  "carteLogement": {
+    "categories": {
+      "villaLuxe": "Luxury villa",
+      "villa": "Villa",
+      "maison": "House",
+      "maisonTraditionnelle": "Traditional house",
+      "enConstruction": "Under construction",
+      "concession": "Compound",
+      "appartement": "Apartment",
+      "duplex": "Duplex",
+      "logementSocial": "Social housing",
+      "studio": "Studio",
+      "chambre": "Room",
+      "chambreCour": "Courtyard room",
+      "habitatPrecaire": "Informal housing",
+      "boutique": "Shop",
+      "bureau": "Office",
+      "entrepot": "Warehouse",
+      "localCommercial": "Commercial space",
+      "centreCommercial": "Shopping center",
+      "logementParDefaut": "Property"
+    },
+    "statut": {
+      "disponible": "✅ Available",
+      "loue": "🔴 Rented"
+    },
+    "etat": {
+      "neuf": "✨ New",
+      "aRenover": "🔧 Needs renovation",
+      "enConstruction": "🏗️ Under construction"
+    },
+    "nbPhotos": "📸 {{count}}",
+    "chambresAbrev": "🛏 {{count}} bd",
+    "sdbAbrev": "🚿 {{count}} bath",
+    "superficieAbrev": "📐 {{superficie}} m²",
+    "prixParMois": "/month",
+    "details": "Details",
+    "reserver": "Apply"
+  },
+  "carteLeaflet": {
+    "categories": {
+      "villaLuxe": "Luxury villa",
+      "villa": "Villa",
+      "maisonModerne": "Modern house",
+      "maisonTraditionnelle": "Traditional house",
+      "appartement": "Apartment",
+      "duplex": "Duplex",
+      "studio": "Studio",
+      "chambre": "Room",
+      "bureau": "Office",
+      "localCommercial": "Commercial space",
+      "boutique": "Shop",
+      "concession": "Compound",
+      "logementParDefaut": "Property"
+    },
+    "marqueur": {
+      "disponible": "Available",
+      "loue": "Rented"
+    },
+    "filtres": {
+      "tous": "All ({{count}})",
+      "disponibles": "Available ({{count}})",
+      "loues": "Rented ({{count}})"
+    },
+    "popup": {
+      "disponible": "Available",
+      "loue": "Rented",
+      "chambresAbrev": "{{count}} bd",
+      "superficieAbrev": "{{superficie}}m²",
+      "prixParMois": "GNF/month",
+      "voir": "View"
+    },
+    "legende": {
+      "disponible": "Available",
+      "loue": "Rented",
+      "nbBiens": "{{count}} property(ies)"
+    }
+  },
+  "mapView": {
+    "popup": {
+      "voirLeLogement": "View property →",
+      "prixParMois": "GNF/month",
+      "chambresAbrev": "{{count}} bd"
+    },
+    "legende": {
+      "disponible": "Available",
+      "occupe": "Occupied",
+      "nbLogements": "{{count}} listing(s)"
+    }
+  },
+  "onboardingLocataire": {
+    "equipements": {
+      "eauCourante": "Running water",
+      "gardiennage": "Security guard",
+      "parking": "Parking",
+      "wifi": "WiFi",
+      "meuble": "Furnished",
+      "climatisation": "Air conditioning"
+    },
+    "typesLogement": {
+      "tousTypes": "All types",
+      "appartement": "Apartment",
+      "villa": "Villa",
+      "studio": "Studio",
+      "chambre": "Room",
+      "maison": "House",
+      "duplex": "Duplex",
+      "bureau": "Office",
+      "boutique": "Shop"
+    },
+    "etape1": {
+      "label": "Step 1 of 4 · Tenant",
+      "titre": "Your tenant profile",
+      "desc": "This information helps landlords review your application.",
+      "nomComplet": "Full name",
+      "nomCompletPlaceholder": "Fatoumata Camara",
+      "profession": "Occupation",
+      "professionOptions": {
+        "fonctionnaire": "Civil servant",
+        "commercant": "Shopkeeper",
+        "salariePrive": "Private sector employee",
+        "etudiant": "Student",
+        "independant": "Self-employed",
+        "autre": "Other"
+      },
+      "budgetMensuel": "Max monthly budget (GNF)",
+      "budgetOptions": {
+        "plusDe5M": "More than 5,000,000"
+      },
+      "continuer": "Continue"
+    },
+    "etape2": {
+      "label": "Step 2 of 4 · Tenant",
+      "titre": "Your search criteria",
+      "desc": "Customize your search to see matching properties.",
+      "quartierVille": "Desired neighborhood / city",
+      "quartierVillePlaceholder": "E.g.: Ratoma, Conakry or Labe...",
+      "ecrireLibrement": "Type freely or choose from the list",
+      "typeLogement": "Property type",
+      "disponibiliteSouhaitee": "Desired availability",
+      "dispoOptions": {
+        "immediate": "Immediate",
+        "dans1Mois": "In 1 month",
+        "dans3Mois": "In 3 months",
+        "dans6Mois": "In 6 months"
+      },
+      "equipementsSouhaites": "Desired amenities",
+      "retour": "Back",
+      "continuer": "Continue"
+    },
+    "etape3": {
+      "label": "Step 3 of 4 · Tenant",
+      "titre": "Application documents",
+      "desc": "A complete application increases your chances of securing a property quickly.",
+      "docs": {
+        "cniTitre": "ID card",
+        "cniDesc": "Front and back photo",
+        "cniBadge": "Recommended",
+        "revenusTitre": "Proof of income",
+        "revenusDesc": "Pay slip, employer certificate",
+        "garantTitre": "Guarantor contact",
+        "garantDesc": "Optional but recommended"
+      },
+      "changer": "Change",
+      "cliquerPourAjouter": "Click to add",
+      "chargement": "Uploading...",
+      "retour": "Back",
+      "terminer": "Finish",
+      "ignorerEtape": "Skip this step"
+    },
+    "etape4": {
+      "titre": "Your tenant space is ready!",
+      "descConfigure": "We've set up your profile.",
+      "descLogementsA": " Properties available in {{ville}}.",
+      "voirLesLogements": "View listings",
+      "monTableauDeBord": "My dashboard",
+      "rechercherDesLogements": "Search for properties"
+    }
+  },
+  "onboardingProprietaire": {
+    "plans": {
+      "gratuitTitre": "Free - 0 GNF/month",
+      "gratuitDesc": "Up to 2 properties · Basic management",
+      "proTitre": "Pro - 120,000 GNF/month",
+      "proDesc": "Mobile Money + Cash + Documents + Reports",
+      "agenceTitre": "Agency - 300,000 GNF/month",
+      "agenceDesc": "Unlimited properties · Multiple users · API",
+      "recommande": "Recommended"
+    },
+    "paiements": {
+      "orangeMoneyTitre": "Orange Money",
+      "paiementInstantane": "Instant payment + notification",
+      "mtnMomoTitre": "MTN MoMo",
+      "especesTitre": "Cash",
+      "especesDesc": "You record the payment · automatic PDF receipt",
+      "virementTitre": "Bank transfer",
+      "virementDesc": "BICIGUI, Ecobank, UBA"
+    },
+    "etape1": {
+      "label": "Step 1 of 4 · Landlord",
+      "titre": "Choose your plan",
+      "desc": "Can be changed anytime from settings.",
+      "continuer": "Continue"
+    },
+    "etape2": {
+      "label": "Step 2 of 4 · Landlord",
+      "titre": "Your landlord profile",
+      "nomComplet": "Full name (as it will appear on documents)",
+      "nomCompletPlaceholder": "Alpha Barry",
+      "villePrincipale": "Main city",
+      "nbBiensAGerer": "Number of properties to manage",
+      "nbBiensOptions": {
+        "unADeux": "1 to 2",
+        "troisACinq": "3 to 5",
+        "sixADix": "6 to 10",
+        "plusDeDix": "More than 10"
+      },
+      "retour": "Back",
+      "continuer": "Continue"
+    },
+    "etape3": {
+      "label": "Step 3 of 4 · Landlord",
+      "titre": "Accepted payment methods",
+      "desc": "Select the payment methods you accept from your tenants.",
+      "retour": "Back",
+      "continuer": "Continue"
+    },
+    "etape4": {
+      "titre": "Your landlord space is ready!",
+      "desc": "Welcome to Werdhe. Your dashboard is set up. Start by adding your first property.",
+      "ajouterUnBien": "Add a property",
+      "ajouterUnLocataire": "Add a tenant",
+      "creerUnBail": "Create a lease",
+      "enregistrerUnPaiement": "Record a payment",
+      "accederAuTableauDeBord": "Go to my dashboard"
+    }
+  },
+  "onboarding": {
+    "locataire": {
+      "etape1": {
+        "titre": "Welcome to Werdhe 🎉",
+        "desc": "Find your ideal home in Guinea. Filter by city, price, and area. No middleman, no hidden fees.",
+        "cta": "Get started"
+      },
+      "etape2": {
+        "titre": "Apply online",
+        "desc": "Find a property and submit your application directly. Digital application, fast response.",
+        "cta": "Next"
+      },
+      "etape3": {
+        "titre": "Application and signature",
+        "desc": "Upload your documents once. The lease is signed electronically — no need to travel.",
+        "cta": "Next"
+      },
+      "etape4": {
+        "titre": "You're all set!",
+        "desc": "The tenant space is 100% free, forever. Start searching for your property right now.",
+        "cta": "Search for a property"
+      }
+    },
+    "passerTutoriel": {
+      "titre": "Skip the tutorial?",
+      "descProprio": "A few minutes now will save you a lot of time later.",
+      "descLocataire": "You can come back to it from settings.",
+      "continuer": "Continue",
+      "passerQuandMeme": "Skip anyway"
+    },
+    "passer": "Skip",
+    "retour": "Back",
+    "proprio": {
+      "etape0": {
+        "bienvenue": "Welcome to Werdhe, {{prenom}}! 🎉",
+        "desc": "Manage all your properties from a single dashboard. Applications, payments, documents — everything centralized.",
+        "dashboardComplet": "Full dashboard",
+        "dashboardCompletDesc": "Everything in one place",
+        "paiementsAuto": "Automatic payments",
+        "paiementsAutoDesc": "Alerts and receipts",
+        "candidatures": "Applications",
+        "candidaturesDesc": "Online applications",
+        "alertesTempsReel": "Real-time alerts",
+        "alertesTempsReelDesc": "Rent, leases, notices",
+        "commencerConfiguration": "Start setup"
+      },
+      "etape1": {
+        "titre": "Choose your plan",
+        "desc": "Start with a free 14-day Pro trial",
+        "gratuit": {
+          "nom": "Free",
+          "prix": "0 GNF",
+          "desc": "Up to 2 properties",
+          "feature1": "2 properties max",
+          "feature2": "Basic applications",
+          "feature3": "Messaging"
+        },
+        "pro": {
+          "nom": "Pro",
+          "prix": "120,000 GNF/month",
+          "desc": "Up to 25 properties · 14 days free",
+          "badge": "Recommended",
+          "feature1": "25 properties",
+          "feature2": "Orange Money + MTN",
+          "feature3": "PDF documents",
+          "feature4": "Automatic alerts",
+          "feature5": "Reports"
+        },
+        "agence": {
+          "nom": "Agency",
+          "prix": "300,000 GNF/month",
+          "desc": "Unlimited properties · Multiple users",
+          "feature1": "Unlimited properties",
+          "feature2": "Multi-user",
+          "feature3": "API",
+          "feature4": "Dedicated support"
+        },
+        "continuerAvecGratuit": "Continue with the Free plan",
+        "continuerAvecPro": "Continue with the Pro trial",
+        "continuerAvecAgence": "Continue with the Agency plan"
+      },
+      "etape2": {
+        "titre": "Add your first property",
+        "desc": "Publish your property in 5 minutes. Title, address, price, photos — and applications arrive directly.",
+        "ceQueVousDevezPreparer": "What you need to prepare:",
+        "photos": "Property photos (at least 1)",
+        "adresse": "Exact address + city",
+        "prix": "Monthly price in GNF",
+        "chambres": "Number of bedrooms and area",
+        "plusTard": "Later",
+        "ajouterMaintenant": "Add now"
+      },
+      "etape3": {
+        "titre": "Key features",
+        "desc": "Everything Werdhe does for you automatically",
+        "alertesAuto": {
+          "titre": "Automatic alerts",
+          "desc": "Rent reminder D-3, formal notice D+5, lease expiring D-30"
+        },
+        "documentsUnClic": {
+          "titre": "One-click documents",
+          "desc": "Lease, receipt, inspection report, formal notice in PDF"
+        },
+        "rapportsFinanciers": {
+          "titre": "Financial reports",
+          "desc": "Revenue charts, occupancy rate, CSV/PDF export"
+        },
+        "scoreConfiance": {
+          "titre": "Trust score",
+          "desc": "Evaluate each tenant before accepting an application"
+        },
+        "messagerieIntegree": {
+          "titre": "Built-in messaging",
+          "desc": "Communicate with your tenants from the platform"
+        },
+        "suivant": "Next"
+      },
+      "etape4": {
+        "titre": "You're all set! 🚀",
+        "desc": "Your landlord space is configured. Add your first property and start receiving applications today.",
+        "checklist": "✅ Your getting-started checklist",
+        "creerCompte": "Create an account",
+        "choisirPlan": "Choose a plan",
+        "ajouterLogement": "Add a property",
+        "recevoirCandidature": "Receive an application",
+        "signerBail": "Sign a lease",
+        "ajouterMonPremierBien": "🏠 Add my first property",
+        "explorerDashboard": "Explore the dashboard first",
+        "toastBienvenue": "Welcome to Werdhe! Add your first property 🏠"
+      }
+    },
+    "jeConnaisDejaWerdhe": "I already know Werdhe — skip"
+  },
+  "tourTooltip": {
+    "passerLeTutoriel": "Skip the tutorial",
+    "suivant": "Next",
+    "terminer": "Finish"
+  }
+}

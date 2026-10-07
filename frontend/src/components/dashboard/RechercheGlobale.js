@@ -6,8 +6,10 @@ import {
   TrendingUp, Users, ArrowRight, Clock, X
 } from 'lucide-react';
 import api from '../../services/api';
+import { useTranslation } from 'react-i18next';
 
 export default function RechercheGlobale({ stats, onNavigate }) {
+  var t = useTranslation('dashboard').t;
   var [query, setQuery]         = useState('');
   var [resultats, setResultats] = useState([]);
   var [visible, setVisible]     = useState(false);
@@ -72,7 +74,7 @@ export default function RechercheGlobale({ stats, onNavigate }) {
             titre: l.titre,
             sous:  l.adresse + ', ' + l.ville + ' · ' + new Intl.NumberFormat('fr-FR').format(l.prix_mensuel) + ' GNF',
             action: '/dashboard/biens',
-            badge: 'Logement',
+            badge: t('rechercheGlobale.badges.logement'),
           });
         }
       });
@@ -88,7 +90,7 @@ export default function RechercheGlobale({ stats, onNavigate }) {
             titre: nom || r.logement_titre,
             sous:  r.logement_titre + ' · ' + r.statut,
             action: '/dashboard/reservations',
-            badge: 'Candidature',
+            badge: t('rechercheGlobale.badges.candidature'),
           });
         }
       });
@@ -103,29 +105,29 @@ export default function RechercheGlobale({ stats, onNavigate }) {
             titre: p.logement_titre,
             sous:  new Intl.NumberFormat('fr-FR').format(p.montant) + ' GNF · ' + new Date(p.created_at).toLocaleDateString('fr-FR'),
             action: '/dashboard/paiements',
-            badge: 'Paiement',
+            badge: t('rechercheGlobale.badges.paiement'),
           });
         }
       });
 
       // ─── Navigation ────────────────────────────────────────
       var pages = [
-        { mots: ['biens','logement','propriete','bien'],     icone: <Home          size={16} strokeWidth={1.5}/>, titre: 'Mes biens',       action: '/dashboard/biens',        couleur: '#1B6B3A', bg: '#E8F5E9'  },
-        { mots: ['candidature','reservation','demande'],     icone: <CalendarCheck size={16} strokeWidth={1.5}/>, titre: 'Candidatures',    action: '/dashboard/reservations', couleur: '#1565C0', bg: '#E3F2FD'  },
-        { mots: ['paiement','loyer','argent'],               icone: <CreditCard    size={16} strokeWidth={1.5}/>, titre: 'Paiements',       action: '/dashboard/paiements',    couleur: '#7B1FA2', bg: '#F3E5F5'  },
-        { mots: ['document','bail','contrat','quittance'],   icone: <FileText      size={16} strokeWidth={1.5}/>, titre: 'Documents',       action: '/dashboard/documents',    couleur: '#E65100', bg: '#FFF3E0'  },
-        { mots: ['message','chat','conversation'],           icone: <MessageCircle size={16} strokeWidth={1.5}/>, titre: 'Messages',        action: '/dashboard/messages',     couleur: '#1B6B3A', bg: '#E8F5E9'  },
-        { mots: ['alerte','notification'],                   icone: <Bell          size={16} strokeWidth={1.5}/>, titre: 'Alertes',         action: '/dashboard/alertes',      couleur: '#E53935', bg: '#FFEBEE'  },
-        { mots: ['rapport','statistique','graphique'],       icone: <TrendingUp    size={16} strokeWidth={1.5}/>, titre: 'Rapports',        action: '/dashboard/rapports',     couleur: '#1565C0', bg: '#E3F2FD'  },
-        { mots: ['reclamation','panne','probleme'],          icone: <Wrench        size={16} strokeWidth={1.5}/>, titre: 'Réclamations',    action: '/dashboard/reclamations', couleur: '#888',    bg: '#F5F5F5'  },
-        { mots: ['preavis','depart','quitter'],              icone: <Send          size={16} strokeWidth={1.5}/>, titre: 'Préavis',         action: '/dashboard/preavis',      couleur: '#37474F', bg: '#ECEFF1'  },
-        { mots: ['parametre','profil','compte','mdp'],       icone: <Settings      size={16} strokeWidth={1.5}/>, titre: 'Paramètres',      action: '/dashboard/parametres',   couleur: '#555',    bg: '#F5F5F5'  },
-        { mots: ['historique','ancien','passe'],             icone: <Clock         size={16} strokeWidth={1.5}/>, titre: 'Historique',      action: '/dashboard/historique',   couleur: '#1B6B3A', bg: '#E8F5E9'  },
-        { mots: ['locataire','tenant'],                      icone: <Users         size={16} strokeWidth={1.5}/>, titre: 'Locataires',      action: '/dashboard/locataires',   couleur: '#1565C0', bg: '#E3F2FD'  },
+        { mots: ['biens','logement','propriete','bien'],     icone: <Home          size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.mesBiens'),     action: '/dashboard/biens',        couleur: '#1B6B3A', bg: '#E8F5E9'  },
+        { mots: ['candidature','reservation','demande'],     icone: <CalendarCheck size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.candidatures'), action: '/dashboard/reservations', couleur: '#1565C0', bg: '#E3F2FD'  },
+        { mots: ['paiement','loyer','argent'],               icone: <CreditCard    size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.paiements'),    action: '/dashboard/paiements',    couleur: '#7B1FA2', bg: '#F3E5F5'  },
+        { mots: ['document','bail','contrat','quittance'],   icone: <FileText      size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.documents'),    action: '/dashboard/documents',    couleur: '#E65100', bg: '#FFF3E0'  },
+        { mots: ['message','chat','conversation'],           icone: <MessageCircle size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.messages'),     action: '/dashboard/messages',     couleur: '#1B6B3A', bg: '#E8F5E9'  },
+        { mots: ['alerte','notification'],                   icone: <Bell          size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.alertes'),      action: '/dashboard/alertes',      couleur: '#E53935', bg: '#FFEBEE'  },
+        { mots: ['rapport','statistique','graphique'],       icone: <TrendingUp    size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.rapports'),     action: '/dashboard/rapports',     couleur: '#1565C0', bg: '#E3F2FD'  },
+        { mots: ['reclamation','panne','probleme'],          icone: <Wrench        size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.reclamations'), action: '/dashboard/reclamations', couleur: '#888',    bg: '#F5F5F5'  },
+        { mots: ['preavis','depart','quitter'],              icone: <Send          size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.preavis'),      action: '/dashboard/preavis',      couleur: '#37474F', bg: '#ECEFF1'  },
+        { mots: ['parametre','profil','compte','mdp'],       icone: <Settings      size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.parametres'),   action: '/dashboard/parametres',   couleur: '#555',    bg: '#F5F5F5'  },
+        { mots: ['historique','ancien','passe'],             icone: <Clock         size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.historique'),   action: '/dashboard/historique',   couleur: '#1B6B3A', bg: '#E8F5E9'  },
+        { mots: ['locataire','tenant'],                      icone: <Users         size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.locataires'),   action: '/dashboard/locataires',   couleur: '#1565C0', bg: '#E3F2FD'  },
       ];
       pages.forEach(function(p) {
         if (p.mots.some(function(m) { return m.includes(q) || q.includes(m); })) {
-          res.push({ type: 'navigation', icone: p.icone, couleur: p.couleur, bg: p.bg, titre: p.titre, sous: 'Aller vers ' + p.titre, action: p.action, badge: 'Page' });
+          res.push({ type: 'navigation', icone: p.icone, couleur: p.couleur, bg: p.bg, titre: p.titre, sous: t('rechercheGlobale.allerVers', { titre: p.titre }), action: p.action, badge: t('rechercheGlobale.badges.page') });
         }
       });
 
@@ -143,7 +145,7 @@ export default function RechercheGlobale({ stats, onNavigate }) {
               titre: l.titre,
               sous: l.adresse + ', ' + l.ville + ' · ' + new Intl.NumberFormat('fr-FR').format(l.prix_mensuel) + ' GNF/mois',
               href: '/logements/' + l.id,
-              badge: 'Annonce',
+              badge: t('rechercheGlobale.badges.annonce'),
             };
           });
           setResultats(function(prev) {
@@ -169,8 +171,8 @@ export default function RechercheGlobale({ stats, onNavigate }) {
         onMouseEnter={function(e) { e.currentTarget.style.borderColor = '#1B6B3A'; e.currentTarget.style.color = '#1B6B3A'; }}
         onMouseLeave={function(e) { e.currentTarget.style.borderColor = '#E8E8E8'; e.currentTarget.style.color = '#888'; }}>
         <Search size={14} strokeWidth={1.5} />
-        <span>Rechercher...</span>
-        <span style={{ background: '#E0E0E0', borderRadius: 5, padding: '2px 6px', fontSize: 10, fontWeight: 600, letterSpacing: 0.3 }}>Ctrl+K</span>
+        <span>{t('rechercheGlobale.bouton.rechercher')}</span>
+        <span style={{ background: '#E0E0E0', borderRadius: 5, padding: '2px 6px', fontSize: 10, fontWeight: 600, letterSpacing: 0.3 }}>{t('rechercheGlobale.bouton.raccourci')}</span>
       </button>
     );
   }
@@ -187,7 +189,7 @@ export default function RechercheGlobale({ stats, onNavigate }) {
           <input
             ref={inputRef}
             type="text"
-            placeholder="Chercher logement, locataire, page..."
+            placeholder={t('rechercheGlobale.modal.inputPlaceholder')}
             value={query}
             onChange={function(e) { setQuery(e.target.value); }}
             onKeyDown={handleKeyDown}
@@ -201,20 +203,20 @@ export default function RechercheGlobale({ stats, onNavigate }) {
           )}
           <button onClick={function() { setVisible(false); setQuery(''); }}
             style={{ background: '#F5F5F5', border: 'none', borderRadius: 6, padding: '4px 8px', fontSize: 11, color: '#888', cursor: 'pointer', flexShrink: 0 }}>
-            Esc
+            {t('rechercheGlobale.modal.esc')}
           </button>
         </div>
 
         {/* Raccourcis si vide */}
         {query.length < 2 && (
           <div style={{ padding: '12px 14px' }}>
-            <div style={{ fontSize: 11, color: '#aaa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Raccourcis</div>
+            <div style={{ fontSize: 11, color: '#aaa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>{t('rechercheGlobale.modal.raccourcis')}</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
               {[
-                { icone: <Home size={15} strokeWidth={1.5} />,          titre: 'Mes biens',      action: '/dashboard/biens',        bg: '#E8F5E9', couleur: '#1B6B3A' },
-                { icone: <CalendarCheck size={15} strokeWidth={1.5} />, titre: 'Candidatures',   action: '/dashboard/reservations', bg: '#E3F2FD', couleur: '#1565C0' },
-                { icone: <MessageCircle size={15} strokeWidth={1.5} />, titre: 'Messages',       action: '/dashboard/messages',     bg: '#F3E5F5', couleur: '#7B1FA2' },
-                { icone: <TrendingUp    size={15} strokeWidth={1.5} />, titre: 'Rapports',       action: '/dashboard/rapports',     bg: '#FFF3E0', couleur: '#E65100' },
+                { icone: <Home size={15} strokeWidth={1.5} />,          titre: t('rechercheGlobale.pages.mesBiens'),      action: '/dashboard/biens',        bg: '#E8F5E9', couleur: '#1B6B3A' },
+                { icone: <CalendarCheck size={15} strokeWidth={1.5} />, titre: t('rechercheGlobale.pages.candidatures'),  action: '/dashboard/reservations', bg: '#E3F2FD', couleur: '#1565C0' },
+                { icone: <MessageCircle size={15} strokeWidth={1.5} />, titre: t('rechercheGlobale.pages.messages'),      action: '/dashboard/messages',     bg: '#F3E5F5', couleur: '#7B1FA2' },
+                { icone: <TrendingUp    size={15} strokeWidth={1.5} />, titre: t('rechercheGlobale.pages.rapports'),      action: '/dashboard/rapports',     bg: '#FFF3E0', couleur: '#E65100' },
               ].map(function(r, i) {
                 return (
                   <button key={i} onClick={function() { onNavigate(r.action); setVisible(false); }}
@@ -236,7 +238,7 @@ export default function RechercheGlobale({ stats, onNavigate }) {
         {query.length >= 2 && resultats.length === 0 && !loading && (
           <div style={{ padding: '28px 20px', textAlign: 'center', color: '#888', fontSize: 14 }}>
             <Search size={28} strokeWidth={1} color="#E0E0E0" style={{ display: 'block', margin: '0 auto 10px' }} />
-            Aucun résultat pour <strong>"{query}"</strong>
+            {t('rechercheGlobale.modal.aucunResultatPour')} <strong>"{query}"</strong>
           </div>
         )}
 
@@ -269,10 +271,10 @@ export default function RechercheGlobale({ stats, onNavigate }) {
 
         {/* Footer */}
         <div style={{ padding: '10px 16px', background: '#FAFAFA', borderTop: '1px solid #F0F0F0', display: 'flex', gap: 16, fontSize: 11, color: '#aaa' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>↑↓ Naviguer</span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>↵ Sélectionner</span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>Esc Fermer</span>
-          {loading && <span style={{ marginLeft: 'auto', color: '#1B6B3A', fontWeight: 600 }}>Recherche...</span>}
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>{t('rechercheGlobale.modal.footer.naviguer')}</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>{t('rechercheGlobale.modal.footer.selectionner')}</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>{t('rechercheGlobale.modal.footer.fermer')}</span>
+          {loading && <span style={{ marginLeft: 'auto', color: '#1B6B3A', fontWeight: 600 }}>{t('rechercheGlobale.modal.footer.rechercheEnCours')}</span>}
         </div>
       </div>
     </div>

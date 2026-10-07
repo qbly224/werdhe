@@ -1,0 +1,247 @@
+{
+  "ajouterLogement": {
+    "header": {
+      "titre": "Publier un logement",
+      "sousTitre": "Mettez votre bien en location sur Werdhè"
+    },
+    "etapesIndicateur": {
+      "categorie": "Catégorie",
+      "localisation": "Localisation",
+      "details": "Détails",
+      "equipements": "Équipements",
+      "photos": "Photos"
+    },
+    "categories": {
+      "groupes": {
+        "villas": "Villas",
+        "maisons": "Maisons",
+        "appartements": "Appartements",
+        "chambresStudios": "Chambres & Studios",
+        "locauxCommerciaux": "Locaux commerciaux"
+      },
+      "types": {
+        "villa_luxe": { "label": "Villa de luxe", "description": "4+ chambres, piscine, jardin, gardien" },
+        "villa_standard": { "label": "Villa standard", "description": "3-4 chambres, cour, clôture" },
+        "maison_moderne": { "label": "Maison moderne", "description": "Construction en dur, parpaings/ciment" },
+        "maison_banco": { "label": "Maison traditionnelle", "description": "Murs en banco, toit en tôle ou chaume" },
+        "maison_chantier": { "label": "Maison en construction", "description": "Rez-de-chaussée habitable, étage en attente" },
+        "concession": { "label": "Concession familiale", "description": "Plusieurs logements autour d'une cour commune" },
+        "appartement": { "label": "Appartement", "description": "Logement dans un immeuble collectif" },
+        "duplex": { "label": "Duplex", "description": "Appartement sur deux niveaux" },
+        "logement_social": { "label": "Logement social", "description": "Programme Sonapi, Addoha..." },
+        "studio_moderne": { "label": "Studio moderne", "description": "1 pièce + sanitaires internes" },
+        "chambre_habitant": { "label": "Chambre chez l'habitant", "description": "Une pièce, sanitaires communs" },
+        "chambre_cour": { "label": "Chambre en cour commune", "description": "Petit espace dans une concession" },
+        "habitat_precaire": { "label": "Habitat précaire", "description": "Construction en tôles/planches" },
+        "boutique": { "label": "Boutique / Échoppe", "description": "Vente de détail, marché" },
+        "bureau": { "label": "Bureau", "description": "Activités administratives" },
+        "entrepot": { "label": "Entrepôt / Hangar", "description": "Stockage de marchandises" },
+        "local_commercial": { "label": "Local commercial", "description": "RDC d'immeuble, usage mixte" },
+        "centre_commercial": { "label": "Centre commercial", "description": "Diamond Plaza, grandes surfaces..." }
+      }
+    },
+    "etape1": {
+      "titre": "Quel type de bien voulez-vous louer ?",
+      "sousTitre": "Le formulaire s'adaptera selon votre choix"
+    },
+    "etape2": {
+      "changer": "Changer",
+      "titre": "Localisation du bien",
+      "sousTitre": "Soyez précis pour aider les locataires à vous trouver",
+      "typeLogement": "Type de logement",
+      "region": "Région *",
+      "selectionnezRegion": "Sélectionnez une région",
+      "ville": "Ville *",
+      "prefecture": "Préfecture *",
+      "selectionnez": "Sélectionnez",
+      "sousPrefecture": "Sous-préfecture",
+      "selectionnezSousPrefecture": "Sélectionnez une sous-préfecture",
+      "commune": "Commune",
+      "selectionnezCommune": "Sélectionnez une commune",
+      "quartier": "Quartier *",
+      "quartierPlaceholder": "Ex: Ratoma, Kaloum, Hafia...",
+      "pointRepere": "Point de repère",
+      "pointReperePlaceholder": "Ex: Face à la mosquée, près du marché central...",
+      "adresse": "Adresse détaillée *",
+      "adressePlaceholder": "Ex: Rue KA-001, maison bleue à gauche",
+      "retour": "← Retour",
+      "continuer": "Continuer →"
+    },
+    "etape3": {
+      "titre": "Détails du bien",
+      "sousTitre": "Décrivez votre logement et fixez son prix",
+      "titreAnnonce": "Titre de l'annonce *",
+      "titreAnnoncePlaceholder": "Ex: Bel appartement 3 chambres à Ratoma",
+      "description": "Description",
+      "descriptionPlaceholder": "Décrivez le logement, son environnement, ses atouts...",
+      "superficie": "Superficie (m²)",
+      "superficiePlaceholder": "Ex: 80",
+      "nbChambres": "Nombre de chambres",
+      "sallesBain": "Salles de bain",
+      "loyerMensuel": "Loyer mensuel (GNF) *",
+      "loyerMensuelPlaceholder": "Ex: 1200000",
+      "estimationEnCours": "Estimation en cours...",
+      "loyerSuggere": "Loyer suggéré : {{bas}} – {{haut}} GNF/mois",
+      "baseSurComparables": "Basé sur {{count}} logement(s) similaire(s) sur Werdhe",
+      "estimationStatistique": "Estimation statistique (peu de biens comparables disponibles pour le moment)",
+      "utiliser": "Utiliser {{prix}} GNF",
+      "retour": "← Retour",
+      "continuer": "Continuer →",
+      "erreurTitrePrix": "Titre et prix obligatoires"
+    },
+    "etape4": {
+      "titre": "⚡ Équipements et statut foncier",
+      "accesEau": "Accès à l'eau",
+      "selectionnez": "Sélectionnez",
+      "robinetInterieur": "Robinet intérieur",
+      "robinetExterieur": "Robinet extérieur",
+      "puits": "Puits",
+      "forage": "Forage",
+      "bornePublique": "Borne publique",
+      "electricite": "Électricité",
+      "secteur": "Secteur (EDG)",
+      "solaire": "Panneau solaire",
+      "groupeElectrogene": "Groupe électrogène",
+      "sansElectricite": "Sans électricité",
+      "typeToit": "Type de toit",
+      "dalle": "Dalle (béton)",
+      "tole": "Tôle",
+      "chaume": "Chaume",
+      "autre": "Autre",
+      "typeSol": "Type de sol",
+      "carreaux": "Carreaux",
+      "ciment": "Ciment",
+      "terre": "Terre",
+      "statutFoncier": "Statut foncier",
+      "titreFoncier": "Titre foncier",
+      "permisHabiter": "Permis d'habiter",
+      "accordCoutumier": "Accord coutumier",
+      "sousSeingPrive": "Sous-seing privé",
+      "nonPrecise": "Non précisé",
+      "equipementsDisponibles": "Équipements disponibles",
+      "parking": "Parking",
+      "jardin": "Jardin / Cour",
+      "climatisation": "Climatisation",
+      "gardien": "Gardien",
+      "retour": "← Retour",
+      "publication": "Publication...",
+      "publierEtAjouterPhotos": "Publier et ajouter des photos"
+    },
+    "etape5": {
+      "titre": "Ajoutez des photos",
+      "sousTitre": "Au moins 1 photo requise · Les logements avec photos reçoivent 3× plus de candidatures",
+      "avertissementPhoto": "Ajoutez au moins une photo pour publier votre logement.",
+      "terminerSansPhoto": "Terminer sans photo (déconseillé)",
+      "ajoutezPhotoDabord": "Ajoutez une photo d'abord",
+      "publierPhotos": "Publier - {{count}} photo(s)",
+      "toastAjoutezPhotoAvant": "Ajoutez au moins une photo avant de publier !",
+      "toastLogementPublie": "Logement publié avec {{count}} photo(s) !"
+    },
+    "toastLogementCree": "Logement créé ! Ajoutez maintenant des photos.",
+    "erreurAjout": "Erreur lors de l'ajout"
+  },
+  "profil": {
+    "header": {
+      "proprietaire": "🏠 Propriétaire",
+      "locataire": "🔍 Locataire",
+      "proprietaireEtLocataire": "🔄 Propriétaire & Locataire"
+    },
+    "onglets": {
+      "infos": "👤 Mes informations",
+      "motDePasse": "🔐 Mot de passe"
+    },
+    "infos": {
+      "titre": "👤 Mes informations",
+      "prenom": "Prénom",
+      "nom": "Nom",
+      "telephone": "Téléphone",
+      "telephonePlaceholder": "622 000 000",
+      "email": "Email",
+      "emailNonModifiable": "L'email ne peut pas être modifié",
+      "sauvegarde": "Sauvegarde...",
+      "sauvegarder": "💾 Sauvegarder",
+      "toastSucces": "✅ Profil mis à jour !"
+    },
+    "motDePasse": {
+      "titre": "🔐 Changer le mot de passe",
+      "actuel": "Mot de passe actuel *",
+      "actuelPlaceholder": "Votre mot de passe actuel",
+      "nouveau": "Nouveau mot de passe *",
+      "nouveauPlaceholder": "Minimum 6 caractères",
+      "confirmation": "Confirmer le nouveau mot de passe *",
+      "confirmationPlaceholder": "Répétez le nouveau mot de passe",
+      "miseAJour": "Mise à jour...",
+      "changer": "🔐 Changer le mot de passe",
+      "toastSucces": "✅ Mot de passe mis à jour !",
+      "erreurCorrespondance": "Les mots de passe ne correspondent pas",
+      "erreurMinimum": "Minimum 6 caractères"
+    },
+    "erreurServeur": "Erreur serveur"
+  },
+  "profilPublic": {
+    "chargement": "Chargement du profil...",
+    "introuvable": "Profil introuvable",
+    "retour": "← Retour",
+    "headerTitre": "Profil propriétaire",
+    "proprietaireVerifie": "Propriétaire vérifié",
+    "avis": "({{count}} avis)",
+    "aucunAvis": "Aucun avis pour le moment",
+    "stats": {
+      "logements": "Logements",
+      "locationsActives": "Locations actives",
+      "membreDepuis": "Membre depuis"
+    },
+    "scoreConfiance": "Score de confiance",
+    "email": "✉️ Email",
+    "appeler": "📞 Appeler",
+    "logementsTitre": "Logements ({{count}})",
+    "occupe": "Occupé",
+    "disponible": "Disponible",
+    "avisLocatairesTitre": "Avis des locataires ({{count}})",
+    "aucunLogementPublie": "Ce propriétaire n'a pas encore de logements publiés.",
+    "profilNonTrouve": "Profil non trouvé",
+    "logementCard": {
+      "prixUnite": "GNF/mois",
+      "chambresAbbrev": "ch."
+    }
+  },
+  "photoUpload": {
+    "dropZone": {
+      "uploading": "Upload en cours...",
+      "dragText": "Glissez vos photos ici ou",
+      "dragTextBold": "cliquez pour choisir",
+      "formats": "JPG, PNG, WEBP — 5MB max — 10 photos max"
+    },
+    "badgePrincipale": "⭐ Principale",
+    "actions": {
+      "definirPrincipale": "Définir comme principale",
+      "supprimer": "Supprimer"
+    },
+    "altLogement": "Logement {{index}}",
+    "noPhotos": "Aucune photo pour le moment. Ajoutez des photos pour attirer plus de locataires !",
+    "toasts": {
+      "ajoutees": "✅ {{count}} photo(s) ajoutée(s) !",
+      "erreurUpload": "Erreur upload",
+      "supprimee": "Photo supprimée",
+      "erreurSuppression": "Erreur suppression",
+      "principaleDefinie": "✅ Photo principale définie !",
+      "erreur": "Erreur"
+    }
+  },
+  "gestionPhotos": {
+    "titre": "📷 Photos du logement ({{count}}/10)",
+    "photoPrincipale": "Photo principale",
+    "altPhoto": "Photo {{index}}",
+    "upload": "Upload...",
+    "ajouter": "Ajouter",
+    "formatsInfo": "JPG, PNG, WEBP · Max 5MB par photo · {{count}} emplacement(s) restant(s)",
+    "confirmSupprimer": "Supprimer cette photo ?",
+    "toasts": {
+      "photosTropGrandes": "Photos trop grandes (max 5MB chacune)",
+      "ajoutees": "{{count}} photo(s) ajoutée(s) !",
+      "erreurUpload": "Erreur upload",
+      "supprimee": "Photo supprimée",
+      "erreurSuppression": "Erreur suppression"
+    }
+  }
+}

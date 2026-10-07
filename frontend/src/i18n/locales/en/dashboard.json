@@ -1,0 +1,1552 @@
+{
+  "upgradeBanner": {
+    "titre": "Feature reserved for the {{plan}} plan",
+    "voirLesPlans": "View plans →",
+    "messages": {
+      "mobileMoney": "Mobile Money payments (Orange Money, MTN) are available starting with the Pro plan.",
+      "documentsPdf": "Generating PDF leases and receipts is available starting with the Pro plan.",
+      "annuaire": "Visibility in the Werdhe directory is available starting with the Pro plan.",
+      "rapports": "Financial reports are available starting with the Pro plan.",
+      "maxBiens": "You've reached the 2-property limit of the Free plan. Upgrade to Pro for up to 25 properties.",
+      "defaut": "Upgrade to a higher plan to access this feature."
+    }
+  },
+  "badgeScore": {
+    "titre": "Trust score",
+    "badges": {
+      "elite": "Elite",
+      "excellent": "Excellent",
+      "fiable": "Reliable",
+      "nouveau": "New"
+    },
+    "paiementsATemps": "{{count}} payments on time",
+    "reclamationsResolues": "{{count}} complaints resolved"
+  },
+  "notifPanel": {
+    "titre": "Notifications",
+    "fermer": "Close",
+    "aucuneNotification": "No notifications"
+  },
+  "ongletOverviewLocataire": {
+    "kpi": {
+      "locationsActives": "Active rentals",
+      "candidatures": "Applications",
+      "loyersPayes": "Rents paid",
+      "totalVerse": "Total paid"
+    },
+    "loyerMensuel": "Monthly rent",
+    "dureeDuBail": "Lease duration",
+    "moisSurDuree": "{{mois}}/{{duree}} months",
+    "progression": "Progress: {{pct}}%",
+    "actions": {
+      "docs": "Docs",
+      "messages": "Messages",
+      "paiements": "Payments",
+      "historique": "History"
+    },
+    "aucuneLocation": {
+      "titre": "No active rental",
+      "description": "Find your next home on Werdhe",
+      "chercherBouton": "🔍 Search for a property"
+    }
+  },
+  "ongletOverview": {
+    "kpi": {
+      "revenusDuMois": "Revenue this month",
+      "tendanceHausse": "↑ +{{pct}}% vs last month",
+      "tendanceBaisse": "↓ {{pct}}% vs last month",
+      "tendanceStable": "Stable vs last month",
+      "tauxOccupation": "Occupancy rate",
+      "biensOccupes": "{{loues}}/{{total}} properties occupied",
+      "candidatures": "Applications",
+      "nouvellesCetteSemaine": "{{count}} new this week",
+      "biensGeres": "Properties managed",
+      "louesEtLibres": "{{loues}} rented · {{libres}} vacant"
+    },
+    "aucuneDonnee": "No data",
+    "revenus6mois": {
+      "titre": "Revenue (6 months)",
+      "voirTout": "View all →"
+    },
+    "aFaire": {
+      "titre": "To do",
+      "toutVoir": "View all →",
+      "toutEnOrdre": "Everything is in order!",
+      "bailExpire": "Lease expires - {{logement}}",
+      "dansNJours": "in {{n}}d"
+    },
+    "mesBiens": {
+      "titre": "My properties",
+      "gerer": "Manage →",
+      "aucunBien": "No property published",
+      "ajouterBien": "+ Add a property",
+      "locataire": "Tenant: {{prenom}} {{nom}}",
+      "loue": "Rented",
+      "libre": "Vacant"
+    },
+    "candidatures": {
+      "titre": "Latest applications",
+      "toutesVoir": "View all →",
+      "statuts": {
+        "nouvelle": "New",
+        "dossierDemande": "Application requested",
+        "enExamen": "Under review",
+        "acceptee": "Accepted",
+        "refusee": "Declined"
+      },
+      "score": "Score: {{score}}/100"
+    }
+  },
+  "ongletBiens": {
+    "titre": "My properties",
+    "biensEnGestion": "{{count}} property(ies) managed",
+    "limiteAtteinteUpgrader": "Limit reached - Upgrade",
+    "ajouterBien": "+ Add a property",
+    "aucunBienEnregistre": "No property registered",
+    "ajouterMonPremierBien": "+ Add my first property",
+    "toastBienSupprime": "Property deleted!",
+    "toastErreurSuppression": "Deletion error",
+    "toastBienModifie": "Property updated!",
+    "toastErreurModification": "Update error",
+    "toastBienLibere": "Property released immediately!",
+    "toastErreur": "Error",
+    "preavisEnvoye": "Notice sent",
+    "occupe": "• Occupied",
+    "locataireDepuisLe": "{{prenom}} {{nom}} · Since {{date}}",
+    "limiteAtteinte20": "20-property limit reached.",
+    "passerPlanAgence": "Upgrade to Agency plan →",
+    "locataire": {
+      "titre": "My rentals",
+      "locationsActives": "{{count}} active rental(s)",
+      "chercherLogement": "Search for a property",
+      "aucuneLocation": {
+        "titre": "No active rental",
+        "description": "Book a property to get started",
+        "trouverLogement": "Find a property"
+      },
+      "depuisLe": "{{ville}} · Since {{date}}",
+      "na": "N/A",
+      "active": "• Active",
+      "details": "Details",
+      "documents": "Documents",
+      "libre": "Vacant"
+    },
+    "confirmSuppression": {
+      "titre": "Confirm deletion",
+      "description": "Are you sure you want to delete this property? This action cannot be undone.",
+      "supprimer": "Delete",
+      "annuler": "Cancel"
+    },
+    "libererModal": {
+      "titre": "⚡ Release immediately",
+      "descAvant": "This action will ",
+      "descGras": "end the current rental",
+      "descApres": " and set the property back to \"Available\" immediately, with no notice period.",
+      "avertissement": "The tenant will be notified. This action cannot be undone.",
+      "libererMaintenant": "Release now"
+    },
+    "editForm": {
+      "modifierTitre": "Edit - {{titre}}",
+      "titre": "Title",
+      "prix": "Price (GNF)",
+      "adresse": "Address",
+      "statut": "Status",
+      "statutDisponible": "Available",
+      "statutLoue": "Rented",
+      "statutSuspendu": "Suspended",
+      "photosEnregistrees": "{{count}} photo(s) saved",
+      "sauvegarder": "Save",
+      "annuler": "Cancel",
+      "modifier": "Edit",
+      "supprimer": "Delete"
+    },
+    "preavisBanniere": {
+      "avant": "Move-out notice sent to ",
+      "apres": ". Awaiting acknowledgment.",
+      "voirLePreavis": "View notice"
+    },
+    "boutons": {
+      "messagerie": "Messaging",
+      "documents": "Documents",
+      "preavis": "Notice",
+      "renouveler": "Renew"
+    },
+    "renouvModal": {
+      "titre": "Propose a renewal",
+      "logement": "Property:",
+      "dureeLabel": "Renewal duration *",
+      "dureeMois": "{{n}} months",
+      "nouveauLoyerLabel": "New monthly rent (GNF) - leave blank to keep the same",
+      "messageLabel": "Message to the tenant (optional)",
+      "messagePlaceholder": "E.g.: Renewal under the same terms...",
+      "envoiEnCours": "Sending...",
+      "envoyerLaProposition": "Send proposal"
+    }
+  },
+  "ongletLocataires": {
+    "titre": "Tenants",
+    "nbLocataires": "{{count}} tenant(s)",
+    "ajouterLocataire": "+ Add a tenant",
+    "toastModifie": "Tenant updated!",
+    "toastAjoute": "Tenant added!",
+    "toastErreur": "Error",
+    "confirmSuppression": "Delete this tenant?",
+    "toastSupprime": "Tenant deleted!",
+    "viaWerdhe": "Tenants via Werdhe",
+    "manuels": "Manual tenants",
+    "voirFiche": "View profile",
+    "aucunManuel": {
+      "titre": "No manual tenant",
+      "description": "Add tenants without a Werdhe account"
+    },
+    "form": {
+      "modifierTitre": "Edit tenant",
+      "nouveauTitre": "New tenant",
+      "prenom": "First name *",
+      "nom": "Last name *",
+      "telephone": "Phone",
+      "email": "Email",
+      "logement": "Property",
+      "aucun": "None",
+      "loyer": "Rent (GNF)",
+      "dateEntree": "Move-in date",
+      "sauvegarder": "Save",
+      "ajouter": "Add",
+      "annuler": "Cancel",
+      "modifier": "Edit",
+      "supprimer": "Delete"
+    }
+  },
+  "ongletReservations": {
+    "locataire": {
+      "titre": "My Applications",
+      "nbCandidatures": "{{count}} application(s)",
+      "chercherLogement": "+ Search for a property",
+      "aucuneReservation": {
+        "titre": "No reservation",
+        "description": "Find a property and send a request to the landlord",
+        "trouverLogement": "Find a property"
+      },
+      "voir": "View",
+      "demandeDu": "Request from {{date}}",
+      "demandeEnCours": "Request in progress",
+      "actionAttendue": "⚡ An action is expected from you",
+      "statuts": {
+        "enAttente": { "label": "Application sent", "action": "Track my application" },
+        "dossierRequis": { "label": "Application requested", "action": "Submit my application" },
+        "enExamen": { "label": "Application under review", "action": "View progress" },
+        "acceptee": { "label": "Application accepted", "action": "Start discussions" },
+        "echanges": { "label": "In discussion", "action": "View discussion" },
+        "cautionRequise": { "label": "Deposit due", "action": "Pay the deposit" },
+        "cautionPayee": { "label": "Deposit paid", "action": "View progress" },
+        "bailEnCours": { "label": "Lease to sign", "action": "Sign the lease" },
+        "bailSigneProprio": { "label": "Your turn to sign", "action": "Sign now" },
+        "confirmee": { "label": "Active rental", "action": "View summary" },
+        "refusee": { "label": "Application not accepted" }
+      }
+    }
+  },
+  "scoreLocataire": {
+    "titre": "Trust score"
+  },
+  "dashboardMain": {
+    "toastInstalle": "Werdhe installed on your home screen! 🏠",
+    "connexionRetablie": "Connection restored ✅",
+    "connexionPerdue": "Connection lost 📡",
+    "raccourciReservations": "Reservations",
+    "toastReservationConfirmee": "Reservation confirmed!",
+    "toastReservationAnnulee": "Reservation cancelled",
+    "chargement": "Loading...",
+    "installerWerdhe": "Install Werdhe",
+    "accesRapide": "Quick access from your home screen",
+    "plusTard": "Later",
+    "installer": "Install",
+    "horsLigne": "Offline",
+    "nav": {
+      "accueil": "Home",
+      "locations": "Rentals",
+      "rapports": "Reports",
+      "profil": "Profile",
+      "biens": "Properties",
+      "resas": "Bookings"
+    }
+  },
+  "ongletMesLocations": {
+    "depuisLe": "Since {{date}}",
+    "active": "Active"
+  },
+  "upgradePrompt": {
+    "multiUtilisateurs": {
+      "titre": "Multiple users",
+      "desc": "Add up to 5 accounts for your team. Available with the Agency plan."
+    },
+    "logementsIllimites": {
+      "titre": "Unlimited properties",
+      "desc": "You've reached the 20-property limit of the Pro plan. Upgrade to the Agency plan for unlimited properties."
+    },
+    "defaut": {
+      "titre": "Agency feature",
+      "desc": "Available with the Agency plan."
+    },
+    "passerPlanAgence": "Upgrade to Agency plan"
+  },
+  "ongletParametres": {
+    "cycles": {
+      "mensuel": "Monthly",
+      "semestriel": "6 months",
+      "annuel": "Yearly"
+    },
+    "toastEssaiProDemarre": "Pro trial started! 1 month free.",
+    "toastEssaiAgenceDemarre": "Agency trial started! 1 month free.",
+    "erreur": "Error",
+    "toastProfilMisAJour": "Profile updated!",
+    "toastErreurMiseAJour": "Update error",
+    "toastMdpNeCorrespondentPas": "Passwords do not match",
+    "toastMinimum6Caracteres": "Minimum 6 characters",
+    "toastMdpChange": "Password changed!",
+    "menu": {
+      "profil": { "titre": "My profile", "desc": "Edit my personal information" },
+      "mdp": { "titre": "Password", "desc": "Change my password" },
+      "notifs": { "titre": "Notifications", "desc": "Manage my notification preferences" },
+      "langue": { "titre": "Language", "desc": "French (Guinea)" },
+      "score": { "titre": "Trust score", "desc": "Your reputation on Werdhe" },
+      "supprimer": { "titre": "Delete my account", "desc": "Irreversible action - all your data will be erased" },
+      "tour": { "titre": "Interactive tutorial", "desc": "Restart the guided tour of the dashboard" }
+    },
+    "titre": "Settings",
+    "monAbonnement": "My subscription",
+    "planActuel": "Current plan",
+    "accesLocataireGratuit": "Free tenant access",
+    "gratuit": "Free",
+    "abonnementImpaye": "Unpaid subscription - restricted access. Settle your subscription to regain full access to all features.",
+    "joursRestants": "{{type}} - {{n}} day(s) left",
+    "essaiGratuit": "Free trial",
+    "abonnement": "Subscription",
+    "abonnementExpire": "Subscription expired",
+    "essaiProBouton": "Pro trial - 1 month free",
+    "essaiAgenceBouton": "Agency trial - 1 month free",
+    "cycleFacturation": "Billing cycle",
+    "payerMobileMoney": "💳 Pay with Mobile Money",
+    "abonnementTitre": "{{plan}} Subscription - {{cycle}}",
+    "infosCompte": "Account information",
+    "emailLabel": "Email:",
+    "roleLabel": "Role:",
+    "panneauAdmin": "Admin panel",
+    "seDeconnecter": "Log out",
+    "modifierProfil": "Edit my profile",
+    "sauvegardeEnCours": "Saving...",
+    "tour": {
+      "description": "Restart the guided tour to (re)discover all the dashboard's features.",
+      "lancer": "Start the tutorial"
+    },
+    "changerMdp": "Change password",
+    "nouveauMdp": "New password",
+    "minimum6Caracteres": "Minimum 6 characters",
+    "confirmer": "Confirm",
+    "changementEnCours": "Changing...",
+    "changer": "Change",
+    "preferencesNotifs": "Notification preferences",
+    "notifs": {
+      "email": "Email notifications",
+      "sms": "SMS notifications",
+      "loyers": "Overdue rent alerts",
+      "bails": "Expiring lease alerts",
+      "pannes": "Issue reports"
+    },
+    "toastPreferencesSauvegardees": "Preferences saved!",
+    "notifsPushDescription": "Receive real-time alerts even when Werdhe is closed.",
+    "langueInterface": "Interface language",
+    "langueFrGuinee": "French (Guinea)",
+    "langueFrFrance": "French (France)",
+    "toastLangueSauvegardee": "Language saved!",
+    "monScoreConfiance": "My trust score",
+    "ameliorerScore": "Improve your score by completing your profile, paying on time and receiving good reviews."
+  },
+  "supprimerCompte": {
+    "erreurMotDePasseRequis": "Enter your password to confirm",
+    "erreurSuppression": "An error occurred during deletion",
+    "compteSupprime": "Account deleted",
+    "donneesSupprimees": "Your data has been deleted. You will be redirected...",
+    "titre": "Delete my account",
+    "attentionIrreversible": "Warning - Irreversible action",
+    "consequences": {
+      "profilAnonymise": "Your profile will be anonymized",
+      "logementsMasques": "Your properties will be hidden",
+      "candidaturesAnnulees": "Your active applications will be cancelled",
+      "messagesConserves": "Your messages will be kept for 30 days",
+      "donneesContractuelles": "Contractual data (leases, payments) is kept for 5 years"
+    },
+    "continuer": "Continue",
+    "confirmerAvecEmailAvant": "To confirm deletion of your account ",
+    "confirmerAvecEmailApres": ", enter your password.",
+    "motDePasseActuel": "Current password *",
+    "votreMotDePasse": "Your password",
+    "retour": "Back",
+    "suppressionEnCours": "Deleting...",
+    "supprimerDefinitivement": "Permanently delete"
+  },
+  "ongletRapports": {
+    "csv": {
+      "mois": "Month",
+      "revenusGnf": "Revenue GNF",
+      "paiements": "Payments",
+      "impayesGnf": "Unpaid GNF"
+    },
+    "toastCsvTelecharge": "CSV export downloaded!",
+    "chargementDonnees": "Loading data...",
+    "aucuneDonneeFinanciere": "No financial data",
+    "donneesApparaitront": "Data will appear once you have recorded payments.",
+    "titre": "Financial reports",
+    "sousTitre": "Full overview of your rental income",
+    "periodes": {
+      "3mois": "Last 3 months",
+      "6mois": "Last 6 months",
+      "12mois": "Last 12 months",
+      "annee": "This year"
+    },
+    "exportPdf": "Export PDF",
+    "kpi": {
+      "encaisseCeMois": "Collected this month",
+      "enAttente": "Pending",
+      "totalAnnuel": "Annual total",
+      "paiementsCeMois": "Payments this month",
+      "recus": "{{n}} received"
+    },
+    "evolutionRevenus": "Revenue trend",
+    "aucuneDonnee": "No data",
+    "encaisse": "Collected",
+    "impayes": "Unpaid",
+    "revenusEncaisses": "Revenue collected",
+    "tauxOccupation": "Occupancy rate",
+    "occupation": "Occupancy",
+    "revenusParBien": "Revenue by property",
+    "aucunLogement": "No property",
+    "analyseCandidatures": "Application analytics",
+    "candidatures": {
+      "totalRecues": "Total received",
+      "acceptees": "Accepted",
+      "refusees": "Declined",
+      "enAttente": "Pending"
+    },
+    "tauxAcceptation": "Acceptance rate",
+    "meilleurMoisAvant": "Best month: ",
+    "previsionsTitre": "Forecasts based on your last 3 months",
+    "moisProchain": "Next month",
+    "trimestre": "Quarter",
+    "projectionAnnuelle": "Annual projection",
+    "estimationNote": "* Estimate based on the monthly average of the last 3 months",
+    "historiquePaiements": "Payment history",
+    "aucunPaiementEnregistre": "No payment recorded"
+  },
+  "ongletHistorique": {
+    "chargement": "Loading your history...",
+    "badges": {
+      "experimente": "Experienced tenant",
+      "verifie": "Verified tenant",
+      "nouveau": "New tenant"
+    },
+    "titre": "My history",
+    "sousTitre": "All your rentals and payments",
+    "kpi": {
+      "locationsTotales": "Total rentals",
+      "locationsActives": "Active rentals",
+      "totalPaye": "Total paid",
+      "noteRecue": "Rating received",
+      "pasEncore": "Not yet"
+    },
+    "tabs": {
+      "locations": "Rentals ({{count}})",
+      "paiements": "Payments ({{count}})",
+      "avis": "Reviews ({{count}})"
+    },
+    "locations": {
+      "aucune": "No rental",
+      "apparaitront": "Your rentals will appear here",
+      "statuts": {
+        "active": "Active",
+        "terminee": "Ended",
+        "enAttente": "Pending",
+        "refusee": "Declined"
+      },
+      "depuis": "Since {{date}}",
+      "proprietaire": "Landlord:"
+    },
+    "paiements": {
+      "aucun": "No payment",
+      "apparaitront": "Your payments will appear here",
+      "paye": "Paid",
+      "enAttente": "Pending",
+      "totalPaye": "Total paid"
+    },
+    "notations": {
+      "aucun": "No review",
+      "apparaitront": "Reviews will appear after your rentals",
+      "avisRecu": "Review received",
+      "avisDonne": "Review given"
+    }
+  },
+  "pushToggle": {
+    "toastDesactivees": "Notifications disabled",
+    "toastActivees": "Notifications enabled! 🔔",
+    "toastPermissionRefusee": "Permission denied or not supported",
+    "titre": "Push notifications",
+    "sousTitre": "Alerts even when the app is closed",
+    "activees": "Enabled",
+    "desactivees": "Disabled"
+  },
+  "boutonNotifPush": {
+    "toastErreurDesactivation": "Error disabling",
+    "toastActivees": "Notifications enabled",
+    "toastAutorisez": "Allow notifications in your browser",
+    "titreActivees": "Push notifications (Enabled)",
+    "titreDesactivees": "Push notifications (Disabled)",
+    "sousTitre": "Applications, payments, messages",
+    "items": {
+      "nouvelleCandidature": "New application received",
+      "candidatureAcceptee": "Application accepted",
+      "paiementConfirme": "Payment confirmed",
+      "nouveauMessage": "New message",
+      "rappelLoyer": "Rent reminder"
+    },
+    "chargement": "⏳ ...",
+    "desactiverBouton": "Disable notifications",
+    "activerBouton": "🔔 Enable notifications"
+  },
+  "ongletReclamations": {
+    "toastEnvoyee": "Complaint submitted!",
+    "toastErreur": "Error",
+    "toastStatutMisAJour": "Status updated!",
+    "toastCommentaireAjoute": "Comment added!",
+    "categories": {
+      "panneEau": "Water issue",
+      "panneElectricite": "Electrical issue",
+      "panneEquipement": "Equipment failure",
+      "securite": "Security",
+      "nuisances": "Nuisance",
+      "autre": "Other"
+    },
+    "statuts": {
+      "ouverte": "Open",
+      "enCours": "In progress",
+      "resolue": "Resolved",
+      "fermee": "Closed"
+    },
+    "titre": "Complaints",
+    "nbReclamations": "{{count}} complaint(s)",
+    "signalerProbleme": "+ Report an issue",
+    "form": {
+      "titreCard": "Report an issue",
+      "logement": "Property *",
+      "selectionnez": "Select",
+      "categorie": "Category",
+      "titreProbleme": "Issue title *",
+      "titreProblemePlaceholder": "E.g.: Water leak in the kitchen",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe the issue...",
+      "priorite": "Priority",
+      "prioriteBasse": "Low",
+      "prioriteNormale": "Normal",
+      "prioriteHaute": "High - Urgent",
+      "photo": "Photo (optional)",
+      "envoyer": "Send"
+    },
+    "chargement": "Loading...",
+    "aucuneReclamation": "No complaint",
+    "fermer": "Close",
+    "timeline": "Timeline",
+    "ajouterCommentaire": "Add a comment..."
+  },
+  "ongletAlertes": {
+    "toastMiseAJour": "Alert updated!",
+    "toastErreur": "Error",
+    "chargement": "Loading...",
+    "titre": "Alerts",
+    "nbAlertes": "{{count}} active alert(s)",
+    "aucuneAlerte": "No alerts",
+    "toutEnOrdre": "Everything is in order!",
+    "relancer": "Send reminder",
+    "renouveler": "Renew",
+    "traiter": "Handle"
+  },
+  "ongletDocuments": {
+    "titre": "Documents",
+    "nbDocuments": "{{count}} document(s)",
+    "ajouter": "Add",
+    "generer": "Generate",
+    "genererUnDocument": "Generate a document",
+    "typeDeDocument": "Document type",
+    "reservationConcernee": "Related reservation *",
+    "selectionnezReservation": "Select a reservation",
+    "genererEtEnvoyer": "Generate and send",
+    "historique": "Document history",
+    "toastDocumentGenere": "Document generated!",
+    "toastErreur": "Error",
+    "toastDocumentTelecharge": "Document downloaded",
+    "toastErreurTelechargement": "Download error",
+    "toastEmailEnvoye": "Email sent!",
+    "email": "Email",
+    "docsTypes": {
+      "contratBail": { "titre": "New lease", "desc": "Generate a rental agreement" },
+      "quittance": { "titre": "Rent receipt", "desc": "Generate an official receipt" },
+      "etatLieux": { "titre": "Inspection report", "desc": "Move-in or move-out" },
+      "miseEnDemeure": { "titre": "Formal notice", "desc": "For unpaid rent" },
+      "rapportFinancier": { "titre": "Financial report", "desc": "Monthly or yearly revenue" },
+      "caution": { "titre": "Deposit / Security", "desc": "Joint deposit agreement" },
+      "preavis": { "titre": "Move-out notice", "desc": "Tenant notice letter" }
+    },
+    "cfgDoc": {
+      "contratBail": "Lease agreement",
+      "quittance": "Receipt",
+      "etatLieux": "Inspection report",
+      "miseEnDemeure": "Formal notice",
+      "preavis": "Notice",
+      "facture": "Invoice",
+      "caution": "Deposit receipt",
+      "document": "Document"
+    }
+  },
+  "ongletMessages": {
+    "titre": "Messages",
+    "sousTitre": "Share text, photos and documents",
+    "toastMessageEnvoye": "Message sent!",
+    "toastErreurEnvoi": "Sending error",
+    "chargement": "Loading...",
+    "aucuneConversation": "No conversation",
+    "reservezLogement": "Book a property to contact the landlord",
+    "messagesLocataires": "Messages from your tenants will appear here",
+    "conversations": "Conversations ({{count}})",
+    "rechercherPlaceholder": "Search...",
+    "photo": "📷 Photo",
+    "document": "📎 Document",
+    "nouvelleConversation": "New conversation",
+    "selectionnezConversation": "Select a conversation",
+    "appeler": "Call",
+    "demarrezConversation": "Start the conversation...",
+    "repondreA": "Reply to",
+    "fichier": "📎 File",
+    "ecrireMessage": "Write a message..."
+  },
+  "ongletPreavisDash": {
+    "renouvellementAccepte": "Renewal accepted!",
+    "renouvellementRefuse": "Renewal declined",
+    "erreur": "Error",
+    "titre": "Move-out notice",
+    "notifierLocataire": "Notify a tenant",
+    "notifierProprietaire": "Notify your landlord",
+    "nouveauPreavis": "+ New notice",
+    "toastAucuneReservation": "No active reservation found",
+    "toastPreavisEnvoye": "Notice sent! Email + notification sent.",
+    "toastErreurEnvoi": "Error sending notice",
+    "toastPdfTelecharge": "PDF downloaded!",
+    "toastPreavisTelecharge": "Notice downloaded!",
+    "toastErreurTelechargement": "Download error",
+    "motifs": {
+      "venteBien": "Sale of the property",
+      "repriseUsagePersonnel": "Taking back for personal use",
+      "travauxRenovation": "Major renovation work",
+      "nonPaiementRepete": "Repeated non-payment of rent",
+      "troublesVoisinage": "Neighborhood disturbances",
+      "finBailNonRenouvele": "Lease ending, not renewed",
+      "autreMotif": "Other reason",
+      "changementVille": "Moving to another city or country",
+      "achatBien": "Purchased a property",
+      "logementInadapte": "The property no longer suits my needs",
+      "raisonsProfessionnelles": "Professional reasons",
+      "raisonsFamiliales": "Family reasons",
+      "conditionsInsatisfaisantes": "Unsatisfactory property conditions",
+      "autreRaison": "Other reason"
+    },
+    "pdf": {
+      "titre": "Notice",
+      "entete": "Werdhe - Move-out notice",
+      "date": "Date: {{date}}",
+      "motif": "Reason",
+      "delai": "Notice period",
+      "dateSortieEstimee": "Estimated move-out date",
+      "genereParWerdhe": "Generated by Werdhe · werdhe.com"
+    },
+    "renouv": {
+      "titre": "Renewal proposal(s) ({{count}})",
+      "proposePar": "Proposed by",
+      "duree": "Duration",
+      "moisSupplementaires": "{{n}} additional months",
+      "nouveauLoyer": "New rent",
+      "inchange": "Unchanged",
+      "recuLe": "Received on",
+      "refuser": "Decline",
+      "accepter": "Accept"
+    },
+    "sent": {
+      "titreOfficiel": "Official notice sent",
+      "titre": "Notice sent!",
+      "notifieSmsEmail": " was notified by SMS and email. They have ",
+      "pourAccuserReception": " to acknowledge receipt.",
+      "proprioNotifie": "Your landlord has been notified by email and notification. They have ",
+      "recapTitreProprio": "Official notice",
+      "recapTitreLocataire": "Your official notice",
+      "bien": "Property",
+      "motif": "Reason",
+      "locataireNotifie": "Tenant notified",
+      "contact": "Contact",
+      "delaiAccorde": "Notice period granted",
+      "delaiDePreavis": "Notice period",
+      "dateSortieEstimee": "Estimated move-out date",
+      "statut": "Status",
+      "enAttenteAccuse": "Awaiting acknowledgment",
+      "infoProprio": "Keep collecting rent as usual until the move-out date. The move-out inspection will be scheduled automatically in {{n}} months.",
+      "infoLocataire": "Keep paying your rent as usual until the move-out date. A move-out inspection will be scheduled with the landlord.",
+      "contacterLocataire": "Contact the tenant",
+      "contacterProprio": "Contact the landlord",
+      "telechargerPdf": "Download PDF"
+    },
+    "confirm": {
+      "actionIrreversible": "Official and irreversible action. The recipient will receive an email + a notification on the platform.",
+      "message": "Message",
+      "envoiEnCours": "Sending...",
+      "envoyerOfficiel": "Send official notice"
+    },
+    "recus": {
+      "titre": "Notice{{s}} received ({{count}})",
+      "expediteurLocataire": "{{prenom}} {{nom}} (tenant)",
+      "expediteurProprietaire": "{{prenom}} {{nom}} (landlord)",
+      "preavisDe": "📋 Notice - {{logement}}",
+      "de": "From: {{expediteur}}",
+      "dateDeSortie": "Move-out date",
+      "messageOptionnel": "Optional message to explain your response...",
+      "demanderRenouvellement": "Request renewal",
+      "accepterDepart": "Accept the move-out",
+      "repondreAuPreavis": "Respond to notice →"
+    },
+    "form": {
+      "alerteInfo": "The notice will be sent officially by email and notification to the party concerned.",
+      "aucuneLocationActive": "No active rental",
+      "messageOptionnel": "Message (optional)",
+      "messagePersonnelPlaceholder": "Personal message for your landlord...",
+      "selectionnez": "Select {{bien}}{{motif}}{{delai}}",
+      "unBienVirgule": "a property, ",
+      "unMotifEt": "a reason and ",
+      "unDelai": "a notice period",
+      "preparerBouton": "Prepare the official notice →"
+    }
+  },
+  "ongletPaiementsDash": {
+    "chargement": "Loading...",
+    "delaiMois": "{{n}} months",
+    "erreurPaiement": "An error occurred during payment",
+    "payModes": {
+      "om": { "label": "Orange Money", "sub": "Instant" },
+      "mtn": { "label": "MTN MoMo", "sub": "Instant" },
+      "cash": { "label": "Cash", "sub": "Automatic PDF receipt" },
+      "bank": { "label": "Bank transfer", "sub": "BICIGUI · Ecobank" }
+    },
+    "statuts": {
+      "paye": "Paid",
+      "nonPaye": "Unpaid",
+      "enRetard": "Overdue",
+      "enAttente": "Pending"
+    },
+    "locataire": {
+      "titre": "My payments",
+      "nbPaiements": "{{count}} payment(s)",
+      "via": "Via {{mode}}",
+      "aucunPaiement": {
+        "titre": "No payment recorded",
+        "description": "Your payments will appear here"
+      }
+    },
+    "proprio": {
+      "titre": "Payment management",
+      "sousTitre": "{{mois}} · {{count}} properties",
+      "kpi": {
+        "encaisse": "Collected",
+        "taux": "Rate: {{taux}}%",
+        "impayes": "Unpaid",
+        "locataires": "{{count}} tenant(s)",
+        "attendu": "Expected",
+        "totalDuMois": "Total for the month"
+      },
+      "tauxRecouvrement": "Collection rate",
+      "filtres": {
+        "tous": "All",
+        "payes": "Paid",
+        "nonPayes": "Unpaid",
+        "enRetard": "Overdue"
+      },
+      "aucunBien": "No property in this category",
+      "loyerMensuel": "Monthly rent",
+      "situation": "Status",
+      "payeCeMois": "Paid this month",
+      "retardJours": "Overdue: {{jours}} days",
+      "nonPaye": "Unpaid",
+      "voirQuittance": "View receipt",
+      "contacter": "Contact",
+      "enregistrerPaiement": "Record payment",
+      "relancer": "Send reminder"
+    },
+    "modal": {
+      "titre": "Record a payment",
+      "modePaiement": "Payment method",
+      "traitementEnCours": "Processing...",
+      "confirmer": "Confirm - {{montant}}",
+      "retour": "Back",
+      "succes": {
+        "titre": "Payment recorded!",
+        "description": "Receipt sent to the tenant."
+      }
+    },
+    "locataireLegacy": {
+      "monLogement": "My property",
+      "enLigne": "Online",
+      "especes": "Cash",
+      "moisPrecedent": "Previous month",
+      "ilYA2Mois": "2 months ago",
+      "ilYA3Mois": "3 months ago",
+      "mesPaiements": "My payments",
+      "debut": "Start",
+      "fin": "End",
+      "caution": "Deposit",
+      "loyerPaye": "Rent paid - {{mois}}",
+      "loyerImpaye": "Rent unpaid - {{mois}}",
+      "quittanceEnvoyee": "Receipt sent",
+      "duDepuis3Jours": "Due for 3 days",
+      "historiqueRecent": "Recent history",
+      "paye": "Paid",
+      "effectuerPaiement": "Make a payment",
+      "nbMoisAPayer": "Number of months to pay",
+      "unMois": "1 month",
+      "unAn": "1 year",
+      "periodeCouverte": "Period covered",
+      "moisVers": "{{debut}} to {{fin}}",
+      "recapitulatif": "Summary",
+      "bien": "Property",
+      "moisPayes": "Months paid",
+      "mode": "Method",
+      "total": "Total",
+      "toastPaiementEffectue": "Payment made! Receipt generated.",
+      "confirmerMontant": "Confirm - {{montant}}",
+      "paiementEffectue": "Payment made!",
+      "recapSucces": "{{montant}} · {{n}} months · Receipt sent"
+    }
+  },
+  "ongletReservationsProprio": {
+    "erreurServeur": "Server error",
+    "toastBailSigneAttenteLocataire": "Lease signed! Awaiting the tenant's signature.",
+    "toastErreurSignatureBail": "Lease signature error",
+    "toastBailNonTrouve": "Lease not found for this rental",
+    "toastBailTelecharge": "Lease downloaded",
+    "toastErreurTelechargement": "Download error",
+    "toastErreurEnvoi": "Sending error",
+    "na": "N/A",
+    "nMois": "{{n}} month(s)",
+    "voir": "View →",
+    "soumis": "Submitted ✓",
+    "retourListe": "← Back to list",
+    "statuts": {
+      "enAttente": "New application",
+      "dossierRequis": "Awaiting application",
+      "enExamen": "Application to review",
+      "acceptee": "Accepted",
+      "echanges": "In discussion",
+      "cautionRequise": "Deposit pending",
+      "cautionPayee": "Deposit received",
+      "bailEnCours": "Lease to sign",
+      "bailSigneProprio": "Awaiting tenant's signature",
+      "confirmee": "Active rental",
+      "refusee": "Declined"
+    },
+    "demandeRecue": {
+      "titre": "📩 Request received",
+      "nonPrecisee": "Not specified",
+      "messageLocataire": "Message from the tenant",
+      "labels": {
+        "logement": "Property",
+        "loyer": "Rent",
+        "dateSouhaitee": "Desired date",
+        "duree": "Duration",
+        "recueLe": "Received on",
+        "email": "Email"
+      }
+    },
+    "toastDossierDemande": "Application requested! The tenant will upload their documents.",
+    "demanderDossierComplet": "Request the full application",
+    "toastCandidatureAcceptee": "Application accepted! The tenant has been notified.",
+    "accepterSansDossier": "Accept directly (without application)",
+    "motifRefusPlaceholder": "Reason for refusal (required)",
+    "toastIndiquerMotif": "Please specify a reason for refusal",
+    "toastCandidatureRefusee": "Application declined. The tenant has been notified.",
+    "refuser": "Decline",
+    "dossierSoumisPar": "Application submitted by {{prenom}}",
+    "docs": {
+      "cni": "ID card",
+      "emploi": "Employment certificate",
+      "paie": "Pay slips (3 months)",
+      "garant": "Guarantor contact"
+    },
+    "infosCandidat": {
+      "titre": "Applicant information",
+      "nomComplet": "Full name",
+      "telephone": "Phone",
+      "loyer": "Rent",
+      "locataireLabel": "Tenant"
+    },
+    "toastDossierValide": "Application approved! Request accepted.",
+    "validerDossier": "Approve the application - Accept the request",
+    "toastInfosComplementaires": "Additional information requested.",
+    "demanderInfosComplementaires": "Request additional information",
+    "motifRefusCourt": "Reason for refusal",
+    "toastIndiquerMotifCourt": "Please specify a reason",
+    "toastCandidatureRefuseeCourt": "Application declined.",
+    "echanges": {
+      "candidatureAcceptee": "Application accepted!",
+      "discutezConditions": "Discuss the terms. The tenant will pay the deposit when ready.",
+      "commencerDiscussion": "Start the discussion",
+      "messagePlaceholder": "Write a message..."
+    },
+    "cautionEnAttente": {
+      "enTrainDePayer": "{{prenom}} is paying the deposit",
+      "serezNotifieAvant": "You'll be notified as soon as the payment of ",
+      "serezNotifieApres": " is confirmed."
+    },
+    "cautionRecue": {
+      "titre": "Deposit received: {{montant}} GNF",
+      "preparerBail": "Now prepare the lease for both signatures.",
+      "bailSeraGenere": "The lease will be generated with:",
+      "items": {
+        "identites": "Identities of both parties",
+        "adresse": "Full address of the property",
+        "loyerMensuel": "Monthly rent: {{montant}} GNF",
+        "dateEtDuree": "Start date and lease duration",
+        "cautionVersee": "Deposit paid: {{montant}} GNF ✓"
+      }
+    },
+    "toastBailGenere": "Lease generated! Both parties can sign.",
+    "genererPreparerBail": "Generate and prepare the lease",
+    "bailASigner": {
+      "titre": "📝 Lease ready to sign",
+      "debut": "Start",
+      "caution": "Deposit",
+      "vousAvezSigne": "You have signed!",
+      "attenteSignatureLocataire": "Awaiting the tenant's signature...",
+      "appuyerPourSigner": "Tap to sign the lease",
+      "signatureSecurisee": "Secure digital signature"
+    },
+    "attenteSignature": {
+      "titre": "Awaiting {{prenom}}'s signature",
+      "description": "You have signed. The tenant must now sign in turn. The page updates automatically."
+    },
+    "locationActive": {
+      "titre": "Active rental",
+      "occupeVotreLogement": "{{prenom}} {{nom}} is occupying your property.",
+      "loyerMensuel": "Monthly rent",
+      "cautionVersee": "Deposit paid",
+      "telechargerBail": "Download signed lease (PDF)"
+    },
+    "refusee": {
+      "titre": "Request declined",
+      "description": "The tenant has been notified of the refusal."
+    },
+    "liste": {
+      "titre": "Applications received",
+      "nbCandidatures": "{{count}} application(s)",
+      "actionsRequises": "{{count}} action(s) required from you",
+      "repondezAuxDemandes": "Respond to pending requests so your tenants aren't kept waiting.",
+      "aucuneDemande": {
+        "titre": "No requests received",
+        "description": "Reservation requests will appear here"
+      },
+      "interventionRequise": "Your action is required",
+      "repondreMaintenant": "Respond now →",
+      "voirLeDetail": "View details →"
+    }
+  },
+  "reservationLocataire": {
+    "stepBar": {
+      "demande": "Request",
+      "dossier": "Application",
+      "decision": "Decision",
+      "echanges": "Discussion",
+      "caution": "Deposit",
+      "bail": "Lease",
+      "acces": "Access"
+    },
+    "payOpts": {
+      "om": { "label": "Orange Money", "sub": "Instant · Secure payment" },
+      "mtn": { "label": "MTN MoMo", "sub": "Instant · MTN Guinea" },
+      "cash": { "label": "Cash", "sub": "Hand-delivered" },
+      "bank": { "label": "Bank transfer", "sub": "BICIGUI · Ecobank · UBA" }
+    },
+    "attenteCard": {
+      "syncTempsReel": "Real-time sync"
+    },
+    "statutBadge": {
+      "enAttente": "Request sent",
+      "dossierRequis": "Application requested",
+      "enExamen": "Under review",
+      "acceptee": "Accepted",
+      "refusee": "Declined",
+      "echanges": "In discussion",
+      "cautionRequise": "Deposit due",
+      "cautionPayee": "Deposit paid",
+      "bailEnCours": "Lease to sign",
+      "bailSigneProprio": "Awaiting signature",
+      "confirmee": "Active 🗝️"
+    },
+    "header": {
+      "titre": "My reservation"
+    },
+    "chargement": "Loading your reservation...",
+    "introuvable": {
+      "titre": "Reservation not found",
+      "retour": "← Back"
+    },
+    "etape1": {
+      "attente": {
+        "message": "Request sent to the landlord",
+        "sub": "The landlord has 48h to respond. You'll be notified as soon as a decision is made."
+      },
+      "recap": {
+        "titre": "Summary of your request",
+        "logement": "Property",
+        "loyerMensuel": "Monthly rent",
+        "dateDeDebut": "Start date",
+        "duree": "Duration",
+        "statut": "Status",
+        "statutEnAttente": "Awaiting response",
+        "na": "N/A",
+        "dureeMois": "{{n}} month(s)"
+      }
+    },
+    "etape2": {
+      "alerteInfo": "The landlord is requesting your application. Complete it to validate your request.",
+      "titreDossier": "📁 Your application",
+      "progression": "Progress",
+      "docs": {
+        "cni": { "label": "ID card", "sub": "Front and back · Required" },
+        "emploi": { "label": "Employment certificate", "sub": "Signed · Required" },
+        "paie": { "label": "Pay slips (3 months)", "sub": "Recommended" },
+        "garant": { "label": "Guarantor contact", "sub": "Optional" }
+      },
+      "modifier": "Change",
+      "ajouter": "Add",
+      "fichierAjouteToast": "{{nom}} added!",
+      "soumettreBouton": "Submit my application",
+      "erreurMinDocuments": "Add at least 2 documents",
+      "toastUploadEnCours": "Uploading...",
+      "toastDossierSoumis": "Application submitted! The landlord will review your documents.",
+      "toastErreurSoumission": "Submission error"
+    },
+    "etape3": {
+      "message": "Your application is under review",
+      "sub": "The landlord is reviewing your request. You'll be notified of their decision within 24-48h."
+    },
+    "refusee": {
+      "titre": "Application not accepted",
+      "description": "The landlord did not select your application. Don't be discouraged!",
+      "motif": "Reason",
+      "chercherAutres": "🔍 Look for other properties"
+    },
+    "etape4": {
+      "accepteeBanner": {
+        "titre": "Application accepted!",
+        "sous": "Discuss the terms before paying the deposit."
+      },
+      "discussionSecurisee": "Secure discussion",
+      "demarrerDiscussion": "Start the discussion with the landlord",
+      "document": "Document",
+      "messagePlaceholder": "Write a message...",
+      "procederCautionBouton": "Proceed to deposit payment →",
+      "toastErreurEnvoiMessage": "Error sending message"
+    },
+    "etape5": {
+      "alerteInfo": "Pay the deposit to secure your property. It is protected on Werdhe.",
+      "titreCaution": "Deposit - 1 month's rent",
+      "securiseeSurWerdhe": "Secured on Werdhe",
+      "modePaiement": "Payment method",
+      "traitementEnCours": "Processing...",
+      "verserBouton": "Pay the deposit - {{montant}}",
+      "toastSucces": "Deposit paid! The landlord will prepare the lease.",
+      "toastErreur": "Deposit payment error"
+    },
+    "etape5b": {
+      "message": "Deposit recorded - paid directly to the landlord",
+      "sub": "The landlord will prepare the lease. You'll be notified as soon as it's ready to sign.",
+      "cautionVersee": "Deposit paid: {{montant}}",
+      "protegeeJusqua": "Protected until the move-out inspection"
+    },
+    "etape6": {
+      "bannerSigneAttente": "The landlord has signed. It's your turn!",
+      "bannerPret": "The lease is ready to sign.",
+      "lisezEtSignez": "Read and sign your lease agreement.",
+      "labels": {
+        "logement": "Property",
+        "loyer": "Rent",
+        "loyerParMois": "{{montant}}/month",
+        "debut": "Start",
+        "duree": "Duration",
+        "caution": "Deposit",
+        "cautionCoche": "{{montant}} ✅",
+        "loyerDuLe": "Rent due on",
+        "premierDuMois": "the 1st of the month"
+      },
+      "signatureProprietaire": "Landlord's signature",
+      "signe": "Signed ✓",
+      "signeBadge": "Signed",
+      "enAttente": "Pending",
+      "votreSignature": "Your signature",
+      "signatureEnCours": "⏳ Signing...",
+      "appuyerPourSigner": "Tap to sign",
+      "bailSigneAttente": {
+        "message": "Lease signed! Awaiting final confirmation",
+        "sub": "The landlord will finalize everything and you'll officially have access to the property."
+      },
+      "etatDesLieuxValideToast": "Inspection report validated!"
+    },
+    "etape7": {
+      "felicitations": "Congratulations! 🎉",
+      "acces": "You now officially have access to your property.",
+      "items": {
+        "demandeAcceptee": { "titre": "Request accepted", "sub": "Complete application approved" },
+        "cautionEnregistree": { "titre": "Deposit recorded", "sub": "{{montant}} GNF · paid to the landlord" },
+        "bailSigne": { "titre": "Lease signed", "sub": "Contract available as PDF" },
+        "accesAccorde": { "titre": "Access granted!" }
+      },
+      "premierLoyerAvant": "Your first rent payment of ",
+      "premierLoyerApres": " will be due on the 1st of next month.",
+      "actions": {
+        "documents": "Documents",
+        "messages": "Messages",
+        "bailPdf": "Lease (PDF)"
+      }
+    },
+    "noter": {
+      "titre": "⭐ Rate your landlord",
+      "commentairePlaceholder": "Optional comment...",
+      "envoyerBouton": "Send my rating ({{note}}/5) →",
+      "merci": "You've rated this landlord. Thank you!",
+      "toastSucces": "Rating sent! Thank you for your feedback.",
+      "toastErreur": "Error"
+    },
+    "bail": {
+      "toastIntrouvable": "Lease not found",
+      "toastTelecharge": "Lease downloaded",
+      "toastErreurTelechargement": "Download error",
+      "toastSigneSucces": "Lease signed! Awaiting final confirmation.",
+      "toastErreurSignature": "Lease signature error"
+    }
+  },
+  "ongletPaiements": {
+    "chargement": "Loading...",
+    "delaiMois": "{{n}} month(s)",
+    "payModes": {
+      "om": { "label": "Orange Money", "sub": "Instant payment" },
+      "mtn": { "label": "MTN MoMo", "sub": "Instant payment" },
+      "cash": { "label": "Cash", "sub": "PDF receipt generated automatically" },
+      "bank": { "label": "Bank transfer", "sub": "BICIGUI · Ecobank · UBA" }
+    },
+    "statuts": {
+      "paye": "Paid ✓",
+      "impaye": "Unpaid",
+      "enRetard": "Overdue"
+    },
+    "proprietaire": {
+      "header": {
+        "titre": "💳 Payment management",
+        "sousTitre": "{{mois}} · {{count}} properties managed"
+      },
+      "kpi": {
+        "encaisse": "Collected",
+        "taux": "Rate: {{taux}}%",
+        "impayes": "Unpaid",
+        "locataires": "{{count}} tenant(s)",
+        "attendu": "Expected",
+        "totalDuMois": "Total for the month"
+      },
+      "recouvrement": "Collection progress",
+      "filtres": {
+        "tous": "All",
+        "payes": "Paid ✓",
+        "nonPayes": "Unpaid",
+        "enRetard": "Overdue ⚠️"
+      },
+      "listeVide": "No property in this category",
+      "payeCeMois": "✓ Paid this month",
+      "retardJours": "⚠️ Overdue: {{jours}} days",
+      "duDepuisJours": "❌ Due for {{jours}} days",
+      "voirQuittance": "📄 View receipt",
+      "contacter": "💬 Contact",
+      "enregistrerPaiement": "💳 Record payment",
+      "relancer": "📤 Send reminder",
+      "modal": {
+        "titre": "💳 Record a payment",
+        "montantLoyer": "Rent amount — {{mois}}",
+        "enRetardDe": "⚠️ Overdue by {{jours}} days",
+        "impayeDepuis": "❌ Unpaid for {{jours}} days",
+        "modePaiement": "Payment method",
+        "infoEspeces": "The tenant receives a PDF receipt by email as soon as you confirm the cash payment.",
+        "traitementEnCours": "⏳ Processing...",
+        "confirmerPaiement": "✅ Confirm payment — {{montant}}",
+        "paiementToast": "Payment recorded! Receipt sent.",
+        "succes": {
+          "titre": "Payment recorded!",
+          "ligne1Avant": "The rent of ",
+          "ligne1Milieu": " for ",
+          "ligne1Fin": " has been confirmed.",
+          "ligne2": "A PDF receipt has been generated and sent to the tenant."
+        },
+        "recap": {
+          "titre": "Summary",
+          "bien": "Property",
+          "locataire": "Tenant",
+          "montant": "Amount",
+          "mode": "Method",
+          "date": "Date",
+          "statut": "Status",
+          "aujourdhui": "Today · {{date}}",
+          "paye": "✅ Paid"
+        },
+        "retourListe": "← Back to list"
+      }
+    },
+    "locataire": {
+      "paiementConfirmeToast": "Payment confirmed!",
+      "aucuneLocation": {
+        "titre": "No active rental",
+        "description": "Book a property to access payments"
+      },
+      "header": {
+        "titre": "💳 My payments",
+        "sousTitre": "My property · {{mois}}"
+      },
+      "succes": {
+        "titre": "Payment confirmed!",
+        "ligne1Avant": "{{montant}} paid for ",
+        "periodeCouverte": "Period covered: {{debut}} — {{fin}}",
+        "ligne2": "A PDF receipt has been generated.",
+        "recapTitre": "Summary"
+      },
+      "labels": {
+        "logement": "Property",
+        "montant": "Amount",
+        "moisCouverts": "Months covered",
+        "mode": "Method",
+        "date": "Date"
+      },
+      "maQuittance": "📄 My receipt",
+      "retour": "← Back",
+      "confirmation": {
+        "titre": "Summary before payment",
+        "proprietaire": "Landlord",
+        "montantTotal": "Total amount",
+        "duree": "Duration",
+        "periode": "Period",
+        "modifier": "← Edit",
+        "traitementEnCours": "⏳ Processing...",
+        "confirmer": "✅ Confirm — {{montant}}"
+      },
+      "fiche": {
+        "debutBail": "Lease start",
+        "finBail": "Lease end",
+        "caution": "Deposit",
+        "statutLoyer": "⚠️ Rent status — {{mois}}",
+        "enAttenteDePaiement": "Payment pending"
+      },
+      "historique": {
+        "titre": "History of the last 3 months",
+        "moisPrecedent": "Previous month",
+        "modeOrange": "🟠 Orange Money",
+        "modeMtn": "🟡 MTN MoMo",
+        "modeEspeces": "💵 Cash"
+      },
+      "choixMois": {
+        "titre": "How many months would you like to pay?",
+        "periodeCouverte": "Period covered",
+        "paiementAvance": "✅ Payment of {{n}} months in advance — Thank you for your reliability!"
+      },
+      "selectionne": "✓ Selected",
+      "payerBouton": "Pay {{montant}} — {{n}} month(s) →"
+    }
+  },
+  "sidebar": {
+    "espaceProprietaire": "Landlord space",
+    "espaceLocataire": "Tenant space",
+    "nav": {
+      "tableauDeBord": "Dashboard",
+      "mesBiens": "My properties",
+      "locataires": "Tenants",
+      "candidatures": "Applications",
+      "paiements": "Payments",
+      "documents": "Documents",
+      "alertes": "Alerts",
+      "messages": "Messages",
+      "rapports": "Reports",
+      "reclamations": "Complaints",
+      "preavis": "Notices",
+      "parametres": "Settings",
+      "mesLocations": "My rentals",
+      "historique": "History"
+    },
+    "plan": "{{plan}} plan",
+    "deconnexion": "Log out"
+  },
+  "rechercheGlobale": {
+    "badges": {
+      "logement": "Property",
+      "candidature": "Application",
+      "paiement": "Payment",
+      "annonce": "Listing",
+      "page": "Page"
+    },
+    "pages": {
+      "mesBiens": "My properties",
+      "candidatures": "Applications",
+      "paiements": "Payments",
+      "documents": "Documents",
+      "messages": "Messages",
+      "alertes": "Alerts",
+      "rapports": "Reports",
+      "reclamations": "Complaints",
+      "preavis": "Notices",
+      "parametres": "Settings",
+      "historique": "History",
+      "locataires": "Tenants"
+    },
+    "allerVers": "Go to {{titre}}",
+    "bouton": {
+      "rechercher": "Search...",
+      "raccourci": "Ctrl+K"
+    },
+    "modal": {
+      "inputPlaceholder": "Search for a property, tenant, page...",
+      "esc": "Esc",
+      "raccourcis": "Shortcuts",
+      "aucunResultatPour": "No results for",
+      "footer": {
+        "naviguer": "↑↓ Navigate",
+        "selectionner": "↵ Select",
+        "fermer": "Esc Close",
+        "rechercheEnCours": "Searching..."
+      }
+    }
+  },
+  "modalSignatureBail": {
+    "titre": "Sign the lease",
+    "description": "Your electronic signature will be timestamped and linked to your IP address, as proof of acceptance of the contract.",
+    "labelNom": "Type your full name to sign",
+    "placeholderNom": "E.g.: Mamadou Diallo",
+    "certification": "I certify that my identity is accurate and I accept the terms of this lease agreement.",
+    "annuler": "Cancel",
+    "signatureEnCours": "Signing...",
+    "signerLeBail": "Sign the lease"
+  },
+  "modalPaiementMobile": {
+    "erreurPaiement": "Payment error",
+    "paiementConfirmeToast": "Payment confirmed! 🎉",
+    "erreurConfirmation": "Confirmation error",
+    "titre": "💳 Mobile Money Payment",
+    "montantAPayer": "Amount due",
+    "choisirOperateur": "Choose your mobile money operator",
+    "orangeMoney": "Orange Money",
+    "mtnMomo": "MTN MoMo",
+    "paiementInstantane": "Instant payment",
+    "saisirNumero": "Enter your number",
+    "numeroTelephone": "Phone number",
+    "numerosOrange": "Orange numbers: 060, 065, 066, 067, 068",
+    "numerosMtn": "MTN numbers: 061, 062, 063, 064",
+    "retour": "Back",
+    "envoiEnCours": "Sending...",
+    "envoyerLaDemande": "Send request",
+    "demandeEnvoyee": "Request sent!",
+    "expireDans": "⏱️ Expires in {{temps}}",
+    "instructions": "Instructions:",
+    "reference": "Ref: {{ref}}",
+    "modeDemonstration": "🧪 Demo mode — click to simulate the confirmation",
+    "confirmationEnCours": "Confirming...",
+    "simulerConfirmation": "Simulate payment confirmation",
+    "paiementConfirme": "Payment confirmed!",
+    "votrePaiementDe": "Your payment of",
+    "aEteConfirme": "has been confirmed. A receipt will be sent to you by email.",
+    "fermer": "Close"
+  },
+  "etatDesLieux": {
+    "pieces": {
+      "salon": "Living room",
+      "cuisine": "Kitchen",
+      "chambre1": "Bedroom 1",
+      "chambre2": "Bedroom 2",
+      "sdb": "Bathroom",
+      "toilettes": "Toilet",
+      "entree": "Entrance / Hallway",
+      "general": "Overall condition"
+    },
+    "signatureCanvas": {
+      "signezDabord": "Please sign in the box first",
+      "signatureEnregistreeToast": "Signature saved!",
+      "signatureEnregistree": "Signature saved",
+      "recommencer": "Start over",
+      "signezIci": "✍️ Sign here",
+      "effacer": "Clear",
+      "validerMaSignature": "Confirm my signature"
+    },
+    "photoAjouteePour": "Photo added for {{piece}}",
+    "deuxPartiesDoiventSigner": "Both parties must sign",
+    "etatEnregistreEtSigne": "Inspection report saved and signed!",
+    "erreurEnregistrement": "An error occurred while saving",
+    "confirmation": {
+      "titreEntree": "Move-in inspection signed!",
+      "titreSortie": "Move-out inspection signed!",
+      "description": "The document has been generated and sent to both parties by email. It is available in the Documents section.",
+      "resume": "Summary",
+      "continuer": "Continue →"
+    },
+    "header": {
+      "titreEntree": "📋 Move-in inspection",
+      "titreSortie": "📋 Move-out inspection",
+      "piecesRenseignees": "{{progress}}/{{total}} rooms completed",
+      "signaturesDesDeuxParties": "Signatures of both parties"
+    },
+    "observationsPlaceholder": "Comments (optional)",
+    "photoAjoutee": "Photo added ✓",
+    "ajouterUnePhoto": "Add a photo",
+    "renseignezAuMoins3Pieces": "Please complete at least 3 rooms",
+    "passerAuxSignatures": "✍️ Proceed to signatures →",
+    "avertissementLegal": "⚖️ Both signatures are required to validate the inspection report. This document has legal value.",
+    "signaturesDesParties": "Signatures of both parties",
+    "signatureProprietaire": "Landlord's signature *",
+    "signatureLocataire": "Tenant's signature *",
+    "retour": "← Back",
+    "enregistrementEnCours": "⏳ Saving...",
+    "validerEtatDesLieux": "✅ Confirm inspection report"
+  },
+  "ongletPreavis": {
+    "chargement": "Loading...",
+    "na": "N/A",
+    "aucuneNote": "No note",
+    "modifier": "← Edit",
+    "confirmerEnvoiTitre": "⚠️ Confirm sending the notice",
+    "telechargerPdf": "📄 Download PDF",
+    "delaiMois": "{{n}} month(s)",
+    "motifsLocataire": {
+      "changementVille": "Moving to another city or country",
+      "achatBien": "Purchased a property",
+      "logementNeCorrespondPlus": "The property no longer suits my needs",
+      "raisonsProfessionnelles": "Professional reasons",
+      "raisonsFamiliales": "Family reasons",
+      "conditionsInsatisfaisantes": "Unsatisfactory property conditions",
+      "autreRaison": "Other reason"
+    },
+    "motifsProprio": {
+      "venteBien": "Sale of the property",
+      "repriseUsagePersonnel": "Taking back the property for personal use",
+      "travauxRenovation": "Major renovation work",
+      "nonPaiementRepete": "Repeated non-payment of rent",
+      "troublesVoisinage": "Neighborhood disturbances",
+      "finBailNonRenouvele": "Lease ending, not renewed",
+      "autreMotif": "Other reason"
+    },
+    "dispatcher": {
+      "titre": "📤 Move-out notice",
+      "sousTitreProprio": "Send an official notice to a tenant",
+      "sousTitreLocataire": "Notify your landlord of your move-out"
+    },
+    "locataire": {
+      "header": {
+        "titre": "📤 Move-out notice",
+        "monLogement": "My property"
+      },
+      "envoye": {
+        "toastSucces": "Notice sent to the landlord!",
+        "titre": "Notice sent!",
+        "descAvant": "Your landlord has been notified by SMS. They have ",
+        "descApres": " to acknowledge receipt.",
+        "recapTitre": "📋 Your official notice",
+        "labels": {
+          "logement": "Property",
+          "motif": "Reason",
+          "delaiPreavis": "Notice period",
+          "dateDepartEstimee": "Estimated move-out date",
+          "statut": "Status"
+        },
+        "statutEnAttenteConfirmation": "⏳ Awaiting confirmation",
+        "infoContinuerPaiement": "ℹ️ Keep paying your rent as usual until the move-out date. A move-out inspection will be scheduled with the landlord.",
+        "contacterProprio": "💬 Contact the landlord"
+      },
+      "confirm": {
+        "actionOfficielle": "Official action",
+        "description": "This notice will be sent officially to your landlord by SMS and notification. It cannot be cancelled.",
+        "labels": {
+          "logement": "Property",
+          "motif": "Reason",
+          "delai": "Notice period",
+          "dateDeSortie": "Move-out date",
+          "note": "Note"
+        },
+        "envoyerLePreavis": "📤 Send notice"
+      },
+      "form": {
+        "alerteLegaleAvant": "In Guinea, the legal notice period is a ",
+        "alerteLegaleGras": "minimum of 1 month",
+        "alerteLegaleApres": ". Your landlord will receive an official notification by SMS and through the Werdhe app.",
+        "motifLabel": "Reason for leaving *",
+        "delaiLabel": "Notice period *",
+        "dateDepartEstimeeLabel": "📅 Estimated move-out date",
+        "messageLabel": "Message to the landlord (optional)",
+        "messagePlaceholder": "Add a personal message to explain your move-out...",
+        "erreurSelection": "Select a reason and a notice period",
+        "preparerBouton": "📋 Prepare the official notice",
+        "erreurSelectionContinuer": "Select a reason and a notice period to continue"
+      }
+    },
+    "proprio": {
+      "header": {
+        "titre": "📋 Send a notice",
+        "sousTitre": "Official notification to the tenant"
+      },
+      "envoye": {
+        "toastSucces": "Official notice sent! {{locataire}} has been notified.",
+        "titre": "Official notice sent",
+        "descMid": "has been notified by SMS and push notification. They have ",
+        "descApres": " to acknowledge receipt on the platform.",
+        "recapTitre": "📋 Official notice",
+        "labels": {
+          "bien": "Property",
+          "locataireNotifie": "Tenant notified",
+          "contact": "Contact",
+          "motif": "Reason",
+          "delaiAccorde": "Notice period granted",
+          "dateDeSortieEstimee": "Estimated move-out date",
+          "statut": "Status"
+        },
+        "statutEnAttente": "⏳ Awaiting acknowledgment",
+        "infoAvant": "ℹ️ Keep collecting rent as usual until the move-out date. The move-out inspection will be scheduled automatically in ",
+        "contacterLocataire": "💬 Contact the tenant"
+      },
+      "confirm": {
+        "actionOfficielleIrreversible": "Official and irreversible action",
+        "descAvant": "This notice will be sent officially to ",
+        "descApres": " by SMS and notification. It will appear in the property's history.",
+        "labels": {
+          "bien": "Property",
+          "locataire": "Tenant",
+          "motif": "Reason",
+          "delai": "Notice period",
+          "dateDeSortie": "Move-out date",
+          "note": "Note"
+        },
+        "envoyerOfficiel": "📤 Send official notice"
+      },
+      "form": {
+        "alerteInfo": "The notice will be sent by SMS and push notification directly to the tenant. It will appear as an official notification on their app.",
+        "bienLabel": "Property concerned *",
+        "aucunBienDisponible": "All your properties already have a notice in progress",
+        "motifLabel": "Reason for the notice *",
+        "delaiLabel": "Notice period granted to tenant *",
+        "dateSortieEstimeeLabel": "📅 Estimated move-out date",
+        "messageLabel": "Message to the tenant (optional)",
+        "messagePlaceholder": "Add a message to explain the situation to the tenant...",
+        "erreurChampsObligatoires": "Fill in all required fields",
+        "continuerBouton": "📋 Continue — Prepare the official notice",
+        "erreurSelectionComplete": "Select a property, a reason and a notice period"
+      }
+    }
+  }
+}

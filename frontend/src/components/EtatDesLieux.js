@@ -2,16 +2,17 @@
 import { useState, useRef, useEffect } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 var PIECES = [
-  { id: 'salon',     label: 'Salon / Séjour' },
-  { id: 'cuisine',   label: 'Cuisine' },
-  { id: 'chambre1',  label: 'Chambre 1' },
-  { id: 'chambre2',  label: 'Chambre 2' },
-  { id: 'sdb',       label: 'Salle de bain' },
-  { id: 'toilettes', label: 'Toilettes' },
-  { id: 'entree',    label: 'Entrée / Couloir' },
-  { id: 'general',   label: 'État général' },
+  { id: 'salon',     labelKey: 'salon' },
+  { id: 'cuisine',   labelKey: 'cuisine' },
+  { id: 'chambre1',  labelKey: 'chambre1' },
+  { id: 'chambre2',  labelKey: 'chambre2' },
+  { id: 'sdb',       labelKey: 'sdb' },
+  { id: 'toilettes', labelKey: 'toilettes' },
+  { id: 'entree',    labelKey: 'entree' },
+  { id: 'general',   labelKey: 'general' },
 ];
 
 var ETATS = ['Excellent', 'Bon', 'Moyen', 'Mauvais'];
@@ -24,6 +25,7 @@ var ETAT_COLORS = {
 
 // ─── COMPOSANT SIGNATURE CANVAS ───────────────────────────────────
 function SignatureCanvas({ label, onSigne }) {
+  var t = useTranslation('dashboard').t;
   var canvasRef = useRef(null);
   var [dessin, setDessin] = useState(false);
   var [signe, setSigne]   = useState(false);
@@ -76,12 +78,12 @@ function SignatureCanvas({ label, onSigne }) {
   }
 
   function valider() {
-    if (vide) { toast.error('Signez d\'abord dans la zone'); return; }
+    if (vide) { toast.error(t('etatDesLieux.signatureCanvas.signezDabord')); return; }
     var canvas  = canvasRef.current;
     var dataUrl = canvas.toDataURL('image/png');
     setSigne(true);
     if (onSigne) onSigne(dataUrl);
-    toast.success('Signature enregistrée !');
+    toast.success(t('etatDesLieux.signatureCanvas.signatureEnregistreeToast'));
   }
 
   return (
@@ -90,8 +92,8 @@ function SignatureCanvas({ label, onSigne }) {
       {signe ? (
         <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
           <span style={{ fontSize: 20 }}>✅</span>
-          <span style={{ fontSize: 13, fontWeight: 600, color: '#1B5E20' }}>Signature enregistrée</span>
-          <button onClick={effacer} style={{ marginLeft: 'auto', background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 12 }}>Recommencer</button>
+          <span style={{ fontSize: 13, fontWeight: 600, color: '#1B5E20' }}>{t('etatDesLieux.signatureCanvas.signatureEnregistree')}</span>
+          <button onClick={effacer} style={{ marginLeft: 'auto', background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 12 }}>{t('etatDesLieux.signatureCanvas.recommencer')}</button>
         </div>
       ) : (
         <div>
@@ -111,15 +113,15 @@ function SignatureCanvas({ label, onSigne }) {
             />
             {vide && (
               <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', color: '#ccc', fontSize: 13, pointerEvents: 'none', textAlign: 'center' }}>
-                ✍️ Signez ici
+                {t('etatDesLieux.signatureCanvas.signezIci')}
               </div>
             )}
           </div>
           <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-            <button onClick={effacer} style={{ padding: '7px 14px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: '#F5F5F5', color: '#555', fontSize: 12, cursor: 'pointer' }}>Effacer</button>
+            <button onClick={effacer} style={{ padding: '7px 14px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: '#F5F5F5', color: '#555', fontSize: 12, cursor: 'pointer' }}>{t('etatDesLieux.signatureCanvas.effacer')}</button>
             <button onClick={valider} disabled={vide}
               style={{ flex: 1, padding: '7px 14px', borderRadius: 8, border: 'none', background: vide ? '#CCC' : '#1B6B3A', color: '#fff', fontSize: 12, fontWeight: 700, cursor: vide ? 'not-allowed' : 'pointer' }}>
-              Valider ma signature
+              {t('etatDesLieux.signatureCanvas.validerMaSignature')}
             </button>
           </div>
         </div>
@@ -130,6 +132,7 @@ function SignatureCanvas({ label, onSigne }) {
 
 // ─── COMPOSANT PRINCIPAL ÉTAT DES LIEUX ──────────────────────────
 export default function EtatDesLieux({ reservationId, type = 'entree', onTermine }) {
+  var t = useTranslation('dashboard').t;
   var [etats, setEtats]         = useState({});
   var [observations, setObs]    = useState({});
   var [photos, setPhotos]       = useState({});
@@ -156,12 +159,13 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
       setPhotos(function(prev) { return Object.assign({}, prev, { [pieceId]: { file: file, url: e.target.result } }); });
     };
     reader.readAsDataURL(file);
-    toast.success('Photo ajoutée pour ' + PIECES.find(function(p) { return p.id === pieceId; }).label);
+    var piece = PIECES.find(function(p) { return p.id === pieceId; });
+    toast.success(t('etatDesLieux.photoAjouteePour', { piece: t('etatDesLieux.pieces.' + piece.labelKey) }));
   }
 
   async function soumettre() {
     if (!sigProprio || !sigLocataire) {
-      toast.error('Les deux parties doivent signer');
+      toast.error(t('etatDesLieux.deuxPartiesDoiventSigner'));
       return;
     }
     setSaving(true);
@@ -181,9 +185,9 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
       await api.post('/etat-des-lieux', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
 
       setStep('confirmation');
-      toast.success('État des lieux enregistré et signé !');
+      toast.success(t('etatDesLieux.etatEnregistreEtSigne'));
     } catch (err) {
-      toast.error('Erreur lors de l\'enregistrement');
+      toast.error(t('etatDesLieux.erreurEnregistrement'));
       console.error(err);
     } finally {
       setSaving(false);
@@ -195,18 +199,18 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
       <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center' }}>
         <div style={{ fontSize: 48, marginBottom: 14 }}>✅</div>
         <div style={{ fontSize: 20, fontWeight: 700, color: '#1B6B3A', marginBottom: 8 }}>
-          État des lieux {type === 'entree' ? "d'entrée" : 'de sortie'} signé !
+          {type === 'entree' ? t('etatDesLieux.confirmation.titreEntree') : t('etatDesLieux.confirmation.titreSortie')}
         </div>
         <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6, marginBottom: 20 }}>
-          Le document est généré et envoyé aux deux parties par email. Il est disponible dans l'espace Documents.
+          {t('etatDesLieux.confirmation.description')}
         </div>
         <div style={{ background: '#E8F5E9', borderRadius: 10, padding: 14, marginBottom: 20, textAlign: 'left' }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: '#1B5E20', marginBottom: 8 }}>Résumé</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: '#1B5E20', marginBottom: 8 }}>{t('etatDesLieux.confirmation.resume')}</div>
           {PIECES.filter(function(p) { return etats[p.id]; }).map(function(p) {
             var etat = etats[p.id];
             return (
               <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0', borderBottom: '0.5px solid #C8E6C9' }}>
-                <span>{p.label}</span>
+                <span>{t('etatDesLieux.pieces.' + p.labelKey)}</span>
                 <span style={{ fontWeight: 600, color: ETAT_COLORS[etat] }}>{etat}</span>
               </div>
             );
@@ -214,7 +218,7 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
         </div>
         {onTermine && (
           <button onClick={onTermine} style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 24px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-            Continuer →
+            {t('etatDesLieux.confirmation.continuer')}
           </button>
         )}
       </div>
@@ -227,10 +231,10 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
       {/* HEADER */}
       <div style={{ background: type === 'entree' ? '#1B6B3A' : '#C62828', borderRadius: 14, padding: '14px 18px', marginBottom: 18 }}>
         <div style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>
-          📋 État des lieux {type === 'entree' ? "d'entrée" : 'de sortie'}
+          {type === 'entree' ? t('etatDesLieux.header.titreEntree') : t('etatDesLieux.header.titreSortie')}
         </div>
         <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 12, marginTop: 4 }}>
-          {step === 'pieces' ? progressPieces + '/' + totalPieces + ' pièces renseignées' : 'Signatures des deux parties'}
+          {step === 'pieces' ? t('etatDesLieux.header.piecesRenseignees', { progress: progressPieces, total: totalPieces }) : t('etatDesLieux.header.signaturesDesDeuxParties')}
         </div>
       </div>
 
@@ -245,7 +249,7 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
             var etatPiece = etats[piece.id];
             return (
               <div key={piece.id} style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderLeft: '4px solid ' + (etatPiece ? ETAT_COLORS[etatPiece] : '#E0E0E0') }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>{piece.label}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>{t('etatDesLieux.pieces.' + piece.labelKey)}</div>
 
                 {/* Boutons état */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6, marginBottom: 10 }}>
@@ -261,7 +265,7 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
                 </div>
 
                 {/* Observation */}
-                <input type="text" placeholder="Observations (optionnel)" value={observations[piece.id] || ''}
+                <input type="text" placeholder={t('etatDesLieux.observationsPlaceholder')} value={observations[piece.id] || ''}
                   onChange={function(e) { handleObs(piece.id, e.target.value); }}
                   style={{ width: '100%', padding: '7px 10px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 12, outline: 'none', boxSizing: 'border-box', marginBottom: 8 }} />
 
@@ -269,10 +273,10 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
                 <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
                   <input type="file" accept="image/*" style={{ display: 'none' }} onChange={function(e) { if (e.target.files[0]) handlePhoto(piece.id, e.target.files[0]); }} />
                   <div style={{ padding: '6px 12px', borderRadius: 8, background: photos[piece.id] ? '#E8F5E9' : '#F5F5F5', color: photos[piece.id] ? '#1B6B3A' : '#888', fontSize: 12, fontWeight: 600, border: photos[piece.id] ? '0.5px solid #A5D6A7' : '0.5px solid #E0E0E0' }}>
-                    📷 {photos[piece.id] ? 'Photo ajoutée ✓' : 'Ajouter une photo'}
+                    📷 {photos[piece.id] ? t('etatDesLieux.photoAjoutee') : t('etatDesLieux.ajouterUnePhoto')}
                   </div>
                   {photos[piece.id] && (
-                    <img src={photos[piece.id].url} alt={piece.label} style={{ width: 40, height: 40, borderRadius: 6, objectFit: 'cover' }} />
+                    <img src={photos[piece.id].url} alt={t('etatDesLieux.pieces.' + piece.labelKey)} style={{ width: 40, height: 40, borderRadius: 6, objectFit: 'cover' }} />
                   )}
                 </label>
               </div>
@@ -280,9 +284,9 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
           })}
 
           <button
-            onClick={function() { if (progressPieces < 3) { toast.error('Renseignez au moins 3 pièces'); return; } setStep('signatures'); }}
+            onClick={function() { if (progressPieces < 3) { toast.error(t('etatDesLieux.renseignezAuMoins3Pieces')); return; } setStep('signatures'); }}
             style={{ width: '100%', background: progressPieces >= 3 ? '#1B6B3A' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: progressPieces >= 3 ? 'pointer' : 'not-allowed' }}>
-            ✍️ Passer aux signatures →
+            {t('etatDesLieux.passerAuxSignatures')}
           </button>
         </div>
       )}
@@ -290,23 +294,23 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
       {step === 'signatures' && (
         <div>
           <div style={{ background: '#FFF8E1', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#7B4F00' }}>
-            ⚖️ Les deux signatures sont obligatoires pour valider l'état des lieux. Ce document a valeur légale.
+            {t('etatDesLieux.avertissementLegal')}
           </div>
 
           <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>Signatures des parties</div>
-            <SignatureCanvas label="Signature du Propriétaire *" onSigne={setSigProprio} />
-            <SignatureCanvas label="Signature du Locataire *" onSigne={setSigLocataire} />
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>{t('etatDesLieux.signaturesDesParties')}</div>
+            <SignatureCanvas label={t('etatDesLieux.signatureProprietaire')} onSigne={setSigProprio} />
+            <SignatureCanvas label={t('etatDesLieux.signatureLocataire')} onSigne={setSigLocataire} />
           </div>
 
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={function() { setStep('pieces'); }}
               style={{ padding: '12px 20px', borderRadius: 10, border: '0.5px solid #E0E0E0', background: '#F5F5F5', color: '#555', fontSize: 13, cursor: 'pointer' }}>
-              ← Retour
+              {t('etatDesLieux.retour')}
             </button>
             <button onClick={soumettre} disabled={!sigProprio || !sigLocataire || saving}
               style={{ flex: 1, background: sigProprio && sigLocataire ? '#1B6B3A' : '#CCC', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: sigProprio && sigLocataire ? 'pointer' : 'not-allowed' }}>
-              {saving ? '⏳ Enregistrement...' : '✅ Valider l\'état des lieux'}
+              {saving ? t('etatDesLieux.enregistrementEnCours') : t('etatDesLieux.validerEtatDesLieux')}
             </button>
           </div>
         </div>

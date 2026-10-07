@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import './PhotoUpload.css';
 
 const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
+  const { t } = useTranslation('profil');
   const [photos, setPhotos] = useState(photosInitiales);
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -26,9 +28,9 @@ const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
       );
       setPhotos(res.data.photos);
       if (onUpdate) onUpdate(res.data.photos);
-      toast.success(`✅ ${files.length} photo(s) ajoutée(s) !`);
+      toast.success(t('photoUpload.toasts.ajoutees', { count: files.length }));
     } catch (err) {
-      toast.error(err.response?.data?.erreur || 'Erreur upload');
+      toast.error(err.response?.data?.erreur || t('photoUpload.toasts.erreurUpload'));
     } finally {
       setUploading(false);
     }
@@ -42,9 +44,9 @@ const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
       );
       setPhotos(res.data.photos);
       if (onUpdate) onUpdate(res.data.photos);
-      toast.success('Photo supprimée');
+      toast.success(t('photoUpload.toasts.supprimee'));
     } catch (err) {
-      toast.error('Erreur suppression');
+      toast.error(t('photoUpload.toasts.erreurSuppression'));
     }
   };
 
@@ -57,9 +59,9 @@ const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
       );
       setPhotos(res.data.photos);
       if (onUpdate) onUpdate(res.data.photos);
-      toast.success('✅ Photo principale définie !');
+      toast.success(t('photoUpload.toasts.principaleDefinie'));
     } catch (err) {
-      toast.error('Erreur');
+      toast.error(t('photoUpload.toasts.erreur'));
     }
   };
 
@@ -90,13 +92,13 @@ const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
         {uploading ? (
           <div className="drop-uploading">
             <span className="spinner">⏳</span>
-            <p>Upload en cours...</p>
+            <p>{t('photoUpload.dropZone.uploading')}</p>
           </div>
         ) : (
           <div className="drop-content">
             <span>📸</span>
-            <p>Glissez vos photos ici ou <strong>cliquez pour choisir</strong></p>
-            <small>JPG, PNG, WEBP — 5MB max — 10 photos max</small>
+            <p>{t('photoUpload.dropZone.dragText')} <strong>{t('photoUpload.dropZone.dragTextBold')}</strong></p>
+            <small>{t('photoUpload.dropZone.formats')}</small>
           </div>
         )}
       </div>
@@ -109,11 +111,11 @@ const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
               key={photo.public_id}
               className={`photo-item ${index === 0 ? 'principale' : ''}`}
             >
-              <img src={photo.url} alt={`Logement ${index + 1}`} />
+              <img src={photo.url} alt={t('photoUpload.altLogement', { index: index + 1 })} />
 
               {/* Badge photo principale */}
               {index === 0 && (
-                <span className="badge-principale">⭐ Principale</span>
+                <span className="badge-principale">{t('photoUpload.badgePrincipale')}</span>
               )}
 
               {/* Actions */}
@@ -122,13 +124,13 @@ const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
                   <button
                     className="photo-btn btn-etoile"
                     onClick={() => handlePrincipale(photo.public_id)}
-                    title="Définir comme principale"
+                    title={t('photoUpload.actions.definirPrincipale')}
                   >⭐</button>
                 )}
                 <button
                   className="photo-btn btn-supprimer"
                   onClick={() => handleSupprimer(photo.public_id)}
-                  title="Supprimer"
+                  title={t('photoUpload.actions.supprimer')}
                 >🗑️</button>
               </div>
             </div>
@@ -138,7 +140,7 @@ const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
 
       {photos.length === 0 && !uploading && (
         <p className="no-photos">
-          Aucune photo pour le moment. Ajoutez des photos pour attirer plus de locataires !
+          {t('photoUpload.noPhotos')}
         </p>
       )}
 

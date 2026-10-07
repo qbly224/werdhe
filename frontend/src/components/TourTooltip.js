@@ -1,8 +1,10 @@
 /* eslint-disable */
 import { useEffect, useState } from 'react';
 import { X, ChevronRight, ChevronLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function TourTooltip({ actif, etapeActuelle, etape, totalEtapes, suivant, passer, terminer }) {
+  var t = useTranslation('logements').t;
   var [pos, setPos] = useState({ top: 0, left: 0 });
   var [visible, setVisible] = useState(false);
 
@@ -104,11 +106,11 @@ export default function TourTooltip({ actif, etapeActuelle, etape, totalEtapes, 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <button onClick={passer}
             style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: '#aaa', padding: 0 }}>
-            Passer le tutoriel
+            {t('tourTooltip.passerLeTutoriel')}
           </button>
           <button onClick={suivant}
             style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-            {etape === totalEtapes - 1 ? 'Terminer' : 'Suivant'}
+            {etape === totalEtapes - 1 ? t('tourTooltip.terminer') : t('tourTooltip.suivant')}
             <ChevronRight size={15} strokeWidth={2.5} />
           </button>
         </div>

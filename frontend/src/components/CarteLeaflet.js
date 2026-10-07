@@ -6,6 +6,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './CarteLeaflet.css';
 import { MapPin, BedDouble, Maximize2, Navigation } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 // Fix icônes Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -18,7 +19,7 @@ L.Icon.Default.mergeOptions({
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
 
 // Marqueur SVG custom (sans emoji)
-function creerMarqueur(statut, prix) {
+function creerMarqueur(statut, prix, texteDisponible, texteLoue) {
   var couleur = statut === 'disponible' ? '#1B6B3A' : '#E53935';
   var label   = prix ? GNF(prix) + ' GNF' : '';
   return L.divIcon({
@@ -35,7 +36,7 @@ function creerMarqueur(statut, prix) {
           'box-shadow:0 2px 8px rgba(0,0,0,0.25);',
           'border:2px solid #fff;',
           'margin-bottom:2px;',
-        '">', label || (statut === 'disponible' ? 'Disponible' : 'Loué'), '</div>',
+        '">', label || (statut === 'disponible' ? texteDisponible : texteLoue), '</div>',
         '<div style="',
           'width:0;height:0;',
           'border-left:6px solid transparent;',
@@ -77,25 +78,26 @@ function MarqueurUser({ pos }) {
   return <Marker position={pos} icon={marqUser} />;
 }
 
-var CATEGORIES = {
-  villa_luxe:       'Villa luxe',
-  villa_standard:   'Villa',
-  maison_moderne:   'Maison moderne',
-  maison_banco:     'Maison traditionnelle',
-  appartement:      'Appartement',
-  duplex:           'Duplex',
-  studio_moderne:   'Studio',
-  chambre_habitant: 'Chambre',
-  bureau:           'Bureau',
-  local_commercial: 'Local commercial',
-  boutique:         'Boutique',
-  concession:       'Concession',
-};
-
 export default function CarteLeaflet({ logements, hauteur }) {
+  var t = useTranslation('logements').t;
   var [posUser, setPosUser]       = useState(null);
   var [geoLoading, setGeoLoading] = useState(false);
   var [filtre, setFiltre]         = useState('tous');
+
+  var CATEGORIES = {
+    villa_luxe:       t('carteLeaflet.categories.villaLuxe'),
+    villa_standard:   t('carteLeaflet.categories.villa'),
+    maison_moderne:   t('carteLeaflet.categories.maisonModerne'),
+    maison_banco:     t('carteLeaflet.categories.maisonTraditionnelle'),
+    appartement:      t('carteLeaflet.categories.appartement'),
+    duplex:           t('carteLeaflet.categories.duplex'),
+    studio_moderne:   t('carteLeaflet.categories.studio'),
+    chambre_habitant: t('carteLeaflet.categories.chambre'),
+    bureau:           t('carteLeaflet.categories.bureau'),
+    local_commercial: t('carteLeaflet.categories.localCommercial'),
+    boutique:         t('carteLeaflet.categories.boutique'),
+    concession:       t('carteLeaflet.categories.concession'),
+  };
 
   var logementsValides = logements.filter(function(l) {
     return l.latitude && l.longitude && !isNaN(l.latitude) && !isNaN(l.longitude);
@@ -134,9 +136,9 @@ export default function CarteLeaflet({ logements, hauteur }) {
       {/* Barre filtres */}
       <div style={{ position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)', zIndex: 1000, display: 'flex', gap: 6, background: '#fff', borderRadius: 30, padding: '4px 6px', boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
         {[
-          { val: 'tous',       label: 'Tous (' + logementsValides.length + ')'  },
-          { val: 'disponible', label: 'Disponibles (' + nbDispo + ')'           },
-          { val: 'loue',       label: 'Loués (' + nbLoue + ')'                  },
+          { val: 'tous',       label: t('carteLeaflet.filtres.tous', { count: logementsValides.length })       },
+          { val: 'disponible', label: t('carteLeaflet.filtres.disponibles', { count: nbDispo })                },
+          { val: 'loue',       label: t('carteLeaflet.filtres.loues', { count: nbLoue })                        },
         ].map(function(f) {
           return (
             <button key={f.val} onClick={function() { setFiltre(f.val); }}
@@ -164,11 +166,11 @@ export default function CarteLeaflet({ logements, hauteur }) {
 
         {logementsFiltres.map(function(l) {
           var photos = getPhotos(l);
-          var cat    = CATEGORIES[l.categorie] || 'Logement';
+          var cat    = CATEGORIES[l.categorie] || t('carteLeaflet.categories.logementParDefaut');
           var photo  = photos[0] || null;
 
           return (
-            <Marker key={l.id} position={[l.latitude, l.longitude]} icon={creerMarqueur(l.statut, l.prix_mensuel)}>
+            <Marker key={l.id} position={[l.latitude, l.longitude]} icon={creerMarqueur(l.statut, l.prix_mensuel, t('carteLeaflet.marqueur.disponible'), t('carteLeaflet.marqueur.loue'))}>
               <Popup className="popup-werdhe" maxWidth={280} minWidth={240}>
                 <div style={{ fontFamily: 'system-ui, sans-serif' }}>
 
@@ -187,7 +189,7 @@ export default function CarteLeaflet({ logements, hauteur }) {
                     {/* Badge statut + catégorie */}
                     <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
                       <span style={{ background: l.statut === 'disponible' ? '#E8F5E9' : '#FFEBEE', color: l.statut === 'disponible' ? '#1B6B3A' : '#E53935', borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 700 }}>
-                        {l.statut === 'disponible' ? 'Disponible' : 'Loué'}
+                        {l.statut === 'disponible' ? t('carteLeaflet.popup.disponible') : t('carteLeaflet.popup.loue')}
                       </span>
                       <span style={{ background: '#F5F5F5', color: '#888', borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 600 }}>
                         {cat}
@@ -208,12 +210,12 @@ export default function CarteLeaflet({ logements, hauteur }) {
                       <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
                         {l.nb_chambres > 0 && (
                           <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: '#555' }}>
-                            <BedDouble size={13} strokeWidth={1.5} /> {l.nb_chambres} ch.
+                            <BedDouble size={13} strokeWidth={1.5} /> {t('carteLeaflet.popup.chambresAbrev', { count: l.nb_chambres })}
                           </span>
                         )}
                         {l.superficie && (
                           <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: '#555' }}>
-                            <Maximize2 size={13} strokeWidth={1.5} /> {l.superficie}m²
+                            <Maximize2 size={13} strokeWidth={1.5} /> {t('carteLeaflet.popup.superficieAbrev', { superficie: l.superficie })}
                           </span>
                         )}
                       </div>
@@ -223,11 +225,11 @@ export default function CarteLeaflet({ logements, hauteur }) {
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <div>
                         <span style={{ fontSize: 16, fontWeight: 900, color: '#1B6B3A' }}>{GNF(l.prix_mensuel)}</span>
-                        <span style={{ fontSize: 11, color: '#888', marginLeft: 3 }}>GNF/mois</span>
+                        <span style={{ fontSize: 11, color: '#888', marginLeft: 3 }}>{t('carteLeaflet.popup.prixParMois')}</span>
                       </div>
                       <Link to={'/logements/' + l.id}
                         style={{ background: '#1B6B3A', color: '#fff', borderRadius: 8, padding: '7px 14px', fontSize: 12, fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        Voir
+                        {t('carteLeaflet.popup.voir')}
                       </Link>
                     </div>
                   </div>
@@ -242,14 +244,14 @@ export default function CarteLeaflet({ logements, hauteur }) {
       <div style={{ position: 'absolute', bottom: 10, left: 10, zIndex: 1000, background: '#fff', borderRadius: 10, padding: '8px 12px', boxShadow: '0 2px 8px rgba(0,0,0,0.12)', display: 'flex', gap: 12, alignItems: 'center', fontSize: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
           <div style={{ width: 10, height: 10, background: '#1B6B3A', borderRadius: '50%' }} />
-          <span style={{ color: '#555' }}>Disponible</span>
+          <span style={{ color: '#555' }}>{t('carteLeaflet.legende.disponible')}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
           <div style={{ width: 10, height: 10, background: '#E53935', borderRadius: '50%' }} />
-          <span style={{ color: '#555' }}>Loué</span>
+          <span style={{ color: '#555' }}>{t('carteLeaflet.legende.loue')}</span>
         </div>
         <div style={{ width: 1, height: 14, background: '#E0E0E0' }} />
-        <span style={{ color: '#888', fontWeight: 600 }}>{logementsFiltres.length} bien(s)</span>
+        <span style={{ color: '#888', fontWeight: 600 }}>{t('carteLeaflet.legende.nbBiens', { count: logementsFiltres.length })}</span>
       </div>
     </div>
   );

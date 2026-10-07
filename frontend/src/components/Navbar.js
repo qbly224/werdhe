@@ -3,17 +3,20 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, LayoutDashboard } from 'lucide-react';
 import Logo from './Logo';
+import LanguageSwitcher from './LanguageSwitcher';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import './Navbar.css';
 
 export default function Navbar() {
   var auth     = useAuth();
   var user     = auth.user;
   var navigate = useNavigate();
+  var t        = useTranslation('common').t;
 
   function handleLogout() {
     auth.logout();
-    toast.success('Déconnexion réussie');
+    toast.success(t('messages.deconnexionReussie'));
     navigate('/');
   }
 
@@ -25,12 +28,12 @@ export default function Navbar() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <Link to="/logements" style={{ fontSize: 13, color: '#555', textDecoration: 'none', fontWeight: 500 }}>
-          Logements
+          {t('nav.logements')}
         </Link>
         {user ? (
           <>
             <Link to="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#555', textDecoration: 'none', fontWeight: 500 }}>
-              <LayoutDashboard size={15} strokeWidth={1.5} /> Mon espace
+              <LayoutDashboard size={15} strokeWidth={1.5} /> {t('nav.monEspace')}
             </Link>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', background: '#F5F6FA', borderRadius: 20, fontSize: 13 }}>
               <div style={{ width: 26, height: 26, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700 }}>
@@ -38,18 +41,20 @@ export default function Navbar() {
               </div>
               <span style={{ color: '#1B2B22', fontWeight: 600 }}>{user.prenom}</span>
             </div>
+            <LanguageSwitcher />
             <button onClick={handleLogout}
               style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, border: 'none', background: '#FFEBEE', color: '#B71C1C', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-              <LogOut size={14} strokeWidth={1.5} /> Déconnexion
+              <LogOut size={14} strokeWidth={1.5} /> {t('nav.deconnexion')}
             </button>
           </>
         ) : (
           <>
+            <LanguageSwitcher />
             <Link to="/login" style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>
-              Connexion
+              {t('nav.connexion')}
             </Link>
             <Link to="/inscription" style={{ padding: '8px 14px', borderRadius: 8, background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>
-              S'inscrire
+              {t('nav.inscription')}
             </Link>
           </>
         )}

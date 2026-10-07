@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // Coordonnées des villes de Guinée
 var COORDS_GUINEE = {
@@ -41,6 +42,7 @@ function getCoords(ville) {
 }
 
 export default function MapView({ logements, onSelectLogement }) {
+  var t            = useTranslation('logements').t;
   var mapRef       = useRef(null);
   var mapInstance  = useRef(null);
   var markersLayer = useRef(null);
@@ -132,14 +134,14 @@ export default function MapView({ logements, onSelectLogement }) {
             <div style="font-size:13px;font-weight:700;color:#1B2B22;margin-bottom:4px">${l.titre}</div>
             <div style="font-size:11px;color:#888;margin-bottom:6px">📍 ${l.ville}</div>
             <div style="font-size:15px;font-weight:800;color:#1B6B3A;margin-bottom:8px">
-              ${new Intl.NumberFormat('fr-FR').format(l.prix_mensuel)} GNF/mois
+              ${new Intl.NumberFormat('fr-FR').format(l.prix_mensuel)} ${t('mapView.popup.prixParMois')}
             </div>
-            ${l.nb_chambres ? `<span style="font-size:11px;color:#555">🛏️ ${l.nb_chambres} ch. </span>` : ''}
+            ${l.nb_chambres ? `<span style="font-size:11px;color:#555">🛏️ ${t('mapView.popup.chambresAbrev', { count: l.nb_chambres })} </span>` : ''}
             ${l.superficie ? `<span style="font-size:11px;color:#555">📐 ${l.superficie}m²</span>` : ''}
             <div style="margin-top:10px">
               <a href="/logements/${l.id}"
                 style="display:block;background:#1B6B3A;color:#fff;padding:8px;border-radius:8px;text-align:center;text-decoration:none;font-size:12px;font-weight:700;">
-                Voir le logement →
+                ${t('mapView.popup.voirLeLogement')}
               </a>
             </div>
           </div>
@@ -159,19 +161,19 @@ export default function MapView({ logements, onSelectLogement }) {
         catch (e) {}
       }
     });
-  }, [mapReady, logements]);
+  }, [mapReady, logements, t]);
 
   return (
     <div style={{ position: 'relative' }}>
       <div ref={mapRef} style={{ height: 460, borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
       <div style={{ position: 'absolute', bottom: 12, left: 12, background: 'rgba(255,255,255,0.95)', borderRadius: 10, padding: '8px 14px', fontSize: 12, color: '#555', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', display: 'flex', gap: 14 }}>
         <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <div style={{ width: 10, height: 10, background: '#1B6B3A', borderRadius: '50%' }} /> Disponible
+          <div style={{ width: 10, height: 10, background: '#1B6B3A', borderRadius: '50%' }} /> {t('mapView.legende.disponible')}
         </span>
         <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <div style={{ width: 10, height: 10, background: '#888', borderRadius: '50%' }} /> Occupé
+          <div style={{ width: 10, height: 10, background: '#888', borderRadius: '50%' }} /> {t('mapView.legende.occupe')}
         </span>
-        <span style={{ color: '#888' }}>{logements.length} logement(s)</span>
+        <span style={{ color: '#888' }}>{t('mapView.legende.nbLogements', { count: logements.length })}</span>
       </div>
     </div>
   );

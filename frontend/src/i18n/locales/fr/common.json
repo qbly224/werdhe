@@ -1,0 +1,40 @@
+{
+  "nav": {
+    "logements": "Logements",
+    "monEspace": "Mon espace",
+    "connexion": "Connexion",
+    "inscription": "S'inscrire",
+    "deconnexion": "Déconnexion",
+    "blog": "Blog",
+    "estimation": "Estimation de loyer"
+  },
+  "messages": {
+    "deconnexionReussie": "Déconnexion réussie",
+    "erreurServeur": "Erreur serveur",
+    "erreur": "Une erreur est survenue",
+    "chargement": "Chargement...",
+    "succes": "Succès"
+  },
+  "boutons": {
+    "enregistrer": "Enregistrer",
+    "annuler": "Annuler",
+    "continuer": "Continuer",
+    "retour": "Retour",
+    "suivant": "Suivant",
+    "fermer": "Fermer",
+    "confirmer": "Confirmer",
+    "supprimer": "Supprimer",
+    "modifier": "Modifier",
+    "envoyer": "Envoyer",
+    "telecharger": "Télécharger",
+    "rechargerPage": "Recharger la page"
+  },
+  "erreurBoundary": {
+    "titre": "Une erreur est survenue",
+    "texte": "Rechargez la page pour continuer."
+  },
+  "langue": {
+    "francais": "Français",
+    "anglais": "Anglais"
+  }
+}

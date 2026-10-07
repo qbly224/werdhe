@@ -6,32 +6,36 @@ import api from '../services/api';
 import toast from 'react-hot-toast';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Phone } from 'lucide-react';
 import Logo from '../components/Logo';
+import { useTranslation } from 'react-i18next';
 
 // Photos de résidences guinéennes
-var SLIDES_LOGIN = [
-  {
-    img:   '/img/residences/vue-aerienne-conakry.jpg',
-    titre: 'Bienvenue sur Werdhe',
-    sous:  'La plateforme immobilière de référence en Guinée',
-  },
-  {
-    img:   '/img/residences/villa-conakry.jpg',
-    titre: 'Gérez vos biens',
-    sous:  'Candidatures, baux et paiements depuis un seul endroit',
-  },
-  {
-    img:   '/img/residences/immeuble-moderne.jpg',
-    titre: 'Trouvez votre logement',
-    sous:  'Des centaines de biens disponibles à Conakry et partout en Guinée',
-  },
-  {
-    img:   '/img/residences/bungalow-residence.jpg',
-    titre: 'Un chez-vous à votre image',
-    sous:  'Villas, bungalows, appartements — pour chaque style de vie',
-  },
-];
+function getSlidesLogin(t) {
+  return [
+    {
+      img:   '/img/residences/vue-aerienne-conakry.jpg',
+      titre: t('login.slides.0.titre'),
+      sous:  t('login.slides.0.sous'),
+    },
+    {
+      img:   '/img/residences/villa-conakry.jpg',
+      titre: t('login.slides.1.titre'),
+      sous:  t('login.slides.1.sous'),
+    },
+    {
+      img:   '/img/residences/immeuble-moderne.jpg',
+      titre: t('login.slides.2.titre'),
+      sous:  t('login.slides.2.sous'),
+    },
+    {
+      img:   '/img/residences/bungalow-residence.jpg',
+      titre: t('login.slides.3.titre'),
+      sous:  t('login.slides.3.sous'),
+    },
+  ];
+}
 
 export default function Login() {
+  var t         = useTranslation('public').t;
   var navigate  = useNavigate();
   var { login } = useAuth();
   var [email, setEmail]         = useState('');
@@ -42,6 +46,7 @@ export default function Login() {
   var [remember, setRemember]   = useState(false);
   var [slideActif, setSlideActif] = useState(0);
   var [compteurs, setCompteurs] = useState({ logements: 0, utilisateurs: 0, villes: 0 });
+  var SLIDES_LOGIN = getSlidesLogin(t);
 
   var emailValide = email.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -73,21 +78,21 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!email || !password) { setErreur('Remplissez tous les champs'); return; }
+    if (!email || !password) { setErreur(t('login.erreurChamps')); return; }
     setLoading(true);
     setErreur('');
     try {
       var res = await api.post('/auth/login', { email, mot_de_passe: password });
       if (res.data.requires_2fa) {
-        toast('Code 2FA envoyé à votre email', { icon: '🔐' });
+        toast(t('login.code2faEnvoye'), { icon: '🔐' });
         navigate('/admin/2fa', { state: { user_id: res.data.user_id, email } });
         return;
       }
       login(res.data.user, res.data.token);
-      toast.success('Bon retour ' + res.data.user.prenom + ' !');
+      toast.success(t('login.bonRetour', { prenom: res.data.user.prenom }));
       navigate('/dashboard');
     } catch (err) {
-      setErreur(err.response && err.response.data ? err.response.data.erreur : 'Email ou mot de passe incorrect');
+      setErreur(err.response && err.response.data ? err.response.data.erreur : t('login.erreurIdentifiants'));
     } finally { setLoading(false); }
   }
 
@@ -121,9 +126,9 @@ export default function Login() {
         {/* Compteurs */}
         <div style={{ display: 'flex', gap: 16 }}>
           {[
-            { val: compteurs.logements + '+',    label: 'Logements'    },
-            { val: compteurs.utilisateurs + '+',  label: 'Utilisateurs' },
-            { val: compteurs.villes + ' villes',  label: 'Couvertes'    },
+            { val: compteurs.logements + '+',    label: t('login.compteurs.logements')    },
+            { val: compteurs.utilisateurs + '+',  label: t('login.compteurs.utilisateurs') },
+            { val: compteurs.villes + ' ' + t('login.compteurs.villesSuffixe'),  label: t('login.compteurs.couvertes')    },
           ].map(function(s, i) {
             return (
               <div key={i} style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 12, padding: '10px 14px', border: '1px solid rgba(255,255,255,0.15)', textAlign: 'center' }}>
@@ -155,10 +160,10 @@ export default function Login() {
         </div>
 
         <h1 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 4px', letterSpacing: -0.5, textAlign: 'center' }}>
-          Connectez-vous
+          {t('login.titre')}
         </h1>
         <p style={{ fontSize: 13, color: '#888', margin: '0 0 22px', textAlign: 'center' }}>
-          Accédez à votre espace Werdhe
+          {t('login.sousTitre')}
         </p>
 
         {/* Google */}
@@ -170,17 +175,17 @@ export default function Login() {
             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
           </svg>
-          Continuer avec Google
+          {t('login.continuerGoogle')}
         </button>
 
         <Link to="/login-telephone"
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '11px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', fontSize: 13, fontWeight: 600, color: '#1B2B22', textDecoration: 'none', marginBottom: 18 }}>
-          <Phone size={15} strokeWidth={1.5} color="#555" /> Continuer par téléphone
+          <Phone size={15} strokeWidth={1.5} color="#555" /> {t('login.continuerTelephone')}
         </Link>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
           <div style={{ flex: 1, height: 0.5, background: '#E0E0E0' }} />
-          <span style={{ fontSize: 11, color: '#bbb' }}>ou par email</span>
+          <span style={{ fontSize: 11, color: '#bbb' }}>{t('login.ouParEmail')}</span>
           <div style={{ flex: 1, height: 0.5, background: '#E0E0E0' }} />
         </div>
 
@@ -192,10 +197,10 @@ export default function Login() {
 
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: 12 }}>
-            <label style={{ fontSize: 11, fontWeight: 700, color: '#555', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.5 }}>Email</label>
+            <label style={{ fontSize: 11, fontWeight: 700, color: '#555', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.5 }}>{t('login.champEmail')}</label>
             <div style={{ position: 'relative' }}>
               <Mail size={14} color="#bbb" strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-              <input type="email" placeholder="vous@email.com" value={email} autoComplete="email"
+              <input type="email" placeholder={t('login.placeholderEmail')} value={email} autoComplete="email"
                 onChange={function(e) { setEmail(e.target.value); setErreur(''); }}
                 style={{ width: '100%', padding: '11px 12px 11px 36px', border: '1.5px solid ' + (email.length > 0 ? (emailValide ? '#1B6B3A' : '#E53935') : '#E8E8E8'), borderRadius: 10, fontSize: 14, outline: 'none', background: '#FAFAFA', boxSizing: 'border-box', transition: 'border-color .2s' }} />
             </div>
@@ -203,12 +208,12 @@ export default function Login() {
 
           <div style={{ marginBottom: 10 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
-              <label style={{ fontSize: 11, fontWeight: 700, color: '#555', textTransform: 'uppercase', letterSpacing: 0.5 }}>Mot de passe</label>
-              <Link to="/forgot-password" style={{ fontSize: 11, color: '#1B6B3A', textDecoration: 'none', fontWeight: 600 }}>Oublié ?</Link>
+              <label style={{ fontSize: 11, fontWeight: 700, color: '#555', textTransform: 'uppercase', letterSpacing: 0.5 }}>{t('login.champMotDePasse')}</label>
+              <Link to="/forgot-password" style={{ fontSize: 11, color: '#1B6B3A', textDecoration: 'none', fontWeight: 600 }}>{t('login.oublie')}</Link>
             </div>
             <div style={{ position: 'relative' }}>
               <Lock size={14} color="#bbb" strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-              <input type={showPwd ? 'text' : 'password'} placeholder="Votre mot de passe" value={password} autoComplete="current-password"
+              <input type={showPwd ? 'text' : 'password'} placeholder={t('login.placeholderMotDePasse')} value={password} autoComplete="current-password"
                 onChange={function(e) { setPassword(e.target.value); setErreur(''); }}
                 style={{ width: '100%', padding: '11px 40px 11px 36px', border: '1.5px solid #E8E8E8', borderRadius: 10, fontSize: 14, outline: 'none', background: '#FAFAFA', boxSizing: 'border-box' }} />
               <button type="button" onClick={function() { setShowPwd(!showPwd); }}
@@ -221,21 +226,21 @@ export default function Login() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 18 }}>
             <input type="checkbox" id="remember" checked={remember} onChange={function(e) { setRemember(e.target.checked); }}
               style={{ width: 15, height: 15, accentColor: '#1B6B3A', cursor: 'pointer' }} />
-            <label htmlFor="remember" style={{ fontSize: 12, color: '#666', cursor: 'pointer' }}>Se souvenir de moi</label>
+            <label htmlFor="remember" style={{ fontSize: 12, color: '#666', cursor: 'pointer' }}>{t('login.seSouvenir')}</label>
           </div>
 
           <button type="submit" disabled={loading}
             style={{ width: '100%', padding: '13px', borderRadius: 10, border: 'none', background: loading ? '#aaa' : '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 16, boxShadow: loading ? 'none' : '0 4px 16px rgba(27,107,58,0.3)' }}>
             {loading
-              ? <><div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Connexion...</>
-              : <>Se connecter <ArrowRight size={15} strokeWidth={2.5} /></>
+              ? <><div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> {t('login.connexionEnCours')}</>
+              : <>{t('login.seConnecter')} <ArrowRight size={15} strokeWidth={2.5} /></>
             }
           </button>
         </form>
 
         <p style={{ textAlign: 'center', fontSize: 13, color: '#888', margin: 0 }}>
-          Pas encore de compte ?{' '}
-          <Link to="/inscription" style={{ color: '#1B6B3A', fontWeight: 700, textDecoration: 'none' }}>Créer un compte gratuit</Link>
+          {t('login.pasDeCompte')}{' '}
+          <Link to="/inscription" style={{ color: '#1B6B3A', fontWeight: 700, textDecoration: 'none' }}>{t('login.creerCompteGratuit')}</Link>
         </p>
       </div>
 

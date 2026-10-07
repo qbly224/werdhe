@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n) + ' GNF'; };
 
@@ -11,6 +12,7 @@ export default function Admin() {
   var navigate  = useNavigate();
   var auth      = useAuth();
   var user      = auth.user;
+  var t         = useTranslation('admin').t;
 
   var [onglet, setOnglet]           = useState('stats');
   var [stats, setStats]             = useState(null);
@@ -109,36 +111,36 @@ export default function Admin() {
   }
 
   function suspendreUser(id, estSuspendu) {
-    if (!window.confirm(estSuspendu ? 'Réactiver cet utilisateur ?' : 'Suspendre cet utilisateur ?')) return;
+    if (!window.confirm(estSuspendu ? t('admin.users.confirmReactiver') : t('admin.users.confirmSuspendre'))) return;
     api.patch('/admin/users/' + id + '/suspendre')
       .then(function() {
-        toast.success(estSuspendu ? 'Utilisateur réactivé' : 'Utilisateur suspendu');
+        toast.success(estSuspendu ? t('admin.users.toastReactive') : t('admin.users.toastSuspendu'));
         charger();
       })
-      .catch(function() { toast.error('Erreur'); });
+      .catch(function() { toast.error(t('admin.erreurs.generique')); });
   }
 
   function debloquerAbonnement(id) {
-    if (!window.confirm('Débloquer l\'accès de cet utilisateur (abonnement impayé) ?')) return;
+    if (!window.confirm(t('admin.users.confirmDebloquer'))) return;
     api.patch('/admin/users/' + id + '/debloquer-abonnement')
       .then(function() {
-        toast.success('Accès débloqué');
+        toast.success(t('admin.users.toastDebloque'));
         charger();
       })
-      .catch(function() { toast.error('Erreur'); });
+      .catch(function() { toast.error(t('admin.erreurs.generique')); });
   }
 
   function verifierLogement(id) {
     api.patch('/admin/logements/' + id + '/verifier')
-      .then(function() { toast.success('Logement vérifié !'); charger(); })
-      .catch(function() { toast.error('Erreur'); });
+      .then(function() { toast.success(t('admin.logements.toastVerifie')); charger(); })
+      .catch(function() { toast.error(t('admin.erreurs.generique')); });
   }
 
   function supprimerLogement(id) {
-    if (!window.confirm('Supprimer ce logement ?')) return;
+    if (!window.confirm(t('admin.logements.confirmSupprimer'))) return;
     api.delete('/logements/' + id)
-      .then(function() { toast.success('Logement supprimé'); charger(); })
-      .catch(function() { toast.error('Erreur'); });
+      .then(function() { toast.success(t('admin.logements.toastSupprime')); charger(); })
+      .catch(function() { toast.error(t('admin.erreurs.generique')); });
   }
 
   function editerArticle(a) {
@@ -153,7 +155,7 @@ export default function Admin() {
 
   function sauvegarderArticle() {
     if (!articleForm.titre || !articleForm.contenu) {
-      toast.error('Titre et contenu obligatoires');
+      toast.error(t('admin.blog.erreurTitreContenu'));
       return;
     }
     var requete = editingArticleId
@@ -161,29 +163,29 @@ export default function Admin() {
       : api.post('/blog', articleForm);
     requete
       .then(function() {
-        toast.success(editingArticleId ? 'Article mis à jour' : 'Article créé');
+        toast.success(editingArticleId ? t('admin.blog.toastMisAJour') : t('admin.blog.toastCree'));
         setShowArticleForm(false);
         setEditingArticleId(null);
         setArticleForm(ARTICLE_VIDE);
         charger();
       })
-      .catch(function(err) { toast.error(err.response?.data?.erreur || 'Erreur'); });
+      .catch(function(err) { toast.error(err.response?.data?.erreur || t('admin.erreurs.generique')); });
   }
 
   function supprimerArticle(id) {
-    if (!window.confirm('Supprimer cet article ?')) return;
+    if (!window.confirm(t('admin.blog.confirmSupprimer'))) return;
     api.delete('/blog/' + id)
-      .then(function() { toast.success('Article supprimé'); charger(); })
-      .catch(function() { toast.error('Erreur'); });
+      .then(function() { toast.success(t('admin.blog.toastSupprime')); charger(); })
+      .catch(function() { toast.error(t('admin.erreurs.generique')); });
   }
 
   function togglePublieArticle(a) {
     api.put('/blog/' + a.id, { publie: !a.publie })
       .then(function() {
-        toast.success(a.publie ? 'Article dépublié' : 'Article publié');
+        toast.success(a.publie ? t('admin.blog.toastDepublie') : t('admin.blog.toastPublie'));
         charger();
       })
-      .catch(function() { toast.error('Erreur'); });
+      .catch(function() { toast.error(t('admin.erreurs.generique')); });
   }
 
   var usersFiltres = users.filter(function(u) {
@@ -197,37 +199,37 @@ export default function Admin() {
   });
 
 var NAV = [
-  { id: 'stats',        label: 'Vue d\'ensemble', icon: '📊' },
-  { id: 'users',        label: 'Utilisateurs',    icon: '👥' },
-  { id: 'logements',    label: 'Logements',       icon: '🏠' },
-  { id: 'reservations', label: 'Réservations',    icon: '📅' },
-  { id: 'abonnements',  label: 'Abonnements',     icon: '💳' },
-  { id: 'promos',       label: 'Codes Promo',     icon: '🎟️' },
-  { id: 'blog',         label: 'Blog',            icon: '📝' },
-  { id: 'logs',         label: 'Logs Audit',      icon: '📋' },
-  { id: 'alertes',      label: 'Alertes',         icon: '🔔' },
+  { id: 'stats',        label: t('admin.nav.stats'),        icon: '📊' },
+  { id: 'users',        label: t('admin.nav.users'),        icon: '👥' },
+  { id: 'logements',    label: t('admin.nav.logements'),    icon: '🏠' },
+  { id: 'reservations', label: t('admin.nav.reservations'), icon: '📅' },
+  { id: 'abonnements',  label: t('admin.nav.abonnements'),  icon: '💳' },
+  { id: 'promos',       label: t('admin.nav.promos'),       icon: '🎟️' },
+  { id: 'blog',         label: t('admin.nav.blog'),         icon: '📝' },
+  { id: 'logs',         label: t('admin.nav.logs'),         icon: '📋' },
+  { id: 'alertes',      label: t('admin.nav.alertes'),      icon: '🔔' },
 ];
 
   var cfgStatuts = {
-    en_attente:         { label: 'En attente',      color: '#F5A623', bg: '#FFF8E1' },
-    dossier_requis:     { label: 'Dossier requis',  color: '#1565C0', bg: '#E3F2FD' },
-    en_examen:          { label: 'En examen',       color: '#7B1FA2', bg: '#F3E5F5' },
-    acceptee:           { label: 'Acceptée',        color: '#1B6B3A', bg: '#E8F5E9' },
-    echanges:           { label: 'Échanges',        color: '#1565C0', bg: '#E3F2FD' },
-    caution_requise:    { label: 'Caution requise', color: '#E65100', bg: '#FFF3E0' },
-    caution_payee:      { label: 'Caution payée',   color: '#1B6B3A', bg: '#E8F5E9' },
-    bail_en_cours:      { label: 'Bail en cours',   color: '#7B1FA2', bg: '#F3E5F5' },
-    bail_signe_proprio: { label: 'Bail signé',      color: '#7B1FA2', bg: '#F3E5F5' },
-    confirmee:          { label: 'Active 🗝️',       color: '#1B6B3A', bg: '#E8F5E9' },
-    refusee:            { label: 'Refusée',         color: '#B71C1C', bg: '#FFEBEE' },
-    terminee:           { label: 'Terminée',        color: '#888',    bg: '#F5F5F5' },
+    en_attente:         { label: t('admin.statutsReservation.enAttente'),     color: '#F5A623', bg: '#FFF8E1' },
+    dossier_requis:     { label: t('admin.statutsReservation.dossierRequis'), color: '#1565C0', bg: '#E3F2FD' },
+    en_examen:          { label: t('admin.statutsReservation.enExamen'),      color: '#7B1FA2', bg: '#F3E5F5' },
+    acceptee:           { label: t('admin.statutsReservation.acceptee'),      color: '#1B6B3A', bg: '#E8F5E9' },
+    echanges:           { label: t('admin.statutsReservation.echanges'),      color: '#1565C0', bg: '#E3F2FD' },
+    caution_requise:    { label: t('admin.statutsReservation.cautionRequise'), color: '#E65100', bg: '#FFF3E0' },
+    caution_payee:      { label: t('admin.statutsReservation.cautionPayee'),  color: '#1B6B3A', bg: '#E8F5E9' },
+    bail_en_cours:      { label: t('admin.statutsReservation.bailEnCours'),   color: '#7B1FA2', bg: '#F3E5F5' },
+    bail_signe_proprio: { label: t('admin.statutsReservation.bailSigne'),     color: '#7B1FA2', bg: '#F3E5F5' },
+    confirmee:          { label: t('admin.statutsReservation.active'),       color: '#1B6B3A', bg: '#E8F5E9' },
+    refusee:            { label: t('admin.statutsReservation.refusee'),      color: '#B71C1C', bg: '#FFEBEE' },
+    terminee:           { label: t('admin.statutsReservation.terminee'),     color: '#888',    bg: '#F5F5F5' },
   };
 
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', fontFamily: 'system-ui', flexDirection: 'column', gap: 12 }}>
         <div style={{ fontSize: 32 }}>🏠</div>
-        <div style={{ color: '#888' }}>Chargement panneau admin...</div>
+        <div style={{ color: '#888' }}>{t('admin.loading')}</div>
       </div>
     );
   }
@@ -239,10 +241,10 @@ var NAV = [
       <div className="admin-sidebar" style={{ width: 220, background: '#1B2B22', minHeight: '100vh', padding: '0', flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
         <div style={{ padding: '20px 16px', borderBottom: '0.5px solid rgba(255,255,255,0.1)' }}>
           <div style={{ color: '#fff', fontWeight: 800, fontSize: 18 }}>🏠 Werdhe</div>
-          <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11, marginTop: 3 }}>Panneau Admin</div>
+          <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11, marginTop: 3 }}>{t('admin.sidebar.panneauAdmin')}</div>
           <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
             <div style={{ width: 8, height: 8, background: '#34A853', borderRadius: '50%' }} />
-            <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11 }}>Sync toutes les 30s</span>
+            <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11 }}>{t('admin.sidebar.syncInfo')}</span>
           </div>
         </div>
 
@@ -262,11 +264,11 @@ var NAV = [
         <div style={{ padding: '16px' }}>
           <button onClick={charger}
             style={{ width: '100%', background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)', border: 'none', borderRadius: 8, padding: '8px 0', fontSize: 12, cursor: 'pointer', marginBottom: 8 }}>
-            🔄 Actualiser maintenant
+            {t('admin.sidebar.actualiserMaintenant')}
           </button>
           <button onClick={function() { navigate('/dashboard'); }}
             style={{ width: '100%', background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', border: 'none', borderRadius: 8, padding: '8px 0', fontSize: 12, cursor: 'pointer' }}>
-            ← Retour dashboard
+            {t('admin.sidebar.retourDashboard')}
           </button>
         </div>
       </div>
@@ -293,22 +295,22 @@ var NAV = [
   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
     <div style={{ width: 10, height: 10, background: autoRefresh ? '#1B6B3A' : '#aaa', borderRadius: '50%', animation: autoRefresh ? 'pulse 2s ease infinite' : 'none' }} />
     <span style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>
-      {autoRefresh ? 'Temps réel actif' : 'Pause'}
+      {autoRefresh ? t('admin.stats.tempsReelActif') : t('admin.stats.pause')}
     </span>
     {lastUpdate && (
       <span style={{ fontSize: 12, color: '#888' }}>
-        · Mis à jour à {lastUpdate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+        {t('admin.stats.misAJour', { heure: lastUpdate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) })}
       </span>
     )}
     {autoRefresh && (
       <span style={{ fontSize: 12, color: '#888' }}>
-        · Rafraîchissement dans <span style={{ color: countdown <= 10 ? '#E53935' : '#1B6B3A', fontWeight: 700 }}>{countdown}s</span>
+        {t('admin.stats.rafraichissementDans')} <span style={{ color: countdown <= 10 ? '#E53935' : '#1B6B3A', fontWeight: 700 }}>{countdown}s</span>
       </span>
     )}
   </div>
   <button onClick={function() { setAutoRefresh(!autoRefresh); }}
     style={{ padding: '6px 14px', borderRadius: 20, border: '1px solid #E0E0E0', background: autoRefresh ? '#FFEBEE' : '#E8F5E9', color: autoRefresh ? '#B71C1C' : '#1B6B3A', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-    {autoRefresh ? '⏸ Pause' : '▶ Reprendre'}
+    {autoRefresh ? t('admin.stats.boutonPause') : t('admin.stats.boutonReprendre')}
   </button>
 </div>
 
@@ -318,9 +320,9 @@ var NAV = [
     <span style={{ fontSize: 24 }}>🚨</span>
     <div>
       <div style={{ fontSize: 14, fontWeight: 700, color: '#B71C1C' }}>
-        {liveData.alertes_critiques} paiement(s) en retard depuis plus de 5 jours
+        {t('admin.stats.alerteCritique', { count: liveData.alertes_critiques })}
       </div>
-      <div style={{ fontSize: 12, color: '#E53935' }}>Action requise — vérifiez les paiements en attente</div>
+      <div style={{ fontSize: 12, color: '#E53935' }}>{t('admin.stats.actionRequise')}</div>
     </div>
   </div>
 )}
@@ -329,10 +331,10 @@ var NAV = [
 {liveData && (
   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 16 }}>
     {[
-      { label: "Inscriptions aujourd'hui", val: liveData.inscriptions_aujourdhui, icon: '👥', color: '#1B6B3A', bg: '#E8F5E9' },
-      { label: "Candidatures aujourd'hui", val: liveData.candidatures_aujourdhui, icon: '📅', color: '#1565C0', bg: '#E3F2FD' },
-      { label: "Paiements aujourd'hui",    val: liveData.paiements_aujourdhui.nb, icon: '💳', color: '#7B1FA2', bg: '#F3E5F5' },
-      { label: "Volume aujourd'hui",       val: new Intl.NumberFormat('fr-FR').format(liveData.paiements_aujourdhui.total) + ' GNF', icon: '💰', color: '#E65100', bg: '#FFF3E0' },
+      { label: t('admin.stats.kpi.inscriptionsAujourdhui'), val: liveData.inscriptions_aujourdhui, icon: '👥', color: '#1B6B3A', bg: '#E8F5E9' },
+      { label: t('admin.stats.kpi.candidaturesAujourdhui'), val: liveData.candidatures_aujourdhui, icon: '📅', color: '#1565C0', bg: '#E3F2FD' },
+      { label: t('admin.stats.kpi.paiementsAujourdhui'),    val: liveData.paiements_aujourdhui.nb, icon: '💳', color: '#7B1FA2', bg: '#F3E5F5' },
+      { label: t('admin.stats.kpi.volumeAujourdhui'),       val: new Intl.NumberFormat('fr-FR').format(liveData.paiements_aujourdhui.total) + ' GNF', icon: '💰', color: '#E65100', bg: '#FFF3E0' },
     ].map(function(k, i) {
       return (
         <div key={i} style={{ background: k.bg, borderRadius: 12, padding: '14px 16px', borderLeft: '4px solid ' + k.color }}>
@@ -349,15 +351,15 @@ var NAV = [
 {liveData && liveData.activite && liveData.activite.length > 0 && (
   <div style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
     <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
-      <span>⚡</span> Activité récente
+      <span>⚡</span> {t('admin.stats.activiteRecente')}
     </div>
     <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
       {liveData.activite.map(function(a, i) {
         var cfg = {
-          inscription: { icon: '👤', color: '#1B6B3A', bg: '#E8F5E9', label: 'Inscription' },
-          candidature: { icon: '📅', color: '#1565C0', bg: '#E3F2FD', label: 'Candidature' },
-          logement:    { icon: '🏠', color: '#7B1FA2', bg: '#F3E5F5', label: 'Logement'    },
-          paiement:    { icon: '💰', color: '#E65100', bg: '#FFF3E0', label: 'Paiement'    },
+          inscription: { icon: '👤', color: '#1B6B3A', bg: '#E8F5E9', label: t('admin.stats.activiteType.inscription') },
+          candidature: { icon: '📅', color: '#1565C0', bg: '#E3F2FD', label: t('admin.stats.activiteType.candidature') },
+          logement:    { icon: '🏠', color: '#7B1FA2', bg: '#F3E5F5', label: t('admin.stats.activiteType.logement')    },
+          paiement:    { icon: '💰', color: '#E65100', bg: '#FFF3E0', label: t('admin.stats.activiteType.paiement')    },
         }[a.type] || { icon: '•', color: '#888', bg: '#F5F5F5', label: a.type };
 
         return (
@@ -387,28 +389,28 @@ var NAV = [
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
               <div>
-                <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>📊 Vue d'ensemble</h1>
+                <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('admin.stats.titre')}</h1>
                 <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>
-                  Dernière mise à jour : {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                  {t('admin.stats.derniereMiseAJour', { heure: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) })}
                 </p>
               </div>
               <button onClick={charger}
                 style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '8px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-                🔄 Actualiser
+                {t('admin.stats.actualiser')}
               </button>
             </div>
 
             {/* KPIs principaux */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14, marginBottom: 24 }}>
               {[
-                { label: 'Utilisateurs',      val: stats.total_users,         icon: '👥', color: '#1565C0', bg: '#E3F2FD' },
-                { label: 'Propriétaires',     val: stats.total_proprietaires, icon: '🔑', color: '#1B6B3A', bg: '#E8F5E9' },
-                { label: 'Locataires',        val: stats.total_locataires,    icon: '🏠', color: '#7B1FA2', bg: '#F3E5F5' },
-                { label: 'Logements publiés', val: stats.total_logements,     icon: '🏢', color: '#E65100', bg: '#FFF3E0' },
-                { label: 'Logements loués',   val: stats.logements_loues,     icon: '✅', color: '#1B6B3A', bg: '#E8F5E9' },
-                { label: 'Réservations',      val: stats.total_reservations,  icon: '📅', color: '#1565C0', bg: '#E3F2FD' },
-                { label: 'Locations actives', val: stats.total_confirmees,    icon: '🗝️', color: '#1B6B3A', bg: '#E8F5E9' },
-                { label: 'Revenus (5%)',      val: GNF(stats.revenus_plateforme || 0), icon: '💰', color: '#C8860A', bg: '#FFF8E1' },
+                { label: t('admin.stats.kpiPrincipaux.utilisateurs'),      val: stats.total_users,         icon: '👥', color: '#1565C0', bg: '#E3F2FD' },
+                { label: t('admin.stats.kpiPrincipaux.proprietaires'),     val: stats.total_proprietaires, icon: '🔑', color: '#1B6B3A', bg: '#E8F5E9' },
+                { label: t('admin.stats.kpiPrincipaux.locataires'),        val: stats.total_locataires,    icon: '🏠', color: '#7B1FA2', bg: '#F3E5F5' },
+                { label: t('admin.stats.kpiPrincipaux.logementsPublies'), val: stats.total_logements,     icon: '🏢', color: '#E65100', bg: '#FFF3E0' },
+                { label: t('admin.stats.kpiPrincipaux.logementsLoues'),   val: stats.logements_loues,     icon: '✅', color: '#1B6B3A', bg: '#E8F5E9' },
+                { label: t('admin.stats.kpiPrincipaux.reservations'),      val: stats.total_reservations,  icon: '📅', color: '#1565C0', bg: '#E3F2FD' },
+                { label: t('admin.stats.kpiPrincipaux.locationsActives'), val: stats.total_confirmees,    icon: '🗝️', color: '#1B6B3A', bg: '#E8F5E9' },
+                { label: t('admin.stats.kpiPrincipaux.revenus'),      val: GNF(stats.revenus_plateforme || 0), icon: '💰', color: '#C8860A', bg: '#FFF8E1' },
               ].map(function(s, i) {
                 return (
                   <div key={i} style={{ background: s.bg, borderRadius: 14, padding: 16, borderLeft: '4px solid ' + s.color }}>
@@ -421,13 +423,13 @@ var NAV = [
             </div>
             {/* Abonnements */}
 <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: 16 }}>
-  <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>Abonnements actifs</div>
+  <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>{t('admin.stats.abonnementsActifs')}</div>
   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
     {[
-      { label: 'Gratuit',  val: stats.abonnements.gratuit, color: '#888',    bg: '#F5F5F5' },
-      { label: 'Essai',    val: stats.abonnements.essai,   color: '#E65100', bg: '#FFF3E0' },
-      { label: 'Pro',      val: stats.abonnements.pro,     color: '#1B6B3A', bg: '#E8F5E9' },
-      { label: 'Agence',   val: stats.abonnements.agence,  color: '#7B1FA2', bg: '#F3E5F5' },
+      { label: t('admin.plans.gratuit'),  val: stats.abonnements.gratuit, color: '#888',    bg: '#F5F5F5' },
+      { label: t('admin.plans.essai'),    val: stats.abonnements.essai,   color: '#E65100', bg: '#FFF3E0' },
+      { label: t('admin.plans.pro'),      val: stats.abonnements.pro,     color: '#1B6B3A', bg: '#E8F5E9' },
+      { label: t('admin.plans.agence'),   val: stats.abonnements.agence,  color: '#7B1FA2', bg: '#F3E5F5' },
     ].map(function(a, i) {
       return (
         <div key={i} style={{ background: a.bg, borderRadius: 10, padding: 14, textAlign: 'center' }}>
@@ -442,7 +444,7 @@ var NAV = [
 {/* Graphique inscriptions */}
 {stats.evolution && stats.evolution.length > 0 && (
   <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: 16 }}>
-    <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>Inscriptions (6 mois)</div>
+    <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>{t('admin.stats.inscriptions6Mois')}</div>
     <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end', height: 100 }}>
       {stats.evolution.map(function(m, i) {
         var max = Math.max.apply(null, stats.evolution.map(function(x) { return Number(x.nb_users); }));
@@ -462,7 +464,7 @@ var NAV = [
 {/* Logs récents */}
 {stats.logs_recents && stats.logs_recents.length > 0 && (
   <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: 16 }}>
-    <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>Activité récente</div>
+    <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>{t('admin.stats.activiteRecente')}</div>
     {stats.logs_recents.map(function(l, i) {
       return (
         <div key={i} style={{ display: 'flex', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #F5F5F5', alignItems: 'center' }}>
@@ -483,11 +485,11 @@ var NAV = [
             {/* Graphique réservations */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>Répartition réservations</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>{t('admin.stats.repartitionReservations')}</div>
                 {[
-                  { label: 'Locations actives',      val: stats.total_confirmees,                                                                                                          color: '#1B6B3A' },
-                  { label: 'En cours de traitement', val: Math.max(0, stats.total_reservations - stats.total_confirmees - Math.floor(stats.total_reservations * 0.1)), color: '#F5A623' },
-                  { label: 'Refusées / Annulées',   val: Math.floor(stats.total_reservations * 0.1),                                                                  color: '#E53935' },
+                  { label: t('admin.stats.kpiPrincipaux.locationsActives'),      val: stats.total_confirmees,                                                                                                          color: '#1B6B3A' },
+                  { label: t('admin.stats.enCoursTraitement'), val: Math.max(0, stats.total_reservations - stats.total_confirmees - Math.floor(stats.total_reservations * 0.1)), color: '#F5A623' },
+                  { label: t('admin.stats.refuseesAnnulees'),   val: Math.floor(stats.total_reservations * 0.1),                                                                  color: '#E53935' },
                 ].map(function(item) {
                   var pct = stats.total_reservations > 0 ? Math.round(item.val / stats.total_reservations * 100) : 0;
                   return (
@@ -505,7 +507,7 @@ var NAV = [
               </div>
 
               <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>Alertes récentes</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>{t('admin.stats.alertesRecentes')}</div>
                 {alertes.slice(0, 5).map(function(a, i) {
                   return (
                     <div key={i} style={{ display: 'flex', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #F5F5F5' }}>
@@ -517,7 +519,7 @@ var NAV = [
                     </div>
                   );
                 })}
-                {alertes.length === 0 && <div style={{ color: '#888', fontSize: 13 }}>Aucune alerte</div>}
+                {alertes.length === 0 && <div style={{ color: '#888', fontSize: 13 }}>{t('admin.stats.aucuneAlerte')}</div>}
               </div>
             </div>
           </div>
@@ -528,19 +530,19 @@ var NAV = [
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
               <div>
-                <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>👥 Utilisateurs</h1>
-                <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{usersFiltres.length} / {users.length} utilisateur(s)</p>
+                <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('admin.users.titre')}</h1>
+                <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.users.compteur', { filtres: usersFiltres.length, total: users.length })}</p>
               </div>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                <input type="text" placeholder="🔍 Rechercher..." value={searchUser}
+                <input type="text" placeholder={t('admin.users.rechercherPlaceholder')} value={searchUser}
                   onChange={function(e) { setSearchUser(e.target.value); }}
                   style={{ padding: '9px 14px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none' }} />
                 <select value={filterRole} onChange={function(e) { setFilterRole(e.target.value); }}
                   style={{ padding: '9px 14px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: '#fff' }}>
-                  <option value="tous">Tous les rôles</option>
-                  <option value="locataire">Locataires</option>
-                  <option value="proprietaire">Propriétaires</option>
-                  <option value="admin">Admins</option>
+                  <option value="tous">{t('admin.users.filtreTousRoles')}</option>
+                  <option value="locataire">{t('admin.users.filtreLocataires')}</option>
+                  <option value="proprietaire">{t('admin.users.filtreProprietaires')}</option>
+                  <option value="admin">{t('admin.users.filtreAdmins')}</option>
                 </select>
               </div>
             </div>
@@ -558,13 +560,13 @@ var NAV = [
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                         <span style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{u.prenom} {u.nom}</span>
-                        {u.suspendu && <span style={{ background: '#FFEBEE', color: '#B71C1C', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>Suspendu</span>}
-                        {u.abonnement_bloque && <span style={{ background: '#FFF3E0', color: '#E65100', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>🔒 Abonnement impayé</span>}
+                        {u.suspendu && <span style={{ background: '#FFEBEE', color: '#B71C1C', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{t('admin.users.suspendu')}</span>}
+                        {u.abonnement_bloque && <span style={{ background: '#FFF3E0', color: '#E65100', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{t('admin.users.abonnementImpaye')}</span>}
                         {u.plan && u.plan !== 'gratuit' && <span style={{ background: '#E8F5E9', color: '#1B6B3A', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{u.plan}</span>}
                       </div>
                       <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{u.email} · {u.telephone || 'N/A'}</div>
                       <div style={{ fontSize: 11, color: '#aaa', marginTop: 2 }}>
-                        Inscrit le {new Date(u.created_at).toLocaleDateString('fr-FR')} · {nbResasUser} réservation(s)
+                        {t('admin.users.inscritLe', { date: new Date(u.created_at).toLocaleDateString('fr-FR'), count: nbResasUser })}
                       </div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
@@ -574,13 +576,13 @@ var NAV = [
                       {u.role !== 'admin' && (
                         <button onClick={function() { suspendreUser(u.id, u.suspendu); }}
                           style={{ padding: '6px 12px', borderRadius: 8, border: u.suspendu ? '0.5px solid #A5D6A7' : '0.5px solid #FFCDD2', background: u.suspendu ? '#E8F5E9' : '#FFEBEE', color: u.suspendu ? '#1B5E20' : '#B71C1C', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
-                          {u.suspendu ? '✅ Réactiver' : '🚫 Suspendre'}
+                          {u.suspendu ? t('admin.users.reactiver') : t('admin.users.suspendre')}
                         </button>
                       )}
                       {u.abonnement_bloque && (
                         <button onClick={function() { debloquerAbonnement(u.id); }}
                           style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #FFCC80', background: '#FFF3E0', color: '#E65100', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
-                          🔓 Débloquer
+                          {t('admin.users.debloquer')}
                         </button>
                       )}
                     </div>
@@ -596,8 +598,8 @@ var NAV = [
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <div>
-                <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>🏠 Logements</h1>
-                <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{logements.length} logement(s) sur la plateforme</p>
+                <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('admin.logements.titre')}</h1>
+                <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.logements.compteur', { count: logements.length })}</p>
               </div>
             </div>
 
@@ -610,11 +612,11 @@ var NAV = [
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                         <span style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{l.titre}</span>
-                        {l.verifie && <span style={{ background: '#E8F5E9', color: '#1B5E20', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>✅ Vérifié</span>}
+                        {l.verifie && <span style={{ background: '#E8F5E9', color: '#1B5E20', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{t('admin.logements.verifie')}</span>}
                       </div>
-                      <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{l.adresse}, {l.ville} · {GNF(l.prix_mensuel)}/mois</div>
+                      <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{l.adresse}, {l.ville} · {GNF(l.prix_mensuel)}{t('admin.logements.parMois')}</div>
                       <div style={{ fontSize: 11, color: '#aaa', marginTop: 2 }}>
-                        Propriétaire : {l.prop_prenom} {l.prop_nom} · {nbResas} réservation(s)
+                        {t('admin.logements.proprietaireLabel', { prenom: l.prop_prenom, nom: l.prop_nom, count: nbResas })}
                       </div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -624,7 +626,7 @@ var NAV = [
                       {!l.verifie && (
                         <button onClick={function() { verifierLogement(l.id); }}
                           style={{ padding: '6px 12px', borderRadius: 8, background: '#1B6B3A', color: '#fff', border: 'none', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
-                          ✅ Vérifier
+                          {t('admin.logements.verifier')}
                         </button>
                       )}
                       <button onClick={function() { supprimerLogement(l.id); }}
@@ -644,12 +646,12 @@ var NAV = [
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
               <div>
-                <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>📅 Réservations</h1>
-                <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{reservationsFiltrees.length} / {reservations.length} réservation(s)</p>
+                <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('admin.reservations.titre')}</h1>
+                <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.reservations.compteur', { filtres: reservationsFiltrees.length, total: reservations.length })}</p>
               </div>
               <select value={filterStatut} onChange={function(e) { setFilterStatut(e.target.value); }}
                 style={{ padding: '9px 14px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: '#fff' }}>
-                <option value="tous">Tous les statuts</option>
+                <option value="tous">{t('admin.reservations.tousLesStatuts')}</option>
                 {Object.keys(cfgStatuts).map(function(s) {
                   return <option key={s} value={s}>{cfgStatuts[s].label}</option>;
                 })}
@@ -660,7 +662,7 @@ var NAV = [
               <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', fontSize: 13 }}>
                 <thead>
                   <tr style={{ background: '#1B2B22' }}>
-                    {['Locataire', 'Logement', 'Propriétaire', 'Montant', 'Statut', 'Date'].map(function(h) {
+                    {[t('admin.reservations.colLocataire'), t('admin.reservations.colLogement'), t('admin.reservations.colProprietaire'), t('admin.reservations.colMontant'), t('admin.reservations.colStatut'), t('admin.reservations.colDate')].map(function(h) {
                       return <th key={h} style={{ color: '#fff', padding: '12px 14px', textAlign: 'left', fontWeight: 600, fontSize: 12 }}>{h}</th>;
                     })}
                   </tr>
@@ -693,12 +695,12 @@ var NAV = [
 {onglet === 'revenus' && (
   <div>
     <div style={{ marginBottom: 24 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>💰 Revenus Werdhe</h1>
-      <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>Commissions et abonnements</p>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('admin.revenus.titre')}</h1>
+      <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.revenus.sousTitre')}</p>
     </div>
 
     {!revenus && (
-      <div style={{ textAlign: 'center', padding: 40, color: '#888' }}>Chargement des revenus...</div>
+      <div style={{ textAlign: 'center', padding: 40, color: '#888' }}>{t('admin.revenus.chargement')}</div>
     )}
 
     {revenus && (
@@ -706,12 +708,12 @@ var NAV = [
         {/* KPIs */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 24 }}>
           {[
-            { label: 'Commissions ce mois',     val: GNF(revenus.commissions.total_commissions || 0),   icon: '💰', color: '#1B6B3A', bg: '#E8F5E9' },
-            { label: 'Commissions encaissées',   val: GNF(revenus.commissions.encaisse || 0),            icon: '✅', color: '#1B6B3A', bg: '#E8F5E9' },
-            { label: 'Commissions en attente',   val: GNF(revenus.commissions.en_attente || 0),          icon: '⏳', color: '#E65100', bg: '#FFF3E0' },
-            { label: 'Revenus abonnements',      val: GNF(revenus.abonnements.revenus_abonnements || 0), icon: '📋', color: '#1565C0', bg: '#E3F2FD' },
-            { label: 'Abonnés Pro',              val: revenus.abonnements.nb_pro || 0,                   icon: '⭐', color: '#1B6B3A', bg: '#E8F5E9' },
-            { label: 'Abonnés Agence',           val: revenus.abonnements.nb_agence || 0,                icon: '🏢', color: '#7B1FA2', bg: '#F3E5F5' },
+            { label: t('admin.revenus.kpi.commissionsMois'),     val: GNF(revenus.commissions.total_commissions || 0),   icon: '💰', color: '#1B6B3A', bg: '#E8F5E9' },
+            { label: t('admin.revenus.kpi.commissionsEncaissees'),   val: GNF(revenus.commissions.encaisse || 0),            icon: '✅', color: '#1B6B3A', bg: '#E8F5E9' },
+            { label: t('admin.revenus.kpi.commissionsEnAttente'),   val: GNF(revenus.commissions.en_attente || 0),          icon: '⏳', color: '#E65100', bg: '#FFF3E0' },
+            { label: t('admin.revenus.kpi.revenusAbonnements'),      val: GNF(revenus.abonnements.revenus_abonnements || 0), icon: '📋', color: '#1565C0', bg: '#E3F2FD' },
+            { label: t('admin.revenus.kpi.abonnesPro'),              val: revenus.abonnements.nb_pro || 0,                   icon: '⭐', color: '#1B6B3A', bg: '#E8F5E9' },
+            { label: t('admin.revenus.kpi.abonnesAgence'),           val: revenus.abonnements.nb_agence || 0,                icon: '🏢', color: '#7B1FA2', bg: '#F3E5F5' },
           ].map(function(s, i) {
             return (
               <div key={i} style={{ background: s.bg, borderRadius: 14, padding: 16, borderLeft: '4px solid ' + s.color }}>
@@ -725,9 +727,9 @@ var NAV = [
 
         {/* Évolution 6 mois */}
         <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>Évolution des commissions (6 mois)</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>{t('admin.revenus.evolutionTitre')}</div>
           {revenus.evolution.length === 0 && (
-            <div style={{ color: '#888', fontSize: 13 }}>Aucune commission pour le moment.</div>
+            <div style={{ color: '#888', fontSize: 13 }}>{t('admin.revenus.aucuneCommission')}</div>
           )}
           {revenus.evolution.map(function(m, i) {
             var max = Math.max.apply(null, revenus.evolution.map(function(x) { return Number(x.commissions); }));
@@ -755,13 +757,13 @@ var NAV = [
         {onglet === 'alertes' && (
           <div>
             <div style={{ marginBottom: 20 }}>
-              <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>🔔 Alertes plateforme</h1>
-              <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{alertes.length} alerte(s)</p>
+              <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('admin.alertes.titre')}</h1>
+              <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.alertes.compteur', { count: alertes.length })}</p>
             </div>
 
             {alertes.length === 0 && (
               <div style={{ textAlign: 'center', padding: '40px', color: '#888', background: '#fff', borderRadius: 14 }}>
-                ✅ Aucune alerte active
+                {t('admin.alertes.aucuneAlerte')}
               </div>
             )}
 
@@ -792,7 +794,7 @@ var NAV = [
 {onglet === 'abonnements' && (
   <div>
     <div style={{ marginBottom: 20 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>💳 Abonnements</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('admin.abonnements.titre')}</h1>
     </div>
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {users.filter(function(u) { return u.role !== 'admin'; }).map(function(u) {
@@ -808,15 +810,15 @@ var NAV = [
                 var newPlan = e.target.value;
                 api.patch('/admin/users/' + u.id + '/plan', { plan: newPlan })
                   .then(function() {
-                    toast.success('Plan mis à jour !');
+                    toast.success(t('admin.abonnements.toastMisAJour'));
                     charger();
                   })
-                  .catch(function() { toast.error('Erreur'); });
+                  .catch(function() { toast.error(t('admin.erreurs.generique')); });
               }}
               style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, background: '#fff', cursor: 'pointer' }}>
-              <option value="gratuit">Gratuit</option>
-              <option value="pro">Pro</option>
-              <option value="agence">Agence</option>
+              <option value="gratuit">{t('admin.plans.gratuit')}</option>
+              <option value="pro">{t('admin.plans.pro')}</option>
+              <option value="agence">{t('admin.plans.agence')}</option>
             </select>
           </div>
         );
@@ -829,58 +831,58 @@ var NAV = [
 {onglet === 'blog' && (
   <div>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>📝 Blog</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('admin.blog.titre')}</h1>
       <button onClick={function() {
           setEditingArticleId(null);
           setArticleForm(ARTICLE_VIDE);
           setShowArticleForm(!showArticleForm);
         }}
         style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '9px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-        + Nouvel article
+        {t('admin.blog.nouvelArticle')}
       </button>
     </div>
 
     {showArticleForm && (
       <div style={{ background: '#fff', borderRadius: 14, padding: 20, marginBottom: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
         <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 14px' }}>
-          {editingArticleId ? 'Modifier l\'article' : 'Nouvel article'}
+          {editingArticleId ? t('admin.blog.modifierArticle') : t('admin.blog.nouvelArticleTitre')}
         </h3>
         <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Titre *</label>
+          <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelTitre')}</label>
           <input type="text" value={articleForm.titre}
             onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { titre: e.target.value })); }}
             style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
           <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Catégorie</label>
-            <input type="text" placeholder="Ex: Guide locataire" value={articleForm.categorie}
+            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelCategorie')}</label>
+            <input type="text" placeholder={t('admin.blog.placeholderCategorie')} value={articleForm.categorie}
               onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { categorie: e.target.value })); }}
               style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
           </div>
           <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Image de couverture (URL)</label>
-            <input type="text" placeholder="https://..." value={articleForm.image_couverture}
+            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelImage')}</label>
+            <input type="text" placeholder={t('admin.blog.placeholderUrl')} value={articleForm.image_couverture}
               onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { image_couverture: e.target.value })); }}
               style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
           </div>
         </div>
         <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Extrait</label>
+          <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelExtrait')}</label>
           <textarea rows={2} value={articleForm.extrait}
             onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { extrait: e.target.value })); }}
             style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box', fontFamily: 'inherit' }} />
         </div>
         <div style={{ marginBottom: 12 }}>
           <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>
-            Contenu * <span style={{ fontWeight: 400, color: '#aaa' }}>(HTML : &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;&lt;li&gt;...)</span>
+            {t('admin.blog.labelContenu')} <span style={{ fontWeight: 400, color: '#aaa' }}>{t('admin.blog.hintContenu')}</span>
           </label>
           <textarea rows={10} value={articleForm.contenu}
             onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { contenu: e.target.value })); }}
             style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box', fontFamily: 'monospace' }} />
         </div>
         <div style={{ marginBottom: 16 }}>
-          <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Meta-description (SEO)</label>
+          <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelMetaDescription')}</label>
           <input type="text" maxLength={300} value={articleForm.meta_description}
             onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { meta_description: e.target.value })); }}
             style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
@@ -889,16 +891,16 @@ var NAV = [
           <input type="checkbox" id="articlePublie" checked={articleForm.publie}
             onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { publie: e.target.checked })); }}
             style={{ width: 15, height: 15, cursor: 'pointer' }} />
-          <label htmlFor="articlePublie" style={{ fontSize: 13, color: '#555', cursor: 'pointer' }}>Publier immédiatement</label>
+          <label htmlFor="articlePublie" style={{ fontSize: 13, color: '#555', cursor: 'pointer' }}>{t('admin.blog.labelPublierImmediatement')}</label>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
           <button onClick={sauvegarderArticle}
             style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 20px', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>
-            {editingArticleId ? 'Mettre à jour' : 'Créer l\'article'}
+            {editingArticleId ? t('admin.blog.boutonMettreAJour') : t('admin.blog.boutonCreerArticle')}
           </button>
           <button onClick={function() { setShowArticleForm(false); setEditingArticleId(null); }}
             style={{ background: '#F5F5F5', color: '#555', border: 'none', borderRadius: 10, padding: '10px 20px', fontWeight: 600, cursor: 'pointer', fontSize: 13 }}>
-            Annuler
+            {t('admin.blog.boutonAnnuler')}
           </button>
         </div>
       </div>
@@ -906,7 +908,7 @@ var NAV = [
 
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {articlesBlog.length === 0 && (
-        <div style={{ textAlign: 'center', padding: 40, color: '#888', background: '#fff', borderRadius: 14 }}>Aucun article pour le moment.</div>
+        <div style={{ textAlign: 'center', padding: 40, color: '#888', background: '#fff', borderRadius: 14 }}>{t('admin.blog.aucunArticle')}</div>
       )}
       {articlesBlog.map(function(a) {
         return (
@@ -915,25 +917,25 @@ var NAV = [
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                 <span style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{a.titre}</span>
                 <span style={{ background: a.publie ? '#E8F5E9' : '#FFF3E0', color: a.publie ? '#1B5E20' : '#E65100', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>
-                  {a.publie ? 'Publié' : 'Brouillon'}
+                  {a.publie ? t('admin.blog.statutPublie') : t('admin.blog.statutBrouillon')}
                 </span>
               </div>
               <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>
-                {a.categorie || 'Sans catégorie'} · {a.vues || 0} vue(s) · /blog/{a.slug}
+                {a.categorie || t('admin.blog.sansCategorie')} · {t('admin.blog.nbVues', { count: a.vues || 0 })} · /blog/{a.slug}
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <button onClick={function() { togglePublieArticle(a); }}
                 style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: '#fff', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: a.publie ? '#E65100' : '#1B6B3A' }}>
-                {a.publie ? 'Dépublier' : 'Publier'}
+                {a.publie ? t('admin.blog.depublier') : t('admin.blog.publier')}
               </button>
               <button onClick={function() { editerArticle(a); }}
                 style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: '#fff', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: '#1565C0' }}>
-                Modifier
+                {t('admin.blog.modifier')}
               </button>
               <button onClick={function() { supprimerArticle(a.id); }}
                 style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #FFCDD2', background: '#FFEBEE', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: '#B71C1C' }}>
-                Supprimer
+                {t('admin.blog.supprimer')}
               </button>
             </div>
           </div>
@@ -947,10 +949,10 @@ var NAV = [
 {onglet === 'promos' && (
   <div>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>🎟️ Codes Promo</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('admin.promos.titre')}</h1>
       <button onClick={function() { setShowPromoForm(!showPromoForm); }}
         style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '9px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-        + Nouveau code
+        {t('admin.promos.nouveauCode')}
       </button>
     </div>
 
@@ -958,19 +960,19 @@ var NAV = [
       <div style={{ background: '#fff', borderRadius: 14, padding: 20, marginBottom: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginBottom: 14 }}>
           <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Code *</label>
-            <input type="text" placeholder="PROMO2026" value={promoForm.code}
+            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.promos.labelCode')}</label>
+            <input type="text" placeholder={t('admin.promos.placeholderCode')} value={promoForm.code}
               onChange={function(e) { setPromoForm(Object.assign({}, promoForm, { code: e.target.value.toUpperCase() })); }}
               style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', fontFamily: 'monospace', letterSpacing: 1 }} />
           </div>
           <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Réduction %</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.promos.labelReduction')}</label>
             <input type="number" min="1" max="100" value={promoForm.reduction_pct}
               onChange={function(e) { setPromoForm(Object.assign({}, promoForm, { reduction_pct: e.target.value })); }}
               style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%' }} />
           </div>
           <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Nb max utilisations</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.promos.labelNbMax')}</label>
             <input type="number" value={promoForm.nb_utilisations_max}
               onChange={function(e) { setPromoForm(Object.assign({}, promoForm, { nb_utilisations_max: e.target.value })); }}
               style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%' }} />
@@ -980,15 +982,15 @@ var NAV = [
           onClick={function() {
             api.post('/admin/codes-promo', promoForm)
               .then(function() {
-                toast.success('Code créé !');
+                toast.success(t('admin.promos.toastCree'));
                 setShowPromoForm(false);
                 setPromoForm({ code: '', reduction_pct: 20, nb_utilisations_max: 100 });
                 charger();
               })
-              .catch(function(err) { toast.error(err.response?.data?.erreur || 'Erreur'); });
+              .catch(function(err) { toast.error(err.response?.data?.erreur || t('admin.erreurs.generique')); });
           }}
           style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 20px', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>
-          Créer le code
+          {t('admin.promos.boutonCreer')}
         </button>
       </div>
     )}
@@ -1001,24 +1003,24 @@ var NAV = [
               <span style={{ fontFamily: 'monospace', fontSize: 15, fontWeight: 800, color: '#1B6B3A', letterSpacing: 1 }}>{c.code}</span>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>-{c.reduction_pct}% sur le plan {c.plan_cible}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{t('admin.promos.reductionPlan', { pct: c.reduction_pct, plan: c.plan_cible })}</div>
               <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
-                {c.nb_utilisations}/{c.nb_utilisations_max} utilisations
-                {c.expire_at && ' · Expire le ' + new Date(c.expire_at).toLocaleDateString('fr-FR')}
+                {t('admin.promos.utilisations', { nb: c.nb_utilisations, max: c.nb_utilisations_max })}
+                {c.expire_at && ' · ' + t('admin.promos.expireLe', { date: new Date(c.expire_at).toLocaleDateString('fr-FR') })}
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <span style={{ background: c.actif ? '#E8F5E9' : '#F5F5F5', color: c.actif ? '#1B5E20' : '#888', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
-                {c.actif ? 'Actif' : 'Inactif'}
+                {c.actif ? t('admin.promos.actif') : t('admin.promos.inactif')}
               </span>
               <button
                 onClick={function() {
                   api.patch('/admin/codes-promo/' + c.id + '/toggle')
                     .then(function() { charger(); })
-                    .catch(function() { toast.error('Erreur'); });
+                    .catch(function() { toast.error(t('admin.erreurs.generique')); });
                 }}
                 style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: '#fff', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: c.actif ? '#B71C1C' : '#1B6B3A' }}>
-                {c.actif ? 'Désactiver' : 'Activer'}
+                {c.actif ? t('admin.promos.desactiver') : t('admin.promos.activer')}
               </button>
             </div>
           </div>
@@ -1032,8 +1034,8 @@ var NAV = [
 {onglet === 'logs' && (
   <div>
     <div style={{ marginBottom: 20 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>📋 Logs d'audit</h1>
-      <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{logsAudit.length} entrée(s)</p>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('admin.logs.titre')}</h1>
+      <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.logs.compteur', { count: logsAudit.length })}</p>
     </div>
     <div style={{ background: '#fff', borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
       {logsAudit.map(function(l, i) {
@@ -1050,7 +1052,7 @@ var NAV = [
                 <span style={{ background: actionColor + '20', color: actionColor, borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{l.action}</span>
               </div>
               {l.email && <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{l.email}</div>}
-              {l.ip_address && <div style={{ fontSize: 11, color: '#bbb', marginTop: 1 }}>IP: {l.ip_address}</div>}
+              {l.ip_address && <div style={{ fontSize: 11, color: '#bbb', marginTop: 1 }}>{t('admin.logs.ip', { ip: l.ip_address })}</div>}
             </div>
             <div style={{ fontSize: 11, color: '#aaa', flexShrink: 0, textAlign: 'right' }}>
               {new Date(l.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}<br/>

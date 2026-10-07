@@ -9,8 +9,10 @@ import {
   Check, ChevronRight, ChevronLeft, ArrowRight, Building2, Search
 } from 'lucide-react';
 import Logo from '../components/Logo';
+import { useTranslation } from 'react-i18next';
 
 export default function Register() {
+  var t             = useTranslation('public').t;
   var navigate      = useNavigate();
   var { login }     = useAuth();
   var [params]      = useSearchParams();
@@ -39,7 +41,7 @@ export default function Register() {
     : password.length < 6 ? 1
     : password.length < 10 ? 2
     : /[A-Z]/.test(password) && /[0-9]/.test(password) ? 4 : 3;
-  var pwdLabels  = ['', 'Trop court', 'Faible', 'Moyen', 'Fort'];
+  var pwdLabels  = ['', t('register.pwd.tropCourt'), t('register.pwd.faible'), t('register.pwd.moyen'), t('register.pwd.fort')];
   var pwdColors  = ['', '#E53935', '#FB8C00', '#1565C0', '#1B6B3A'];
 
   var etape2Valide = prenomValide && nomValide && emailValide && telephone.length >= 8;
@@ -81,10 +83,10 @@ export default function Register() {
         }
       }
 
-      toast.success('Compte créé avec succès ! 🎉');
+      toast.success(t('register.compteCreeSucces'));
       navigate(role === 'proprietaire' ? '/onboarding/proprietaire' : '/onboarding/locataire');
     } catch (err) {
-      setErreur(err.response && err.response.data ? err.response.data.erreur : 'Erreur lors de la création du compte');
+      setErreur(err.response && err.response.data ? err.response.data.erreur : t('register.erreurCreation'));
       setEtape(2);
     } finally {
       setLoading(false);
@@ -92,7 +94,7 @@ export default function Register() {
   }
 
   // Barre de progression
-  var ETAPES = ['Votre rôle', 'Vos informations', 'Sécurité'];
+  var ETAPES = [t('register.etapes.role'), t('register.etapes.infos'), t('register.etapes.securite')];
 
   return (
     <div style={{ minHeight: '100vh', background: '#F7F8F7', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
@@ -103,8 +105,8 @@ export default function Register() {
           <Logo size={34} showText={true} darkBg={false} />
         </Link>
         <span style={{ fontSize: 13, color: '#888' }}>
-          Déjà un compte ?{' '}
-          <Link to="/login" style={{ color: couleur, fontWeight: 700, textDecoration: 'none' }}>Se connecter</Link>
+          {t('register.dejaCompte')}{' '}
+          <Link to="/login" style={{ color: couleur, fontWeight: 700, textDecoration: 'none' }}>{t('register.seConnecter')}</Link>
         </span>
       </div>
 
@@ -143,10 +145,10 @@ export default function Register() {
             {etape === 1 && (
               <div>
                 <h1 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 6px', letterSpacing: -0.5 }}>
-                  Créer mon compte
+                  {t('register.creerMonCompte')}
                 </h1>
                 <p style={{ fontSize: 14, color: '#888', margin: '0 0 24px' }}>
-                  Gratuit · Sans carte bancaire
+                  {t('register.gratuitSansCB')}
                 </p>
 
                 {/* Google OAuth */}
@@ -159,20 +161,20 @@ export default function Register() {
                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                   </svg>
-                  Continuer avec Google
+                  {t('register.continuerGoogle')}
                 </button>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
                   <div style={{ flex: 1, height: 0.5, background: '#E0E0E0' }} />
-                  <span style={{ fontSize: 12, color: '#aaa' }}>ou par email</span>
+                  <span style={{ fontSize: 12, color: '#aaa' }}>{t('register.ouParEmail')}</span>
                   <div style={{ flex: 1, height: 0.5, background: '#E0E0E0' }} />
                 </div>
 
-                <div style={{ fontSize: 12, color: '#888', fontWeight: 600, marginBottom: 10 }}>Je suis…</div>
+                <div style={{ fontSize: 12, color: '#888', fontWeight: 600, marginBottom: 10 }}>{t('register.jeSuis')}</div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 24 }}>
                   {[
-                    { val: 'proprietaire', icone: <Building2 size={28} strokeWidth={1} color="#1B6B3A" />, titre: 'Propriétaire',  desc: 'Je gère des biens locatifs', couleur: '#1B6B3A', bg: '#E8F5E9' },
-                    { val: 'locataire',    icone: <Search    size={28} strokeWidth={1} color="#1565C0" />, titre: 'Locataire',     desc: 'Je cherche un logement',    couleur: '#1565C0', bg: '#E3F2FD' },
+                    { val: 'proprietaire', icone: <Building2 size={28} strokeWidth={1} color="#1B6B3A" />, titre: t('register.roles.proprietaire.titre'),  desc: t('register.roles.proprietaire.desc'), couleur: '#1B6B3A', bg: '#E8F5E9' },
+                    { val: 'locataire',    icone: <Search    size={28} strokeWidth={1} color="#1565C0" />, titre: t('register.roles.locataire.titre'),     desc: t('register.roles.locataire.desc'),    couleur: '#1565C0', bg: '#E3F2FD' },
                   ].map(function(r) {
                     var sel = role === r.val;
                     return (
@@ -193,18 +195,18 @@ export default function Register() {
 
                 {role === 'proprietaire' && (
                   <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#1B5E20', display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span>✅</span> Essai {planInitial === 'agence' ? 'Agence' : 'Pro'} 1 mois gratuit - sans Mobile Money
+                    <span>✅</span> {t('register.essaiPlan', { plan: planInitial === 'agence' ? t('register.plans.agence') : t('register.plans.pro') })}
                   </div>
                 )}
                 {role === 'locataire' && (
                   <div style={{ background: '#E3F2FD', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#1565C0', display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span>🎁</span> 100% gratuit pour les locataires, pour toujours
+                    <span>🎁</span> {t('register.gratuitLocataires')}
                   </div>
                 )}
 
                 <button onClick={function() { setEtape(2); }}
                   style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: couleur, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                  Continuer <ChevronRight size={18} strokeWidth={2.5} />
+                  {t('register.continuer')} <ChevronRight size={18} strokeWidth={2.5} />
                 </button>
               </div>
             )}
@@ -212,9 +214,9 @@ export default function Register() {
             {/* ═══ ÉTAPE 2 — Informations ════════════════════════ */}
             {etape === 2 && (
               <div>
-                <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 6px' }}>Vos informations</h2>
+                <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 6px' }}>{t('register.vosInformations')}</h2>
                 <p style={{ fontSize: 13, color: '#888', margin: '0 0 20px' }}>
-                  Compte {role === 'proprietaire' ? 'propriétaire' : 'locataire'}
+                  {t('register.compteType', { type: role === 'proprietaire' ? t('register.roles.proprietaire.titre') : t('register.roles.locataire.titre') })}
                 </p>
 
                 {erreur && (
@@ -225,19 +227,19 @@ export default function Register() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
                   <div>
-                    <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Prénom *</label>
+                    <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('register.champPrenom')}</label>
                     <div style={{ position: 'relative' }}>
                       <User size={14} color="#aaa" strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
-                      <input type="text" placeholder="Alpha" value={prenom}
+                      <input type="text" placeholder={t('register.placeholderPrenom')} value={prenom}
                         onChange={function(e) { setPrenom(e.target.value); }}
                         style={{ width: '100%', padding: '10px 12px 10px 34px', border: '1.5px solid ' + (prenom.length > 0 ? (prenomValide ? '#1B6B3A' : '#E53935') : '#E0E0E0'), borderRadius: 10, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
                     </div>
                   </div>
                   <div>
-                    <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Nom *</label>
+                    <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('register.champNom')}</label>
                     <div style={{ position: 'relative' }}>
                       <User size={14} color="#aaa" strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
-                      <input type="text" placeholder="Barry" value={nom}
+                      <input type="text" placeholder={t('register.placeholderNom')} value={nom}
                         onChange={function(e) { setNom(e.target.value); }}
                         style={{ width: '100%', padding: '10px 12px 10px 34px', border: '1.5px solid ' + (nom.length > 0 ? (nomValide ? '#1B6B3A' : '#E53935') : '#E0E0E0'), borderRadius: 10, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
                     </div>
@@ -245,10 +247,10 @@ export default function Register() {
                 </div>
 
                 <div style={{ marginBottom: 14 }}>
-                  <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Email *</label>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('register.champEmail')}</label>
                   <div style={{ position: 'relative' }}>
                     <Mail size={14} color="#aaa" strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
-                    <input type="email" placeholder="vous@email.com" value={email}
+                    <input type="email" placeholder={t('register.placeholderEmail')} value={email}
                       onChange={function(e) { setEmail(e.target.value); }}
                       style={{ width: '100%', padding: '10px 12px 10px 34px', border: '1.5px solid ' + (email.length > 0 ? (emailValide ? '#1B6B3A' : '#E53935') : '#E0E0E0'), borderRadius: 10, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
                     {email.length > 0 && emailValide && (
@@ -258,14 +260,14 @@ export default function Register() {
                 </div>
 
                 <div style={{ marginBottom: 14 }}>
-                  <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Téléphone *</label>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('register.champTelephone')}</label>
                   <div style={{ display: 'flex', gap: 8 }}>
                     <div style={{ background: '#F7F8F7', border: '1.5px solid #E0E0E0', borderRadius: 10, padding: '10px 12px', fontSize: 14, color: '#555', display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
                       🇬🇳 +224
                     </div>
                     <div style={{ position: 'relative', flex: 1 }}>
                       <Phone size={14} color="#aaa" strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
-                      <input type="tel" placeholder="622 00 00 00" value={telephone}
+                      <input type="tel" placeholder={t('register.placeholderTelephone')} value={telephone}
                         onChange={function(e) { setTelephone(e.target.value); }}
                         style={{ width: '100%', padding: '10px 12px 10px 34px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
                     </div>
@@ -275,14 +277,14 @@ export default function Register() {
                 {/* Code parrainage */}
                 <div style={{ marginBottom: 20 }}>
                   <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>
-                    Code parrainage <span style={{ color: '#aaa', fontWeight: 400 }}>(optionnel)</span>
+                    {t('register.codeParrainage')} <span style={{ color: '#aaa', fontWeight: 400 }}>({t('register.optionnel')})</span>
                   </label>
-                  <input type="text" placeholder="Ex: MAMA1234" value={codeParrainage}
+                  <input type="text" placeholder={t('register.placeholderParrainage')} value={codeParrainage}
                     onChange={function(e) { setCodeParrainage(e.target.value.toUpperCase()); }}
                     style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'monospace', letterSpacing: 1, boxSizing: 'border-box' }} />
                   {codeParrainage && (
                     <div style={{ fontSize: 12, color: '#1B6B3A', marginTop: 4 }}>
-                      🎁 Vous recevrez 15 000 GNF de crédit à l'inscription !
+                      🎁 {t('register.creditParrainage')}
                     </div>
                   )}
                 </div>
@@ -290,12 +292,12 @@ export default function Register() {
                 <div style={{ display: 'flex', gap: 10 }}>
                   <button onClick={function() { setEtape(1); }}
                     style={{ padding: '12px 16px', borderRadius: 12, border: '1.5px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <ChevronLeft size={16} strokeWidth={2} /> Retour
+                    <ChevronLeft size={16} strokeWidth={2} /> {t('register.retour')}
                   </button>
                   <button onClick={function() { if (etape2Valide) setEtape(3); }}
                     disabled={!etape2Valide}
                     style={{ flex: 1, padding: '12px', borderRadius: 12, border: 'none', background: etape2Valide ? couleur : '#E0E0E0', color: etape2Valide ? '#fff' : '#aaa', fontSize: 14, fontWeight: 700, cursor: etape2Valide ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                    Continuer <ChevronRight size={16} strokeWidth={2.5} />
+                    {t('register.continuer')} <ChevronRight size={16} strokeWidth={2.5} />
                   </button>
                 </div>
               </div>
@@ -304,8 +306,8 @@ export default function Register() {
             {/* ═══ ÉTAPE 3 — Sécurité ════════════════════════════ */}
             {etape === 3 && (
               <div>
-                <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 6px' }}>Sécurisez votre compte</h2>
-                <p style={{ fontSize: 13, color: '#888', margin: '0 0 20px' }}>Choisissez un mot de passe robuste</p>
+                <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 6px' }}>{t('register.securisezCompte')}</h2>
+                <p style={{ fontSize: 13, color: '#888', margin: '0 0 20px' }}>{t('register.choisissezMotDePasse')}</p>
 
                 {/* Récapitulatif */}
                 <div style={{ background: '#F7F8F7', borderRadius: 12, padding: '12px 16px', marginBottom: 20, fontSize: 13 }}>
@@ -313,17 +315,17 @@ export default function Register() {
                     <span style={{ fontSize: 16 }}>{role === 'proprietaire' ? '🏠' : '🔍'}</span>
                     <span style={{ fontWeight: 700, color: '#1B2B22' }}>{prenom} {nom}</span>
                     <span style={{ background: couleurBg, color: couleur, borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>
-                      {role === 'proprietaire' ? 'Propriétaire' : 'Locataire'}
+                      {role === 'proprietaire' ? t('register.roles.proprietaire.titre') : t('register.roles.locataire.titre')}
                     </span>
                   </div>
                   <div style={{ fontSize: 12, color: '#888' }}>{email}</div>
                 </div>
 
                 <div style={{ marginBottom: 14 }}>
-                  <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Mot de passe *</label>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('register.champMotDePasse')}</label>
                   <div style={{ position: 'relative' }}>
                     <Lock size={14} color="#aaa" strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
-                    <input type={showPwd ? 'text' : 'password'} placeholder="Minimum 6 caractères" value={password}
+                    <input type={showPwd ? 'text' : 'password'} placeholder={t('register.placeholderMotDePasse')} value={password}
                       onChange={function(e) { setPassword(e.target.value); }}
                       style={{ width: '100%', padding: '10px 40px 10px 34px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
                     <button type="button" onClick={function() { setShowPwd(!showPwd); }}
@@ -352,24 +354,24 @@ export default function Register() {
                   <input type="checkbox" id="cgu" checked={cgu} onChange={function(e) { setCgu(e.target.checked); }}
                     style={{ marginTop: 2, width: 16, height: 16, accentColor: couleur, flexShrink: 0, cursor: 'pointer' }} />
                   <label htmlFor="cgu" style={{ fontSize: 13, color: '#555', lineHeight: 1.5, cursor: 'pointer' }}>
-                    J'accepte les{' '}
-                    <Link to="/cgu" target="_blank" style={{ color: couleur, textDecoration: 'none', fontWeight: 600 }}>Conditions d'utilisation</Link>
-                    {' '}et la{' '}
-                    <Link to="/confidentialite" target="_blank" style={{ color: couleur, textDecoration: 'none', fontWeight: 600 }}>Politique de confidentialité</Link>
+                    {t('register.jAccepteLes')}{' '}
+                    <Link to="/cgu" target="_blank" style={{ color: couleur, textDecoration: 'none', fontWeight: 600 }}>{t('register.conditionsUtilisation')}</Link>
+                    {' '}{t('register.etLa')}{' '}
+                    <Link to="/confidentialite" target="_blank" style={{ color: couleur, textDecoration: 'none', fontWeight: 600 }}>{t('register.politiqueConfidentialite')}</Link>
                   </label>
                 </div>
 
                 <div style={{ display: 'flex', gap: 10 }}>
                   <button onClick={function() { setEtape(2); }}
                     style={{ padding: '12px 16px', borderRadius: 12, border: '1.5px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <ChevronLeft size={16} strokeWidth={2} /> Retour
+                    <ChevronLeft size={16} strokeWidth={2} /> {t('register.retour')}
                   </button>
                   <button onClick={soumettre}
                     disabled={!etape3Valide || loading}
                     style={{ flex: 1, padding: '12px', borderRadius: 12, border: 'none', background: etape3Valide && !loading ? couleur : '#E0E0E0', color: etape3Valide && !loading ? '#fff' : '#aaa', fontSize: 14, fontWeight: 700, cursor: etape3Valide && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                     {loading
-                      ? <><div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Création...</>
-                      : <>Créer mon compte <ArrowRight size={16} strokeWidth={2.5} /></>
+                      ? <><div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> {t('register.creationEnCours')}</>
+                      : <>{t('register.creerMonCompteBtn')} <ArrowRight size={16} strokeWidth={2.5} /></>
                     }
                   </button>
                 </div>
@@ -378,8 +380,8 @@ export default function Register() {
           </div>
 
           <p style={{ textAlign: 'center', fontSize: 13, color: '#888', marginTop: 20 }}>
-            Déjà un compte ?{' '}
-            <Link to="/login" style={{ color: couleur, fontWeight: 700, textDecoration: 'none' }}>Se connecter</Link>
+            {t('register.dejaCompte')}{' '}
+            <Link to="/login" style={{ color: couleur, fontWeight: 700, textDecoration: 'none' }}>{t('register.seConnecter')}</Link>
           </p>
         </div>
       </div>

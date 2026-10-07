@@ -6,38 +6,40 @@ import {
 } from 'lucide-react';
 import Logo from '../Logo';
 import { useAuth } from '../../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 var NAV_PROPRIO = [
-  { path: '/dashboard',              icon: LayoutDashboard, label: 'Tableau de bord'  },
-  { path: '/dashboard/biens',        icon: Home,            label: 'Mes biens'        },
-  { path: '/dashboard/locataires',   icon: Users,           label: 'Locataires'       },
-  { path: '/dashboard/reservations', icon: CalendarCheck,   label: 'Candidatures'     },
-  { path: '/dashboard/paiements',    icon: CreditCard,      label: 'Paiements'        },
-  { path: '/dashboard/documents',    icon: FileText,        label: 'Documents'        },
-  { path: '/dashboard/alertes',      icon: Bell,            label: 'Alertes'          },
-  { path: '/dashboard/messages',     icon: MessageCircle,   label: 'Messages'         },
-  { path: '/dashboard/rapports',     icon: TrendingUp,      label: 'Rapports'         },
-  { path: '/dashboard/reclamations', icon: Wrench,          label: 'Réclamations'     },
-  { path: '/dashboard/preavis',      icon: Send,            label: 'Préavis'          },
-  { path: '/dashboard/parametres',   icon: Settings,        label: 'Paramètres'       },
+  { path: '/dashboard',              icon: LayoutDashboard, labelKey: 'tableauDeBord'  },
+  { path: '/dashboard/biens',        icon: Home,            labelKey: 'mesBiens'       },
+  { path: '/dashboard/locataires',   icon: Users,           labelKey: 'locataires'     },
+  { path: '/dashboard/reservations', icon: CalendarCheck,   labelKey: 'candidatures'   },
+  { path: '/dashboard/paiements',    icon: CreditCard,      labelKey: 'paiements'      },
+  { path: '/dashboard/documents',    icon: FileText,        labelKey: 'documents'      },
+  { path: '/dashboard/alertes',      icon: Bell,            labelKey: 'alertes'        },
+  { path: '/dashboard/messages',     icon: MessageCircle,   labelKey: 'messages'       },
+  { path: '/dashboard/rapports',     icon: TrendingUp,      labelKey: 'rapports'       },
+  { path: '/dashboard/reclamations', icon: Wrench,          labelKey: 'reclamations'   },
+  { path: '/dashboard/preavis',      icon: Send,            labelKey: 'preavis'        },
+  { path: '/dashboard/parametres',   icon: Settings,        labelKey: 'parametres'     },
 ];
 
 var NAV_LOCATAIRE = [
-  { path: '/dashboard',               icon: LayoutDashboard, label: 'Tableau de bord' },
-  { path: '/dashboard/mes-locations', icon: Home,            label: 'Mes locations'   },
-  { path: '/dashboard/reservations',  icon: CalendarCheck,   label: 'Candidatures'    },
-  { path: '/dashboard/paiements',     icon: CreditCard,      label: 'Paiements'       },
-  { path: '/dashboard/documents',     icon: FileText,        label: 'Documents'       },
-  { path: '/dashboard/messages',      icon: MessageCircle,   label: 'Messages'        },
-  { path: '/dashboard/reclamations',  icon: Wrench,          label: 'Réclamations'    },
-  { path: '/dashboard/preavis',       icon: Send,            label: 'Préavis'         },
-  { path: '/dashboard/historique',    icon: Clock,           label: 'Historique'      },
-  { path: '/dashboard/parametres',    icon: Settings,        label: 'Paramètres'      },
+  { path: '/dashboard',               icon: LayoutDashboard, labelKey: 'tableauDeBord'  },
+  { path: '/dashboard/mes-locations', icon: Home,            labelKey: 'mesLocations'   },
+  { path: '/dashboard/reservations',  icon: CalendarCheck,   labelKey: 'candidatures'   },
+  { path: '/dashboard/paiements',     icon: CreditCard,      labelKey: 'paiements'      },
+  { path: '/dashboard/documents',     icon: FileText,        labelKey: 'documents'      },
+  { path: '/dashboard/messages',      icon: MessageCircle,   labelKey: 'messages'       },
+  { path: '/dashboard/reclamations',  icon: Wrench,          labelKey: 'reclamations'   },
+  { path: '/dashboard/preavis',       icon: Send,            labelKey: 'preavis'        },
+  { path: '/dashboard/historique',    icon: Clock,           labelKey: 'historique'     },
+  { path: '/dashboard/parametres',    icon: Settings,        labelKey: 'parametres'     },
 ];
 
 export default function Sidebar({ ongletActif, setOnglet, open, alertes }) {
   var auth = useAuth();
   var user = auth.user;
+  var t    = useTranslation('dashboard').t;
   var nav  = user && (user.role === 'proprietaire' || user.role === 'les_deux') ? NAV_PROPRIO : NAV_LOCATAIRE;
   var nbNonLus = alertes ? alertes.filter(function(a) { return !a.lu; }).length : 0;
   var initiales = user ? ((user.prenom || '').charAt(0) + (user.nom || '').charAt(0)).toUpperCase() : 'U';
@@ -55,7 +57,7 @@ export default function Sidebar({ ongletActif, setOnglet, open, alertes }) {
           <div>
             <div style={{ fontWeight: 800, fontSize: 15, color: '#1B2B22', letterSpacing: -0.3 }}>Werdhe</div>
             <div style={{ fontSize: 10, color: '#aaa', marginTop: 1 }}>
-              {user && (user.role === 'proprietaire' || user.role === 'les_deux') ? 'Espace propriétaire' : 'Espace locataire'}
+              {user && (user.role === 'proprietaire' || user.role === 'les_deux') ? t('sidebar.espaceProprietaire') : t('sidebar.espaceLocataire')}
             </div>
           </div>
         )}
@@ -67,11 +69,12 @@ export default function Sidebar({ ongletActif, setOnglet, open, alertes }) {
           var actif = ongletActif === item.path;
           var Icon  = item.icon;
           var badge = (item.path === '/dashboard/messages' || item.path === '/dashboard/alertes') ? nbNonLus : 0;
+          var label = t('sidebar.nav.' + item.labelKey);
 
           return (
             <button key={item.path}
               onClick={function() { setOnglet(item.path); }}
-              title={item.label}
+              title={label}
               style={{
                 width: '100%',
                 display: 'flex', alignItems: 'center',
@@ -103,7 +106,7 @@ export default function Sidebar({ ongletActif, setOnglet, open, alertes }) {
               {/* Label */}
               {open && (
                 <span style={{ fontSize: 13, fontWeight: actif ? 700 : 500, whiteSpace: 'nowrap', flex: 1 }}>
-                  {item.label}
+                  {label}
                 </span>
               )}
 
@@ -121,7 +124,7 @@ export default function Sidebar({ ongletActif, setOnglet, open, alertes }) {
         <div style={{ margin: '0 8px 8px', background: user.plan === 'agence' ? '#F3E5F5' : '#E8F5E9', borderRadius: 10, padding: '7px 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
           <Zap size={12} strokeWidth={2} color={user.plan === 'agence' ? '#7B1FA2' : '#1B6B3A'} />
           <span style={{ fontSize: 11, color: user.plan === 'agence' ? '#7B1FA2' : '#1B6B3A', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-            Plan {user.plan}
+            {t('sidebar.plan', { plan: user.plan })}
           </span>
         </div>
       )}
@@ -144,7 +147,7 @@ export default function Sidebar({ ongletActif, setOnglet, open, alertes }) {
             </div>
             <button onClick={auth.logout}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#aaa', padding: 4, display: 'flex', alignItems: 'center' }}
-              title="Déconnexion">
+              title={t('sidebar.deconnexion')}>
               <LogOut size={14} strokeWidth={1.5} />
             </button>
           </>

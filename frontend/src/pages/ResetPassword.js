@@ -5,13 +5,18 @@ import api from '../services/api';
 import toast from 'react-hot-toast';
 import Logo from '../components/Logo';
 import { Lock, Eye, EyeOff, ArrowRight, ArrowLeft, ShieldCheck } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
-var SLIDES = [
-  { img: '/img/residences/immeuble-moderne.jpg',      titre: 'Un dernier pas', sous: 'Choisissez un nouveau mot de passe robuste pour sécuriser votre compte' },
-  { img: '/img/residences/vue-aerienne-conakry.jpg',   titre: 'Presque terminé', sous: 'Vous pourrez vous reconnecter immédiatement après' },
-];
+function getSlides(t) {
+  return [
+    { img: '/img/residences/immeuble-moderne.jpg',      titre: t('resetPassword.slides.0.titre'), sous: t('resetPassword.slides.0.sous') },
+    { img: '/img/residences/vue-aerienne-conakry.jpg',   titre: t('resetPassword.slides.1.titre'), sous: t('resetPassword.slides.1.sous') },
+  ];
+}
 
 export default function ResetPassword() {
+  var t = useTranslation('public').t;
+  var SLIDES = getSlides(t);
   var [searchParams] = useSearchParams();
   var token    = searchParams.get('token');
   var navigate = useNavigate();
@@ -27,7 +32,7 @@ export default function ResetPassword() {
     : motDePasse.length < 6 ? 1
     : motDePasse.length < 10 ? 2
     : /[A-Z]/.test(motDePasse) && /[0-9]/.test(motDePasse) ? 4 : 3;
-  var pwdLabels = ['', 'Trop court', 'Faible', 'Moyen', 'Fort'];
+  var pwdLabels = ['', t('resetPassword.pwd.tropCourt'), t('resetPassword.pwd.faible'), t('resetPassword.pwd.moyen'), t('resetPassword.pwd.fort')];
   var pwdColors = ['', '#E53935', '#FB8C00', '#1565C0', '#1B6B3A'];
 
   useEffect(function() {
@@ -41,17 +46,17 @@ export default function ResetPassword() {
     e.preventDefault();
     setErreur('');
 
-    if (motDePasse !== confirmation) { setErreur('Les mots de passe ne correspondent pas'); return; }
-    if (motDePasse.length < 6) { setErreur('Le mot de passe doit faire au moins 6 caractères'); return; }
+    if (motDePasse !== confirmation) { setErreur(t('resetPassword.erreurCorrespondance')); return; }
+    if (motDePasse.length < 6) { setErreur(t('resetPassword.erreurLongueur')); return; }
 
     setLoading(true);
     api.post('/auth/reset-password', { token, nouveau_mot_de_passe: motDePasse })
       .then(function() {
-        toast.success('Mot de passe mis à jour !');
+        toast.success(t('resetPassword.motDePasseMisAJour'));
         navigate('/login');
       })
       .catch(function(err) {
-        setErreur(err.response && err.response.data ? err.response.data.erreur : 'Lien invalide ou expiré');
+        setErreur(err.response && err.response.data ? err.response.data.erreur : t('resetPassword.lienInvalideErreur'));
       })
       .finally(function() { setLoading(false); });
   }
@@ -66,13 +71,13 @@ export default function ResetPassword() {
             <Logo size={36} showText={true} darkBg={false} />
           </div>
           <div style={{ textAlign: 'center' }}>
-            <h1 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>Lien invalide</h1>
+            <h1 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>{t('resetPassword.lienInvalide')}</h1>
             <p style={{ fontSize: 13, color: '#888', margin: '0 0 22px', lineHeight: 1.6 }}>
-              Ce lien de réinitialisation n'est plus valable. Faites une nouvelle demande.
+              {t('resetPassword.lienPlusValable')}
             </p>
             <Link to="/forgot-password"
               style={{ width: '100%', padding: '13px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, textDecoration: 'none', boxSizing: 'border-box' }}>
-              Nouvelle demande <ArrowRight size={15} strokeWidth={2.5} />
+              {t('resetPassword.nouvelleDemande')} <ArrowRight size={15} strokeWidth={2.5} />
             </Link>
           </div>
         </div>
@@ -114,9 +119,9 @@ export default function ResetPassword() {
             <ShieldCheck size={24} strokeWidth={2} color="#1B6B3A" />
           </div>
           <h1 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 4px', letterSpacing: -0.5 }}>
-            Nouveau mot de passe
+            {t('resetPassword.nouveauMotDePasse')}
           </h1>
-          <p style={{ fontSize: 13, color: '#888', margin: 0 }}>Choisissez un mot de passe sécurisé</p>
+          <p style={{ fontSize: 13, color: '#888', margin: 0 }}>{t('resetPassword.choisissezSecurise')}</p>
         </div>
 
         {erreur && (
@@ -127,10 +132,10 @@ export default function ResetPassword() {
 
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: 14 }}>
-            <label style={{ fontSize: 11, fontWeight: 700, color: '#555', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.5 }}>Nouveau mot de passe</label>
+            <label style={{ fontSize: 11, fontWeight: 700, color: '#555', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.5 }}>{t('resetPassword.nouveauMotDePasse')}</label>
             <div style={{ position: 'relative' }}>
               <Lock size={14} color="#bbb" strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-              <input type={showPwd ? 'text' : 'password'} placeholder="Minimum 6 caractères" value={motDePasse} autoFocus
+              <input type={showPwd ? 'text' : 'password'} placeholder={t('resetPassword.placeholderMotDePasse')} value={motDePasse} autoFocus
                 onChange={function(e) { setMotDePasse(e.target.value); }}
                 style={{ width: '100%', padding: '11px 40px 11px 36px', border: '1.5px solid #E8E8E8', borderRadius: 10, fontSize: 14, outline: 'none', background: '#FAFAFA', boxSizing: 'border-box' }} />
               <button type="button" onClick={function() { setShowPwd(!showPwd); }}
@@ -151,10 +156,10 @@ export default function ResetPassword() {
           </div>
 
           <div style={{ marginBottom: 20 }}>
-            <label style={{ fontSize: 11, fontWeight: 700, color: '#555', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.5 }}>Confirmer</label>
+            <label style={{ fontSize: 11, fontWeight: 700, color: '#555', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.5 }}>{t('resetPassword.confirmer')}</label>
             <div style={{ position: 'relative' }}>
               <Lock size={14} color="#bbb" strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-              <input type={showPwd ? 'text' : 'password'} placeholder="Répétez le mot de passe" value={confirmation}
+              <input type={showPwd ? 'text' : 'password'} placeholder={t('resetPassword.placeholderConfirmation')} value={confirmation}
                 onChange={function(e) { setConfirmation(e.target.value); }}
                 style={{ width: '100%', padding: '11px 12px 11px 36px', border: '1.5px solid ' + (confirmation.length > 0 ? (confirmation === motDePasse ? '#1B6B3A' : '#E53935') : '#E8E8E8'), borderRadius: 10, fontSize: 14, outline: 'none', background: '#FAFAFA', boxSizing: 'border-box' }} />
             </div>
@@ -163,14 +168,14 @@ export default function ResetPassword() {
           <button type="submit" disabled={loading}
             style={{ width: '100%', padding: '13px', borderRadius: 10, border: 'none', background: loading ? '#aaa' : '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 18, boxShadow: loading ? 'none' : '0 4px 16px rgba(27,107,58,0.3)' }}>
             {loading
-              ? <><div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Mise à jour...</>
-              : <>Mettre à jour <ArrowRight size={15} strokeWidth={2.5} /></>
+              ? <><div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> {t('resetPassword.miseAJourEnCours')}</>
+              : <>{t('resetPassword.mettreAJour')} <ArrowRight size={15} strokeWidth={2.5} /></>
             }
           </button>
         </form>
 
         <Link to="/login" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 13, color: '#1B6B3A', fontWeight: 700, textDecoration: 'none' }}>
-          <ArrowLeft size={14} strokeWidth={2} /> Retour à la connexion
+          <ArrowLeft size={14} strokeWidth={2} /> {t('resetPassword.retourConnexion')}
         </Link>
       </div>
 
