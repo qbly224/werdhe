@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import PhotoUpload from '../components/PhotoUpload';
@@ -7,48 +8,50 @@ import toast from 'react-hot-toast';
 import './AjouterLogement.css';
 import { MapPin, Home, Building2, Building, Warehouse, Store, BedDouble, DoorOpen, Landmark, Hotel, ShoppingBag, Factory, Sparkles } from 'lucide-react';
 
+// NOTE : label/description sont traduits à l'affichage via t('ajouterLogement.categories.types.<value>.*'),
+// et groupe via t('ajouterLogement.categories.groupes.<groupe>'). value/groupe restent des identifiants stables.
 var CATEGORIES = [
   {
-    groupe: 'Villas',
+    groupe: 'villas',
     types: [
-      { value: 'villa_luxe',     label: 'Villa de luxe',        icon: <Building2  size={22} strokeWidth={1.5} color="#7B1FA2" />, description: '4+ chambres, piscine, jardin, gardien',             hasChambres: true,  chambresMin: 4, chambresMax: 20, hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'villa_standard', label: 'Villa standard',       icon: <Building2  size={22} strokeWidth={1.5} color="#1B6B3A" />, description: '3-4 chambres, cour, clôture',                       hasChambres: true,  chambresMin: 3, chambresMax: 10, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'villa_luxe',     icon: <Building2  size={22} strokeWidth={1.5} color="#7B1FA2" />, hasChambres: true,  chambresMin: 4, chambresMax: 20, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'villa_standard', icon: <Building2  size={22} strokeWidth={1.5} color="#1B6B3A" />, hasChambres: true,  chambresMin: 3, chambresMax: 10, hasSallesBain: true,  hasSuperficie: true  },
     ]
   },
   {
-    groupe: 'Maisons',
+    groupe: 'maisons',
     types: [
-      { value: 'maison_moderne',   label: 'Maison moderne',          icon: <Home       size={22} strokeWidth={1.5} color="#1565C0" />, description: 'Construction en dur, parpaings/ciment',              hasChambres: true,  chambresMin: 1, chambresMax: 15, hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'maison_banco',     label: 'Maison traditionnelle',   icon: <Home       size={22} strokeWidth={1.5} color="#E65100" />, description: 'Murs en banco, toit en tôle ou chaume',             hasChambres: true,  chambresMin: 1, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'maison_chantier',  label: 'Maison en construction',  icon: <Building   size={22} strokeWidth={1.5} color="#888"    />, description: 'Rez-de-chaussée habitable, étage en attente',       hasChambres: true,  chambresMin: 1, chambresMax: 10, hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'concession',       label: 'Concession familiale',    icon: <Landmark   size={22} strokeWidth={1.5} color="#1B6B3A" />, description: 'Plusieurs logements autour d\'une cour commune',   hasChambres: true,  chambresMin: 1, chambresMax: 30, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'maison_moderne',   icon: <Home       size={22} strokeWidth={1.5} color="#1565C0" />, hasChambres: true,  chambresMin: 1, chambresMax: 15, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'maison_banco',     icon: <Home       size={22} strokeWidth={1.5} color="#E65100" />, hasChambres: true,  chambresMin: 1, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'maison_chantier',  icon: <Building   size={22} strokeWidth={1.5} color="#888"    />, hasChambres: true,  chambresMin: 1, chambresMax: 10, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'concession',       icon: <Landmark   size={22} strokeWidth={1.5} color="#1B6B3A" />, hasChambres: true,  chambresMin: 1, chambresMax: 30, hasSallesBain: true,  hasSuperficie: true  },
     ]
   },
   {
-    groupe: 'Appartements',
+    groupe: 'appartements',
     types: [
-      { value: 'appartement',      label: 'Appartement',             icon: <Building2  size={22} strokeWidth={1.5} color="#1565C0" />, description: 'Logement dans un immeuble collectif',               hasChambres: true,  chambresMin: 1, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'duplex',           label: 'Duplex',                  icon: <Building2  size={22} strokeWidth={1.5} color="#7B1FA2" />, description: 'Appartement sur deux niveaux',                      hasChambres: true,  chambresMin: 2, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'logement_social',  label: 'Logement social',         icon: <Building   size={22} strokeWidth={1.5} color="#37474F" />, description: 'Programme Sonapi, Addoha...',                       hasChambres: true,  chambresMin: 1, chambresMax: 5,  hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'appartement',      icon: <Building2  size={22} strokeWidth={1.5} color="#1565C0" />, hasChambres: true,  chambresMin: 1, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'duplex',           icon: <Building2  size={22} strokeWidth={1.5} color="#7B1FA2" />, hasChambres: true,  chambresMin: 2, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'logement_social',  icon: <Building   size={22} strokeWidth={1.5} color="#37474F" />, hasChambres: true,  chambresMin: 1, chambresMax: 5,  hasSallesBain: true,  hasSuperficie: true  },
     ]
   },
   {
-    groupe: 'Chambres & Studios',
+    groupe: 'chambresStudios',
     types: [
-      { value: 'studio_moderne',    label: 'Studio moderne',         icon: <Hotel      size={22} strokeWidth={1.5} color="#1B6B3A" />, description: '1 pièce + sanitaires internes',                     hasChambres: false, chambresFixed: 1,               hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'chambre_habitant',  label: "Chambre chez l'habitant",icon: <BedDouble  size={22} strokeWidth={1.5} color="#E65100" />, description: 'Une pièce, sanitaires communs',                     hasChambres: false, chambresFixed: 1,               hasSallesBain: false, hasSuperficie: true  },
-      { value: 'chambre_cour',      label: 'Chambre en cour commune',icon: <DoorOpen   size={22} strokeWidth={1.5} color="#888"    />, description: 'Petit espace dans une concession',                  hasChambres: false, chambresFixed: 1,               hasSallesBain: false, hasSuperficie: true  },
-      { value: 'habitat_precaire',  label: 'Habitat précaire',       icon: <Home       size={22} strokeWidth={1.5} color="#B71C1C" />, description: 'Construction en tôles/planches',                    hasChambres: true,  chambresMin: 0, chambresMax: 5,  hasSallesBain: false, hasSuperficie: false },
+      { value: 'studio_moderne',    icon: <Hotel      size={22} strokeWidth={1.5} color="#1B6B3A" />, hasChambres: false, chambresFixed: 1,               hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'chambre_habitant',  icon: <BedDouble  size={22} strokeWidth={1.5} color="#E65100" />, hasChambres: false, chambresFixed: 1,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'chambre_cour',      icon: <DoorOpen   size={22} strokeWidth={1.5} color="#888"    />, hasChambres: false, chambresFixed: 1,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'habitat_precaire',  icon: <Home       size={22} strokeWidth={1.5} color="#B71C1C" />, hasChambres: true,  chambresMin: 0, chambresMax: 5,  hasSallesBain: false, hasSuperficie: false },
     ]
   },
   {
-    groupe: 'Locaux commerciaux',
+    groupe: 'locauxCommerciaux',
     types: [
-      { value: 'boutique',          label: 'Boutique / Échoppe',     icon: <Store      size={22} strokeWidth={1.5} color="#E65100" />, description: 'Vente de détail, marché',                           hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
-      { value: 'bureau',            label: 'Bureau',                 icon: <Warehouse  size={22} strokeWidth={1.5} color="#1565C0" />, description: 'Activités administratives',                         hasChambres: true,  chambresMin: 0, chambresMax: 20, hasSallesBain: false, hasSuperficie: true  },
-      { value: 'entrepot',          label: 'Entrepôt / Hangar',      icon: <Factory    size={22} strokeWidth={1.5} color="#37474F" />, description: 'Stockage de marchandises',                          hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
-      { value: 'local_commercial',  label: 'Local commercial',       icon: <Building   size={22} strokeWidth={1.5} color="#7B1FA2" />, description: 'RDC d\'immeuble, usage mixte',                     hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
-      { value: 'centre_commercial', label: 'Centre commercial',      icon: <ShoppingBag size={22} strokeWidth={1.5} color="#1B6B3A" />, description: 'Diamond Plaza, grandes surfaces...',               hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'boutique',          icon: <Store      size={22} strokeWidth={1.5} color="#E65100" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'bureau',            icon: <Warehouse  size={22} strokeWidth={1.5} color="#1565C0" />, hasChambres: true,  chambresMin: 0, chambresMax: 20, hasSallesBain: false, hasSuperficie: true  },
+      { value: 'entrepot',          icon: <Factory    size={22} strokeWidth={1.5} color="#37474F" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'local_commercial',  icon: <Building   size={22} strokeWidth={1.5} color="#7B1FA2" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'centre_commercial', icon: <ShoppingBag size={22} strokeWidth={1.5} color="#1B6B3A" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
     ]
   },
 ];
@@ -71,6 +74,7 @@ var SOUS_PREFECTURES = {
 };
 const AjouterLogement = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation('profil');
 
   const [etape, setEtape] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -203,16 +207,22 @@ const AjouterLogement = () => {
 
       const res = await api.post('/logements', payload);
       setLogementCree(res.data.logement);
-      toast.success('Logement créé ! Ajoutez maintenant des photos.');
+      toast.success(t('ajouterLogement.toastLogementCree'));
       setEtape(5); // Aller à l'étape photos
     } catch (err) {
-      setErreur(err.response?.data?.erreur || 'Erreur lors de l\'ajout');
+      setErreur(err.response?.data?.erreur || t('ajouterLogement.erreurAjout'));
     } finally {
       setLoading(false);
     }
   };
 
-  const ETAPES = ['Catégorie', 'Localisation', 'Détails', 'Équipements', 'Photos'];
+  const ETAPES = [
+    t('ajouterLogement.etapesIndicateur.categorie'),
+    t('ajouterLogement.etapesIndicateur.localisation'),
+    t('ajouterLogement.etapesIndicateur.details'),
+    t('ajouterLogement.etapesIndicateur.equipements'),
+    t('ajouterLogement.etapesIndicateur.photos'),
+  ];
 
   return (
     <div>
@@ -222,9 +232,9 @@ const AjouterLogement = () => {
 
           <div className="ajouter-header">
             <h1 style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 24, fontWeight: 800, color: '#1B2B22', margin: 0 }}>
-              <Home size={24} strokeWidth={1.5} color="#1B6B3A" /> Publier un logement
+              <Home size={24} strokeWidth={1.5} color="#1B6B3A" /> {t('ajouterLogement.header.titre')}
             </h1>
-            <p>Mettez votre bien en location sur Werdhè</p>
+            <p>{t('ajouterLogement.header.sousTitre')}</p>
           </div>
 
           {/* Indicateur étapes */}
@@ -243,18 +253,18 @@ const AjouterLogement = () => {
           {/* ÉTAPE 1 — Catégorie */}
           {etape === 1 && (
             <div className="etape-card">
-              <h2>Quel type de bien voulez-vous louer ?</h2>
-              <p className="etape-subtitle">Le formulaire s'adaptera selon votre choix</p>
+              <h2>{t('ajouterLogement.etape1.titre')}</h2>
+              <p className="etape-subtitle">{t('ajouterLogement.etape1.sousTitre')}</p>
               {CATEGORIES.map(groupe => (
                 <div key={groupe.groupe} className="groupe-categorie">
-                  <h3 className="groupe-titre">{groupe.groupe}</h3>
+                  <h3 className="groupe-titre">{t('ajouterLogement.categories.groupes.' + groupe.groupe)}</h3>
                   <div className="categories-grid">
                     {groupe.types.map(cat => (
                       <button key={cat.value} className="categorie-card"
                         onClick={() => handleSelectCategorie(cat)}>
                         <span className="categorie-icon">{cat.icon}</span>
-                        <strong>{cat.label}</strong>
-                        <small>{cat.description}</small>
+                        <strong>{t('ajouterLogement.categories.types.' + cat.value + '.label')}</strong>
+                        <small>{t('ajouterLogement.categories.types.' + cat.value + '.description')}</small>
                       </button>
                     ))}
                   </div>
@@ -269,34 +279,34 @@ const AjouterLogement = () => {
               <div className="categorie-recap">
                 <span className="categorie-recap-icon">{categorieSelectionnee?.icon}</span>
                 <div>
-                  <strong>{categorieSelectionnee?.label}</strong>
-                  <small>{categorieSelectionnee?.description}</small>
+                  <strong>{categorieSelectionnee && t('ajouterLogement.categories.types.' + categorieSelectionnee.value + '.label')}</strong>
+                  <small>{categorieSelectionnee && t('ajouterLogement.categories.types.' + categorieSelectionnee.value + '.description')}</small>
                 </div>
-                <button className="btn-changer" onClick={() => setEtape(1)}>Changer</button>
+                <button className="btn-changer" onClick={() => setEtape(1)}>{t('ajouterLogement.etape2.changer')}</button>
               </div>
                             <h2 style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 4px' }}>
-                <MapPin size={20} strokeWidth={1.5} color="#1B6B3A" /> Localisation du bien
+                <MapPin size={20} strokeWidth={1.5} color="#1B6B3A" /> {t('ajouterLogement.etape2.titre')}
               </h2>
-              <p className="etape-subtitle">Soyez précis pour aider les locataires à vous trouver</p>
+              <p className="etape-subtitle">{t('ajouterLogement.etape2.sousTitre')}</p>
 
               {/* Type de logement — auto depuis étape 1 */}
               {categorieSelectionnee && (
                 <div className="form-group">
-                  <label>Type de logement</label>
+                  <label>{t('ajouterLogement.etape2.typeLogement')}</label>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: '#E8F5E9', borderRadius: 10, border: '1.5px solid #A5D6A7' }}>
                     <span>{categorieSelectionnee.icon}</span>
                     <div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{categorieSelectionnee.label}</div>
-                      <div style={{ fontSize: 12, color: '#888' }}>{categorieSelectionnee.description}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{t('ajouterLogement.categories.types.' + categorieSelectionnee.value + '.label')}</div>
+                      <div style={{ fontSize: 12, color: '#888' }}>{t('ajouterLogement.categories.types.' + categorieSelectionnee.value + '.description')}</div>
                     </div>
                   </div>
                 </div>
               )}
               {/* Région */}
               <div className="form-group">
-                <label>Région *</label>
+                <label>{t('ajouterLogement.etape2.region')}</label>
                 <select name="region_id" value={formData.region_id} onChange={handleChange} required>
-                  <option value="">Sélectionnez une région</option>
+                  <option value="">{t('ajouterLogement.etape2.selectionnezRegion')}</option>
                   {regions.map(function(r) {
                     return <option key={r.id} value={r.id}>{r.nom}</option>;
                   })}
@@ -306,9 +316,9 @@ const AjouterLogement = () => {
               {/* Ville / Préfecture */}
               {prefectures.length > 0 && (
                 <div className="form-group">
-                  <label>{formData.region_id === '1' ? 'Ville *' : 'Préfecture *'}</label>
+                  <label>{formData.region_id === '1' ? t('ajouterLogement.etape2.ville') : t('ajouterLogement.etape2.prefecture')}</label>
                   <select name="prefecture_id" value={formData.prefecture_id} onChange={handleChange} required>
-                    <option value="">Sélectionnez</option>
+                    <option value="">{t('ajouterLogement.etape2.selectionnez')}</option>
                     {prefectures.map(function(p) {
                       return <option key={p.id} value={p.id}>{p.nom}</option>;
                     })}
@@ -318,9 +328,9 @@ const AjouterLogement = () => {
               {/* Sous-préfecture (hors Conakry) */}
               {sousPrefectures.length > 0 && (
                 <div className="form-group">
-                  <label>Sous-préfecture</label>
+                  <label>{t('ajouterLogement.etape2.sousPrefecture')}</label>
                   <select name="sous_prefecture" value={formData.sous_prefecture} onChange={handleChange}>
-                    <option value="">Sélectionnez une sous-préfecture</option>
+                    <option value="">{t('ajouterLogement.etape2.selectionnezSousPrefecture')}</option>
                     {sousPrefectures.map(function(sp) {
                       return <option key={sp.id} value={sp.nom}>{sp.nom}</option>;
                     })}
@@ -331,9 +341,9 @@ const AjouterLogement = () => {
               {/* Commune */}
               {communes.length > 0 && (
                 <div className="form-group">
-                  <label>Commune</label>
+                  <label>{t('ajouterLogement.etape2.commune')}</label>
                   <select name="commune_id" value={formData.commune_id} onChange={handleChange}>
-                    <option value="">Sélectionnez une commune</option>
+                    <option value="">{t('ajouterLogement.etape2.selectionnezCommune')}</option>
                     {communes.map(function(c) {
                       return <option key={c.id} value={c.id}>{c.nom}</option>;
                     })}
@@ -343,31 +353,31 @@ const AjouterLogement = () => {
 
               {/* Quartier */}
               <div className="form-group">
-                <label>Quartier *</label>
+                <label>{t('ajouterLogement.etape2.quartier')}</label>
                 <input type="text" name="quartier" value={formData.quartier}
                   onChange={handleChange}
-                  placeholder="Ex: Ratoma, Kaloum, Hafia..." required />
+                  placeholder={t('ajouterLogement.etape2.quartierPlaceholder')} required />
               </div>
 
               {/* Point de repère */}
               <div className="form-group">
-                <label>Point de repère</label>
+                <label>{t('ajouterLogement.etape2.pointRepere')}</label>
                 <input type="text" name="point_repere" value={formData.point_repere || ''}
                   onChange={handleChange}
-                  placeholder="Ex: Face à la mosquée, près du marché central..." />
+                  placeholder={t('ajouterLogement.etape2.pointReperePlaceholder')} />
               </div>
 
               {/* Adresse détaillée */}
               <div className="form-group">
-                <label>Adresse détaillée *</label>
+                <label>{t('ajouterLogement.etape2.adresse')}</label>
                 <input type="text" name="adresse" value={formData.adresse}
                   onChange={handleChange}
-                  placeholder="Ex: Rue KA-001, maison bleue à gauche" required />
+                  placeholder={t('ajouterLogement.etape2.adressePlaceholder')} required />
               </div>
               <div className="form-actions">
-                <button type="button" className="btn btn-secondary" onClick={() => setEtape(1)}>← Retour</button>
+                <button type="button" className="btn btn-secondary" onClick={() => setEtape(1)}>{t('ajouterLogement.etape2.retour')}</button>
                 <button type="button" className="btn btn-primary"
-                  onClick={() => { setEtape(3); lancerEstimation(); }}>Continuer →</button>
+                  onClick={() => { setEtape(3); lancerEstimation(); }}>{t('ajouterLogement.etape2.continuer')}</button>
               </div>
               {erreur && <div className="error" style={{marginTop:'12px'}}>{erreur}</div>}
             </div>
@@ -377,37 +387,37 @@ const AjouterLogement = () => {
           {etape === 3 && (
             <div className="etape-card">
               <h2 style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 4px' }}>
-                <Home size={20} strokeWidth={1.5} color="#1B6B3A" /> Détails du bien
+                <Home size={20} strokeWidth={1.5} color="#1B6B3A" /> {t('ajouterLogement.etape3.titre')}
               </h2>
-              <p className="etape-subtitle">Décrivez votre logement et fixez son prix</p>
+              <p className="etape-subtitle">{t('ajouterLogement.etape3.sousTitre')}</p>
 
               <div className="form-group">
-                <label>Titre de l'annonce *</label>
+                <label>{t('ajouterLogement.etape3.titreAnnonce')}</label>
                 <input type="text" name="titre" value={formData.titre}
                   onChange={handleChange}
-                  placeholder="Ex: Bel appartement 3 chambres à Ratoma" required />
+                  placeholder={t('ajouterLogement.etape3.titreAnnoncePlaceholder')} required />
               </div>
 
               <div className="form-group">
-                <label>Description</label>
+                <label>{t('ajouterLogement.etape3.description')}</label>
                 <textarea name="description" value={formData.description}
                   onChange={handleChange} rows={4}
-                  placeholder="Décrivez le logement, son environnement, ses atouts..." />
+                  placeholder={t('ajouterLogement.etape3.descriptionPlaceholder')} />
               </div>
 
               <div className="form-row-2">
                 {categorieSelectionnee?.hasSuperficie && (
                   <div className="form-group">
-                    <label>Superficie (m²)</label>
+                    <label>{t('ajouterLogement.etape3.superficie')}</label>
                     <input type="number" name="superficie" min="0" value={formData.superficie}
                       onChange={handleChange}
                       onBlur={lancerEstimation}
-                      placeholder="Ex: 80" />
+                      placeholder={t('ajouterLogement.etape3.superficiePlaceholder')} />
                   </div>
                 )}
                 {categorieSelectionnee?.hasChambres !== false && (
                   <div className="form-group">
-                    <label>Nombre de chambres</label>
+                    <label>{t('ajouterLogement.etape3.nbChambres')}</label>
                     <input type="number" name="nb_chambres" min="0" value={formData.nb_chambres}
                       onChange={handleChange}
                       onBlur={lancerEstimation} />
@@ -415,7 +425,7 @@ const AjouterLogement = () => {
                 )}
                 {categorieSelectionnee?.hasSallesBain && (
                   <div className="form-group">
-                    <label>Salles de bain</label>
+                    <label>{t('ajouterLogement.etape3.sallesBain')}</label>
                     <input type="number" name="nb_salles_bain" min="0" value={formData.nb_salles_bain}
                       onChange={handleChange} />
                   </div>
@@ -423,14 +433,14 @@ const AjouterLogement = () => {
               </div>
 
               <div className="form-group">
-                <label>Loyer mensuel (GNF) *</label>
+                <label>{t('ajouterLogement.etape3.loyerMensuel')}</label>
                 <input type="number" name="prix_mensuel" min="0" value={formData.prix_mensuel}
                   onChange={handleChange}
-                  placeholder="Ex: 1200000" required />
+                  placeholder={t('ajouterLogement.etape3.loyerMensuelPlaceholder')} required />
               </div>
 
               {estimationLoading && (
-                <div style={{ fontSize: 13, color: '#888', marginTop: -8, marginBottom: 16 }}>Estimation en cours...</div>
+                <div style={{ fontSize: 13, color: '#888', marginTop: -8, marginBottom: 16 }}>{t('ajouterLogement.etape3.estimationEnCours')}</div>
               )}
 
               {!estimationLoading && estimation && (
@@ -438,30 +448,33 @@ const AjouterLogement = () => {
                   <Sparkles size={18} strokeWidth={1.5} color="#1B6B3A" style={{ flexShrink: 0, marginTop: 2 }} />
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>
-                      Loyer suggéré : {Number(estimation.estimation_basse).toLocaleString('fr-FR')} – {Number(estimation.estimation_haute).toLocaleString('fr-FR')} GNF/mois
+                      {t('ajouterLogement.etape3.loyerSuggere', {
+                        bas: Number(estimation.estimation_basse).toLocaleString('fr-FR'),
+                        haut: Number(estimation.estimation_haute).toLocaleString('fr-FR')
+                      })}
                     </div>
                     <div style={{ fontSize: 12, color: '#555', marginTop: 2 }}>
                       {estimation.nb_comparables > 0
-                        ? `Basé sur ${estimation.nb_comparables} logement(s) similaire(s) sur Werdhe`
-                        : 'Estimation statistique (peu de biens comparables disponibles pour le moment)'}
+                        ? t('ajouterLogement.etape3.baseSurComparables', { count: estimation.nb_comparables })
+                        : t('ajouterLogement.etape3.estimationStatistique')}
                     </div>
                     <button type="button" onClick={() => setFormData(prev => ({ ...prev, prix_mensuel: String(estimation.estimation_moyenne) }))}
                       style={{ marginTop: 8, background: 'none', border: 'none', color: '#1B6B3A', fontSize: 12, fontWeight: 700, cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>
-                      Utiliser {Number(estimation.estimation_moyenne).toLocaleString('fr-FR')} GNF
+                      {t('ajouterLogement.etape3.utiliser', { prix: Number(estimation.estimation_moyenne).toLocaleString('fr-FR') })}
                     </button>
                   </div>
                 </div>
               )}
 
               <div className="form-actions">
-                <button type="button" className="btn btn-secondary" onClick={() => setEtape(2)}>← Retour</button>
+                <button type="button" className="btn btn-secondary" onClick={() => setEtape(2)}>{t('ajouterLogement.etape3.retour')}</button>
                 <button type="button" className="btn btn-primary"
                   onClick={() => {
                     if (!formData.titre || !formData.prix_mensuel) {
-                      setErreur('Titre et prix obligatoires'); return;
+                      setErreur(t('ajouterLogement.etape3.erreurTitrePrix')); return;
                     }
                     setErreur(''); setEtape(4);
-                  }}>Continuer →</button>
+                  }}>{t('ajouterLogement.etape3.continuer')}</button>
               </div>
               {erreur && <div className="error" style={{marginTop:'12px'}}>{erreur}</div>}
             </div>
@@ -470,76 +483,76 @@ const AjouterLogement = () => {
           {/* ÉTAPE 4 — Équipements */}
           {etape === 4 && (
             <div className="etape-card">
-              <h2>⚡ Équipements et statut foncier</h2>
+              <h2>{t('ajouterLogement.etape4.titre')}</h2>
               {erreur && <div className="error">{erreur}</div>}
 
               <form onSubmit={handleSubmit}>
                 <div className="form-row-2">
                   <div className="form-group">
-                    <label>Accès à l'eau</label>
+                    <label>{t('ajouterLogement.etape4.accesEau')}</label>
                     <select name="acces_eau" value={formData.acces_eau} onChange={handleChange}>
-                      <option value="">Sélectionnez</option>
-                      <option value="robinet_interieur">Robinet intérieur</option>
-                      <option value="robinet_exterieur">Robinet extérieur</option>
-                      <option value="puits">Puits</option>
-                      <option value="forage">Forage</option>
-                      <option value="public">Borne publique</option>
+                      <option value="">{t('ajouterLogement.etape4.selectionnez')}</option>
+                      <option value="robinet_interieur">{t('ajouterLogement.etape4.robinetInterieur')}</option>
+                      <option value="robinet_exterieur">{t('ajouterLogement.etape4.robinetExterieur')}</option>
+                      <option value="puits">{t('ajouterLogement.etape4.puits')}</option>
+                      <option value="forage">{t('ajouterLogement.etape4.forage')}</option>
+                      <option value="public">{t('ajouterLogement.etape4.bornePublique')}</option>
                     </select>
                   </div>
 
                   <div className="form-group">
-                    <label>Électricité</label>
+                    <label>{t('ajouterLogement.etape4.electricite')}</label>
                     <select name="electricite" value={formData.electricite} onChange={handleChange}>
-                      <option value="">Sélectionnez</option>
-                      <option value="secteur">Secteur (EDG)</option>
-                      <option value="solaire">Panneau solaire</option>
-                      <option value="groupe">Groupe électrogène</option>
-                      <option value="sans">Sans électricité</option>
+                      <option value="">{t('ajouterLogement.etape4.selectionnez')}</option>
+                      <option value="secteur">{t('ajouterLogement.etape4.secteur')}</option>
+                      <option value="solaire">{t('ajouterLogement.etape4.solaire')}</option>
+                      <option value="groupe">{t('ajouterLogement.etape4.groupeElectrogene')}</option>
+                      <option value="sans">{t('ajouterLogement.etape4.sansElectricite')}</option>
                     </select>
                   </div>
 
                   <div className="form-group">
-                    <label>Type de toit</label>
+                    <label>{t('ajouterLogement.etape4.typeToit')}</label>
                     <select name="type_toit" value={formData.type_toit} onChange={handleChange}>
-                      <option value="">Sélectionnez</option>
-                      <option value="dalle">Dalle (béton)</option>
-                      <option value="tole">Tôle</option>
-                      <option value="chaume">Chaume</option>
-                      <option value="autre">Autre</option>
+                      <option value="">{t('ajouterLogement.etape4.selectionnez')}</option>
+                      <option value="dalle">{t('ajouterLogement.etape4.dalle')}</option>
+                      <option value="tole">{t('ajouterLogement.etape4.tole')}</option>
+                      <option value="chaume">{t('ajouterLogement.etape4.chaume')}</option>
+                      <option value="autre">{t('ajouterLogement.etape4.autre')}</option>
                     </select>
                   </div>
 
                   <div className="form-group">
-                    <label>Type de sol</label>
+                    <label>{t('ajouterLogement.etape4.typeSol')}</label>
                     <select name="type_sol" value={formData.type_sol} onChange={handleChange}>
-                      <option value="">Sélectionnez</option>
-                      <option value="carreaux">Carreaux</option>
-                      <option value="ciment">Ciment</option>
-                      <option value="terre">Terre</option>
-                      <option value="autre">Autre</option>
+                      <option value="">{t('ajouterLogement.etape4.selectionnez')}</option>
+                      <option value="carreaux">{t('ajouterLogement.etape4.carreaux')}</option>
+                      <option value="ciment">{t('ajouterLogement.etape4.ciment')}</option>
+                      <option value="terre">{t('ajouterLogement.etape4.terre')}</option>
+                      <option value="autre">{t('ajouterLogement.etape4.autre')}</option>
                     </select>
                   </div>
                 </div>
 
                 <div className="form-group">
-                  <label>Statut foncier</label>
+                  <label>{t('ajouterLogement.etape4.statutFoncier')}</label>
                   <select name="statut_foncier" value={formData.statut_foncier} onChange={handleChange}>
-                    <option value="titre_foncier">Titre foncier</option>
-                    <option value="permis_habiter">Permis d'habiter</option>
-                    <option value="accord_coutumier">Accord coutumier</option>
-                    <option value="sous_seing_prive">Sous-seing privé</option>
-                    <option value="non_precise">Non précisé</option>
+                    <option value="titre_foncier">{t('ajouterLogement.etape4.titreFoncier')}</option>
+                    <option value="permis_habiter">{t('ajouterLogement.etape4.permisHabiter')}</option>
+                    <option value="accord_coutumier">{t('ajouterLogement.etape4.accordCoutumier')}</option>
+                    <option value="sous_seing_prive">{t('ajouterLogement.etape4.sousSeingPrive')}</option>
+                    <option value="non_precise">{t('ajouterLogement.etape4.nonPrecise')}</option>
                   </select>
                 </div>
 
                 <div className="form-group">
-                  <label>Équipements disponibles</label>
+                  <label>{t('ajouterLogement.etape4.equipementsDisponibles')}</label>
                   <div className="equipements-grid">
                     {[
-                      { name: 'parking', label: 'Parking' },
-                      { name: 'jardin', label: 'Jardin / Cour' },
-                      { name: 'climatisation', label: 'Climatisation' },
-                      { name: 'gardien', label: 'Gardien' }
+                      { name: 'parking', label: t('ajouterLogement.etape4.parking') },
+                      { name: 'jardin', label: t('ajouterLogement.etape4.jardin') },
+                      { name: 'climatisation', label: t('ajouterLogement.etape4.climatisation') },
+                      { name: 'gardien', label: t('ajouterLogement.etape4.gardien') }
                     ].map(eq => (
                       <label key={eq.name} className="checkbox-label">
                         <input type="checkbox" name={eq.name}
@@ -551,9 +564,9 @@ const AjouterLogement = () => {
                 </div>
 
                 <div className="form-actions">
-                  <button type="button" className="btn btn-secondary" onClick={() => setEtape(3)}>← Retour</button>
+                  <button type="button" className="btn btn-secondary" onClick={() => setEtape(3)}>{t('ajouterLogement.etape4.retour')}</button>
                   <button type="submit" className="btn btn-primary" disabled={loading}>
-                    {loading ? 'Publication...' : 'Publier et ajouter des photos'}
+                    {loading ? t('ajouterLogement.etape4.publication') : t('ajouterLogement.etape4.publierEtAjouterPhotos')}
                   </button>
                 </div>
               </form>
@@ -566,8 +579,8 @@ const AjouterLogement = () => {
               <div className="photos-etape-header">
                 <span>📸</span>
                 <div>
-                  <h2>Ajoutez des photos <span style={{ color: '#E53935', fontSize: 14 }}>*</span></h2>
-                  <p>Au moins 1 photo requise · Les logements avec photos reçoivent 3× plus de candidatures</p>
+                  <h2>{t('ajouterLogement.etape5.titre')} <span style={{ color: '#E53935', fontSize: 14 }}>*</span></h2>
+                  <p>{t('ajouterLogement.etape5.sousTitre')}</p>
                 </div>
               </div>
 
@@ -582,7 +595,7 @@ const AjouterLogement = () => {
               <div className="form-actions" style={{marginTop: '24px'}}>
                 {photosAjoutees.length === 0 && (
   <div style={{ background: '#FFF8E1', border: '1px solid #FFE082', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#7B4F00', display: 'flex', alignItems: 'center', gap: 8 }}>
-    <span>⚠️</span> Ajoutez au moins une photo pour publier votre logement.
+    <span>⚠️</span> {t('ajouterLogement.etape5.avertissementPhoto')}
   </div>
 )}
 <button
@@ -591,7 +604,7 @@ const AjouterLogement = () => {
   onClick={function() { navigate('/dashboard'); }}
   style={{ opacity: 0.6, fontSize: 12 }}
 >
-  Terminer sans photo (déconseillé)
+  {t('ajouterLogement.etape5.terminerSansPhoto')}
 </button>
 <button
   type="button"
@@ -599,15 +612,15 @@ const AjouterLogement = () => {
   disabled={photosAjoutees.length === 0}
   onClick={function() {
     if (photosAjoutees.length === 0) {
-      toast.error('Ajoutez au moins une photo avant de publier !');
+      toast.error(t('ajouterLogement.etape5.toastAjoutezPhotoAvant'));
       return;
     }
     navigate('/dashboard');
-    toast.success('Logement publié avec ' + photosAjoutees.length + ' photo(s) !');
+    toast.success(t('ajouterLogement.etape5.toastLogementPublie', { count: photosAjoutees.length }));
   }}
   style={{ opacity: photosAjoutees.length === 0 ? 0.5 : 1 }}
 >
-  {photosAjoutees.length === 0 ? 'Ajoutez une photo d\'abord' : 'Publier - ' + photosAjoutees.length + ' photo(s)'}
+  {photosAjoutees.length === 0 ? t('ajouterLogement.etape5.ajoutezPhotoDabord') : t('ajouterLogement.etape5.publierPhotos', { count: photosAjoutees.length })}
 </button>
               </div>
             </div>

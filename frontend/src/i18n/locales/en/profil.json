@@ -1,1 +1,247 @@
-{}
+{
+  "ajouterLogement": {
+    "header": {
+      "titre": "List a property",
+      "sousTitre": "Put your property up for rent on Werdhè"
+    },
+    "etapesIndicateur": {
+      "categorie": "Category",
+      "localisation": "Location",
+      "details": "Details",
+      "equipements": "Amenities",
+      "photos": "Photos"
+    },
+    "categories": {
+      "groupes": {
+        "villas": "Villas",
+        "maisons": "Houses",
+        "appartements": "Apartments",
+        "chambresStudios": "Rooms & Studios",
+        "locauxCommerciaux": "Commercial spaces"
+      },
+      "types": {
+        "villa_luxe": { "label": "Luxury villa", "description": "4+ bedrooms, pool, garden, guard" },
+        "villa_standard": { "label": "Standard villa", "description": "3-4 bedrooms, yard, fence" },
+        "maison_moderne": { "label": "Modern house", "description": "Solid construction, concrete blocks/cement" },
+        "maison_banco": { "label": "Traditional house", "description": "Mud-brick walls, tin or thatch roof" },
+        "maison_chantier": { "label": "House under construction", "description": "Ground floor livable, upper floor pending" },
+        "concession": { "label": "Family compound", "description": "Several homes around a shared courtyard" },
+        "appartement": { "label": "Apartment", "description": "Unit in a multi-unit building" },
+        "duplex": { "label": "Duplex", "description": "Two-level apartment" },
+        "logement_social": { "label": "Social housing", "description": "Sonapi, Addoha program..." },
+        "studio_moderne": { "label": "Modern studio", "description": "1 room + private bathroom" },
+        "chambre_habitant": { "label": "Room in a shared home", "description": "One room, shared bathroom" },
+        "chambre_cour": { "label": "Room in shared compound", "description": "Small space within a family compound" },
+        "habitat_precaire": { "label": "Informal housing", "description": "Tin sheet/board construction" },
+        "boutique": { "label": "Shop / Stall", "description": "Retail sales, market" },
+        "bureau": { "label": "Office", "description": "Administrative activities" },
+        "entrepot": { "label": "Warehouse / Shed", "description": "Goods storage" },
+        "local_commercial": { "label": "Commercial unit", "description": "Ground floor of a building, mixed use" },
+        "centre_commercial": { "label": "Shopping center", "description": "Diamond Plaza, large retail spaces..." }
+      }
+    },
+    "etape1": {
+      "titre": "What type of property do you want to rent out?",
+      "sousTitre": "The form will adapt to your choice"
+    },
+    "etape2": {
+      "changer": "Change",
+      "titre": "Property location",
+      "sousTitre": "Be precise to help tenants find you",
+      "typeLogement": "Property type",
+      "region": "Region *",
+      "selectionnezRegion": "Select a region",
+      "ville": "City *",
+      "prefecture": "Prefecture *",
+      "selectionnez": "Select",
+      "sousPrefecture": "Sub-prefecture",
+      "selectionnezSousPrefecture": "Select a sub-prefecture",
+      "commune": "Commune",
+      "selectionnezCommune": "Select a commune",
+      "quartier": "Neighborhood *",
+      "quartierPlaceholder": "E.g.: Ratoma, Kaloum, Hafia...",
+      "pointRepere": "Landmark",
+      "pointReperePlaceholder": "E.g.: Facing the mosque, near the central market...",
+      "adresse": "Detailed address *",
+      "adressePlaceholder": "E.g.: KA-001 street, blue house on the left",
+      "retour": "← Back",
+      "continuer": "Continue →"
+    },
+    "etape3": {
+      "titre": "Property details",
+      "sousTitre": "Describe your property and set its price",
+      "titreAnnonce": "Listing title *",
+      "titreAnnoncePlaceholder": "E.g.: Nice 3-bedroom apartment in Ratoma",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe the property, its surroundings, its highlights...",
+      "superficie": "Floor area (m²)",
+      "superficiePlaceholder": "E.g.: 80",
+      "nbChambres": "Number of bedrooms",
+      "sallesBain": "Bathrooms",
+      "loyerMensuel": "Monthly rent (GNF) *",
+      "loyerMensuelPlaceholder": "E.g.: 1200000",
+      "estimationEnCours": "Estimating...",
+      "loyerSuggere": "Suggested rent: {{bas}} – {{haut}} GNF/month",
+      "baseSurComparables": "Based on {{count}} similar listing(s) on Werdhe",
+      "estimationStatistique": "Statistical estimate (few comparable properties currently available)",
+      "utiliser": "Use {{prix}} GNF",
+      "retour": "← Back",
+      "continuer": "Continue →",
+      "erreurTitrePrix": "Title and price are required"
+    },
+    "etape4": {
+      "titre": "⚡ Amenities and land status",
+      "accesEau": "Water access",
+      "selectionnez": "Select",
+      "robinetInterieur": "Indoor tap",
+      "robinetExterieur": "Outdoor tap",
+      "puits": "Well",
+      "forage": "Borehole",
+      "bornePublique": "Public standpipe",
+      "electricite": "Electricity",
+      "secteur": "Grid (EDG)",
+      "solaire": "Solar panel",
+      "groupeElectrogene": "Generator",
+      "sansElectricite": "No electricity",
+      "typeToit": "Roof type",
+      "dalle": "Concrete slab",
+      "tole": "Tin",
+      "chaume": "Thatch",
+      "autre": "Other",
+      "typeSol": "Floor type",
+      "carreaux": "Tiles",
+      "ciment": "Cement",
+      "terre": "Dirt",
+      "statutFoncier": "Land status",
+      "titreFoncier": "Land title",
+      "permisHabiter": "Occupancy permit",
+      "accordCoutumier": "Customary agreement",
+      "sousSeingPrive": "Private agreement",
+      "nonPrecise": "Not specified",
+      "equipementsDisponibles": "Available amenities",
+      "parking": "Parking",
+      "jardin": "Garden / Yard",
+      "climatisation": "Air conditioning",
+      "gardien": "Security guard",
+      "retour": "← Back",
+      "publication": "Publishing...",
+      "publierEtAjouterPhotos": "Publish and add photos"
+    },
+    "etape5": {
+      "titre": "Add photos",
+      "sousTitre": "At least 1 photo required · Listings with photos get 3× more applications",
+      "avertissementPhoto": "Add at least one photo to publish your property.",
+      "terminerSansPhoto": "Finish without a photo (not recommended)",
+      "ajoutezPhotoDabord": "Add a photo first",
+      "publierPhotos": "Publish - {{count}} photo(s)",
+      "toastAjoutezPhotoAvant": "Add at least one photo before publishing!",
+      "toastLogementPublie": "Property published with {{count}} photo(s)!"
+    },
+    "toastLogementCree": "Property created! Now add some photos.",
+    "erreurAjout": "Error while adding the listing"
+  },
+  "profil": {
+    "header": {
+      "proprietaire": "🏠 Landlord",
+      "locataire": "🔍 Tenant",
+      "proprietaireEtLocataire": "🔄 Landlord & Tenant"
+    },
+    "onglets": {
+      "infos": "👤 My information",
+      "motDePasse": "🔐 Password"
+    },
+    "infos": {
+      "titre": "👤 My information",
+      "prenom": "First name",
+      "nom": "Last name",
+      "telephone": "Phone number",
+      "telephonePlaceholder": "622 000 000",
+      "email": "Email",
+      "emailNonModifiable": "Email cannot be changed",
+      "sauvegarde": "Saving...",
+      "sauvegarder": "💾 Save",
+      "toastSucces": "✅ Profile updated!"
+    },
+    "motDePasse": {
+      "titre": "🔐 Change password",
+      "actuel": "Current password *",
+      "actuelPlaceholder": "Your current password",
+      "nouveau": "New password *",
+      "nouveauPlaceholder": "Minimum 6 characters",
+      "confirmation": "Confirm new password *",
+      "confirmationPlaceholder": "Repeat the new password",
+      "miseAJour": "Updating...",
+      "changer": "🔐 Change password",
+      "toastSucces": "✅ Password updated!",
+      "erreurCorrespondance": "Passwords do not match",
+      "erreurMinimum": "Minimum 6 characters"
+    },
+    "erreurServeur": "Server error"
+  },
+  "profilPublic": {
+    "chargement": "Loading profile...",
+    "introuvable": "Profile not found",
+    "retour": "← Back",
+    "headerTitre": "Landlord profile",
+    "proprietaireVerifie": "Verified landlord",
+    "avis": "({{count}} reviews)",
+    "aucunAvis": "No reviews yet",
+    "stats": {
+      "logements": "Listings",
+      "locationsActives": "Active rentals",
+      "membreDepuis": "Member since"
+    },
+    "scoreConfiance": "Trust score",
+    "email": "✉️ Email",
+    "appeler": "📞 Call",
+    "logementsTitre": "Listings ({{count}})",
+    "occupe": "Occupied",
+    "disponible": "Available",
+    "avisLocatairesTitre": "Tenant reviews ({{count}})",
+    "aucunLogementPublie": "This landlord has no published listings yet.",
+    "profilNonTrouve": "Profile not found",
+    "logementCard": {
+      "prixUnite": "GNF/month",
+      "chambresAbbrev": "bd"
+    }
+  },
+  "photoUpload": {
+    "dropZone": {
+      "uploading": "Uploading...",
+      "dragText": "Drag your photos here or",
+      "dragTextBold": "click to choose",
+      "formats": "JPG, PNG, WEBP — 5MB max — 10 photos max"
+    },
+    "badgePrincipale": "⭐ Main",
+    "actions": {
+      "definirPrincipale": "Set as main photo",
+      "supprimer": "Delete"
+    },
+    "altLogement": "Property {{index}}",
+    "noPhotos": "No photos yet. Add photos to attract more tenants!",
+    "toasts": {
+      "ajoutees": "✅ {{count}} photo(s) added!",
+      "erreurUpload": "Upload error",
+      "supprimee": "Photo deleted",
+      "erreurSuppression": "Deletion error",
+      "principaleDefinie": "✅ Main photo set!",
+      "erreur": "Error"
+    }
+  },
+  "gestionPhotos": {
+    "titre": "📷 Property photos ({{count}}/10)",
+    "photoPrincipale": "Main photo",
+    "altPhoto": "Photo {{index}}",
+    "upload": "Uploading...",
+    "ajouter": "Add",
+    "formatsInfo": "JPG, PNG, WEBP · Max 5MB per photo · {{count}} slot(s) remaining",
+    "confirmSupprimer": "Delete this photo?",
+    "toasts": {
+      "photosTropGrandes": "Photos too large (5MB max each)",
+      "ajoutees": "{{count}} photo(s) added!",
+      "erreurUpload": "Upload error",
+      "supprimee": "Photo deleted",
+      "erreurSuppression": "Deletion error"
+    }
+  }
+}

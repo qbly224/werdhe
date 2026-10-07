@@ -3,10 +3,12 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import './Profil.css';
 
 const Profil = () => {
   const { user, login, token } = useAuth();
+  const { t } = useTranslation('profil');
 
   const [onglet, setOnglet] = useState('infos');
   const [loading, setLoading] = useState(false);
@@ -55,9 +57,9 @@ const Profil = () => {
       const res = await api.put('/auth/profil', formInfos);
       // Mettre à jour le context avec les nouvelles infos
       login(res.data.user, token);
-      toast.success('✅ Profil mis à jour !');
+      toast.success(t('profil.infos.toastSucces'));
     } catch (err) {
-      setErreur(err.response?.data?.erreur || 'Erreur serveur');
+      setErreur(err.response?.data?.erreur || t('profil.erreurServeur'));
     } finally {
       setLoading(false);
     }
@@ -69,11 +71,11 @@ const Profil = () => {
     setErreur('');
 
     if (formMdp.nouveau_mot_de_passe !== formMdp.confirmation) {
-      return setErreur('Les mots de passe ne correspondent pas');
+      return setErreur(t('profil.motDePasse.erreurCorrespondance'));
     }
 
     if (formMdp.nouveau_mot_de_passe.length < 6) {
-      return setErreur('Minimum 6 caractères');
+      return setErreur(t('profil.motDePasse.erreurMinimum'));
     }
 
     setLoading(true);
@@ -83,14 +85,14 @@ const Profil = () => {
         ancien_mot_de_passe: formMdp.ancien_mot_de_passe,
         nouveau_mot_de_passe: formMdp.nouveau_mot_de_passe
       });
-      toast.success('✅ Mot de passe mis à jour !');
+      toast.success(t('profil.motDePasse.toastSucces'));
       setFormMdp({
         ancien_mot_de_passe: '',
         nouveau_mot_de_passe: '',
         confirmation: ''
       });
     } catch (err) {
-      setErreur(err.response?.data?.erreur || 'Erreur serveur');
+      setErreur(err.response?.data?.erreur || t('profil.erreurServeur'));
     } finally {
       setLoading(false);
     }
@@ -111,9 +113,9 @@ const Profil = () => {
               <h1>{user?.prenom} {user?.nom}</h1>
               <p>{user?.email}</p>
               <span className="profil-role">
-                {user?.role === 'proprietaire' && '🏠 Propriétaire'}
-                {user?.role === 'locataire' && '🔍 Locataire'}
-                {user?.role === 'les_deux' && '🔄 Propriétaire & Locataire'}
+                {user?.role === 'proprietaire' && t('profil.header.proprietaire')}
+                {user?.role === 'locataire' && t('profil.header.locataire')}
+                {user?.role === 'les_deux' && t('profil.header.proprietaireEtLocataire')}
               </span>
             </div>
           </div>
@@ -124,13 +126,13 @@ const Profil = () => {
               className={`onglet ${onglet === 'infos' ? 'active' : ''}`}
               onClick={() => { setOnglet('infos'); setErreur(''); }}
             >
-              👤 Mes informations
+              {t('profil.onglets.infos')}
             </button>
             <button
               className={`onglet ${onglet === 'mdp' ? 'active' : ''}`}
               onClick={() => { setOnglet('mdp'); setErreur(''); }}
             >
-              🔐 Mot de passe
+              {t('profil.onglets.motDePasse')}
             </button>
           </div>
 
@@ -141,11 +143,11 @@ const Profil = () => {
             {/* Onglet infos */}
             {onglet === 'infos' && (
               <form onSubmit={handleInfosSubmit}>
-                <h2>👤 Mes informations</h2>
+                <h2>{t('profil.infos.titre')}</h2>
 
                 <div className="form-row">
                   <div>
-                    <label>Prénom</label>
+                    <label>{t('profil.infos.prenom')}</label>
                     <input
                       type="text"
                       value={formInfos.prenom}
@@ -155,7 +157,7 @@ const Profil = () => {
                     />
                   </div>
                   <div>
-                    <label>Nom</label>
+                    <label>{t('profil.infos.nom')}</label>
                     <input
                       type="text"
                       value={formInfos.nom}
@@ -166,17 +168,17 @@ const Profil = () => {
                   </div>
                 </div>
 
-                <label>Téléphone</label>
+                <label>{t('profil.infos.telephone')}</label>
                 <input
                   type="tel"
                   value={formInfos.telephone}
                   onChange={(e) => setFormInfos({
                     ...formInfos, telephone: e.target.value
                   })}
-                  placeholder="622 000 000"
+                  placeholder={t('profil.infos.telephonePlaceholder')}
                 />
 
-                <label>Email</label>
+                <label>{t('profil.infos.email')}</label>
                 <input
                   type="email"
                   value={user?.email}
@@ -184,7 +186,7 @@ const Profil = () => {
                   style={{ opacity: 0.6, cursor: 'not-allowed' }}
                 />
                 <small style={{color: 'var(--gray)', fontSize: '12px'}}>
-                  L'email ne peut pas être modifié
+                  {t('profil.infos.emailNonModifiable')}
                 </small>
 
                 <button
@@ -193,7 +195,7 @@ const Profil = () => {
                   style={{ marginTop: '16px' }}
                   disabled={loading}
                 >
-                  {loading ? 'Sauvegarde...' : '💾 Sauvegarder'}
+                  {loading ? t('profil.infos.sauvegarde') : t('profil.infos.sauvegarder')}
                 </button>
               </form>
             )}
@@ -201,38 +203,38 @@ const Profil = () => {
             {/* Onglet mot de passe */}
             {onglet === 'mdp' && (
               <form onSubmit={handleMdpSubmit}>
-                <h2>🔐 Changer le mot de passe</h2>
+                <h2>{t('profil.motDePasse.titre')}</h2>
 
-                <label>Mot de passe actuel *</label>
+                <label>{t('profil.motDePasse.actuel')}</label>
                 <input
                   type="password"
                   value={formMdp.ancien_mot_de_passe}
                   onChange={(e) => setFormMdp({
                     ...formMdp, ancien_mot_de_passe: e.target.value
                   })}
-                  placeholder="Votre mot de passe actuel"
+                  placeholder={t('profil.motDePasse.actuelPlaceholder')}
                   required
                 />
 
-                <label>Nouveau mot de passe *</label>
+                <label>{t('profil.motDePasse.nouveau')}</label>
                 <input
                   type="password"
                   value={formMdp.nouveau_mot_de_passe}
                   onChange={(e) => setFormMdp({
                     ...formMdp, nouveau_mot_de_passe: e.target.value
                   })}
-                  placeholder="Minimum 6 caractères"
+                  placeholder={t('profil.motDePasse.nouveauPlaceholder')}
                   required
                 />
 
-                <label>Confirmer le nouveau mot de passe *</label>
+                <label>{t('profil.motDePasse.confirmation')}</label>
                 <input
                   type="password"
                   value={formMdp.confirmation}
                   onChange={(e) => setFormMdp({
                     ...formMdp, confirmation: e.target.value
                   })}
-                  placeholder="Répétez le nouveau mot de passe"
+                  placeholder={t('profil.motDePasse.confirmationPlaceholder')}
                   required
                 />
 
@@ -242,7 +244,7 @@ const Profil = () => {
                   style={{ marginTop: '8px' }}
                   disabled={loading}
                 >
-                  {loading ? 'Mise à jour...' : '🔐 Changer le mot de passe'}
+                  {loading ? t('profil.motDePasse.miseAJour') : t('profil.motDePasse.changer')}
                 </button>
               </form>
             )}

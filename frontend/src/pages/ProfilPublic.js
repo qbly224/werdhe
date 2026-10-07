@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Star, Home, MapPin, BedDouble, Maximize2, Award, ChevronLeft, Calendar, Building2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import api from '../services/api';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
@@ -9,6 +10,7 @@ var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
 export default function ProfilPublic() {
   var { id }      = useParams();
   var navigate    = useNavigate();
+  var t           = useTranslation('profil').t;
   var [data, setData]       = useState(null);
   var [loading, setLoading] = useState(true);
   var [erreur, setErreur]   = useState('');
@@ -17,7 +19,7 @@ export default function ProfilPublic() {
     api.get('/auth/profil-public/' + id)
       .then(function(res) { setData(res.data); })
       .catch(function(err) {
-        setErreur(err.response && err.response.data ? err.response.data.erreur : 'Profil non trouvé');
+        setErreur(err.response && err.response.data ? err.response.data.erreur : t('profilPublic.profilNonTrouve'));
       })
       .finally(function() { setLoading(false); });
   }, [id]);
@@ -26,7 +28,7 @@ export default function ProfilPublic() {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: 'system-ui', flexDirection: 'column', gap: 12 }}>
         <div style={{ width: 40, height: 40, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-        <span style={{ color: '#888', fontSize: 14 }}>Chargement du profil...</span>
+        <span style={{ color: '#888', fontSize: 14 }}>{t('profilPublic.chargement')}</span>
         <style>{`@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }`}</style>
       </div>
     );
@@ -36,11 +38,11 @@ export default function ProfilPublic() {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: 'system-ui', flexDirection: 'column', gap: 16 }}>
         <div style={{ fontSize: 48 }}>😕</div>
-        <h2 style={{ color: '#1B2B22', margin: 0 }}>Profil introuvable</h2>
+        <h2 style={{ color: '#1B2B22', margin: 0 }}>{t('profilPublic.introuvable')}</h2>
         <p style={{ color: '#888' }}>{erreur}</p>
         <button onClick={function() { navigate(-1); }}
           style={{ padding: '10px 20px', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 600 }}>
-          ← Retour
+          {t('profilPublic.retour')}
         </button>
       </div>
     );
@@ -57,9 +59,9 @@ export default function ProfilPublic() {
       <div style={{ background: 'linear-gradient(135deg, #1B6B3A, #134F2B)', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center' }}>
         <button onClick={function() { navigate(-1); }}
           style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <ChevronLeft size={16} strokeWidth={2} /> Retour
+          <ChevronLeft size={16} strokeWidth={2} /> {t('profilPublic.retour')}
         </button>
-        <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, marginLeft: 16 }}>Profil propriétaire</span>
+        <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, marginLeft: 16 }}>{t('profilPublic.headerTitre')}</span>
       </div>
 
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '24px 16px' }}>
@@ -78,7 +80,7 @@ export default function ProfilPublic() {
               {p.plan === 'pro' || p.plan === 'agence' ? (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#E8F5E9', border: '1px solid #A5D6A7', borderRadius: 20, padding: '5px 12px' }}>
                   <Award size={14} color="#1B6B3A" strokeWidth={2} />
-                  <span style={{ fontSize: 12, color: '#1B5E20', fontWeight: 700 }}>Propriétaire vérifié</span>
+                  <span style={{ fontSize: 12, color: '#1B5E20', fontWeight: 700 }}>{t('profilPublic.proprietaireVerifie')}</span>
                 </div>
               ) : null}
             </div>
@@ -95,19 +97,19 @@ export default function ProfilPublic() {
                     })}
                   </div>
                   <span style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{Number(p.note_moyenne).toFixed(1)}</span>
-                  <span style={{ fontSize: 13, color: '#888' }}>({p.nb_notations} avis)</span>
+                  <span style={{ fontSize: 13, color: '#888' }}>{t('profilPublic.avis', { count: p.nb_notations })}</span>
                 </>
               ) : (
-                <span style={{ fontSize: 13, color: '#888' }}>Aucun avis pour le moment</span>
+                <span style={{ fontSize: 13, color: '#888' }}>{t('profilPublic.aucunAvis')}</span>
               )}
             </div>
 
             {/* Stats */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12 }}>
               {[
-                { icon: <Building2 size={18} strokeWidth={1.5} />, val: p.total_logements,     label: 'Logements'        },
-                { icon: <Home      size={18} strokeWidth={1.5} />, val: p.locations_actives,   label: 'Locations actives' },
-                { icon: <Calendar  size={18} strokeWidth={1.5} />, val: p.membre_depuis,        label: 'Membre depuis'     },
+                { icon: <Building2 size={18} strokeWidth={1.5} />, val: p.total_logements,     label: t('profilPublic.stats.logements')        },
+                { icon: <Home      size={18} strokeWidth={1.5} />, val: p.locations_actives,   label: t('profilPublic.stats.locationsActives') },
+                { icon: <Calendar  size={18} strokeWidth={1.5} />, val: p.membre_depuis,        label: t('profilPublic.stats.membreDepuis')     },
               ].map(function(s, i) {
                 return (
                   <div key={i} style={{ background: '#F7F8F7', borderRadius: 12, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -125,7 +127,7 @@ export default function ProfilPublic() {
             {p.score_confiance > 0 && (
               <div style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 10, background: '#F7F8F7', borderRadius: 12, padding: '10px 14px' }}>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>Score de confiance</div>
+                  <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>{t('profilPublic.scoreConfiance')}</div>
                   <div style={{ background: '#E0E0E0', borderRadius: 6, height: 6, overflow: 'hidden' }}>
                     <div style={{ background: '#1B6B3A', width: p.score_confiance + '%', height: '100%', borderRadius: 6 }} />
                   </div>
@@ -138,12 +140,12 @@ export default function ProfilPublic() {
             <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
               <a href={'mailto:' + (p.email || '')}
                 style={{ flex: 1, padding: '11px', borderRadius: 12, border: '1.5px solid #1B6B3A', background: '#fff', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 700, textAlign: 'center' }}>
-                ✉️ Email
+                {t('profilPublic.email')}
               </a>
               {p.telephone && (
                 <a href={'tel:' + p.telephone}
                   style={{ flex: 1, padding: '11px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700, textAlign: 'center' }}>
-                  📞 Appeler
+                  {t('profilPublic.appeler')}
                 </a>
               )}
             </div>
@@ -154,7 +156,7 @@ export default function ProfilPublic() {
         {data.logements.length > 0 && (
           <div style={{ marginBottom: 20 }}>
             <h2 style={{ fontSize: 18, fontWeight: 700, color: '#1B2B22', margin: '0 0 14px' }}>
-              Logements ({data.logements.length})
+              {t('profilPublic.logementsTitre', { count: data.logements.length })}
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 14 }}>
               {data.logements.map(function(l) {
@@ -172,7 +174,7 @@ export default function ProfilPublic() {
                         <Home size={40} strokeWidth={1} color="#A5D6A7" />
                       )}
                       <div style={{ position: 'absolute', top: 10, right: 10, background: l.statut === 'loue' ? '#1B2B22' : '#1B6B3A', color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
-                        {l.statut === 'loue' ? 'Occupé' : 'Disponible'}
+                        {l.statut === 'loue' ? t('profilPublic.occupe') : t('profilPublic.disponible')}
                       </div>
                     </div>
 
@@ -182,11 +184,11 @@ export default function ProfilPublic() {
                         <MapPin size={12} strokeWidth={1.5} /> {l.ville}
                       </div>
                       <div style={{ fontSize: 16, fontWeight: 800, color: '#1B6B3A' }}>
-                        {GNF(l.prix_mensuel)} <span style={{ fontSize: 11, fontWeight: 400, color: '#888' }}>GNF/mois</span>
+                        {GNF(l.prix_mensuel)} <span style={{ fontSize: 11, fontWeight: 400, color: '#888' }}>{t('profilPublic.logementCard.prixUnite')}</span>
                       </div>
                       {(l.nb_chambres || l.superficie) && (
                         <div style={{ display: 'flex', gap: 10, marginTop: 8, fontSize: 11, color: '#888' }}>
-                          {l.nb_chambres && <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><BedDouble size={12} strokeWidth={1.5} /> {l.nb_chambres} ch.</span>}
+                          {l.nb_chambres && <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><BedDouble size={12} strokeWidth={1.5} /> {l.nb_chambres} {t('profilPublic.logementCard.chambresAbbrev')}</span>}
                           {l.superficie && <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Maximize2 size={12} strokeWidth={1.5} /> {l.superficie}m²</span>}
                         </div>
                       )}
@@ -202,7 +204,7 @@ export default function ProfilPublic() {
         {data.notations.length > 0 && (
           <div>
             <h2 style={{ fontSize: 18, fontWeight: 700, color: '#1B2B22', margin: '0 0 14px' }}>
-              Avis des locataires ({data.notations.length})
+              {t('profilPublic.avisLocatairesTitre', { count: data.notations.length })}
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14 }}>
               {data.notations.map(function(n, i) {
@@ -227,7 +229,7 @@ export default function ProfilPublic() {
         {data.notations.length === 0 && data.logements.length === 0 && (
           <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
             <Home size={48} strokeWidth={1} color="#E0E0E0" />
-            <p>Ce propriétaire n'a pas encore de logements publiés.</p>
+            <p>{t('profilPublic.aucunLogementPublie')}</p>
           </div>
         )}
       </div>
