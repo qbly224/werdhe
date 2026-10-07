@@ -54,6 +54,8 @@ const adminRoutes        = require('./routes/admin');
 const preavisRoutes      = require('./routes/preavis');
 const abonnementRoutes = require('./routes/abonnements');
 const notationsRoutes = require('./routes/notations');
+const blogRoutes = require('./routes/blog');
+const estimationRoutes = require('./routes/estimation');
 
 // ── Vérifier les variables d'environnement obligatoires ──────────
 var ENV_REQUISES = ['JWT_SECRET', 'DATABASE_URL'];
@@ -178,6 +180,8 @@ app.use('/admin',             adminRoutes);
 app.use('/preavis',           preavisRoutes);
 app.use('/abonnements', abonnementRoutes);
 app.use('/notations', notationsRoutes);
+app.use('/blog', blogRoutes);
+app.use('/estimation', estimationRoutes);
 
 // ── Routes de test ───────────────────────────────────────────────
 app.get('/', (req, res) => {
@@ -229,16 +233,24 @@ app.get('/sitemap.xml', async (req, res) => {
     var logements = await db.query(
       `SELECT id, updated_at FROM logements WHERE statut = 'disponible' LIMIT 1000`
     );
+    var articles = await db.query(
+      `SELECT slug, updated_at FROM articles_blog WHERE publie = TRUE LIMIT 1000`
+    ).catch(function() { return { rows: [] }; });
     var xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
     [
       { loc: 'https://werdhe.com/',         priority: '1.0', changefreq: 'daily'  },
       { loc: 'https://werdhe.com/logements', priority: '0.9', changefreq: 'hourly' },
       { loc: 'https://werdhe.com/pricing',   priority: '0.7', changefreq: 'monthly'},
+      { loc: 'https://werdhe.com/blog',      priority: '0.8', changefreq: 'daily'  },
+      { loc: 'https://werdhe.com/estimation',priority: '0.7', changefreq: 'monthly'},
     ].forEach(function(u) {
       xml += `  <url><loc>${u.loc}</loc><changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>\n`;
     });
     logements.rows.forEach(function(l) {
       xml += `  <url><loc>https://werdhe.com/logements/${l.id}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>\n`;
+    });
+    articles.rows.forEach(function(a) {
+      xml += `  <url><loc>https://werdhe.com/blog/${a.slug}</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>\n`;
     });
     xml += '</urlset>';
     res.setHeader('Content-Type', 'application/xml');

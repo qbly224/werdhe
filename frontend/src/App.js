@@ -62,6 +62,9 @@ var APropos         = lazy(function() { return import('./pages/APropos'); });
 var Contact         = lazy(function() { return import('./pages/Contact'); });
 var CGU             = lazy(function() { return import('./pages/CGU'); });
 var Confidentialite = lazy(function() { return import('./pages/Confidentialite'); });
+var Blog            = lazy(function() { return import('./pages/Blog'); });
+var BlogArticle      = lazy(function() { return import('./pages/BlogArticle'); });
+var Estimation       = lazy(function() { return import('./pages/Estimation'); });
 
 function RoutePrivee(props) {
   var auth = useAuth();
@@ -115,6 +118,9 @@ function App() {
           <Route path="/confidentialite" element={<Confidentialite />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/a-propos" element={<APropos />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogArticle />} />
+          <Route path="/estimation" element={<Estimation />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
   </Suspense>      

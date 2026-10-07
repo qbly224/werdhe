@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar';
 import PhotoUpload from '../components/PhotoUpload';
 import toast from 'react-hot-toast';
 import './AjouterLogement.css';
-import { MapPin, Home, Building2, Building, Warehouse, Store, BedDouble, DoorOpen, Landmark, Hotel, ShoppingBag, Factory } from 'lucide-react';
+import { MapPin, Home, Building2, Building, Warehouse, Store, BedDouble, DoorOpen, Landmark, Hotel, ShoppingBag, Factory, Sparkles } from 'lucide-react';
 
 var CATEGORIES = [
   {
@@ -87,6 +87,10 @@ const AjouterLogement = () => {
   const [communes, setCommunes]             = useState([]);
   const [sousPrefectures, setSousPrefectures] = useState([]);
 
+  // Estimation de loyer (étape Détails)
+  const [estimation, setEstimation] = useState(null);
+  const [estimationLoading, setEstimationLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     titre: '', description: '', adresse: '', quartier: '', point_repere: '',
     region_id: '', prefecture_id: '', commune_id: '', sous_prefecture: '',
@@ -159,6 +163,28 @@ const AjouterLogement = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  // Estimer le loyer à partir de la ville résolue + catégorie + taille
+  const villeResolue = () => {
+    const region = regions.find(r => r.id === parseInt(formData.region_id));
+    const prefecture = prefectures.find(p => p.id === parseInt(formData.prefecture_id));
+    return prefecture?.nom || region?.nom || '';
+  };
+
+  const lancerEstimation = () => {
+    const ville = villeResolue();
+    if (!ville) return;
+    setEstimationLoading(true);
+    api.post('/estimation/loyer', {
+      ville,
+      categorie: formData.categorie,
+      nb_chambres: formData.nb_chambres,
+      superficie: formData.superficie
+    })
+      .then(res => setEstimation(res.data))
+      .catch(() => setEstimation(null))
+      .finally(() => setEstimationLoading(false));
   };
 
   // Soumettre le logement → aller à l'étape photos
@@ -338,6 +364,95 @@ const AjouterLogement = () => {
                   onChange={handleChange}
                   placeholder="Ex: Rue KA-001, maison bleue à gauche" required />
               </div>
+              <div className="form-actions">
+                <button type="button" className="btn btn-secondary" onClick={() => setEtape(1)}>← Retour</button>
+                <button type="button" className="btn btn-primary"
+                  onClick={() => { setEtape(3); lancerEstimation(); }}>Continuer →</button>
+              </div>
+              {erreur && <div className="error" style={{marginTop:'12px'}}>{erreur}</div>}
+            </div>
+          )}
+
+          {/* ÉTAPE 3 — Détails */}
+          {etape === 3 && (
+            <div className="etape-card">
+              <h2 style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 4px' }}>
+                <Home size={20} strokeWidth={1.5} color="#1B6B3A" /> Détails du bien
+              </h2>
+              <p className="etape-subtitle">Décrivez votre logement et fixez son prix</p>
+
+              <div className="form-group">
+                <label>Titre de l'annonce *</label>
+                <input type="text" name="titre" value={formData.titre}
+                  onChange={handleChange}
+                  placeholder="Ex: Bel appartement 3 chambres à Ratoma" required />
+              </div>
+
+              <div className="form-group">
+                <label>Description</label>
+                <textarea name="description" value={formData.description}
+                  onChange={handleChange} rows={4}
+                  placeholder="Décrivez le logement, son environnement, ses atouts..." />
+              </div>
+
+              <div className="form-row-2">
+                {categorieSelectionnee?.hasSuperficie && (
+                  <div className="form-group">
+                    <label>Superficie (m²)</label>
+                    <input type="number" name="superficie" min="0" value={formData.superficie}
+                      onChange={handleChange}
+                      onBlur={lancerEstimation}
+                      placeholder="Ex: 80" />
+                  </div>
+                )}
+                {categorieSelectionnee?.hasChambres !== false && (
+                  <div className="form-group">
+                    <label>Nombre de chambres</label>
+                    <input type="number" name="nb_chambres" min="0" value={formData.nb_chambres}
+                      onChange={handleChange}
+                      onBlur={lancerEstimation} />
+                  </div>
+                )}
+                {categorieSelectionnee?.hasSallesBain && (
+                  <div className="form-group">
+                    <label>Salles de bain</label>
+                    <input type="number" name="nb_salles_bain" min="0" value={formData.nb_salles_bain}
+                      onChange={handleChange} />
+                  </div>
+                )}
+              </div>
+
+              <div className="form-group">
+                <label>Loyer mensuel (GNF) *</label>
+                <input type="number" name="prix_mensuel" min="0" value={formData.prix_mensuel}
+                  onChange={handleChange}
+                  placeholder="Ex: 1200000" required />
+              </div>
+
+              {estimationLoading && (
+                <div style={{ fontSize: 13, color: '#888', marginTop: -8, marginBottom: 16 }}>Estimation en cours...</div>
+              )}
+
+              {!estimationLoading && estimation && (
+                <div style={{ background: '#E8F5E9', border: '1px solid #A5D6A7', borderRadius: 12, padding: '14px 16px', marginTop: -8, marginBottom: 16, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                  <Sparkles size={18} strokeWidth={1.5} color="#1B6B3A" style={{ flexShrink: 0, marginTop: 2 }} />
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>
+                      Loyer suggéré : {Number(estimation.estimation_basse).toLocaleString('fr-FR')} – {Number(estimation.estimation_haute).toLocaleString('fr-FR')} GNF/mois
+                    </div>
+                    <div style={{ fontSize: 12, color: '#555', marginTop: 2 }}>
+                      {estimation.nb_comparables > 0
+                        ? `Basé sur ${estimation.nb_comparables} logement(s) similaire(s) sur Werdhe`
+                        : 'Estimation statistique (peu de biens comparables disponibles pour le moment)'}
+                    </div>
+                    <button type="button" onClick={() => setFormData(prev => ({ ...prev, prix_mensuel: String(estimation.estimation_moyenne) }))}
+                      style={{ marginTop: 8, background: 'none', border: 'none', color: '#1B6B3A', fontSize: 12, fontWeight: 700, cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>
+                      Utiliser {Number(estimation.estimation_moyenne).toLocaleString('fr-FR')} GNF
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <div className="form-actions">
                 <button type="button" className="btn btn-secondary" onClick={() => setEtape(2)}>← Retour</button>
                 <button type="button" className="btn btn-primary"
