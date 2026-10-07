@@ -33,6 +33,11 @@ export default function Admin() {
   var [lastUpdate, setLastUpdate]     = useState(null);
   var [autoRefresh, setAutoRefresh]   = useState(true);
   var [countdown, setCountdown]       = useState(30);
+  var [articlesBlog, setArticlesBlog] = useState([]);
+  var [showArticleForm, setShowArticleForm] = useState(false);
+  var [editingArticleId, setEditingArticleId] = useState(null);
+  var ARTICLE_VIDE = { titre: '', extrait: '', contenu: '', image_couverture: '', categorie: '', meta_description: '', publie: false };
+  var [articleForm, setArticleForm] = useState(ARTICLE_VIDE);
 
   useEffect(function() {
     if (user && user.role !== 'admin') {
@@ -86,6 +91,7 @@ export default function Admin() {
       api.get('/alertes').catch(function() { return { data: { alertes: [] } }; }),
       api.get('/admin/codes-promo').catch(function() { return { data: { codes: [] } }; }),
       api.get('/admin/logs').catch(function() { return { data: { logs: [] } }; }),
+      api.get('/blog/admin/tous').catch(function() { return { data: { articles: [] } }; }),
     ]).then(function(results) {
       setStats(results[0].data);
       setUsers(results[1].data.users || []);
@@ -96,6 +102,7 @@ export default function Admin() {
       setAlertes(results[5].data.alertes || []);
       setCodesPromo(results[6].data.codes || []);
       setLogsAudit(results[7].data.logs   || []);
+      setArticlesBlog(results[8].data.articles || []);
     }).catch(function(err) {
       console.error('[Admin] Erreur chargement:', err.message);
     }).finally(function() { setLoading(false); });
@@ -134,6 +141,51 @@ export default function Admin() {
       .catch(function() { toast.error('Erreur'); });
   }
 
+  function editerArticle(a) {
+    setEditingArticleId(a.id);
+    setArticleForm({
+      titre: a.titre, extrait: a.extrait || '', contenu: a.contenu,
+      image_couverture: a.image_couverture || '', categorie: a.categorie || '',
+      meta_description: a.meta_description || '', publie: a.publie,
+    });
+    setShowArticleForm(true);
+  }
+
+  function sauvegarderArticle() {
+    if (!articleForm.titre || !articleForm.contenu) {
+      toast.error('Titre et contenu obligatoires');
+      return;
+    }
+    var requete = editingArticleId
+      ? api.put('/blog/' + editingArticleId, articleForm)
+      : api.post('/blog', articleForm);
+    requete
+      .then(function() {
+        toast.success(editingArticleId ? 'Article mis à jour' : 'Article créé');
+        setShowArticleForm(false);
+        setEditingArticleId(null);
+        setArticleForm(ARTICLE_VIDE);
+        charger();
+      })
+      .catch(function(err) { toast.error(err.response?.data?.erreur || 'Erreur'); });
+  }
+
+  function supprimerArticle(id) {
+    if (!window.confirm('Supprimer cet article ?')) return;
+    api.delete('/blog/' + id)
+      .then(function() { toast.success('Article supprimé'); charger(); })
+      .catch(function() { toast.error('Erreur'); });
+  }
+
+  function togglePublieArticle(a) {
+    api.put('/blog/' + a.id, { publie: !a.publie })
+      .then(function() {
+        toast.success(a.publie ? 'Article dépublié' : 'Article publié');
+        charger();
+      })
+      .catch(function() { toast.error('Erreur'); });
+  }
+
   var usersFiltres = users.filter(function(u) {
     var matchSearch = !searchUser || (u.nom + ' ' + u.prenom + ' ' + u.email).toLowerCase().includes(searchUser.toLowerCase());
     var matchRole   = filterRole === 'tous' || u.role === filterRole;
@@ -151,6 +203,7 @@ var NAV = [
   { id: 'reservations', label: 'Réservations',    icon: '📅' },
   { id: 'abonnements',  label: 'Abonnements',     icon: '💳' },
   { id: 'promos',       label: 'Codes Promo',     icon: '🎟️' },
+  { id: 'blog',         label: 'Blog',            icon: '📝' },
   { id: 'logs',         label: 'Logs Audit',      icon: '📋' },
   { id: 'alertes',      label: 'Alertes',         icon: '🔔' },
 ];
@@ -765,6 +818,124 @@ var NAV = [
               <option value="pro">Pro</option>
               <option value="agence">Agence</option>
             </select>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)}
+
+{/* ═══ BLOG ════════════════════════════════════════════════ */}
+{onglet === 'blog' && (
+  <div>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0 }}>📝 Blog</h1>
+      <button onClick={function() {
+          setEditingArticleId(null);
+          setArticleForm(ARTICLE_VIDE);
+          setShowArticleForm(!showArticleForm);
+        }}
+        style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '9px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+        + Nouvel article
+      </button>
+    </div>
+
+    {showArticleForm && (
+      <div style={{ background: '#fff', borderRadius: 14, padding: 20, marginBottom: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 14px' }}>
+          {editingArticleId ? 'Modifier l\'article' : 'Nouvel article'}
+        </h3>
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Titre *</label>
+          <input type="text" value={articleForm.titre}
+            onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { titre: e.target.value })); }}
+            style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+          <div>
+            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Catégorie</label>
+            <input type="text" placeholder="Ex: Guide locataire" value={articleForm.categorie}
+              onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { categorie: e.target.value })); }}
+              style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
+          </div>
+          <div>
+            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Image de couverture (URL)</label>
+            <input type="text" placeholder="https://..." value={articleForm.image_couverture}
+              onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { image_couverture: e.target.value })); }}
+              style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
+          </div>
+        </div>
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Extrait</label>
+          <textarea rows={2} value={articleForm.extrait}
+            onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { extrait: e.target.value })); }}
+            style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+        </div>
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>
+            Contenu * <span style={{ fontWeight: 400, color: '#aaa' }}>(HTML : &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;&lt;li&gt;...)</span>
+          </label>
+          <textarea rows={10} value={articleForm.contenu}
+            onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { contenu: e.target.value })); }}
+            style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box', fontFamily: 'monospace' }} />
+        </div>
+        <div style={{ marginBottom: 16 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>Meta-description (SEO)</label>
+          <input type="text" maxLength={300} value={articleForm.meta_description}
+            onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { meta_description: e.target.value })); }}
+            style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+          <input type="checkbox" id="articlePublie" checked={articleForm.publie}
+            onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { publie: e.target.checked })); }}
+            style={{ width: 15, height: 15, cursor: 'pointer' }} />
+          <label htmlFor="articlePublie" style={{ fontSize: 13, color: '#555', cursor: 'pointer' }}>Publier immédiatement</label>
+        </div>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button onClick={sauvegarderArticle}
+            style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 20px', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>
+            {editingArticleId ? 'Mettre à jour' : 'Créer l\'article'}
+          </button>
+          <button onClick={function() { setShowArticleForm(false); setEditingArticleId(null); }}
+            style={{ background: '#F5F5F5', color: '#555', border: 'none', borderRadius: 10, padding: '10px 20px', fontWeight: 600, cursor: 'pointer', fontSize: 13 }}>
+            Annuler
+          </button>
+        </div>
+      </div>
+    )}
+
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {articlesBlog.length === 0 && (
+        <div style={{ textAlign: 'center', padding: 40, color: '#888', background: '#fff', borderRadius: 14 }}>Aucun article pour le moment.</div>
+      )}
+      {articlesBlog.map(function(a) {
+        return (
+          <div key={a.id} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: 200 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <span style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{a.titre}</span>
+                <span style={{ background: a.publie ? '#E8F5E9' : '#FFF3E0', color: a.publie ? '#1B5E20' : '#E65100', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>
+                  {a.publie ? 'Publié' : 'Brouillon'}
+                </span>
+              </div>
+              <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>
+                {a.categorie || 'Sans catégorie'} · {a.vues || 0} vue(s) · /blog/{a.slug}
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <button onClick={function() { togglePublieArticle(a); }}
+                style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: '#fff', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: a.publie ? '#E65100' : '#1B6B3A' }}>
+                {a.publie ? 'Dépublier' : 'Publier'}
+              </button>
+              <button onClick={function() { editerArticle(a); }}
+                style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: '#fff', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: '#1565C0' }}>
+                Modifier
+              </button>
+              <button onClick={function() { supprimerArticle(a.id); }}
+                style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #FFCDD2', background: '#FFEBEE', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: '#B71C1C' }}>
+                Supprimer
+              </button>
+            </div>
           </div>
         );
       })}

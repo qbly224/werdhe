@@ -1,5 +1,5 @@
 const db = require('../database');
-const { genererDocument } = require('../services/documentService');
+const { genererDocument, genererPdfDepuisHtml, genererHTMLCertificatSignature } = require('../services/documentService');
 const { envoyerEmailDocument } = require('../services/emailService');
 const multer = require('multer');
 
@@ -330,6 +330,7 @@ const getMesDocuments = async (req, res) => {
 const telechargerDocument = async (req, res) => {
   try {
     const { id } = req.params;
+    const format = req.query.format === 'pdf' ? 'pdf' : 'html';
 
     const result = await db.query(
       `SELECT * FROM documents
@@ -346,12 +347,42 @@ const telechargerDocument = async (req, res) => {
     if (!doc.contenu_html) {
       return res.status(404).json({ erreur: 'Contenu du document non disponible' });
     }
+
+    var html = doc.contenu_html;
+
+    // Pour un contrat de bail, ajouter le certificat de signature électronique
+    if (doc.type === 'contrat_bail' && doc.reservation_id) {
+      const signatures = await db.query(
+        `SELECT role, nom_complet, ip_adresse, signe_at FROM signatures_bail
+         WHERE reservation_id = $1 ORDER BY signe_at`,
+        [doc.reservation_id]
+      ).catch(function() { return { rows: [] }; });
+
+      const certificat = genererHTMLCertificatSignature(signatures.rows);
+      if (certificat) {
+        html = html.includes('</body>')
+          ? html.replace('</body>', certificat + '</body>')
+          : html + certificat;
+      }
+    }
+
+    const nomFichier = doc.titre.replace(/[^a-zA-Z0-9_-]/g, '_');
+
+    if (format === 'pdf') {
+      try {
+        const pdfBuffer = await genererPdfDepuisHtml(html);
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${nomFichier}.pdf"`);
+        return res.send(pdfBuffer);
+      } catch (pdfErr) {
+        console.error('[PDF]', pdfErr.message);
+        // Repli sur le HTML si la génération PDF échoue (ex: Chromium indisponible)
+      }
+    }
+
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.setHeader(
-      'Content-Disposition',
-      `attachment; filename="${doc.titre.replace(/[^a-zA-Z0-9_-]/g, '_')}.html"`
-    );
-    res.send(doc.contenu_html);
+    res.setHeader('Content-Disposition', `attachment; filename="${nomFichier}.html"`);
+    res.send(html);
 
   } catch (err) {
     res.status(500).json({ erreur: 'Erreur serveur' });

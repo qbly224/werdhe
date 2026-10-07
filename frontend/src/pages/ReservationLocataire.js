@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import EtatDesLieux from '../components/EtatDesLieux';
+import ModalSignatureBail from '../components/ModalSignatureBail';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 
@@ -112,6 +113,7 @@ export default function ReservationLocataire() {
   var [payProcessing, setPayProcessing] = useState(false);
   var [signed, setSigned]           = useState(false);
   var [signProcessing, setSignProcessing] = useState(false);
+  var [showSignature, setShowSignature] = useState(false);
   var chatRef = useRef(null);
   var [noteSelectionnee, setNoteSelectionnee] = useState(0);
   var [commentaireNote, setCommentaireNote]   = useState('');
@@ -217,18 +219,41 @@ export default function ReservationLocataire() {
       });
   }
 
-  function signerBail() {
+  function signerBail(nomComplet) {
     setSignProcessing(true);
-    api.patch('/reservations/' + reservationId + '/signer-bail', { role: 'locataire' })
+    api.patch('/reservations/' + reservationId + '/signer-bail', { nom_complet: nomComplet, accepte: true })
       .then(function() {
         setSigned(true);
         setSignProcessing(false);
+        setShowSignature(false);
         toast.success('Bail signé ! En attente de confirmation finale.');
       })
-      .catch(function() {
+      .catch(function(err) {
         setSignProcessing(false);
-        toast.error('Erreur signature bail');
+        toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur signature bail');
       });
+  }
+
+  function telechargerBailSigne() {
+    api.get('/documents?type=contrat_bail')
+      .then(function(res) {
+        var docs = (res.data.documents || []).filter(function(d) { return d.reservation_id === reservationId; });
+        if (docs.length === 0) { toast.error('Bail non trouvé'); return; }
+        return api.get('/documents/' + docs[0].id + '/telecharger?format=pdf', { responseType: 'blob' })
+          .then(function(res2) {
+            var typePdf = (res2.headers && res2.headers['content-type'] || '').indexOf('pdf') !== -1;
+            var blob = new Blob([res2.data], { type: typePdf ? 'application/pdf' : 'text/html; charset=utf-8' });
+            var url  = window.URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'Bail_' + reservationId.slice(0, 8) + (typePdf ? '.pdf' : '.html'));
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            toast.success('Bail téléchargé');
+          });
+      })
+      .catch(function() { toast.error('Erreur téléchargement'); });
   }
 
   function passerAuxEchanges() {
@@ -630,7 +655,7 @@ export default function ReservationLocataire() {
                   </>
                 )}
               </div>
-              <div onClick={function() { if (!signed && !signProcessing) signerBail(); }}
+              <div onClick={function() { if (!signed && !signProcessing) setShowSignature(true); }}
                 style={{ padding: 12, border: signed ? '1.5px solid #1A4FA0' : '1.5px dashed #1A4FA0', background: signed ? '#E3F2FD' : '#F0F7FF', borderRadius: 10, textAlign: 'center', cursor: signed ? 'default' : 'pointer' }}>
                 <div style={{ fontSize: 11, color: '#888', marginBottom: 6 }}>Votre signature</div>
                 {signed ? (
@@ -696,7 +721,7 @@ export default function ReservationLocataire() {
               Votre premier loyer de <b>{GNF(loyer)}</b> sera dû le 1er du mois prochain.
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
   <button onClick={function() {
     localStorage.setItem('dashboardOnglet', '/dashboard/documents');
     navigate('/dashboard');
@@ -712,6 +737,11 @@ export default function ReservationLocataire() {
     style={{ padding: 14, border: '0.5px solid #E0E0E0', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
     <div style={{ fontSize: 22 }}>💬</div>
     <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22' }}>Messages</div>
+  </button>
+  <button onClick={telechargerBailSigne}
+    style={{ padding: 14, border: '0.5px solid #E0E0E0', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+    <div style={{ fontSize: 22 }}>🗝️</div>
+    <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22' }}>Bail (PDF)</div>
   </button>
 </div>
         </div>
@@ -753,6 +783,14 @@ export default function ReservationLocataire() {
 )}
 
       <div style={{ height: 30 }} />
+      {showSignature && (
+        <ModalSignatureBail
+          nomSuggere={((user && user.prenom) || '') + ' ' + ((user && user.nom) || '')}
+          loading={signProcessing}
+          onClose={function() { if (!signProcessing) setShowSignature(false); }}
+          onConfirm={signerBail}
+        />
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const crypto = require('crypto');
 const db = require('../database');
 const verifierToken = require('../middleware/auth');
 const {
@@ -192,6 +193,15 @@ router.patch('/:id/soumettre-dossier', verifierToken, async (req, res) => {
 router.patch('/:id/signer-bail', verifierToken, async (req, res) => {
   try {
     const { id } = req.params;
+    const { nom_complet, accepte } = req.body;
+
+    if (!nom_complet || !nom_complet.trim()) {
+      return res.status(400).json({ erreur: 'Le nom complet est requis pour signer' });
+    }
+    if (accepte !== true) {
+      return res.status(400).json({ erreur: 'Vous devez accepter les termes du bail pour signer' });
+    }
+
     const resa = await db.query(
       `SELECT r.*, l.proprietaire_id
        FROM reservations r
@@ -208,6 +218,16 @@ router.patch('/:id/signer-bail', verifierToken, async (req, res) => {
 
     if (!estProprio && !estLocataire) {
       return res.status(403).json({ erreur: 'Non autorisé' });
+    }
+
+    const role = estProprio ? 'proprietaire' : 'locataire';
+
+    const dejaSigne = await db.query(
+      `SELECT id FROM signatures_bail WHERE reservation_id = $1 AND signataire_id = $2`,
+      [id, req.user.id]
+    );
+    if (dejaSigne.rows.length > 0) {
+      return res.status(400).json({ erreur: 'Vous avez déjà signé ce bail' });
     }
 
     let nouveauStatut = r.statut;
@@ -249,9 +269,65 @@ router.patch('/:id/signer-bail', verifierToken, async (req, res) => {
       [nouveauStatut, id]
     );
 
-    res.json({ message: 'Bail signé', statut: nouveauStatut });
+    // Enregistrer la preuve de signature électronique (nom, IP, user-agent, horodatage)
+    const ipAdresse = (req.headers['x-forwarded-for'] || req.ip || '').toString().split(',')[0].trim();
+    const userAgent = req.headers['user-agent'] || '';
+    const hashSignature = crypto
+      .createHash('sha256')
+      .update([id, req.user.id, nom_complet.trim(), new Date().toISOString()].join('|'))
+      .digest('hex');
+
+    await db.query(
+      `INSERT INTO signatures_bail
+         (reservation_id, signataire_id, role, nom_complet, ip_adresse, user_agent, hash_signature)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [id, req.user.id, role, nom_complet.trim(), ipAdresse, userAgent, hashSignature]
+    ).catch(function(err) {
+      console.warn('[Signature bail] Non enregistrée:', err.message);
+    });
+
+    const signatures = await db.query(
+      `SELECT role, nom_complet, signe_at FROM signatures_bail WHERE reservation_id = $1`,
+      [id]
+    );
+
+    res.json({
+      message: 'Bail signé',
+      statut: nouveauStatut,
+      signatures: signatures.rows,
+      bail_complet: nouveauStatut === 'confirmee',
+    });
   } catch (err) {
     console.error(err);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+});
+
+// ─── STATUT DE SIGNATURE DU BAIL ──────────────────────────────────
+router.get('/:id/signatures', verifierToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const check = await db.query(
+      `SELECT r.locataire_id, l.proprietaire_id
+       FROM reservations r
+       JOIN logements l ON r.logement_id = l.id
+       WHERE r.id = $1`,
+      [id]
+    );
+    if (check.rows.length === 0) {
+      return res.status(404).json({ erreur: 'Réservation non trouvée' });
+    }
+    const r = check.rows[0];
+    if (req.user.id !== r.locataire_id && req.user.id !== r.proprietaire_id) {
+      return res.status(403).json({ erreur: 'Non autorisé' });
+    }
+
+    const signatures = await db.query(
+      `SELECT role, nom_complet, signe_at FROM signatures_bail WHERE reservation_id = $1 ORDER BY signe_at`,
+      [id]
+    );
+    res.json({ signatures: signatures.rows });
+  } catch (err) {
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 });
