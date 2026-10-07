@@ -8,92 +8,103 @@ import ModalPaiementMobile from '../components/ModalPaiementMobile';
 import { useAuth } from '../context/AuthContext';
 import { Check, X, ChevronDown, ChevronUp, Zap, Building2, Users, ArrowRight, Home } from 'lucide-react';
 import Logo from '../components/Logo';
+import { useTranslation } from 'react-i18next';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
 
-var CYCLES = {
-  mensuel:    { label: 'Mensuel', mois: 1,  reduction: 0    },
-  semestriel: { label: '6 mois',  mois: 6,  reduction: 0.10 },
-  annuel:     { label: 'Annuel',  mois: 12, reduction: 0.20 },
-};
+function getCycles(t) {
+  return {
+    mensuel:    { label: t('pricing.cycles.mensuel'), mois: 1,  reduction: 0    },
+    semestriel: { label: t('pricing.cycles.semestriel'),  mois: 6,  reduction: 0.10 },
+    annuel:     { label: t('pricing.cycles.annuel'),  mois: 12, reduction: 0.20 },
+  };
+}
 
-var PLANS = [
-  {
-    id:         'gratuit',
-    nom:        'Locataire',
-    prix_mois:  0,
-    couleur:    '#1565C0',
-    bg:         '#E3F2FD',
-    sous_titre: 'Pour trouver un logement',
-    features: [
-      'Recherche avancée de logements',
-      'Candidatures illimitées',
-      'Messagerie avec propriétaires',
-      'Suivi de candidature en temps réel',
-      'Signature électronique de bail',
-      'Historique de locations',
-      'Score de confiance',
-    ],
-    nonInclus: []
-  },
-  {
-    id:        'pro',
-    nom:       'Pro',
-    prix_mois: 120000,
-    couleur:   '#1B6B3A',
-    bg:        '#E8F5E9',
-    badge:     '1 mois gratuit',
-    recommande: true,
-    sous_titre: 'Jusqu\'à 20 logements',
-    features: [
-      'Jusqu\'à 20 logements',
-      'Candidatures et dossiers en ligne',
-      'Paiement Orange Money + MTN MoMo',
-      'Baux et quittances PDF auto',
-      'Alertes loyers J-3 / J+5',
-      'Rapports financiers + export CSV',
-      'Messagerie avec accusé de lecture',
-      'Score de confiance locataires',
-      'Support email prioritaire',
-    ],
-    nonInclus: [
-      'Multi-utilisateurs',
-      'Logements illimités',
-    ]
-  },
-  {
-    id:        'agence',
-    nom:       'Agence',
-    prix_mois: 300000,
-    couleur:   '#7B1FA2',
-    bg:        '#F3E5F5',
-    badge:     '1 mois gratuit',
-    recommande: false,
-    sous_titre: 'Logements illimités',
-    features: [
-      'Logements illimités',
-      'Tout du plan Pro',
-      'Multi-utilisateurs (5 comptes)',
-      'Rapport mensuel automatique',
-      'Codes promo personnalisés',
-      'Support Mail/Message',
-      'Formation et onboarding équipe',
-      'Tableau de bord agence centralisé',
-    ],
-    nonInclus: []
-  },
-];
+function getPlans(t) {
+  return [
+    {
+      id:         'gratuit',
+      nom:        t('pricing.plans.gratuit.nom'),
+      prix_mois:  0,
+      couleur:    '#1565C0',
+      bg:         '#E3F2FD',
+      sous_titre: t('pricing.plans.gratuit.sousTitre'),
+      features: [
+        t('pricing.plans.gratuit.features.0'),
+        t('pricing.plans.gratuit.features.1'),
+        t('pricing.plans.gratuit.features.2'),
+        t('pricing.plans.gratuit.features.3'),
+        t('pricing.plans.gratuit.features.4'),
+        t('pricing.plans.gratuit.features.5'),
+        t('pricing.plans.gratuit.features.6'),
+      ],
+      nonInclus: []
+    },
+    {
+      id:        'pro',
+      nom:       t('pricing.plans.pro.nom'),
+      prix_mois: 120000,
+      couleur:   '#1B6B3A',
+      bg:        '#E8F5E9',
+      badge:     t('pricing.plans.pro.badge'),
+      recommande: true,
+      sous_titre: t('pricing.plans.pro.sousTitre'),
+      features: [
+        t('pricing.plans.pro.features.0'),
+        t('pricing.plans.pro.features.1'),
+        t('pricing.plans.pro.features.2'),
+        t('pricing.plans.pro.features.3'),
+        t('pricing.plans.pro.features.4'),
+        t('pricing.plans.pro.features.5'),
+        t('pricing.plans.pro.features.6'),
+        t('pricing.plans.pro.features.7'),
+        t('pricing.plans.pro.features.8'),
+      ],
+      nonInclus: [
+        t('pricing.plans.pro.nonInclus.0'),
+        t('pricing.plans.pro.nonInclus.1'),
+      ]
+    },
+    {
+      id:        'agence',
+      nom:       t('pricing.plans.agence.nom'),
+      prix_mois: 300000,
+      couleur:   '#7B1FA2',
+      bg:        '#F3E5F5',
+      badge:     t('pricing.plans.agence.badge'),
+      recommande: false,
+      sous_titre: t('pricing.plans.agence.sousTitre'),
+      features: [
+        t('pricing.plans.agence.features.0'),
+        t('pricing.plans.agence.features.1'),
+        t('pricing.plans.agence.features.2'),
+        t('pricing.plans.agence.features.3'),
+        t('pricing.plans.agence.features.4'),
+        t('pricing.plans.agence.features.5'),
+        t('pricing.plans.agence.features.6'),
+        t('pricing.plans.agence.features.7'),
+      ],
+      nonInclus: []
+    },
+  ];
+}
 
-var FAQ_ITEMS = [
-  { q: 'Comment payer mon abonnement ?', r: 'Le paiement se fait uniquement par Mobile Money (Orange Money ou MTN MoMo). Aucun paiement en espèces n\'est accepté.' },
-  { q: 'L\'essai est-il vraiment gratuit ?', r: 'Oui, 1 mois complet sur Pro ou Agence, sans Mobile Money requis. Accès à toutes les fonctionnalités du plan choisi. À la fin, choisissez de continuer ou non.' },
-  { q: 'Quels rythmes de paiement sont proposés ?', r: 'Mensuel, tous les 6 mois (-10%) ou annuel (-20%). Vous choisissez ce qui vous convient.' },
-  { q: 'Que se passe-t-il si je ne paie pas à temps ?', r: 'Vous recevez une relance 3 jours après l\'échéance, puis une dernière relance à 5 jours. Sans règlement, l\'accès est bloqué jusqu\'à régularisation.' },
-  { q: 'Puis-je changer de plan à tout moment ?', r: 'Oui. Vous pouvez upgrader ou downgrader depuis vos paramètres. Le changement prend effet immédiatement.' },
-  { q: 'Quelle est la commission Werdhe ?', r: 'Werdhe prélève 5% sur chaque loyer encaissé via la plateforme.' },
-];
+function getFaqItems(t) {
+  return [
+    { q: t('pricing.faq.0.q'), r: t('pricing.faq.0.r') },
+    { q: t('pricing.faq.1.q'), r: t('pricing.faq.1.r') },
+    { q: t('pricing.faq.2.q'), r: t('pricing.faq.2.r') },
+    { q: t('pricing.faq.3.q'), r: t('pricing.faq.3.r') },
+    { q: t('pricing.faq.4.q'), r: t('pricing.faq.4.r') },
+    { q: t('pricing.faq.5.q'), r: t('pricing.faq.5.r') },
+  ];
+}
 
 export default function Pricing() {
+  var t                   = useTranslation('public').t;
+  var CYCLES              = getCycles(t);
+  var PLANS               = getPlans(t);
+  var FAQ_ITEMS           = getFaqItems(t);
   var navigate            = useNavigate();
   var { user }             = useAuth();
   var [cycle, setCycle]     = useState('mensuel');
@@ -108,8 +119,8 @@ export default function Pricing() {
     if (!code.trim()) return;
     setLoading(true);
     api.get('/abonnements/valider-code?code=' + code.trim().toUpperCase())
-      .then(function(res) { setCodeOk(res.data); toast.success('Code valide !'); })
-      .catch(function() { setCodeOk(false); toast.error('Code invalide'); })
+      .then(function(res) { setCodeOk(res.data); toast.success(t('pricing.codeValide')); })
+      .catch(function() { setCodeOk(false); toast.error(t('pricing.codeInvalide')); })
       .finally(function() { setLoading(false); });
   }
 
@@ -130,13 +141,13 @@ export default function Pricing() {
     setEssaiEnCours(planId);
     api.post('/abonnements/essai', { plan: planId })
       .then(function() {
-        toast.success('Essai ' + (planId === 'pro' ? 'Pro' : 'Agence') + ' démarré ! 1 mois gratuit.');
+        toast.success(t('pricing.essaiDemarre', { plan: planId === 'pro' ? t('pricing.plans.pro.nom') : t('pricing.plans.agence.nom') }));
         navigate('/dashboard');
       })
       .catch(function(err) {
         // Essai déjà utilisé ou abonnement déjà actif → payer directement
         var msg = err.response && err.response.data ? err.response.data.erreur : '';
-        toast(msg || 'Essai déjà utilisé - vous pouvez payer directement', { icon: 'ℹ️' });
+        toast(msg || t('pricing.essaiDejaUtilise'), { icon: 'ℹ️' });
         setShowPaiement(planId);
       })
       .finally(function() { setEssaiEnCours(null); });
@@ -149,8 +160,8 @@ export default function Pricing() {
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
       <SEO
-        titre="Tarifs - Locataire gratuit, plans Pro et Agence"
-        description="Werdhe est 100% gratuit pour les locataires. Plans Pro et Agence pour les propriétaires, 1 mois d'essai gratuit. Paiement Mobile Money."
+        titre={t('pricing.seo.titre')}
+        description={t('pricing.seo.description')}
         url="https://werdhe.com/pricing"
       />
 
@@ -160,21 +171,21 @@ export default function Pricing() {
           <Logo size={34} showText={true} darkBg={false} />
         </Link>
         <div style={{ display: 'flex', gap: 10 }}>
-          <Link to="/login" style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>Connexion</Link>
-          <Link to="/inscription" style={{ padding: '8px 16px', borderRadius: 8, background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>Démarrer</Link>
+          <Link to="/login" style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>{t('pricing.connexion')}</Link>
+          <Link to="/inscription" style={{ padding: '8px 16px', borderRadius: 8, background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>{t('pricing.demarrer')}</Link>
         </div>
       </nav>
 
       {/* Hero */}
       <div style={{ textAlign: 'center', padding: 'clamp(40px, 6vw, 64px) 24px 32px' }}>
         <h1 style={{ fontSize: 'clamp(26px, 5vw, 44px)', fontWeight: 900, color: '#1B2B22', margin: '0 0 12px', letterSpacing: -1 }}>
-          Des tarifs transparents
+          {t('pricing.titre')}
         </h1>
         <p style={{ fontSize: 15, color: '#888', margin: '0 0 6px' }}>
-          100% gratuit pour les locataires · Pro et Agence pour les propriétaires
+          {t('pricing.sousTitre')}
         </p>
         <p style={{ fontSize: 13, color: '#1B6B3A', fontWeight: 600, margin: '0 0 28px' }}>
-          Paiement uniquement par Mobile Money (Orange / MTN)
+          {t('pricing.paiementMobileMoney')}
         </p>
 
         {/* Toggle cycle de facturation */}
@@ -200,7 +211,7 @@ export default function Pricing() {
       {showPaiement && (
         <ModalPaiementMobile
           montant={montantCycle(PLANS.find(function(p) { return p.id === showPaiement; }).prix_mois)}
-          titre={'Abonnement ' + (showPaiement === 'pro' ? 'Pro' : 'Agence') + ' - ' + CYCLES[cycle].label}
+          titre={t('pricing.modalTitre', { plan: showPaiement === 'pro' ? t('pricing.plans.pro.nom') : t('pricing.plans.agence.nom'), cycle: CYCLES[cycle].label })}
           payload={{ plan: showPaiement, cycle: cycle, code_promo: codeOk && codeOk.valide ? code : undefined }}
           endpoints={{
             orange:    '/abonnements/orange-money/initier',
@@ -220,7 +231,7 @@ export default function Pricing() {
             <div key={plan.id} style={{ background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: plan.recommande ? '0 8px 32px rgba(27,107,58,0.15)' : '0 2px 12px rgba(0,0,0,0.06)', border: plan.recommande ? '2px solid ' + plan.couleur : '1px solid #E8E8E8', position: 'relative' }}>
               {plan.recommande && (
                 <div style={{ background: plan.couleur, color: '#fff', textAlign: 'center', padding: '6px', fontSize: 12, fontWeight: 700 }}>
-                  Recommandé - {plan.badge}
+                  {t('pricing.recommande')} - {plan.badge}
                 </div>
               )}
               <div style={{ padding: '24px 22px' }}>
@@ -236,7 +247,7 @@ export default function Pricing() {
 
                 <div style={{ marginBottom: 20 }}>
                   {prix === 0 ? (
-                    <div style={{ fontSize: 36, fontWeight: 900, color: '#1B2B22' }}>Gratuit</div>
+                    <div style={{ fontSize: 36, fontWeight: 900, color: '#1B2B22' }}>{t('pricing.gratuit')}</div>
                   ) : (
                     <>
                       <div style={{ fontSize: 36, fontWeight: 900, color: '#1B2B22', letterSpacing: -1 }}>
@@ -245,7 +256,7 @@ export default function Pricing() {
                       <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{CYCLES[cycle].label.toLowerCase()}</div>
                       {CYCLES[cycle].reduction > 0 && (
                         <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 600, marginTop: 4 }}>
-                          Économie : {GNF(Math.round(plan.prix_mois * CYCLES[cycle].mois * CYCLES[cycle].reduction))} GNF
+                          {t('pricing.economie', { montant: GNF(Math.round(plan.prix_mois * CYCLES[cycle].mois * CYCLES[cycle].reduction)) })}
                         </div>
                       )}
                     </>
@@ -256,8 +267,8 @@ export default function Pricing() {
                 <button onClick={function() { choisirPlan(plan.id); }} disabled={essaiEnCours === plan.id}
                   style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: essaiEnCours === plan.id ? '#aaa' : plan.couleur, color: '#fff', fontSize: 14, fontWeight: 700, cursor: essaiEnCours === plan.id ? 'not-allowed' : 'pointer', marginBottom: plan.id === 'gratuit' ? 20 : 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                   {essaiEnCours === plan.id
-                    ? 'Démarrage...'
-                    : <>{plan.id === 'gratuit' ? 'Créer un compte gratuit' : 'Essai gratuit 1 mois'} <ArrowRight size={15} strokeWidth={2.5} /></>
+                    ? t('pricing.demarrage')
+                    : <>{plan.id === 'gratuit' ? t('pricing.creerCompteGratuit') : t('pricing.essaiGratuit1Mois')} <ArrowRight size={15} strokeWidth={2.5} /></>
                   }
                 </button>
 
@@ -265,7 +276,7 @@ export default function Pricing() {
                   <div style={{ textAlign: 'center', marginBottom: 16 }}>
                     <button onClick={function() { setShowPaiement(plan.id); }}
                       style={{ background: 'none', border: 'none', color: '#888', fontSize: 11, cursor: 'pointer', textDecoration: 'underline' }}>
-                      Déjà utilisé votre essai ? Payer maintenant
+                      {t('pricing.dejaUtiliseEssai')}
                     </button>
                   </div>
                 )}
@@ -301,20 +312,20 @@ export default function Pricing() {
       {/* Code promo */}
       <div style={{ maxWidth: 480, margin: '0 auto 48px', padding: '0 20px' }}>
         <div style={{ background: '#fff', borderRadius: 16, padding: '22px 20px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', textAlign: 'center' }}>
-          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 6px' }}>Vous avez un code promo ?</h3>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 6px' }}>{t('pricing.codePromoQuestion')}</h3>
           <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
-            <input type="text" placeholder="Ex: WERDHE50" value={code}
+            <input type="text" placeholder={t('pricing.placeholderCodePromo')} value={code}
               onChange={function(e) { setCode(e.target.value.toUpperCase()); setCodeOk(null); }}
               onKeyDown={function(e) { if (e.key === 'Enter') validerCode(); }}
               style={{ flex: 1, padding: '10px 14px', border: '1.5px solid ' + (codeOk && codeOk.valide ? '#1B6B3A' : codeOk === false ? '#E53935' : '#E0E0E0'), borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'monospace', letterSpacing: 1 }} />
             <button onClick={validerCode} disabled={loading || !code.trim()}
               style={{ padding: '10px 18px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-              {loading ? '...' : 'Valider'}
+              {loading ? '...' : t('pricing.valider')}
             </button>
           </div>
           {codeOk && codeOk.valide && (
             <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginTop: 12, fontSize: 13, color: '#1B5E20', fontWeight: 600 }}>
-              Code valide ! -{codeOk.reduction_pct}% sur le plan {codeOk.plan_cible}
+              {t('pricing.codeValideReduction', { pct: codeOk.reduction_pct, plan: codeOk.plan_cible })}
             </div>
           )}
         </div>
@@ -322,24 +333,24 @@ export default function Pricing() {
 
       {/* Tableau comparatif */}
       <div style={{ maxWidth: 900, margin: '0 auto 48px', padding: '0 20px' }}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', textAlign: 'center', margin: '0 0 20px' }}>Comparaison</h2>
+        <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', textAlign: 'center', margin: '0 0 20px' }}>{t('pricing.comparaison')}</h2>
         <div style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', overflowX: 'auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', background: '#1B2B22', padding: '16px 20px', gap: 8, minWidth: 560 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.5)' }}>Fonctionnalité</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#90CAF9', textAlign: 'center' }}>Locataire</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#F5A623', textAlign: 'center' }}>Pro</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#CE93D8', textAlign: 'center' }}>Agence</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.5)' }}>{t('pricing.table.fonctionnalite')}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#90CAF9', textAlign: 'center' }}>{t('pricing.plans.gratuit.nom')}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#F5A623', textAlign: 'center' }}>{t('pricing.plans.pro.nom')}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#CE93D8', textAlign: 'center' }}>{t('pricing.plans.agence.nom')}</div>
           </div>
           {[
-            { label: 'Logements gérés',            vals: ['-', '20', 'Illimités']    },
-            { label: 'Paiement Mobile Money',       vals: [false, true,  true]        },
-            { label: 'Candidatures et dossiers',    vals: [true,  true,  true]        },
-            { label: 'Documents PDF auto',          vals: [false, true,  true]        },
-            { label: 'Alertes loyers auto',         vals: [false, true,  true]        },
-            { label: 'Rapports financiers',         vals: [false, true,  true]        },
-            { label: 'Score confiance',             vals: [true,  true,  true]        },
-            { label: 'Multi-utilisateurs',          vals: [false, false, '5 comptes'] },
-            { label: 'Support',                     vals: ['-', 'Email', 'Mail/Message'] },
+            { label: t('pricing.table.logementsGeres'),            vals: ['-', '20', t('pricing.table.illimites')]    },
+            { label: t('pricing.table.paiementMobileMoney'),       vals: [false, true,  true]        },
+            { label: t('pricing.table.candidaturesDossiers'),    vals: [true,  true,  true]        },
+            { label: t('pricing.table.documentsPdfAuto'),          vals: [false, true,  true]        },
+            { label: t('pricing.table.alertesLoyersAuto'),         vals: [false, true,  true]        },
+            { label: t('pricing.table.rapportsFinanciers'),         vals: [false, true,  true]        },
+            { label: t('pricing.table.scoreConfiance'),             vals: [true,  true,  true]        },
+            { label: t('pricing.table.multiUtilisateurs'),          vals: [false, false, t('pricing.table.cinqComptes')] },
+            { label: t('pricing.table.support'),                     vals: ['-', t('pricing.table.email'), t('pricing.table.mailMessage')] },
           ].map(function(row, i) {
             var colors = ['#1565C0', '#1B6B3A', '#7B1FA2'];
             return (
@@ -365,7 +376,7 @@ export default function Pricing() {
 
       {/* FAQ */}
       <div style={{ maxWidth: 640, margin: '0 auto 48px', padding: '0 20px' }}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', textAlign: 'center', margin: '0 0 20px' }}>Questions fréquentes</h2>
+        <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', textAlign: 'center', margin: '0 0 20px' }}>{t('pricing.questionsFrequentes')}</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {FAQ_ITEMS.map(function(item, i) {
             var open = openFaq === i;
@@ -389,17 +400,17 @@ export default function Pricing() {
 
       {/* CTA */}
       <div style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', padding: 'clamp(40px, 6vw, 64px) 24px', textAlign: 'center' }}>
-        <h2 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 900, color: '#fff', margin: '0 0 12px' }}>Prêt à commencer ?</h2>
-        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', margin: '0 0 28px' }}>1 mois d'essai gratuit · Paiement Mobile Money uniquement</p>
+        <h2 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 900, color: '#fff', margin: '0 0 12px' }}>{t('pricing.pretACommencer')}</h2>
+        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', margin: '0 0 28px' }}>{t('pricing.ctaSousTitre')}</p>
         <button onClick={function() { choisirPlan('pro'); }}
           style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, border: 'none', background: '#F5A623', color: '#1B2B22', fontWeight: 800, fontSize: 15, cursor: 'pointer' }}>
-          Démarrer l'essai gratuit <ArrowRight size={16} strokeWidth={2.5} />
+          {t('pricing.demarrerEssai')} <ArrowRight size={16} strokeWidth={2.5} />
         </button>
       </div>
 
       <div style={{ background: '#101A12', padding: '20px 24px', textAlign: 'center' }}>
         <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', margin: 0 }}>
-          © 2026 Werdhe · <a href="/cgu" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>CGU</a> · <a href="/confidentialite" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>Confidentialité</a>
+          © 2026 Werdhe · <a href="/cgu" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>{t('pricing.footerCgu')}</a> · <a href="/confidentialite" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>{t('pricing.footerConfidentialite')}</a>
         </p>
       </div>
 

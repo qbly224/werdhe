@@ -3,14 +3,19 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Home, Search, ArrowLeft, RefreshCw } from 'lucide-react';
 import SEO from '../components/SEO';
+import { useTranslation } from 'react-i18next';
 
-var SUGGESTIONS = [
-  { icon: '🏠', label: 'Logements disponibles', path: '/logements' },
-  { icon: '💳', label: 'Voir les tarifs',        path: '/pricing'   },
-  { icon: '📞', label: 'Nous contacter',         path: '/contact'   },
-];
+function getSuggestions(t) {
+  return [
+    { icon: '🏠', label: t('notFound.suggestions.logements'), path: '/logements' },
+    { icon: '💳', label: t('notFound.suggestions.tarifs'),        path: '/pricing'   },
+    { icon: '📞', label: t('notFound.suggestions.contact'),         path: '/contact'   },
+  ];
+}
 
 export default function NotFound() {
+  var t         = useTranslation('public').t;
+  var SUGGESTIONS = getSuggestions(t);
   var navigate  = useNavigate();
   var location  = useLocation();
   var [compte, setCompte] = useState(10);
@@ -39,7 +44,7 @@ export default function NotFound() {
       position: 'relative',
       overflow: 'hidden'
     }}>
-      <SEO titre="Page non trouvée" noIndex={true} />
+      <SEO titre={t('notFound.seoTitre')} noIndex={true} />
 
       {/* Cercles décoratifs */}
       <div style={{ position: 'absolute', top: -100, right: -100, width: 400, height: 400, borderRadius: '50%', background: 'rgba(27,107,58,0.15)', pointerEvents: 'none' }} />
@@ -78,13 +83,13 @@ export default function NotFound() {
 
       {/* Texte principal */}
       <h1 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 800, color: '#fff', margin: '0 0 12px', letterSpacing: -0.5, position: 'relative', zIndex: 1 }}>
-        Cette page n'existe pas
+        {t('notFound.titre')}
       </h1>
       <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.55)', margin: '0 0 8px', maxWidth: 420, lineHeight: 1.6, position: 'relative', zIndex: 1 }}>
-        La page <code style={{ background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: 6, fontSize: 13, color: '#F5A623' }}>{location.pathname}</code> est introuvable.
+        {t('notFound.pagePrefixe')} <code style={{ background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: 6, fontSize: 13, color: '#F5A623' }}>{location.pathname}</code> {t('notFound.pageIntrouvable')}
       </p>
       <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', margin: '0 0 36px', position: 'relative', zIndex: 1 }}>
-        Redirection automatique dans <span style={{ color: '#F5A623', fontWeight: 700 }}>{compte}s</span>
+        {t('notFound.redirectionAuto')} <span style={{ color: '#F5A623', fontWeight: 700 }}>{compte}s</span>
       </p>
 
       {/* Boutons principaux */}
@@ -93,26 +98,26 @@ export default function NotFound() {
           style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 22px', borderRadius: 12, border: '1.5px solid rgba(255,255,255,0.2)', background: 'transparent', color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'all .2s' }}
           onMouseEnter={function(e) { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
           onMouseLeave={function(e) { e.currentTarget.style.background = 'transparent'; }}>
-          <ArrowLeft size={16} strokeWidth={2} /> Retour
+          <ArrowLeft size={16} strokeWidth={2} /> {t('notFound.retour')}
         </button>
         <button onClick={function() { navigate('/'); }}
           style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 22px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: 'all .2s' }}
           onMouseEnter={function(e) { e.currentTarget.style.background = '#134F2B'; }}
           onMouseLeave={function(e) { e.currentTarget.style.background = '#1B6B3A'; }}>
-          <Home size={16} strokeWidth={2} /> Accueil
+          <Home size={16} strokeWidth={2} /> {t('notFound.accueil')}
         </button>
         <button onClick={function() { navigate('/logements'); }}
           style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 22px', borderRadius: 12, border: 'none', background: '#F5A623', color: '#1B2B22', fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: 'all .2s' }}
           onMouseEnter={function(e) { e.currentTarget.style.opacity = '0.9'; }}
           onMouseLeave={function(e) { e.currentTarget.style.opacity = '1'; }}>
-          <Search size={16} strokeWidth={2} /> Chercher un logement
+          <Search size={16} strokeWidth={2} /> {t('notFound.chercherLogement')}
         </button>
       </div>
 
       {/* Suggestions */}
       <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 420 }}>
         <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 }}>
-          Pages utiles
+          {t('notFound.pagesUtiles')}
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {SUGGESTIONS.map(function(s, i) {

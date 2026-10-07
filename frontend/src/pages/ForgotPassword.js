@@ -4,14 +4,19 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import Logo from '../components/Logo';
 import { Mail, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
-var SLIDES = [
-  { img: '/img/residences/vue-aerienne-conakry.jpg', titre: 'Pas de panique', sous: 'Récupérez l\'accès à votre compte en quelques instants' },
-  { img: '/img/residences/villa-conakry.jpg',         titre: 'Vos biens vous attendent', sous: 'Retrouvez vos logements, candidatures et paiements' },
-  { img: '/img/residences/bungalow-residence.jpg',     titre: 'En toute sécurité', sous: 'Un lien de réinitialisation valable 1 heure, envoyé par email' },
-];
+function getSlides(t) {
+  return [
+    { img: '/img/residences/vue-aerienne-conakry.jpg', titre: t('forgotPassword.slides.0.titre'), sous: t('forgotPassword.slides.0.sous') },
+    { img: '/img/residences/villa-conakry.jpg',         titre: t('forgotPassword.slides.1.titre'), sous: t('forgotPassword.slides.1.sous') },
+    { img: '/img/residences/bungalow-residence.jpg',     titre: t('forgotPassword.slides.2.titre'), sous: t('forgotPassword.slides.2.sous') },
+  ];
+}
 
 export default function ForgotPassword() {
+  var t = useTranslation('public').t;
+  var SLIDES = getSlides(t);
   var [email, setEmail]     = useState('');
   var [loading, setLoading] = useState(false);
   var [envoye, setEnvoye]   = useState(false);
@@ -34,7 +39,7 @@ export default function ForgotPassword() {
     setErreur('');
     api.post('/auth/forgot-password', { email })
       .then(function() { setEnvoye(true); })
-      .catch(function() { setErreur('Erreur lors de l\'envoi. Réessayez.'); })
+      .catch(function() { setErreur(t('forgotPassword.erreurEnvoi')); })
       .finally(function() { setLoading(false); });
   }
 
@@ -85,23 +90,23 @@ export default function ForgotPassword() {
             <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#E8F5E9', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px' }}>
               <CheckCircle2 size={28} strokeWidth={2} color="#1B6B3A" />
             </div>
-            <h1 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 8px' }}>Email envoyé !</h1>
+            <h1 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 8px' }}>{t('forgotPassword.emailEnvoye')}</h1>
             <p style={{ fontSize: 13, color: '#666', lineHeight: 1.7, margin: '0 0 4px' }}>
-              Vérifiez votre boîte mail (<b>{email}</b>) et cliquez sur le lien reçu pour choisir un nouveau mot de passe.
+              {t('forgotPassword.verifiezBoiteMail')}<b>{email}</b>{t('forgotPassword.cliquezLien')}
             </p>
-            <p style={{ fontSize: 12, color: '#aaa', margin: '0 0 24px' }}>Le lien expire dans 1 heure.</p>
+            <p style={{ fontSize: 12, color: '#aaa', margin: '0 0 24px' }}>{t('forgotPassword.lienExpire')}</p>
             <Link to="/login"
               style={{ width: '100%', padding: '13px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, textDecoration: 'none', boxSizing: 'border-box' }}>
-              Retour à la connexion
+              {t('forgotPassword.retourConnexion')}
             </Link>
           </div>
         ) : (
           <>
             <h1 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 4px', letterSpacing: -0.5, textAlign: 'center' }}>
-              Mot de passe oublié ?
+              {t('forgotPassword.titre')}
             </h1>
             <p style={{ fontSize: 13, color: '#888', margin: '0 0 26px', textAlign: 'center' }}>
-              Entrez votre email, on vous envoie un lien de réinitialisation
+              {t('forgotPassword.sousTitre')}
             </p>
 
             {erreur && (
@@ -112,10 +117,10 @@ export default function ForgotPassword() {
 
             <form onSubmit={handleSubmit}>
               <div style={{ marginBottom: 20 }}>
-                <label style={{ fontSize: 11, fontWeight: 700, color: '#555', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.5 }}>Email</label>
+                <label style={{ fontSize: 11, fontWeight: 700, color: '#555', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.5 }}>{t('forgotPassword.champEmail')}</label>
                 <div style={{ position: 'relative' }}>
                   <Mail size={14} color="#bbb" strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-                  <input type="email" placeholder="mamadou@email.com" value={email} autoComplete="email" autoFocus
+                  <input type="email" placeholder={t('forgotPassword.placeholderEmail')} value={email} autoComplete="email" autoFocus
                     onChange={function(e) { setEmail(e.target.value); setErreur(''); }}
                     style={{ width: '100%', padding: '11px 12px 11px 36px', border: '1.5px solid ' + (email.length > 0 ? (emailValide ? '#1B6B3A' : '#E53935') : '#E8E8E8'), borderRadius: 10, fontSize: 14, outline: 'none', background: '#FAFAFA', boxSizing: 'border-box', transition: 'border-color .2s' }} />
                 </div>
@@ -124,14 +129,14 @@ export default function ForgotPassword() {
               <button type="submit" disabled={loading || !emailValide}
                 style={{ width: '100%', padding: '13px', borderRadius: 10, border: 'none', background: loading || !emailValide ? '#ccc' : '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 800, cursor: loading || !emailValide ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 18, boxShadow: loading || !emailValide ? 'none' : '0 4px 16px rgba(27,107,58,0.3)' }}>
                 {loading
-                  ? <><div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Envoi en cours...</>
-                  : <>Envoyer le lien <ArrowRight size={15} strokeWidth={2.5} /></>
+                  ? <><div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> {t('forgotPassword.envoiEnCours')}</>
+                  : <>{t('forgotPassword.envoyerLien')} <ArrowRight size={15} strokeWidth={2.5} /></>
                 }
               </button>
             </form>
 
             <Link to="/login" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 13, color: '#1B6B3A', fontWeight: 700, textDecoration: 'none' }}>
-              <ArrowLeft size={14} strokeWidth={2} /> Retour à la connexion
+              <ArrowLeft size={14} strokeWidth={2} /> {t('forgotPassword.retourConnexion')}
             </Link>
           </>
         )}

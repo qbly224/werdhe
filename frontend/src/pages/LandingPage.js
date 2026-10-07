@@ -11,113 +11,149 @@ import Logo from '../components/Logo';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
 
-var STATS = [
-  { valeur: '100+', label: 'Logements disponibles' },
-  { valeur: '80+', label: 'Utilisateurs actifs'   },
-  { valeur: '99%',    label: 'Locataires satisfaits'  },
-  { valeur: '0 GNF',  label: 'Pour les locataires'   },
-];
+function getStats(t) {
+  return [
+    { valeur: '100+', label: t('landingPage.stats.logementsDisponibles') },
+    { valeur: '80+', label: t('landingPage.stats.utilisateursActifs')   },
+    { valeur: '99%',    label: t('landingPage.stats.locatairesSatisfaits')  },
+    { valeur: '0 GNF',  label: t('landingPage.stats.pourLesLocataires')   },
+  ];
+}
 
-var TEMOIGNAGES = [
-  {
-    nom:       'Mamadou Diallo',
-    role:      'Propriétaire, Conakry',
-    note:      5,
-    texte:     "Werdhe m'a permis de gérer mes 3 appartements depuis mon téléphone. Les paiements, les contrats, tout est centralisé.",
-    initiales: 'MD',
-    couleur:   '#1B6B3A'
-  },
-  {
-    nom:       'Fatoumata Camara',
-    role:      'Locataire, Ratoma',
-    note:      5,
-    texte:     "J'ai trouvé mon appartement en 48h. Le propriétaire était sérieux, le contrat signé en ligne. Plus besoin d'intermédiaire.",
-    initiales: 'FC',
-    couleur:   '#1565C0'
-  },
-  {
-    nom:       'Ibrahima Bah',
-    role:      'Propriétaire, Kaloum',
-    note:      5,
-    texte:     "Le système d'alertes automatiques pour les loyers en retard m'a sauvé plusieurs fois. Une vraie révolution.",
-    initiales: 'IB',
-    couleur:   '#7B1FA2'
-  },
-];
+function getTemoignages(t) {
+  return [
+    {
+      nom:       'Mamadou Diallo',
+      role:      t('landingPage.testimonials.mamadou.role'),
+      note:      5,
+      texte:     t('landingPage.testimonials.mamadou.texte'),
+      initiales: 'MD',
+      couleur:   '#1B6B3A'
+    },
+    {
+      nom:       'Fatoumata Camara',
+      role:      t('landingPage.testimonials.fatoumata.role'),
+      note:      5,
+      texte:     t('landingPage.testimonials.fatoumata.texte'),
+      initiales: 'FC',
+      couleur:   '#1565C0'
+    },
+    {
+      nom:       'Ibrahima Bah',
+      role:      t('landingPage.testimonials.ibrahima.role'),
+      note:      5,
+      texte:     t('landingPage.testimonials.ibrahima.texte'),
+      initiales: 'IB',
+      couleur:   '#7B1FA2'
+    },
+  ];
+}
 
-var ETAPES_PROPRIETAIRE = [
-  { icon: <Home size={22} strokeWidth={1.5} />,        titre: 'Publiez votre bien',     desc: 'Ajoutez photos, prix et description en 5 minutes.' },
-  { icon: <Users size={22} strokeWidth={1.5} />,       titre: 'Recevez des candidatures', desc: 'Les locataires postulent directement depuis la plateforme.' },
-  { icon: <FileText size={22} strokeWidth={1.5} />,    titre: 'Signez et encaissez',    desc: 'Bail numérique, quittances automatiques, alertes loyers.' },
-];
+function getEtapesProprietaire(t) {
+  return [
+    { icon: <Home size={22} strokeWidth={1.5} />,        titre: t('landingPage.steps.owner.0.titre'),     desc: t('landingPage.steps.owner.0.desc') },
+    { icon: <Users size={22} strokeWidth={1.5} />,       titre: t('landingPage.steps.owner.1.titre'), desc: t('landingPage.steps.owner.1.desc') },
+    { icon: <FileText size={22} strokeWidth={1.5} />,    titre: t('landingPage.steps.owner.2.titre'),    desc: t('landingPage.steps.owner.2.desc') },
+  ];
+}
 
-var ETAPES_LOCATAIRE = [
-  { icon: <MapPin size={22} strokeWidth={1.5} />,      titre: 'Cherchez',               desc: 'Filtrez par ville, prix, superficie et catégorie.' },
-  { icon: <MessageCircle size={22} strokeWidth={1.5} />, titre: 'Candidatez',           desc: 'Envoyez votre dossier en quelques clics, sans intermédiaire.' },
-  { icon: <Key size={22} strokeWidth={1.5} />,         titre: 'Emménagez',              desc: 'Signez le bail en ligne et récupérez vos clés.' },
-];
+function getEtapesLocataire(t) {
+  return [
+    { icon: <MapPin size={22} strokeWidth={1.5} />,      titre: t('landingPage.steps.tenant.0.titre'),               desc: t('landingPage.steps.tenant.0.desc') },
+    { icon: <MessageCircle size={22} strokeWidth={1.5} />, titre: t('landingPage.steps.tenant.1.titre'),           desc: t('landingPage.steps.tenant.1.desc') },
+    { icon: <Key size={22} strokeWidth={1.5} />,         titre: t('landingPage.steps.tenant.2.titre'),              desc: t('landingPage.steps.tenant.2.desc') },
+  ];
+}
 
-var FONCTIONNALITES = [
-  { icon: <Shield size={20} strokeWidth={1.5} />,       titre: 'Dossiers sécurisés',    desc: 'CNI, bulletins de paie, contrats stockés et accessibles en toute sécurité.' },
-  { icon: <FileText size={20} strokeWidth={1.5} />,     titre: 'Documents automatiques', desc: 'Baux, quittances et mises en demeure générés en un clic.' },
-  { icon: <Bell size={20} strokeWidth={1.5} />,         titre: 'Alertes intelligentes',  desc: 'Rappels loyers, baux expirants, préavis - tout est automatisé.' },
-  { icon: <Banknote size={20} strokeWidth={1.5} />,     titre: 'Paiements multiples',    desc: 'Orange Money, MTN MoMo, espèces ou virement acceptés.' },
-  { icon: <MessageCircle size={20} strokeWidth={1.5} />, titre: 'Messagerie intégrée',   desc: 'Communiquez directement avec locataires et propriétaires.' },
-  { icon: <TrendingUp size={20} strokeWidth={1.5} />,   titre: 'Rapports financiers',    desc: 'Suivez vos revenus mois par mois avec des graphiques clairs.' },
-  { icon: <Star size={20} strokeWidth={1.5} />,         titre: 'Notations mutuelles',    desc: 'Locataires et propriétaires se notent après chaque location.' },
-  { icon: <Building2 size={20} strokeWidth={1.5} />,    titre: 'Multi-logements',        desc: 'Gérez jusqu\'à 25 biens depuis un seul tableau de bord.' },
-];
+function getFonctionnalites(t) {
+  return [
+    { icon: <Shield size={20} strokeWidth={1.5} />,       titre: t('landingPage.features.0.titre'),    desc: t('landingPage.features.0.desc') },
+    { icon: <FileText size={20} strokeWidth={1.5} />,     titre: t('landingPage.features.1.titre'), desc: t('landingPage.features.1.desc') },
+    { icon: <Bell size={20} strokeWidth={1.5} />,         titre: t('landingPage.features.2.titre'),  desc: t('landingPage.features.2.desc') },
+    { icon: <Banknote size={20} strokeWidth={1.5} />,     titre: t('landingPage.features.3.titre'),    desc: t('landingPage.features.3.desc') },
+    { icon: <MessageCircle size={20} strokeWidth={1.5} />, titre: t('landingPage.features.4.titre'),   desc: t('landingPage.features.4.desc') },
+    { icon: <TrendingUp size={20} strokeWidth={1.5} />,   titre: t('landingPage.features.5.titre'),    desc: t('landingPage.features.5.desc') },
+    { icon: <Star size={20} strokeWidth={1.5} />,         titre: t('landingPage.features.6.titre'),    desc: t('landingPage.features.6.desc') },
+    { icon: <Building2 size={20} strokeWidth={1.5} />,    titre: t('landingPage.features.7.titre'),        desc: t('landingPage.features.7.desc') },
+  ];
+}
 
-var PLANS = [
-  {
-    nom: 'Locataire',
-    prix: 0,
-    sousTitre: 'Toujours gratuit',
-    couleur: '#1565C0',
-    bg: '#E3F2FD',
-    features: ['Recherche avancée', 'Candidatures illimitées', 'Messagerie', 'Suivi de dossier', 'Signature électronique'],
-    cta: 'Trouver un logement',
-    role: 'locataire',
-    recommande: false
-  },
-  {
-    nom: 'Pro',
-    prix: 120000,
-    sousTitre: "Jusqu'à 20 biens",
-    couleur: '#1B6B3A',
-    bg: '#E8F5E9',
-    features: ['Orange Money + MTN MoMo', 'Baux et quittances PDF', 'Alertes automatiques', 'Rapports financiers', 'Essai 1 mois'],
-    cta: 'Essai gratuit 1 mois',
-    role: 'proprietaire',
-    plan: 'pro',
-    recommande: true
-  },
-  {
-    nom: 'Agence',
-    prix: 300000,
-    sousTitre: 'Biens illimités',
-    couleur: '#7B1FA2',
-    bg: '#F3E5F5',
-    features: ['Tout du plan Pro', 'Multi-utilisateurs (5 comptes)', 'Rapport mensuel automatique', 'Support Mail/Message'],
-    cta: 'Essai gratuit 1 mois',
-    role: 'proprietaire',
-    plan: 'agence',
-    recommande: false
-  },
-];
-var FAQ_LANDING = [
-  { q: 'Werdhe est-il gratuit pour les locataires ?',      r: 'Oui, 100% gratuit pour toujours. Aucun frais d\'agence, aucune commission.' },
-  { q: 'Comment fonctionne l\'essai Pro / Agence ?',       r: '1 mois complet d\'accès au plan choisi, sans Mobile Money requis. À la fin, vous choisissez de continuer ou non.' },
-  { q: 'Quels modes de paiement sont acceptés ?',          r: 'Orange Money, MTN MoMo, espèces et virement bancaire (BICIGUI, Ecobank).' },
-  { q: 'Mes données sont-elles sécurisées ?',              r: 'Oui. HTTPS, mots de passe hachés, 2FA admin, aucune donnée bancaire stockée.' },
-  { q: 'Puis-je gérer plusieurs logements ?',              r: 'Oui. Le plan Pro permet jusqu\'à 20 biens, le plan Agence est illimité.' },
-];
+function getPlans(t) {
+  return [
+    {
+      nom: t('landingPage.plans.tenant.nom'),
+      prix: 0,
+      sousTitre: t('landingPage.plans.tenant.sousTitre'),
+      couleur: '#1565C0',
+      bg: '#E3F2FD',
+      features: [
+        t('landingPage.plans.tenant.features.0'),
+        t('landingPage.plans.tenant.features.1'),
+        t('landingPage.plans.tenant.features.2'),
+        t('landingPage.plans.tenant.features.3'),
+        t('landingPage.plans.tenant.features.4'),
+      ],
+      cta: t('landingPage.plans.tenant.cta'),
+      role: 'locataire',
+      recommande: false
+    },
+    {
+      nom: t('landingPage.plans.pro.nom'),
+      prix: 120000,
+      sousTitre: t('landingPage.plans.pro.sousTitre'),
+      couleur: '#1B6B3A',
+      bg: '#E8F5E9',
+      features: [
+        t('landingPage.plans.pro.features.0'),
+        t('landingPage.plans.pro.features.1'),
+        t('landingPage.plans.pro.features.2'),
+        t('landingPage.plans.pro.features.3'),
+        t('landingPage.plans.pro.features.4'),
+      ],
+      cta: t('landingPage.plans.pro.cta'),
+      role: 'proprietaire',
+      plan: 'pro',
+      recommande: true
+    },
+    {
+      nom: t('landingPage.plans.agency.nom'),
+      prix: 300000,
+      sousTitre: t('landingPage.plans.agency.sousTitre'),
+      couleur: '#7B1FA2',
+      bg: '#F3E5F5',
+      features: [
+        t('landingPage.plans.agency.features.0'),
+        t('landingPage.plans.agency.features.1'),
+        t('landingPage.plans.agency.features.2'),
+        t('landingPage.plans.agency.features.3'),
+      ],
+      cta: t('landingPage.plans.agency.cta'),
+      role: 'proprietaire',
+      plan: 'agence',
+      recommande: false
+    },
+  ];
+}
+
+function getFaqLanding(t) {
+  return [
+    { q: t('landingPage.faq.0.q'),      r: t('landingPage.faq.0.r') },
+    { q: t('landingPage.faq.1.q'),       r: t('landingPage.faq.1.r') },
+    { q: t('landingPage.faq.2.q'),          r: t('landingPage.faq.2.r') },
+    { q: t('landingPage.faq.3.q'),              r: t('landingPage.faq.3.r') },
+    { q: t('landingPage.faq.4.q'),              r: t('landingPage.faq.4.r') },
+  ];
+}
 
 function FaqLanding() {
+  var t = useTranslation('public').t;
   var [open, setOpen] = useState(null);
+  var FAQ_LANDING = getFaqLanding(t);
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {FAQ_LANDING.map(function(item, i) {
@@ -140,32 +176,34 @@ function FaqLanding() {
     </div>
   );
 }
-var SLIDES = [
-  {
-    img:    '/img/residences/vue-aerienne-conakry.jpg',
-    titre:  'Trouvez votre logement idéal',
-    sous:   'Appartements, villas, studios à Conakry et partout en Guinée',
-    tag:    'Conakry · Boké · Kindia · Labé · Kankan',
-  },
-  {
-    img:    '/img/residences/villa-conakry.jpg',
-    titre:  'Publiez votre bien en 5 minutes',
-    sous:   'Gérez candidatures, baux et paiements depuis un seul tableau de bord',
-    tag:    'Pour les propriétaires · Essai 1 mois gratuit',
-  },
-  {
-    img:    '/img/residences/immeuble-moderne.jpg',
-    titre:  'Des villas modernes en Guinée',
-    sous:   'Découvrez nos logements vérifiés, sans intermédiaire, sans frais cachés',
-    tag:    'Villas · Appartements · Studios · Bureaux',
-  },
-  {
-    img:    '/img/residences/bungalow-residence.jpg',
-    titre:  'La location simplifiée',
-    sous:   'Candidatez, signez votre bail et payez - tout en ligne sur Werdhe',
-    tag:    '100% gratuit pour les locataires',
-  },
-];
+function getSlides(t) {
+  return [
+    {
+      img:    '/img/residences/vue-aerienne-conakry.jpg',
+      titre:  t('landingPage.slides.0.titre'),
+      sous:   t('landingPage.slides.0.sous'),
+      tag:    t('landingPage.slides.0.tag'),
+    },
+    {
+      img:    '/img/residences/villa-conakry.jpg',
+      titre:  t('landingPage.slides.1.titre'),
+      sous:   t('landingPage.slides.1.sous'),
+      tag:    t('landingPage.slides.1.tag'),
+    },
+    {
+      img:    '/img/residences/immeuble-moderne.jpg',
+      titre:  t('landingPage.slides.2.titre'),
+      sous:   t('landingPage.slides.2.sous'),
+      tag:    t('landingPage.slides.2.tag'),
+    },
+    {
+      img:    '/img/residences/bungalow-residence.jpg',
+      titre:  t('landingPage.slides.3.titre'),
+      sous:   t('landingPage.slides.3.sous'),
+      tag:    t('landingPage.slides.3.tag'),
+    },
+  ];
+}
 function Particules() {
   var [scrollY, setScrollY] = useState(0);
 
@@ -203,6 +241,7 @@ function Particules() {
   );
 }
 export default function LandingPage() {
+  var t                   = useTranslation('public').t;
   var navigate            = useNavigate();
   var { user }             = useAuth();
   var [mobileMenu, setMobileMenu] = useState(false);
@@ -212,6 +251,13 @@ export default function LandingPage() {
   var [compteurs, setCompteurs] = useState({ logements: 0, utilisateurs: 0 });
   var [slideActif, setSlideActif] = useState(0);
   var [souris, setSouris] = useState({ x: 0, y: 0 });
+  var SLIDES              = getSlides(t);
+  var STATS                = getStats(t);
+  var TEMOIGNAGES          = getTemoignages(t);
+  var ETAPES_PROPRIETAIRE  = getEtapesProprietaire(t);
+  var ETAPES_LOCATAIRE     = getEtapesLocataire(t);
+  var FONCTIONNALITES      = getFonctionnalites(t);
+  var PLANS                = getPlans(t);
 
 useEffect(function() {
   function handleMouse(e) {
@@ -236,7 +282,7 @@ useEffect(function() {
     setEssaiEnCours(plan.plan);
     api.post('/abonnements/essai', { plan: plan.plan })
       .then(function() {
-        toast.success('Essai ' + plan.nom + ' démarré ! 1 mois gratuit.');
+        toast.success(t('landingPage.essaiToast', { plan: plan.nom }));
         navigate('/dashboard');
       })
       .catch(function() {
@@ -280,8 +326,8 @@ useEffect(function() {
     <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: '#F7F8F7', color: '#1B2B22', overflowX: 'hidden', position: 'relative' }}>
       <Particules />
       <SEO
-        titre="Location immobilière en Guinée sans intermédiaire"
-        description="Trouvez ou louez un logement en Guinée facilement. Werdhe connecte propriétaires et locataires directement. 100% gratuit pour les locataires."
+        titre={t('landingPage.seo.titre')}
+        description={t('landingPage.seo.description')}
         url="https://werdhe.com"
       />
       {/* ─── NAVBAR ─────────────────────────────────────────────── */}
@@ -289,20 +335,21 @@ useEffect(function() {
         <Logo size={36} showText={true} darkBg={false} />
 
         <div style={{ display: 'flex', gap: 28, alignItems: 'center' }} className="nav-desktop">
-          {[['Fonctionnalités', '#fonctionnalites'], ['Comment ça marche', '#comment'], ['Tarifs', '#tarifs'], ['Avis', '#avis'], ['FAQ', '#faq']].map(function(l) {
-            return <a key={l[0]} href={l[1]} style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontWeight: 500 }}>{l[0]}</a>;
+          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.tarifs'), '#tarifs'], [t('landingPage.nav.avis'), '#avis'], [t('landingPage.nav.faq'), '#faq']].map(function(l) {
+            return <a key={l[1]} href={l[1]} style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontWeight: 500 }}>{l[0]}</a>;
           })}
         </div>
 
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <LanguageSwitcher />
           <button onClick={function() { navigate('/login'); }}
             style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', background: 'transparent', color: '#1B6B3A', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-            Connexion
+            {t('landingPage.nav.connexion')}
           </button>
           <button onClick={function() { navigate('/inscription'); }}
             style={{ padding: '8px 16px', borderRadius: 8, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
             className="btn-nav-hide">
-            Démarrer
+            {t('landingPage.nav.demarrer')}
           </button>
           <button onClick={function() { setMobileMenu(!mobileMenu); }}
             style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
@@ -315,9 +362,9 @@ useEffect(function() {
       {/* Menu mobile */}
       {mobileMenu && (
         <div style={{ position: 'fixed', inset: 0, top: 60, background: '#fff', zIndex: 99, padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {[['Fonctionnalités', '#fonctionnalites'], ['Comment ça marche', '#comment'], ['Tarifs', '#tarifs']].map(function(l) {
+          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.tarifs'), '#tarifs']].map(function(l) {
             return (
-              <a key={l[0]} href={l[1]} onClick={function() { setMobileMenu(false); }}
+              <a key={l[1]} href={l[1]} onClick={function() { setMobileMenu(false); }}
                 style={{ fontSize: 18, color: '#1B2B22', textDecoration: 'none', fontWeight: 600, padding: '12px 0', borderBottom: '0.5px solid #f0f0f0' }}>
                 {l[0]}
               </a>
@@ -325,11 +372,11 @@ useEffect(function() {
           })}
           <button onClick={function() { navigate('/login'); }}
             style={{ padding: '14px', borderRadius: 10, border: '1px solid #1B6B3A', background: 'transparent', color: '#1B6B3A', fontSize: 15, fontWeight: 600, cursor: 'pointer', marginTop: 8 }}>
-            Connexion
+            {t('landingPage.nav.connexion')}
           </button>
           <button onClick={function() { navigate('/inscription'); }}
             style={{ padding: '14px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
-            Démarrer gratuitement
+            {t('landingPage.nav.demarrerGratuit')}
           </button>
         </div>
       )}
@@ -436,7 +483,7 @@ useEffect(function() {
             <div style={{ flex: 1, minWidth: 140, display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, background: '#F7F8F7' }}>
               <MapPin size={16} strokeWidth={1.5} color="#1B6B3A" />
               <select defaultValue="" style={{ border: 'none', background: 'transparent', fontSize: 14, color: '#1B2B22', outline: 'none', width: '100%', cursor: 'pointer' }}>
-                <option value="">Toutes les villes</option>
+                <option value="">{t('landingPage.search.toutesLesVilles')}</option>
                 {['Conakry', 'Kindia', 'Labé', 'Kankan', 'Mamou', 'Boké', 'Faranah', 'N\'Zérékoré'].map(function(v) {
                   return <option key={v} value={v}>{v}</option>;
                 })}
@@ -445,7 +492,7 @@ useEffect(function() {
             <div style={{ flex: 1, minWidth: 130, display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, background: '#F7F8F7' }}>
               <Home size={16} strokeWidth={1.5} color="#1B6B3A" />
               <select defaultValue="" style={{ border: 'none', background: 'transparent', fontSize: 14, color: '#1B2B22', outline: 'none', width: '100%', cursor: 'pointer' }}>
-                <option value="">Type de bien</option>
+                <option value="">{t('landingPage.search.typeDeBien')}</option>
                 {['Appartement', 'Villa', 'Studio', 'Duplex', 'Bureau'].map(function(c) {
                   return <option key={c} value={c.toLowerCase()}>{c}</option>;
                 })}
@@ -454,27 +501,27 @@ useEffect(function() {
             <div style={{ flex: 1, minWidth: 130, display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, background: '#F7F8F7' }}>
               <Banknote size={16} strokeWidth={1.5} color="#1B6B3A" />
               <select defaultValue="" style={{ border: 'none', background: 'transparent', fontSize: 14, color: '#1B2B22', outline: 'none', width: '100%', cursor: 'pointer' }}>
-                <option value="">Budget</option>
-                <option value="0-500000">Moins de 500K GNF</option>
-                <option value="500000-1000000">500K – 1M GNF</option>
-                <option value="1000000-3000000">1M – 3M GNF</option>
-                <option value="3000000+">Plus de 3M GNF</option>
+                <option value="">{t('landingPage.search.budget')}</option>
+                <option value="0-500000">{t('landingPage.search.moins500')}</option>
+                <option value="500000-1000000">{t('landingPage.search.500a1M')}</option>
+                <option value="1000000-3000000">{t('landingPage.search.1Ma3M')}</option>
+                <option value="3000000+">{t('landingPage.search.plus3M')}</option>
               </select>
             </div>
             <button
               onClick={function() { navigate('/logements'); }}
               style={{ padding: '12px 22px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, whiteSpace: 'nowrap' }}>
-              <Search size={16} strokeWidth={2} /> Rechercher
+              <Search size={16} strokeWidth={2} /> {t('landingPage.search.rechercher')}
             </button>
           </div>
 
           {/* Badges rapides */}
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
             {[
-              { icon: <Building2 size={13} strokeWidth={1.5} />, label: 'Appartements' },
-              { icon: <Home size={13} strokeWidth={1.5} />,      label: 'Villas'       },
-              { icon: <Key size={13} strokeWidth={1.5} />,       label: 'Studios'      },
-              { icon: <Users size={13} strokeWidth={1.5} />,     label: 'Colocations'  },
+              { icon: <Building2 size={13} strokeWidth={1.5} />, label: t('landingPage.quickBadges.appartements') },
+              { icon: <Home size={13} strokeWidth={1.5} />,      label: t('landingPage.quickBadges.villas')       },
+              { icon: <Key size={13} strokeWidth={1.5} />,       label: t('landingPage.quickBadges.studios')      },
+              { icon: <Users size={13} strokeWidth={1.5} />,     label: t('landingPage.quickBadges.colocations')  },
             ].map(function(b, i) {
               return (
                 <button key={i} onClick={function() { navigate('/logements'); }}
@@ -507,12 +554,12 @@ useEffect(function() {
       {/* ─── CONFIANCE ─────────────────────────────────────────── */}
       <div style={{ background: '#fff', borderTop: '0.5px solid #F0F0F0', borderBottom: '0.5px solid #F0F0F0', padding: '14px 24px' }}>
         <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'clamp(16px, 4vw, 40px)', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 12, color: '#aaa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>Paiements acceptés</span>
+          <span style={{ fontSize: 12, color: '#aaa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>{t('landingPage.trust.label')}</span>
           {[
             { nom: 'Orange Money', couleur: '#FF6600' },
             { nom: 'MTN MoMo',    couleur: '#FFCB00' },
-            { nom: 'Espèces',      couleur: '#1B6B3A' },
-            { nom: 'Virement',     couleur: '#1565C0' },
+            { nom: t('landingPage.trust.especes'),      couleur: '#1B6B3A' },
+            { nom: t('landingPage.trust.virement'),     couleur: '#1565C0' },
           ].map(function(p, i) {
             return (
               <span key={i} style={{ fontSize: 13, fontWeight: 700, color: '#555', display: 'flex', alignItems: 'center', gap: 4 }}>{p.nom}</span>
@@ -540,19 +587,19 @@ useEffect(function() {
       {/* ─── COMMENT ÇA MARCHE ───────────────────────────────────── */}
       <section id="comment" style={{ padding: 'clamp(50px, 8vw, 90px) 24px', maxWidth: 1000, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>Comment ça marche</div>
-          <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>Simple pour tous</h2>
+          <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.howItWorks.overline')}</div>
+          <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.howItWorks.title')}</h2>
         </div>
 
         {/* Toggle proprio / locataire */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
           <div style={{ display: 'flex', background: '#F0F0F0', borderRadius: 12, padding: 4, gap: 4 }}>
-            {[['proprio', 'Je suis propriétaire'], ['locataire', 'Je cherche un logement']].map(function(t) {
-              var actif = ongletEtapes === t[0];
+            {[['proprio', t('landingPage.howItWorks.tabProprio')], ['locataire', t('landingPage.howItWorks.tabLocataire')]].map(function(tab) {
+              var actif = ongletEtapes === tab[0];
               return (
-                <button key={t[0]} onClick={function() { setOngletEtapes(t[0]); }}
+                <button key={tab[0]} onClick={function() { setOngletEtapes(tab[0]); }}
                   style={{ padding: '10px 20px', borderRadius: 9, border: 'none', background: actif ? '#1B6B3A' : 'transparent', color: actif ? '#fff' : '#888', fontSize: 14, fontWeight: actif ? 700 : 500, cursor: 'pointer', transition: 'all .2s' }}>
-                  {t[1]}
+                  {tab[1]}
                 </button>
               );
             })}
@@ -579,7 +626,7 @@ useEffect(function() {
         <div style={{ textAlign: 'center', marginTop: 32 }}>
           <button onClick={function() { navigate(ongletEtapes === 'proprio' ? '/inscription' : '/logements'); }}
             style={{ padding: '13px 28px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-            {ongletEtapes === 'proprio' ? 'Ajouter mon premier bien' : 'Voir les logements disponibles'} <ChevronRight size={16} strokeWidth={2} />
+            {ongletEtapes === 'proprio' ? t('landingPage.howItWorks.ctaProprio') : t('landingPage.howItWorks.ctaLocataire')} <ChevronRight size={16} strokeWidth={2} />
           </button>
         </div>
       </section>
@@ -588,8 +635,8 @@ useEffect(function() {
       <section id="fonctionnalites" style={{ background: '#1B2B22', padding: 'clamp(50px, 8vw, 90px) 24px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <div style={{ fontSize: 12, color: '#F5A623', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>Fonctionnalités</div>
-            <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, margin: 0, color: '#fff', letterSpacing: -0.5 }}>Tout pour gérer vos locations</h2>
+            <div style={{ fontSize: 12, color: '#F5A623', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.featuresSection.overline')}</div>
+            <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, margin: 0, color: '#fff', letterSpacing: -0.5 }}>{t('landingPage.featuresSection.title')}</h2>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
@@ -611,9 +658,9 @@ useEffect(function() {
       {/* ─── TARIFS ─────────────────────────────────────────────── */}
       <section id="tarifs" style={{ padding: 'clamp(50px, 8vw, 90px) 24px', maxWidth: 1000, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>Tarifs</div>
-          <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, margin: '0 0 12px', color: '#1B2B22', letterSpacing: -0.5 }}>Transparent et sans surprise</h2>
-          <p style={{ color: '#666', fontSize: 16, margin: 0 }}>L'espace locataire est toujours 100% gratuit</p>
+          <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.pricingSection.overline')}</div>
+          <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, margin: '0 0 12px', color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.pricingSection.title')}</h2>
+          <p style={{ color: '#666', fontSize: 16, margin: 0 }}>{t('landingPage.pricingSection.subtitle')}</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
@@ -622,7 +669,7 @@ useEffect(function() {
               <div key={i} style={{ background: '#fff', borderRadius: 18, padding: '28px 24px', border: plan.recommande ? '2px solid #1B6B3A' : '1px solid #E8E8E8', position: 'relative', boxShadow: plan.recommande ? '0 8px 32px rgba(27,107,58,0.12)' : 'none' }}>
                 {plan.recommande && (
                   <div style={{ position: 'absolute', top: -13, left: '50%', transform: 'translateX(-50%)', background: '#1B6B3A', color: '#fff', borderRadius: 20, padding: '4px 16px', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap' }}>
-                    Recommandé
+                    {t('landingPage.pricingSection.recommande')}
                   </div>
                 )}
 
@@ -635,9 +682,9 @@ useEffect(function() {
 
                 <div style={{ marginBottom: 6 }}>
                   <span style={{ fontSize: 32, fontWeight: 900, color: '#1B2B22' }}>
-                    {plan.prix === 0 ? 'Gratuit' : GNF(plan.prix)}
+                    {plan.prix === 0 ? t('landingPage.pricingSection.gratuit') : GNF(plan.prix)}
                   </span>
-                  {plan.prix > 0 && <span style={{ fontSize: 13, color: '#888', marginLeft: 4 }}>GNF/mois</span>}
+                  {plan.prix > 0 && <span style={{ fontSize: 13, color: '#888', marginLeft: 4 }}>{t('landingPage.pricingSection.parMois')}</span>}
                 </div>
                 <div style={{ fontSize: 12, color: '#888', marginBottom: 20 }}>{plan.sousTitre}</div>
 
@@ -645,7 +692,7 @@ useEffect(function() {
                   onClick={function() { choisirPlan(plan); }}
                   disabled={essaiEnCours === plan.plan}
                   style={{ width: '100%', padding: '12px', borderRadius: 10, border: plan.recommande ? 'none' : '1.5px solid ' + plan.couleur, background: essaiEnCours === plan.plan ? '#aaa' : (plan.recommande ? plan.couleur : 'transparent'), color: plan.recommande ? '#fff' : plan.couleur, fontSize: 14, fontWeight: 700, cursor: essaiEnCours === plan.plan ? 'not-allowed' : 'pointer', marginBottom: 20 }}>
-                  {essaiEnCours === plan.plan ? 'Démarrage...' : plan.cta}
+                  {essaiEnCours === plan.plan ? t('landingPage.pricingSection.demarrage') : plan.cta}
                 </button>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -668,8 +715,8 @@ useEffect(function() {
       <section id="avis" style={{ background: '#F0F8F3', padding: 'clamp(50px, 8vw, 90px) 24px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>Témoignages</div>
-            <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>Ils font confiance à Werdhe</h2>
+            <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.testimonialsSection.overline')}</div>
+            <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.testimonialsSection.title')}</h2>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
@@ -698,8 +745,8 @@ useEffect(function() {
       {/* ─── FAQ ───────────────────────────────────────────────── */}
       <section id="faq" style={{ padding: 'clamp(50px, 8vw, 80px) 24px', maxWidth: 700, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
-          <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>FAQ</div>
-          <h2 style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: 800, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>Questions fréquentes</h2>
+          <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.faqSection.overline')}</div>
+          <h2 style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: 800, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.faqSection.title')}</h2>
         </div>
         <FaqLanding />
       </section>
@@ -707,19 +754,19 @@ useEffect(function() {
       <section style={{ background: '#1B6B3A', padding: 'clamp(50px, 8vw, 80px) 24px', textAlign: 'center' }}>
         <div style={{ maxWidth: 600, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(26px, 4vw, 40px)', fontWeight: 900, color: '#fff', margin: '0 0 16px', letterSpacing: -1 }}>
-            Prêt à commencer ?
+            {t('landingPage.ctaFinal.title')}
           </h2>
           <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.75)', margin: '0 0 32px', lineHeight: 1.6 }}>
-            Rejoignez des milliers de propriétaires et locataires qui gèrent leurs locations sur Werdhe.
+            {t('landingPage.ctaFinal.texte')}
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <button onClick={function() { navigate('/inscription'); }}
               style={{ padding: '14px 28px', borderRadius: 12, border: 'none', background: '#F5A623', color: '#1B2B22', fontSize: 15, fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              Créer mon compte <ArrowRight size={16} strokeWidth={2.5} />
+              {t('landingPage.ctaFinal.creerCompte')} <ArrowRight size={16} strokeWidth={2.5} />
             </button>
             <button onClick={function() { navigate('/logements'); }}
               style={{ padding: '14px 28px', borderRadius: 12, border: '1.5px solid rgba(255,255,255,0.35)', background: 'transparent', color: '#fff', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
-              Voir les logements
+              {t('landingPage.ctaFinal.voirLogements')}
             </button>
           </div>
         </div>
@@ -754,7 +801,7 @@ useEffect(function() {
             <Logo size={32} showText={true} darkBg={true} />
           </div>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, margin: '0 0 20px' }}>
-            La plateforme immobilière de référence en Guinée. Trouvez, louez et gérez vos biens en toute simplicité.
+            {t('landingPage.footer.desc')}
           </p>
           <div style={{ display: 'flex', gap: 10 }}>
             {[
@@ -810,20 +857,20 @@ useEffect(function() {
         {/* Colonne 2 — Navigation */}
         <div>
           <div style={{ fontSize: 11, color: '#F5A623', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 16 }}>
-            Navigation
+            {t('landingPage.footer.navTitle')}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {[
-              ['Accueil', '/'],
-              ['Logements', '/logements'],
-              ['Tarifs', '/pricing'],
-              ['Blog', '/blog'],
-              ['Estimation de loyer', '/estimation'],
-              ['À propos', '/a-propos'],
-              ['Se connecter', '/login'],
+              [t('landingPage.footer.nav.accueil'), '/'],
+              [t('landingPage.footer.nav.logements'), '/logements'],
+              [t('landingPage.footer.nav.tarifs'), '/pricing'],
+              [t('landingPage.footer.nav.blog'), '/blog'],
+              [t('landingPage.footer.nav.estimation'), '/estimation'],
+              [t('landingPage.footer.nav.aPropos'), '/a-propos'],
+              [t('landingPage.footer.nav.seConnecter'), '/login'],
             ].map(function(l) {
               return (
-                <a key={l[0]} href={l[1]} style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', transition: 'color .2s' }}
+                <a key={l[1]} href={l[1]} style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', transition: 'color .2s' }}
                   onMouseEnter={function(e) { e.currentTarget.style.color = '#fff'; }}
                   onMouseLeave={function(e) { e.currentTarget.style.color = 'rgba(255,255,255,0.45)'; }}>
                   {l[0]}
@@ -836,18 +883,18 @@ useEffect(function() {
         {/* Colonne 3 — Liens rapides */}
         <div>
           <div style={{ fontSize: 11, color: '#F5A623', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 16 }}>
-            Liens rapides
+            {t('landingPage.footer.quickTitle')}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {[
-              ['Créer un compte', '/inscription'],
-              ['Contact', '/contact'],
-              ['FAQ', '/a-propos#faq'],
-              ['CGU', '/cgu'],
-              ['Confidentialité', '/confidentialite'],
+              [t('landingPage.footer.quick.creerCompte'), '/inscription'],
+              [t('landingPage.footer.quick.contact'), '/contact'],
+              [t('landingPage.footer.quick.faq'), '/a-propos#faq'],
+              [t('landingPage.footer.quick.cgu'), '/cgu'],
+              [t('landingPage.footer.quick.confidentialite'), '/confidentialite'],
             ].map(function(l) {
               return (
-                <a key={l[0]} href={l[1]} style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', transition: 'color .2s' }}
+                <a key={l[1]} href={l[1]} style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', transition: 'color .2s' }}
                   onMouseEnter={function(e) { e.currentTarget.style.color = '#fff'; }}
                   onMouseLeave={function(e) { e.currentTarget.style.color = 'rgba(255,255,255,0.45)'; }}>
                   {l[0]}
@@ -860,20 +907,20 @@ useEffect(function() {
         {/* Colonne 4 — Infos pratiques */}
         <div>
           <div style={{ fontSize: 11, color: '#F5A623', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 16 }}>
-            Infos pratiques
+            {t('landingPage.footer.infosTitle')}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
               <MapPin size={15} strokeWidth={1.5} style={{ color: '#F5A623', flexShrink: 0, marginTop: 2 }} />
               <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
-                Conakry, Guinée
+                {t('landingPage.footer.adresse')}
               </span>
             </div>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
               <Clock size={15} strokeWidth={1.5} style={{ color: '#F5A623', flexShrink: 0, marginTop: 2 }} />
               <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
-                Lun – Sam : 8h – 18h<br />
-                Support disponible en ligne
+                {t('landingPage.footer.horaires')}<br />
+                {t('landingPage.footer.support')}
               </span>
             </div>
           </div>
@@ -887,7 +934,7 @@ useEffect(function() {
           onMouseEnter={function(e) { e.currentTarget.style.background = '#1B6B3A'; }}
           onMouseLeave={function(e) { e.currentTarget.style.background = 'transparent'; }}>
             <Phone size={14} strokeWidth={1.5} />
-            Nous contacter
+            {t('landingPage.footer.contactBtn')}
           </a>
         </div>
 
@@ -901,7 +948,7 @@ useEffect(function() {
         alignItems: 'center', flexWrap: 'wrap', gap: 10,
       }}>
         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.2)' }}>
-          © 2026 Werdhe. Tous droits réservés.
+          {t('landingPage.footer.copyright')}
         </div>
         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.2)' }}>
           contact@werdhe.com

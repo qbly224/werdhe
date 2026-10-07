@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
+import { useTranslation } from 'react-i18next';
 import './Login.css';
 
 const MotDePasseOublie = () => {
+  const { t } = useTranslation('public');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [resultat, setResultat] = useState(null);
@@ -19,7 +21,7 @@ const MotDePasseOublie = () => {
       const response = await api.post('/auth/mot-de-passe-oublie', { email });
       setResultat(response.data);
     } catch (err) {
-      setErreur(err.response?.data?.erreur || 'Erreur serveur');
+      setErreur(err.response?.data?.erreur || t('motDePasseOublie.erreurServeur'));
     } finally {
       setLoading(false);
     }
@@ -32,8 +34,8 @@ const MotDePasseOublie = () => {
         <div className="auth-card">
 
           <div className="auth-header">
-            <h1>🔑 Mot de passe oublié</h1>
-            <p>Entrez votre email pour recevoir un nouveau mot de passe</p>
+            <h1>🔑 {t('motDePasseOublie.titre')}</h1>
+            <p>{t('motDePasseOublie.sousTitre')}</p>
           </div>
 
           {erreur && <div className="error">{erreur}</div>}
@@ -44,23 +46,23 @@ const MotDePasseOublie = () => {
               <p className="success">✅ {resultat.message}</p>
               {resultat.mot_de_passe_temporaire && (
                 <div className="mdp-temp">
-                  <p>Votre mot de passe temporaire :</p>
+                  <p>{t('motDePasseOublie.motDePasseTemporaire')}</p>
                   <strong>{resultat.mot_de_passe_temporaire}</strong>
                   <p className="hint">{resultat.instruction}</p>
                 </div>
               )}
               <Link to="/login" className="btn btn-primary btn-full">
-                Se connecter
+                {t('motDePasseOublie.seConnecter')}
               </Link>
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
-              <label>Email *</label>
+              <label>{t('motDePasseOublie.champEmail')}</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="votre@email.com"
+                placeholder={t('motDePasseOublie.placeholderEmail')}
                 required
               />
               <button
@@ -68,13 +70,13 @@ const MotDePasseOublie = () => {
                 className="btn btn-primary btn-full"
                 disabled={loading}
               >
-                {loading ? 'Envoi...' : 'Réinitialiser mon mot de passe'}
+                {loading ? t('motDePasseOublie.envoiEnCours') : t('motDePasseOublie.reinitialiser')}
               </button>
             </form>
           )}
 
           <div className="auth-footer">
-            <Link to="/login">← Retour à la connexion</Link>
+            <Link to="/login">← {t('motDePasseOublie.retourConnexion')}</Link>
           </div>
 
         </div>

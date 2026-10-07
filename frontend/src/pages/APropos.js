@@ -6,66 +6,80 @@ import {
   MapPin, Heart, Star, ArrowRight, CheckCircle
 } from 'lucide-react';
 import Logo from '../components/Logo';
+import { useTranslation } from 'react-i18next';
 
-var VALEURS = [
-  {
-    icon: <Shield size={28} strokeWidth={1.5} color="#1B6B3A" />,
-    titre: 'Transparence',
-    desc: 'Aucun frais caché, aucun intermédiaire. Le prix affiché est le prix payé.',
-    bg: '#E8F5E9'
-  },
-  {
-    icon: <Heart size={28} strokeWidth={1.5} color="#E53935" />,
-    titre: 'Confiance',
-    desc: 'Dossiers vérifiés, baux officiels, notations mutuelles. La confiance se construit ensemble.',
-    bg: '#FFEBEE'
-  },
-  {
-    icon: <Users size={28} strokeWidth={1.5} color="#1565C0" />,
-    titre: 'Accessibilité',
-    desc: "L'espace locataire est 100% gratuit. Werdhe est fait pour tous les Guinéens.",
-    bg: '#E3F2FD'
-  },
-  {
-    icon: <TrendingUp size={28} strokeWidth={1.5} color="#7B1FA2" />,
-    titre: 'Innovation',
-    desc: 'La première plateforme immobilière numérique de Guinée, pensée pour le mobile.',
-    bg: '#F3E5F5'
-  },
-];
+function getValeurs(t) {
+  return [
+    {
+      icon: <Shield size={28} strokeWidth={1.5} color="#1B6B3A" />,
+      titre: t('apropos.valeurs.0.titre'),
+      desc: t('apropos.valeurs.0.desc'),
+      bg: '#E8F5E9'
+    },
+    {
+      icon: <Heart size={28} strokeWidth={1.5} color="#E53935" />,
+      titre: t('apropos.valeurs.1.titre'),
+      desc: t('apropos.valeurs.1.desc'),
+      bg: '#FFEBEE'
+    },
+    {
+      icon: <Users size={28} strokeWidth={1.5} color="#1565C0" />,
+      titre: t('apropos.valeurs.2.titre'),
+      desc: t('apropos.valeurs.2.desc'),
+      bg: '#E3F2FD'
+    },
+    {
+      icon: <TrendingUp size={28} strokeWidth={1.5} color="#7B1FA2" />,
+      titre: t('apropos.valeurs.3.titre'),
+      desc: t('apropos.valeurs.3.desc'),
+      bg: '#F3E5F5'
+    },
+  ];
+}
 
-var STATS = [
-  { val: '1 200+', label: 'Logements publiés' },
-  { val: '4 800+', label: 'Utilisateurs actifs' },
-  { val: '8',      label: 'Villes couvertes'   },
-  { val: '2026',   label: 'Année de création'  },
-];
+function getStats(t) {
+  return [
+    { val: '1 200+', label: t('apropos.stats.logementsPublies') },
+    { val: '4 800+', label: t('apropos.stats.utilisateursActifs') },
+    { val: '8',      label: t('apropos.stats.villesCouvertes')   },
+    { val: '2026',   label: t('apropos.stats.anneeCreation')  },
+  ];
+}
 
-var EQUIPE = [
-  {
-    nom:     'Moussa BAH',
-    role:    'Fondateur & Expert Informatique et Système d\'Information',
-    initiales: 'MB',
-    couleur: '#1B6B3A',
-    bio: 'Ingénieur IT passionné par l\'impact technologique en Afrique. Créateur de Werdhe pour simplifier la location immobilière en Guinée.',
-  },
-];
+function getEquipe(t) {
+  return [
+    {
+      nom:     'Moussa BAH',
+      role:    t('apropos.equipe.0.role'),
+      initiales: 'MB',
+      couleur: '#1B6B3A',
+      bio: t('apropos.equipe.0.bio'),
+    },
+  ];
+}
 
-var ETAPES = [
-  { annee: '2025', titre: 'L\'idée', desc: 'Face aux difficultés de trouver un logement sans intermédiaire et éviter des frais, arnaque , l\'idée de Werdhe naît.' },
-  { annee: 'Juil 2026', titre: 'Développement', desc: 'Début du développement de la plateforme avec React, Node.js et Supabase.' },
-  { annee: 'Oct 2026', titre: 'Lancement', desc: 'Werdhe.com est lancé officiellement. Les premiers propriétaires publient leurs biens.' },
-  { annee: '2027', titre: 'Expansion', desc: 'Objectif : couvrir d\'autre pays en afrique et lancer l\'application mobile.' },
-];
+function getEtapes(t) {
+  return [
+    { annee: '2025', titre: t('apropos.etapes.0.titre'), desc: t('apropos.etapes.0.desc') },
+    { annee: 'Juil 2026', titre: t('apropos.etapes.1.titre'), desc: t('apropos.etapes.1.desc') },
+    { annee: 'Oct 2026', titre: t('apropos.etapes.2.titre'), desc: t('apropos.etapes.2.desc') },
+    { annee: '2027', titre: t('apropos.etapes.3.titre'), desc: t('apropos.etapes.3.desc') },
+  ];
+}
 
 export default function APropos() {
+  var t = useTranslation('public').t;
+  var VALEURS = getValeurs(t);
+  var STATS = getStats(t);
+  var EQUIPE = getEquipe(t);
+  var ETAPES = getEtapes(t);
   var navigate = useNavigate();
 
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
       <SEO
-        titre="À propos de Werdhe"
-        description="Werdhe est une des première plateforme immobilière numérique de ce type de Guinée. Découvrez notre mission, nos valeurs et notre équipe."
+        titre={t('apropos.seo.titre')}
+        description={t('apropos.seo.description')}
         url="https://werdhe.com/a-propos"
       />
 
@@ -73,7 +87,7 @@ export default function APropos() {
       <div style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <button onClick={function() { navigate(-1); }}
           style={{ background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <ChevronLeft size={16} strokeWidth={2} /> Retour
+          <ChevronLeft size={16} strokeWidth={2} /> {t('apropos.retour')}
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
          <Logo size={30} showText={true} darkBg={true} />
@@ -84,18 +98,18 @@ export default function APropos() {
       <div style={{ background: 'linear-gradient(135deg, #1B2B22 0%, #1B6B3A 100%)', padding: 'clamp(48px, 8vw, 80px) 24px', textAlign: 'center' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.1)', borderRadius: 20, padding: '5px 16px', marginBottom: 20 }}>
           <MapPin size={14} color="#F5A623" strokeWidth={2} />
-          <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>🇬🇳 Made in Guinea</span>
+          <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>🇬🇳 {t('apropos.madeInGuinea')}</span>
         </div>
         <h1 style={{ fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 900, color: '#fff', margin: '0 0 16px', letterSpacing: -1, lineHeight: 1.1 }}>
-          Réinventer la location<br/>
-          <span style={{ color: '#F5A623' }}>immobilière en Guinée</span>
+          {t('apropos.heroTitre1')}<br/>
+          <span style={{ color: '#F5A623' }}>{t('apropos.heroTitre2')}</span>
         </h1>
         <p style={{ fontSize: 'clamp(15px, 2vw, 18px)', color: 'rgba(255,255,255,0.7)', maxWidth: 560, margin: '0 auto 32px', lineHeight: 1.7 }}>
-          Werdhe connecte propriétaires et locataires directement, sans intermédiaire, avec des outils numériques modernes adaptés au marché guinéen.
+          {t('apropos.heroDesc')}
         </p>
         <Link to="/logements"
           style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, background: '#F5A623', color: '#1B2B22', textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>
-          Découvrir les logements <ArrowRight size={16} strokeWidth={2.5} />
+          {t('apropos.decouvrirLogements')} <ArrowRight size={16} strokeWidth={2.5} />
         </Link>
       </div>
 
@@ -119,21 +133,21 @@ export default function APropos() {
         <section style={{ marginBottom: 48 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, alignItems: 'center' }}>
             <div>
-              <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>Notre mission</div>
+              <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('apropos.mission.overline')}</div>
               <h2 style={{ fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 800, color: '#1B2B22', margin: '0 0 16px', letterSpacing: -0.5, lineHeight: 1.2 }}>
-                Rendre la location accessible à tous
+                {t('apropos.mission.titre')}
               </h2>
               <p style={{ fontSize: 15, color: '#555', lineHeight: 1.8, margin: '0 0 16px' }}>
-                En Guinée, trouver un logement ou un locataire fiable est souvent un parcours semé d'embûches - frais d'agence exorbitants, manque de transparence, documents difficiles à gérer.
+                {t('apropos.mission.para1')}
               </p>
               <p style={{ fontSize: 15, color: '#555', lineHeight: 1.8, margin: '0 0 20px' }}>
-                Werdhe change ça. En mettant la technologie au service des Guinéens, nous simplifions chaque étape : de la recherche à la signature du bail, en passant par le suivi des paiements.
+                {t('apropos.mission.para2')}
               </p>
               {[
-                '100% gratuit pour les locataires',
-                'Baux et quittances générés automatiquement',
-                'Alertes loyers automatiques',
-                'Support client réactif',
+                t('apropos.mission.points.0'),
+                t('apropos.mission.points.1'),
+                t('apropos.mission.points.2'),
+                t('apropos.mission.points.3'),
               ].map(function(item, i) {
                 return (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
@@ -147,7 +161,7 @@ export default function APropos() {
               <div style={{ fontSize: 64, marginBottom: 16 }}>🏠</div>
               <div style={{ fontSize: 18, fontWeight: 800, color: '#1B6B3A', marginBottom: 8 }}>Werdhe</div>
               <div style={{ fontSize: 13, color: '#555', lineHeight: 1.6 }}>
-                La plateforme de référence<br/>pour la location en Guinée
+                {t('apropos.mission.tagline1')}<br/>{t('apropos.mission.tagline2')}
               </div>
               <div style={{ marginTop: 20, display: 'flex', gap: 4 }}>
                 {[1,2,3,4,5].map(function(n) { return <Star key={n} size={18} strokeWidth={1.5} fill="#F5A623" color="#F5A623" />; })}
@@ -159,8 +173,8 @@ export default function APropos() {
         {/* Nos valeurs */}
         <section style={{ marginBottom: 48 }}>
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
-            <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>Nos valeurs</div>
-            <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 800, color: '#1B2B22', margin: 0, letterSpacing: -0.5 }}>Ce qui nous guide</h2>
+            <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('apropos.valeursSection.overline')}</div>
+            <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 800, color: '#1B2B22', margin: 0, letterSpacing: -0.5 }}>{t('apropos.valeursSection.titre')}</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
             {VALEURS.map(function(v, i) {
@@ -180,8 +194,8 @@ export default function APropos() {
         {/* Notre histoire */}
         <section style={{ marginBottom: 48 }}>
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
-            <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>Notre histoire</div>
-            <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 800, color: '#1B2B22', margin: 0, letterSpacing: -0.5 }}>De l'idée à la réalité</h2>
+            <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('apropos.histoireSection.overline')}</div>
+            <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 800, color: '#1B2B22', margin: 0, letterSpacing: -0.5 }}>{t('apropos.histoireSection.titre')}</h2>
           </div>
           <div style={{ position: 'relative' }}>
             <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: 2, background: '#E8F5E9', transform: 'translateX(-50%)' }} />
@@ -207,8 +221,8 @@ export default function APropos() {
         {/* Équipe */}
         <section style={{ marginBottom: 48 }}>
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
-            <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>L'équipe</div>
-            <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 800, color: '#1B2B22', margin: 0, letterSpacing: -0.5 }}>Derrière Werdhe</h2>
+            <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('apropos.equipeSection.overline')}</div>
+            <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 800, color: '#1B2B22', margin: 0, letterSpacing: -0.5 }}>{t('apropos.equipeSection.titre')}</h2>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             {EQUIPE.map(function(m, i) {
@@ -229,19 +243,19 @@ export default function APropos() {
         {/* CTA */}
         <section style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', borderRadius: 20, padding: 'clamp(32px, 5vw, 48px) 32px', textAlign: 'center' }}>
           <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 800, color: '#fff', margin: '0 0 14px', letterSpacing: -0.5 }}>
-            Rejoignez l'aventure Werdhe
+            {t('apropos.cta.titre')}
           </h2>
           <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', margin: '0 0 28px', maxWidth: 440, marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.6 }}>
-            Que vous soyez propriétaire ou locataire, Werdhe est fait pour vous. Créez votre compte gratuitement.
+            {t('apropos.cta.desc')}
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link to="/inscription"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, background: '#F5A623', color: '#1B2B22', textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>
-              Créer mon compte <ArrowRight size={16} strokeWidth={2.5} />
+              {t('apropos.cta.creerCompte')} <ArrowRight size={16} strokeWidth={2.5} />
             </Link>
             <Link to="/contact"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: 15 }}>
-              Nous contacter
+              {t('apropos.cta.contact')}
             </Link>
           </div>
         </section>

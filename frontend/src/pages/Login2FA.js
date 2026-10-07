@@ -5,8 +5,10 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { Shield, RefreshCw } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function Login2FA() {
+  var t         = useTranslation('public').t;
   var navigate  = useNavigate();
   var location  = useLocation();
   var auth      = useAuth();
@@ -52,7 +54,7 @@ export default function Login2FA() {
 
   function verifier() {
     var code = otp.join('');
-    if (code.length !== 6) { toast.error('Entrez les 6 chiffres'); return; }
+    if (code.length !== 6) { toast.error(t('login2fa.entrezChiffres')); return; }
     setLoading(true);
 
     api.post('/auth/admin/verifier-2fa', { user_id: userId, code: code })
@@ -60,11 +62,11 @@ export default function Login2FA() {
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('user',  JSON.stringify(res.data.user));
         if (auth.login) auth.login(res.data.user, res.data.token);
-        toast.success('Connexion admin réussie 🔐');
+        toast.success(t('login2fa.connexionReussie'));
         navigate('/dashboard');
       })
       .catch(function(err) {
-        toast.error(err.response && err.response.data ? err.response.data.erreur : 'Code invalide');
+        toast.error(err.response && err.response.data ? err.response.data.erreur : t('login2fa.codeInvalide'));
         setOtp(['', '', '', '', '', '']);
         inputRefs[0].current && inputRefs[0].current.focus();
       })
@@ -81,10 +83,10 @@ export default function Login2FA() {
             <Shield size={30} color="#1B2B22" strokeWidth={2} />
           </div>
           <h2 style={{ color: '#fff', fontSize: 20, fontWeight: 800, margin: '0 0 8px' }}>
-            Vérification en 2 étapes
+            {t('login2fa.titre')}
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14, margin: 0, lineHeight: 1.5 }}>
-            Code envoyé à<br/>
+            {t('login2fa.codeEnvoyeA')}<br/>
             <span style={{ color: '#F5A623', fontWeight: 600 }}>{email}</span>
           </p>
         </div>
@@ -129,13 +131,13 @@ export default function Login2FA() {
         <div style={{ textAlign: 'center', marginBottom: 20 }}>
           {timer > 0 ? (
             <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>
-              Code valide encore{' '}
+              {t('login2fa.codeValideEncore')}{' '}
               <span style={{ color: timer < 60 ? '#E53935' : '#F5A623', fontWeight: 700 }}>
                 {minutes}:{seconds.toString().padStart(2, '0')}
               </span>
             </span>
           ) : (
-            <span style={{ color: '#E53935', fontSize: 13 }}>Code expiré — reconnectez-vous</span>
+            <span style={{ color: '#E53935', fontSize: 13 }}>{t('login2fa.codeExpire')}</span>
           )}
         </div>
 
@@ -156,13 +158,13 @@ export default function Login2FA() {
             marginBottom: 12,
             transition: 'all .2s'
           }}>
-          {loading ? '⏳ Vérification...' : '🔐 Confirmer'}
+          {loading ? t('login2fa.verificationEnCours') : t('login2fa.confirmer')}
         </button>
 
         <button
           onClick={function() { navigate('/login'); }}
           style={{ width: '100%', padding: '10px', borderRadius: 10, border: 'none', background: 'transparent', color: 'rgba(255,255,255,0.3)', fontSize: 13, cursor: 'pointer' }}>
-          ← Retour à la connexion
+          ← {t('login2fa.retourConnexion')}
         </button>
       </div>
     </div>

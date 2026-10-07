@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import './auth.css';
 
 export default function OTP() {
+  var t = useTranslation('public').t;
   var navigate = useNavigate();
   var location = useLocation();
   var role = (location.state && location.state.role) || 'proprietaire';
@@ -77,7 +79,7 @@ export default function OTP() {
             <line x1="19" y1="12" x2="5" y2="12"/>
             <polyline points="12 19 5 12 12 5"/>
           </svg>
-          Retour
+          {t('otp.retour')}
         </button>
 
         <div className="auth-header">
@@ -87,8 +89,8 @@ export default function OTP() {
               <line x1="12" y1="18" x2="12.01" y2="18"/>
             </svg>
           </div>
-          <h2>Code de verification</h2>
-          <p>Code envoye par SMS au<br/>
+          <h2>{t('otp.titre')}</h2>
+          <p>{t('otp.codeEnvoyeParSms')}<br/>
             <strong style={{color:'#111'}}>+224 622 00 00 00</strong>
           </p>
         </div>
@@ -113,9 +115,9 @@ export default function OTP() {
 
         <div className="auth-otp-timer">
           {timer > 0 ? (
-            <span>Expire dans <span>{formatTimer(timer)}</span></span>
+            <span>{t('otp.expireDans')} <span>{formatTimer(timer)}</span></span>
           ) : (
-            <span style={{color:'#C62828'}}>Code expire</span>
+            <span style={{color:'#C62828'}}>{t('otp.codeExpire')}</span>
           )}
         </div>
 
@@ -126,13 +128,13 @@ export default function OTP() {
           disabled={loading || digits.join('').length < 6}
           type="button"
         >
-          {loading ? 'Verification...' : 'Verifier le code'}
+          {loading ? t('otp.verificationEnCours') : t('otp.verifierCode')}
         </button>
 
         <p className="auth-link-text">
-          Pas recu ?{' '}
+          {t('otp.pasRecu')}{' '}
           <span onClick={function() { setTimer(150); setDigits(['','','','','','']); }}>
-            Renvoyer le code
+            {t('otp.renvoyerCode')}
           </span>
         </p>
 

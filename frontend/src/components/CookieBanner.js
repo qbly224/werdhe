@@ -2,8 +2,10 @@
 import { useState, useEffect } from 'react';
 import { Cookie, X, Check, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function CookieBanner() {
+  var t = useTranslation('public').t;
   var [visible, setVisible]     = useState(false);
   var [details, setDetails]     = useState(false);
   var [prefs, setPrefs]         = useState({ essentiel: true, analytique: false, marketing: false });
@@ -40,8 +42,8 @@ export default function CookieBanner() {
             <Cookie size={18} strokeWidth={1.5} color="#F5A623" />
           </div>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>Cookies et confidentialité</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>Werdhe respecte votre vie privée</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>{t('cookieBanner.titre')}</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>{t('cookieBanner.sousTitre')}</div>
           </div>
           <button onClick={refuserTout}
             style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.3)', padding: 4 }}>
@@ -52,8 +54,8 @@ export default function CookieBanner() {
         {/* Message */}
         {!details && (
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6, margin: '0 0 16px' }}>
-            Nous utilisons des cookies essentiels au fonctionnement du site. Avec votre accord, nous utilisons aussi des cookies d'analyse pour améliorer votre expérience.{' '}
-            <Link to="/confidentialite" style={{ color: '#F5A623', textDecoration: 'none' }}>En savoir plus</Link>
+            {t('cookieBanner.message')}{' '}
+            <Link to="/confidentialite" style={{ color: '#F5A623', textDecoration: 'none' }}>{t('cookieBanner.enSavoirPlus')}</Link>
           </p>
         )}
 
@@ -61,9 +63,9 @@ export default function CookieBanner() {
         {details && (
           <div style={{ marginBottom: 16 }}>
             {[
-              { key: 'essentiel',  label: 'Essentiels',     desc: 'Authentification, session, sécurité',     locked: true  },
-              { key: 'analytique', label: 'Analytiques',    desc: 'Comprendre comment vous utilisez Werdhe', locked: false },
-              { key: 'marketing',  label: 'Marketing',      desc: 'Publicités personnalisées (non utilisé)',  locked: false },
+              { key: 'essentiel',  label: t('cookieBanner.categories.essentiel.label'),     desc: t('cookieBanner.categories.essentiel.desc'),     locked: true  },
+              { key: 'analytique', label: t('cookieBanner.categories.analytique.label'),    desc: t('cookieBanner.categories.analytique.desc'), locked: false },
+              { key: 'marketing',  label: t('cookieBanner.categories.marketing.label'),      desc: t('cookieBanner.categories.marketing.desc'),  locked: false },
             ].map(function(item) {
               return (
                 <div key={item.key} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
@@ -98,21 +100,21 @@ export default function CookieBanner() {
           {details ? (
             <button onClick={sauvegarderPrefs}
               style={{ flex: 2, padding: '10px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-              <Check size={14} strokeWidth={2.5} /> Sauvegarder
+              <Check size={14} strokeWidth={2.5} /> {t('cookieBanner.sauvegarder')}
             </button>
           ) : (
             <>
               <button onClick={refuserTout}
                 style={{ flex: 1, padding: '10px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: 'rgba(255,255,255,0.6)', fontSize: 12, cursor: 'pointer' }}>
-                Refuser
+                {t('cookieBanner.refuser')}
               </button>
               <button onClick={function() { setDetails(true); }}
                 style={{ flex: 1, padding: '10px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: 'rgba(255,255,255,0.6)', fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-                <Settings size={13} strokeWidth={1.5} /> Personnaliser
+                <Settings size={13} strokeWidth={1.5} /> {t('cookieBanner.personnaliser')}
               </button>
               <button onClick={accepterTout}
                 style={{ flex: 1, padding: '10px', borderRadius: 10, border: 'none', background: '#F5A623', color: '#1B2B22', fontSize: 12, fontWeight: 800, cursor: 'pointer' }}>
-                Accepter
+                {t('cookieBanner.accepter')}
               </button>
             </>
           )}
