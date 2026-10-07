@@ -37,6 +37,7 @@ import { SkeletonKPI, SkeletonListe, SkeletonCard } from '../components/Skeleton
 import TourTooltip from '../components/TourTooltip';
 import useOnboarding from '../hooks/useOnboarding';
 import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 
 // ================================================
 // UTILITAIRE - Formater les montants en GNF
@@ -2196,8 +2197,9 @@ function repondreRenouvellement(id, reponse) {
 
   var motifsKeysProprio = ['venteBien', 'repriseUsagePersonnel', 'travauxRenovation', 'nonPaiementRepete', 'troublesVoisinage', 'finBailNonRenouvele', 'autreMotif'];
   var motifsKeysLocataire = ['changementVille', 'achatBien', 'logementInadapte', 'raisonsProfessionnelles', 'raisonsFamiliales', 'conditionsInsatisfaisantes', 'autreRaison'];
+  var tFr = i18n.getFixedT('fr', 'dashboard');
   var motifsList = (estProprietaire ? motifsKeysProprio : motifsKeysLocataire).map(function(k) {
-    return t('ongletPreavisDash.motifs.' + k);
+    return { value: tFr('ongletPreavisDash.motifs.' + k), label: t('ongletPreavisDash.motifs.' + k) };
   });
 
   useEffect(function() {
@@ -2587,14 +2589,15 @@ function repondre(preavisId, reponse) {
           {/* Motif */}
           <div style={{ marginBottom: 18 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>{t('ongletPreavis.locataire.form.motifLabel')}</div>
-            {motifsList.map(function(m) {
+            {motifsList.map(function(opt) {
+              var m = opt.value;
               return (
                 <div key={m} onClick={function() { setMotif(m); }}
                   style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', border: motif === m ? '1.5px solid #1B6B3A' : '0.5px solid #E0E0E0', background: motif === m ? '#E8F5E9' : '#FAFAFA', borderRadius: 10, marginBottom: 6, cursor: 'pointer' }}>
                   <div style={{ width: 18, height: 18, borderRadius: '50%', border: motif === m ? 'none' : '1.5px solid #CCC', background: motif === m ? '#1B6B3A' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     {motif === m && <span style={{ color: '#fff', fontSize: 11 }}>✓</span>}
                   </div>
-                  <span style={{ fontSize: 13, color: motif === m ? '#1B5E20' : '#555' }}>{m}</span>
+                  <span style={{ fontSize: 13, color: motif === m ? '#1B5E20' : '#555' }}>{opt.label}</span>
                 </div>
               );
             })}
