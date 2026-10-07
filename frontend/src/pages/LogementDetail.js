@@ -10,23 +10,25 @@ import {
   Copy, Check, Phone, Star, Home, Share2
 } from 'lucide-react';
 import Logo from '../components/Logo';
+import { useTranslation } from 'react-i18next';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(Number(n)); };
-
-var EQUIPEMENTS_CONFIG = [
-  { key: 'electricite',    vals: ['secteur'],  icon: <Zap size={16} strokeWidth={1.5} />,     label: 'Électricité secteur' },
-  { key: 'electricite',    vals: ['solaire'],  icon: <Zap size={16} strokeWidth={1.5} />,     label: 'Panneau solaire'     },
-  { key: 'acces_eau',      vals: [true, 'oui'], icon: <Droplets size={16} strokeWidth={1.5} />, label: 'Eau courante'       },
-  { key: 'climatisation',  vals: [true],       icon: <Wind size={16} strokeWidth={1.5} />,    label: 'Climatisation'       },
-  { key: 'gardien',        vals: [true],       icon: <Shield size={16} strokeWidth={1.5} />,  label: 'Gardiennage'         },
-  { key: 'parking',        vals: [true],       icon: <Car size={16} strokeWidth={1.5} />,     label: 'Parking'             },
-  { key: 'jardin',         vals: [true],       icon: <Trees size={16} strokeWidth={1.5} />,   label: 'Jardin'              },
-];
 
 export default function LogementDetail() {
   var { id }       = useParams();
   var { user }     = useAuth();
   var navigate     = useNavigate();
+  var t            = useTranslation('logements').t;
+
+  var EQUIPEMENTS_CONFIG = [
+    { key: 'electricite',    vals: ['secteur'],  icon: <Zap size={16} strokeWidth={1.5} />,     label: t('logementDetail.equipements.electriciteSecteur') },
+    { key: 'electricite',    vals: ['solaire'],  icon: <Zap size={16} strokeWidth={1.5} />,     label: t('logementDetail.equipements.panneauSolaire')     },
+    { key: 'acces_eau',      vals: [true, 'oui'], icon: <Droplets size={16} strokeWidth={1.5} />, label: t('logementDetail.equipements.eauCourante')       },
+    { key: 'climatisation',  vals: [true],       icon: <Wind size={16} strokeWidth={1.5} />,    label: t('logementDetail.equipements.climatisation')       },
+    { key: 'gardien',        vals: [true],       icon: <Shield size={16} strokeWidth={1.5} />,  label: t('logementDetail.equipements.gardiennage')         },
+    { key: 'parking',        vals: [true],       icon: <Car size={16} strokeWidth={1.5} />,     label: t('logementDetail.equipements.parking')             },
+    { key: 'jardin',         vals: [true],       icon: <Trees size={16} strokeWidth={1.5} />,   label: t('logementDetail.equipements.jardin')              },
+  ];
   var [logement, setLogement]     = useState(null);
   var [similaires, setSimilaires] = useState([]);
   var [loading, setLoading]       = useState(true);
@@ -69,8 +71,8 @@ export default function LogementDetail() {
     return (
       <div style={{ textAlign: 'center', padding: '100px 24px', fontFamily: 'system-ui' }}>
         <div style={{ fontSize: 64, marginBottom: 16 }}>😕</div>
-        <h2>Logement introuvable</h2>
-        <Link to="/logements" style={{ color: '#1B6B3A' }}>← Retour aux logements</Link>
+        <h2>{t('logementDetail.introuvable.titre')}</h2>
+        <Link to="/logements" style={{ color: '#1B6B3A' }}>{t('logementDetail.introuvable.retour')}</Link>
       </div>
     );
   }
@@ -103,7 +105,7 @@ export default function LogementDetail() {
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
       <SEO
         titre={logement.titre + ' à ' + logement.ville}
-        description={logement.titre + ' à ' + logement.ville + '. ' + GNF(logement.prix_mensuel) + ' GNF/mois. Candidatez directement sur Werdhe.'}
+        description={t('logementDetail.seo.description', { titre: logement.titre, ville: logement.ville, prix: GNF(logement.prix_mensuel) })}
         image={photos[0]}
         url={'https://werdhe.com/logements/' + logement.id}
         type="article"
@@ -116,7 +118,7 @@ export default function LogementDetail() {
         </Link>
         <button onClick={function() { navigate(-1); }}
           style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: '1px solid #E0E0E0', borderRadius: 8, padding: '6px 14px', fontSize: 13, color: '#555', cursor: 'pointer' }}>
-          <ChevronLeft size={16} strokeWidth={2} /> Retour
+          <ChevronLeft size={16} strokeWidth={2} /> {t('logementDetail.nav.retour')}
         </button>
       </nav>
 
@@ -139,12 +141,12 @@ export default function LogementDetail() {
 
                   {/* Badge statut */}
                   <div style={{ position: 'absolute', top: 14, right: 14, background: logement.statut === 'disponible' ? '#1B6B3A' : '#888', color: '#fff', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
-                    {logement.statut === 'disponible' ? '✅ Disponible' : 'Occupé'}
+                    {logement.statut === 'disponible' ? t('logementDetail.badge.disponible') : t('logementDetail.badge.occupe')}
                   </div>
 
                   {/* Compteur photos */}
                   <div style={{ position: 'absolute', top: 14, left: 14, background: 'rgba(0,0,0,0.55)', color: '#fff', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 600 }}>
-                    {photoActive + 1} / {photos.length}
+                    {t('logementDetail.compteurPhotos', { actuelle: photoActive + 1, total: photos.length })}
                   </div>
 
                   {/* Navigation */}
@@ -186,34 +188,34 @@ export default function LogementDetail() {
 
             {/* Caractéristiques */}
             <div style={{ background: '#fff', borderRadius: 16, padding: '20px 22px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-              <h2 style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 16px', letterSpacing: -0.5 }}>Caractéristiques</h2>
+              <h2 style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 16px', letterSpacing: -0.5 }}>{t('logementDetail.caracteristiques.titre')}</h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12 }}>
                 {logement.nb_chambres && (
                   <div style={{ background: '#F7F8F7', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
                     <BedDouble size={24} strokeWidth={1.5} color="#1B6B3A" style={{ marginBottom: 6 }} />
                     <div style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22' }}>{logement.nb_chambres}</div>
-                    <div style={{ fontSize: 11, color: '#888' }}>Chambre(s)</div>
+                    <div style={{ fontSize: 11, color: '#888' }}>{t('logementDetail.caracteristiques.chambres')}</div>
                   </div>
                 )}
                 {logement.nb_salles_bain && (
                   <div style={{ background: '#F7F8F7', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
                     <Bath size={24} strokeWidth={1.5} color="#1565C0" style={{ marginBottom: 6 }} />
                     <div style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22' }}>{logement.nb_salles_bain}</div>
-                    <div style={{ fontSize: 11, color: '#888' }}>Salle(s) de bain</div>
+                    <div style={{ fontSize: 11, color: '#888' }}>{t('logementDetail.caracteristiques.sallesDeBain')}</div>
                   </div>
                 )}
                 {logement.superficie && (
                   <div style={{ background: '#F7F8F7', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
                     <Maximize2 size={24} strokeWidth={1.5} color="#7B1FA2" style={{ marginBottom: 6 }} />
                     <div style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22' }}>{logement.superficie}</div>
-                    <div style={{ fontSize: 11, color: '#888' }}>m²</div>
+                    <div style={{ fontSize: 11, color: '#888' }}>{t('logementDetail.caracteristiques.superficie')}</div>
                   </div>
                 )}
                 {logement.categorie && (
                   <div style={{ background: '#F7F8F7', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
                     <Home size={24} strokeWidth={1.5} color="#E65100" style={{ marginBottom: 6 }} />
                     <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', textTransform: 'capitalize' }}>{logement.categorie.replace(/_/g, ' ')}</div>
-                    <div style={{ fontSize: 11, color: '#888' }}>Type</div>
+                    <div style={{ fontSize: 11, color: '#888' }}>{t('logementDetail.caracteristiques.type')}</div>
                   </div>
                 )}
               </div>
@@ -222,7 +224,7 @@ export default function LogementDetail() {
             {/* Description */}
             {logement.description && (
               <div style={{ background: '#fff', borderRadius: 16, padding: '20px 22px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-                <h2 style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', margin: '0 0 12px' }}>Description</h2>
+                <h2 style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', margin: '0 0 12px' }}>{t('logementDetail.description.titre')}</h2>
                 <p style={{ fontSize: 14, color: '#555', lineHeight: 1.8, margin: 0 }}>{logement.description}</p>
               </div>
             )}
@@ -230,7 +232,7 @@ export default function LogementDetail() {
             {/* Équipements */}
             {equipements.length > 0 && (
               <div style={{ background: '#fff', borderRadius: 16, padding: '20px 22px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-                <h2 style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', margin: '0 0 14px' }}>Équipements</h2>
+                <h2 style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', margin: '0 0 14px' }}>{t('logementDetail.equipementsSection.titre')}</h2>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 10 }}>
                   {equipements.map(function(e, i) {
                     return (
@@ -248,8 +250,8 @@ export default function LogementDetail() {
             {similaires.length > 0 && (
               <div style={{ background: '#fff', borderRadius: 16, padding: '20px 22px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                  <h2 style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', margin: 0 }}>Logements similaires à {logement.ville}</h2>
-                  <Link to={'/logements?ville=' + logement.ville} style={{ fontSize: 13, color: '#1B6B3A', fontWeight: 600, textDecoration: 'none' }}>Voir tout →</Link>
+                  <h2 style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('logementDetail.similaires.titre', { ville: logement.ville })}</h2>
+                  <Link to={'/logements?ville=' + logement.ville} style={{ fontSize: 13, color: '#1B6B3A', fontWeight: 600, textDecoration: 'none' }}>{t('logementDetail.similaires.voirTout')}</Link>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
                   {similaires.map(function(s) {
@@ -268,7 +270,7 @@ export default function LogementDetail() {
                         </div>
                         <div style={{ padding: '10px 12px' }}>
                           <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 4 }}>{s.titre}</div>
-                          <div style={{ fontSize: 14, fontWeight: 800, color: '#1B6B3A' }}>{GNF(s.prix_mensuel)} <span style={{ fontSize: 11, fontWeight: 400, color: '#888' }}>GNF/mois</span></div>
+                          <div style={{ fontSize: 14, fontWeight: 800, color: '#1B6B3A' }}>{GNF(s.prix_mensuel)} <span style={{ fontSize: 11, fontWeight: 400, color: '#888' }}>{t('logementDetail.prix.parMois')}</span></div>
                         </div>
                       </Link>
                     );
@@ -286,14 +288,14 @@ export default function LogementDetail() {
               <div style={{ marginBottom: 18 }}>
                 <div style={{ fontSize: 30, fontWeight: 900, color: '#1B6B3A', letterSpacing: -1 }}>
                   {GNF(logement.prix_mensuel)}
-                  <span style={{ fontSize: 14, fontWeight: 400, color: '#888', marginLeft: 4 }}>GNF/mois</span>
+                  <span style={{ fontSize: 14, fontWeight: 400, color: '#888', marginLeft: 4 }}>{t('logementDetail.prix.parMois')}</span>
                 </div>
-                <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>Loyer mensuel · Caution = 1 mois</div>
+                <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{t('logementDetail.prix.loyerMensuel')}</div>
               </div>
 
               {/* Propriétaire */}
               <div style={{ background: '#F7F8F7', borderRadius: 12, padding: '14px', marginBottom: 16 }}>
-                <div style={{ fontSize: 11, color: '#888', marginBottom: 8, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>Propriétaire</div>
+                <div style={{ fontSize: 11, color: '#888', marginBottom: 8, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>{t('logementDetail.proprietaire.titre')}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
                   <div style={{ width: 40, height: 40, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 15, fontWeight: 700, flexShrink: 0 }}>
                     {propPrenom.charAt(0)}{propNom.charAt(0)}
@@ -321,7 +323,7 @@ export default function LogementDetail() {
                 {propTel && (
                   <a href={'tel:' + propTel}
                     style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 10, padding: '9px', borderRadius: 10, background: '#E8F5E9', color: '#1B5E20', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>
-                    <Phone size={14} strokeWidth={2} /> Appeler
+                    <Phone size={14} strokeWidth={2} /> {t('logementDetail.proprietaire.appeler')}
                   </a>
                 )}
               </div>
@@ -330,36 +332,36 @@ export default function LogementDetail() {
               {logement.statut === 'disponible' && user && (
                 <Link to={'/logements/' + logement.id + '/reserver'}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 15, fontWeight: 800, textDecoration: 'none', marginBottom: 10, boxSizing: 'border-box' }}>
-                  Candidater <ArrowRight size={16} strokeWidth={2.5} />
+                  {t('logementDetail.actions.candidater')} <ArrowRight size={16} strokeWidth={2.5} />
                 </Link>
               )}
               {logement.statut === 'disponible' && !user && (
                 <Link to={'/login?redirect=/logements/' + logement.id + '/reserver'}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, textDecoration: 'none', marginBottom: 10, boxSizing: 'border-box' }}>
-                  Se connecter pour postuler
+                  {t('logementDetail.actions.seConnecterPourPostuler')}
                 </Link>
               )}
               {logement.statut !== 'disponible' && (
                 <div style={{ background: '#F5F5F5', color: '#888', borderRadius: 12, padding: '14px', textAlign: 'center', fontSize: 14, fontWeight: 600, marginBottom: 10 }}>
-                  Logement actuellement occupé
+                  {t('logementDetail.actions.logementOccupe')}
                 </div>
               )}
 
               {/* Copier lien */}
               <button onClick={copierLien}
                 style={{ width: '100%', padding: '10px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                {copie ? <><Check size={14} strokeWidth={2.5} color="#1B6B3A" /> Lien copié !</> : <><Copy size={14} strokeWidth={1.5} /> Partager ce logement</>}
+                {copie ? <><Check size={14} strokeWidth={2.5} color="#1B6B3A" /> {t('logementDetail.actions.lienCopie')}</> : <><Copy size={14} strokeWidth={1.5} /> {t('logementDetail.actions.partagerCeLogement')}</>}
               </button>
             </div>
 
             {/* Infos rapides */}
             <div style={{ background: '#1B2B22', borderRadius: 14, padding: '16px 18px' }}>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>Sur Werdhe</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>{t('logementDetail.infosRapides.titre')}</div>
               {[
-                'Aucun frais d\'agence',
-                'Bail électronique sécurisé',
-                'Dossier en ligne simplifié',
-                'Messagerie directe',
+                t('logementDetail.infosRapides.aucunFraisAgence'),
+                t('logementDetail.infosRapides.bailElectronique'),
+                t('logementDetail.infosRapides.dossierEnLigne'),
+                t('logementDetail.infosRapides.messagerieDirecte'),
               ].map(function(item, i) {
                 return <div key={i} style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8 }}>{item}</div>;
               })}

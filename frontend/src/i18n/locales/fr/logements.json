@@ -1,1 +1,552 @@
-{}
+{
+  "logements": {
+    "nav": {
+      "connexion": "Connexion",
+      "dashboard": "Dashboard"
+    },
+    "header": {
+      "titre": "Logements disponibles en Guinée",
+      "sousTitre": "{{total}} logement(s) trouvé(s) · Sans intermédiaire"
+    },
+    "tri": {
+      "recent": "Plus récent",
+      "prixAsc": "Prix croissant",
+      "prixDesc": "Prix décroissant"
+    },
+    "vue": {
+      "liste": "Liste",
+      "carte": "Carte"
+    },
+    "recherche": {
+      "placeholder": "Rechercher : titre, quartier, adresse...",
+      "filtres": "Filtres"
+    },
+    "villes": {
+      "toutes": "Toutes"
+    },
+    "filtresAvances": {
+      "titre": "Filtres avancés",
+      "reinitialiserTout": "Réinitialiser tout",
+      "ville": "Ville",
+      "toutesLesVilles": "Toutes les villes",
+      "type": "Type",
+      "tousLesTypes": "Tous les types",
+      "prixMinimum": "Prix minimum (GNF)",
+      "prixMinimumPlaceholder": "Ex: 500000",
+      "prixMaximum": "Prix maximum (GNF)",
+      "prixMaximumPlaceholder": "Ex: 2000000",
+      "chambresMinimum": "Chambres minimum",
+      "peuImporte": "Peu importe",
+      "superficieMin": "Superficie min (m²)",
+      "superficieMinPlaceholder": "Ex: 30",
+      "fourchette": "Fourchette : {{min}} - {{max}}",
+      "illimite": "illimité"
+    },
+    "etatRecherche": {
+      "enCours": "Recherche en cours...",
+      "aucunResultat": "Aucun logement trouvé",
+      "autresCriteres": "Essayez avec d'autres critères",
+      "reinitialiserFiltres": "Réinitialiser les filtres"
+    },
+    "carte": {
+      "disponible": "Disponible",
+      "nouveau": "Nouveau",
+      "logementParDefaut": "Logement",
+      "prixParMois": "/mois",
+      "chambresAbrev": "{{count}} ch.",
+      "sdbAbrev": "{{count}} SdB",
+      "superficieAbrev": "{{superficie}}m²",
+      "voir": "Voir",
+      "candidater": "Candidater"
+    },
+    "pagination": {
+      "precedent": "← Précédent",
+      "page": "Page {{page}} / {{total}}",
+      "suivant": "Suivant →"
+    }
+  },
+  "logementDetail": {
+    "equipements": {
+      "electriciteSecteur": "Électricité secteur",
+      "panneauSolaire": "Panneau solaire",
+      "eauCourante": "Eau courante",
+      "climatisation": "Climatisation",
+      "gardiennage": "Gardiennage",
+      "parking": "Parking",
+      "jardin": "Jardin"
+    },
+    "introuvable": {
+      "titre": "Logement introuvable",
+      "retour": "← Retour aux logements"
+    },
+    "seo": {
+      "description": "{{titre}} à {{ville}}. {{prix}} GNF/mois. Candidatez directement sur Werdhe."
+    },
+    "nav": {
+      "retour": "Retour"
+    },
+    "badge": {
+      "disponible": "✅ Disponible",
+      "occupe": "Occupé"
+    },
+    "compteurPhotos": "{{actuelle}} / {{total}}",
+    "caracteristiques": {
+      "titre": "Caractéristiques",
+      "chambres": "Chambre(s)",
+      "sallesDeBain": "Salle(s) de bain",
+      "superficie": "m²",
+      "type": "Type"
+    },
+    "description": {
+      "titre": "Description"
+    },
+    "equipementsSection": {
+      "titre": "Équipements"
+    },
+    "similaires": {
+      "titre": "Logements similaires à {{ville}}",
+      "voirTout": "Voir tout →"
+    },
+    "prix": {
+      "parMois": "GNF/mois",
+      "loyerMensuel": "Loyer mensuel · Caution = 1 mois"
+    },
+    "proprietaire": {
+      "titre": "Propriétaire",
+      "appeler": "Appeler"
+    },
+    "actions": {
+      "candidater": "Candidater",
+      "seConnecterPourPostuler": "Se connecter pour postuler",
+      "logementOccupe": "Logement actuellement occupé",
+      "lienCopie": "Lien copié !",
+      "partagerCeLogement": "Partager ce logement"
+    },
+    "infosRapides": {
+      "titre": "Sur Werdhe",
+      "aucunFraisAgence": "Aucun frais d'agence",
+      "bailElectronique": "Bail électronique sécurisé",
+      "dossierEnLigne": "Dossier en ligne simplifié",
+      "messagerieDirecte": "Messagerie directe"
+    }
+  },
+  "reserver": {
+    "erreurs": {
+      "logementIntrouvable": "Logement introuvable",
+      "choisirDate": "Choisissez une date d'entrée",
+      "ecrireMessage": "Écrivez un message au propriétaire",
+      "envoiErreur": "Erreur lors de l'envoi"
+    },
+    "succes": {
+      "demandeEnvoyee": "Demande envoyée ! Le propriétaire a 48h pour répondre."
+    },
+    "chargement": {
+      "logement": "Chargement du logement..."
+    },
+    "header": {
+      "titre": "Candidature de location",
+      "etape": "Étape 1 / 7 — Côté locataire"
+    },
+    "fiche": {
+      "disponible": "Disponible",
+      "chambre": "{{count}} chambre",
+      "chambres": "{{count}} chambres",
+      "salleDeBain": "{{count}} salle de bain",
+      "sallesDeBain": "{{count}} salles de bain",
+      "superficie": "{{superficie}} m²",
+      "proprietaire": "Propriétaire",
+      "proprietaireParDefaut": "Propriétaire",
+      "membreVerifie": "Membre vérifié · Werdhe"
+    },
+    "formulaire": {
+      "votreDemande": "Votre demande",
+      "dateEntree": "Date d'entrée souhaitée *",
+      "dureeEnvisagee": "Durée envisagée",
+      "duree6Mois": "6 mois",
+      "duree12Mois": "12 mois",
+      "duree24Mois": "24 mois",
+      "messageProprietaire": "Message au propriétaire *",
+      "messagePlaceholder": "Présentez-vous : emploi, composition familiale, pourquoi ce logement...",
+      "infoDelai": "Aucun paiement à cette étape. Le propriétaire a 48h pour répondre. Vous suivrez l'avancement directement dans votre tableau de bord."
+    },
+    "bouton": {
+      "envoiEnCours": "⏳ Envoi en cours...",
+      "envoyer": "📤 Envoyer ma candidature au propriétaire"
+    }
+  },
+  "carteLogement": {
+    "categories": {
+      "villaLuxe": "Villa luxe",
+      "villa": "Villa",
+      "maison": "Maison",
+      "maisonTraditionnelle": "Maison traditionnelle",
+      "enConstruction": "En construction",
+      "concession": "Concession",
+      "appartement": "Appartement",
+      "duplex": "Duplex",
+      "logementSocial": "Logement social",
+      "studio": "Studio",
+      "chambre": "Chambre",
+      "chambreCour": "Chambre cour",
+      "habitatPrecaire": "Habitat précaire",
+      "boutique": "Boutique",
+      "bureau": "Bureau",
+      "entrepot": "Entrepôt",
+      "localCommercial": "Local commercial",
+      "centreCommercial": "Centre commercial",
+      "logementParDefaut": "Logement"
+    },
+    "statut": {
+      "disponible": "✅ Disponible",
+      "loue": "🔴 Loué"
+    },
+    "etat": {
+      "neuf": "✨ Neuf",
+      "aRenover": "🔧 À rénover",
+      "enConstruction": "🏗️ En construction"
+    },
+    "nbPhotos": "📸 {{count}}",
+    "chambresAbrev": "🛏 {{count}} ch.",
+    "sdbAbrev": "🚿 {{count}} sdb.",
+    "superficieAbrev": "📐 {{superficie}} m²",
+    "prixParMois": "/mois",
+    "details": "Détails",
+    "reserver": "Réserver"
+  },
+  "carteLeaflet": {
+    "categories": {
+      "villaLuxe": "Villa luxe",
+      "villa": "Villa",
+      "maisonModerne": "Maison moderne",
+      "maisonTraditionnelle": "Maison traditionnelle",
+      "appartement": "Appartement",
+      "duplex": "Duplex",
+      "studio": "Studio",
+      "chambre": "Chambre",
+      "bureau": "Bureau",
+      "localCommercial": "Local commercial",
+      "boutique": "Boutique",
+      "concession": "Concession",
+      "logementParDefaut": "Logement"
+    },
+    "marqueur": {
+      "disponible": "Disponible",
+      "loue": "Loué"
+    },
+    "filtres": {
+      "tous": "Tous ({{count}})",
+      "disponibles": "Disponibles ({{count}})",
+      "loues": "Loués ({{count}})"
+    },
+    "popup": {
+      "disponible": "Disponible",
+      "loue": "Loué",
+      "chambresAbrev": "{{count}} ch.",
+      "superficieAbrev": "{{superficie}}m²",
+      "prixParMois": "GNF/mois",
+      "voir": "Voir"
+    },
+    "legende": {
+      "disponible": "Disponible",
+      "loue": "Loué",
+      "nbBiens": "{{count}} bien(s)"
+    }
+  },
+  "mapView": {
+    "popup": {
+      "voirLeLogement": "Voir le logement →",
+      "prixParMois": "GNF/mois",
+      "chambresAbrev": "{{count}} ch."
+    },
+    "legende": {
+      "disponible": "Disponible",
+      "occupe": "Occupé",
+      "nbLogements": "{{count}} logement(s)"
+    }
+  },
+  "onboardingLocataire": {
+    "equipements": {
+      "eauCourante": "Eau courante",
+      "gardiennage": "Gardiennage",
+      "parking": "Parking",
+      "wifi": "WiFi",
+      "meuble": "Meuble",
+      "climatisation": "Climatisation"
+    },
+    "typesLogement": {
+      "tousTypes": "Tous types",
+      "appartement": "Appartement",
+      "villa": "Villa",
+      "studio": "Studio",
+      "chambre": "Chambre",
+      "maison": "Maison",
+      "duplex": "Duplex",
+      "bureau": "Bureau",
+      "boutique": "Boutique"
+    },
+    "etape1": {
+      "label": "Etape 1 sur 4 · Locataire",
+      "titre": "Votre profil locataire",
+      "desc": "Ces infos aident les proprietaires a evaluer votre dossier.",
+      "nomComplet": "Nom complet",
+      "nomCompletPlaceholder": "Fatoumata Camara",
+      "profession": "Profession",
+      "professionOptions": {
+        "fonctionnaire": "Fonctionnaire",
+        "commercant": "Commercant(e)",
+        "salariePrive": "Salarie(e) prive",
+        "etudiant": "Etudiant(e)",
+        "independant": "Independant(e)",
+        "autre": "Autre"
+      },
+      "budgetMensuel": "Budget mensuel max (GNF)",
+      "budgetOptions": {
+        "plusDe5M": "Plus de 5 000 000"
+      },
+      "continuer": "Continuer"
+    },
+    "etape2": {
+      "label": "Etape 2 sur 4 · Locataire",
+      "titre": "Vos criteres de recherche",
+      "desc": "Personnalisez votre recherche pour voir les logements correspondants.",
+      "quartierVille": "Quartier / Ville souhaite",
+      "quartierVillePlaceholder": "Ex: Ratoma, Conakry ou Labe...",
+      "ecrireLibrement": "Ecrivez librement ou choisissez dans la liste",
+      "typeLogement": "Type de logement",
+      "disponibiliteSouhaitee": "Disponibilite souhaitee",
+      "dispoOptions": {
+        "immediate": "Immediate",
+        "dans1Mois": "Dans 1 mois",
+        "dans3Mois": "Dans 3 mois",
+        "dans6Mois": "Dans 6 mois"
+      },
+      "equipementsSouhaites": "Equipements souhaites",
+      "retour": "Retour",
+      "continuer": "Continuer"
+    },
+    "etape3": {
+      "label": "Etape 3 sur 4 · Locataire",
+      "titre": "Documents de dossier",
+      "desc": "Un dossier complet augmente vos chances d'obtenir un logement rapidement.",
+      "docs": {
+        "cniTitre": "Piece d'identite (CNI)",
+        "cniDesc": "Photo recto-verso",
+        "cniBadge": "Recommande",
+        "revenusTitre": "Justificatif de revenus",
+        "revenusDesc": "Fiche de paie, attestation employeur",
+        "garantTitre": "Contact de garant",
+        "garantDesc": "Optionnel mais recommande"
+      },
+      "changer": "Changer",
+      "cliquerPourAjouter": "Cliquer pour ajouter",
+      "chargement": "Chargement...",
+      "retour": "Retour",
+      "terminer": "Terminer",
+      "ignorerEtape": "Ignorer cette etape"
+    },
+    "etape4": {
+      "titre": "Votre espace locataire est pret !",
+      "descConfigure": "Nous avons configure votre profil.",
+      "descLogementsA": " Logements disponibles a {{ville}}.",
+      "voirLesLogements": "Voir les logements",
+      "monTableauDeBord": "Mon tableau de bord",
+      "rechercherDesLogements": "Rechercher des logements"
+    }
+  },
+  "onboardingProprietaire": {
+    "plans": {
+      "gratuitTitre": "Gratuit - 0 GNF/mois",
+      "gratuitDesc": "Jusqu'a 2 biens · Gestion basique",
+      "proTitre": "Pro - 120 000 GNF/mois",
+      "proDesc": "Mobile Money + Especes + Documents + Rapports",
+      "agenceTitre": "Agence - 300 000 GNF/mois",
+      "agenceDesc": "Biens illimites · Multi-utilisateurs · API",
+      "recommande": "Recommande"
+    },
+    "paiements": {
+      "orangeMoneyTitre": "Orange Money",
+      "paiementInstantane": "Paiement instantane + notification",
+      "mtnMomoTitre": "MTN MoMo",
+      "especesTitre": "Especes",
+      "especesDesc": "Vous enregistrez le paiement · quittance PDF auto",
+      "virementTitre": "Virement bancaire",
+      "virementDesc": "BICIGUI, Ecobank, UBA"
+    },
+    "etape1": {
+      "label": "Etape 1 sur 4 · Proprietaire",
+      "titre": "Choisissez votre plan",
+      "desc": "Modifiable a tout moment depuis les parametres.",
+      "continuer": "Continuer"
+    },
+    "etape2": {
+      "label": "Etape 2 sur 4 · Proprietaire",
+      "titre": "Votre profil proprietaire",
+      "nomComplet": "Nom complet (tel qu'il apparaitra sur les documents)",
+      "nomCompletPlaceholder": "Alpha Barry",
+      "villePrincipale": "Ville principale",
+      "nbBiensAGerer": "Nombre de biens a gerer",
+      "nbBiensOptions": {
+        "unADeux": "1 a 2",
+        "troisACinq": "3 a 5",
+        "sixADix": "6 a 10",
+        "plusDeDix": "Plus de 10"
+      },
+      "retour": "Retour",
+      "continuer": "Continuer"
+    },
+    "etape3": {
+      "label": "Etape 3 sur 4 · Proprietaire",
+      "titre": "Modes de paiement acceptes",
+      "desc": "Selectionnez les modes que vous acceptez de vos locataires.",
+      "retour": "Retour",
+      "continuer": "Continuer"
+    },
+    "etape4": {
+      "titre": "Espace proprietaire pret !",
+      "desc": "Bienvenue sur Werdhe. Votre tableau de bord est configure. Commencez par ajouter votre premier bien.",
+      "ajouterUnBien": "Ajouter un bien",
+      "ajouterUnLocataire": "Ajouter un locataire",
+      "creerUnBail": "Creer un bail",
+      "enregistrerUnPaiement": "Enregistrer un paiement",
+      "accederAuTableauDeBord": "Acceder a mon tableau de bord"
+    }
+  },
+  "onboarding": {
+    "locataire": {
+      "etape1": {
+        "titre": "Bienvenue sur Werdhe 🎉",
+        "desc": "Trouvez votre logement idéal en Guinée. Filtrez par ville, prix, superficie. Sans intermédiaire, sans frais cachés.",
+        "cta": "Commencer"
+      },
+      "etape2": {
+        "titre": "Candidatez en ligne",
+        "desc": "Trouvez un logement et envoyez votre candidature directement. Dossier numérique, réponse rapide.",
+        "cta": "Suivant"
+      },
+      "etape3": {
+        "titre": "Dossier et signature",
+        "desc": "Uploadez vos documents une seule fois. Le bail se signe électroniquement — plus besoin de se déplacer.",
+        "cta": "Suivant"
+      },
+      "etape4": {
+        "titre": "Vous êtes prêt !",
+        "desc": "L'espace locataire est 100% gratuit, pour toujours. Commencez à chercher votre logement dès maintenant.",
+        "cta": "Chercher un logement"
+      }
+    },
+    "passerTutoriel": {
+      "titre": "Passer le tutoriel ?",
+      "descProprio": "Quelques minutes maintenant vous feront gagner beaucoup de temps plus tard.",
+      "descLocataire": "Vous pouvez y revenir depuis les paramètres.",
+      "continuer": "Continuer",
+      "passerQuandMeme": "Passer quand même"
+    },
+    "passer": "Passer",
+    "retour": "Retour",
+    "proprio": {
+      "etape0": {
+        "bienvenue": "Bienvenue sur Werdhe, {{prenom}} ! 🎉",
+        "desc": "Gérez tous vos logements depuis un seul tableau de bord. Candidatures, paiements, documents — tout est centralisé.",
+        "dashboardComplet": "Dashboard complet",
+        "dashboardCompletDesc": "Tout en un seul endroit",
+        "paiementsAuto": "Paiements auto",
+        "paiementsAutoDesc": "Alertes et quittances",
+        "candidatures": "Candidatures",
+        "candidaturesDesc": "Dossiers en ligne",
+        "alertesTempsReel": "Alertes temps réel",
+        "alertesTempsReelDesc": "Loyers, baux, preavis",
+        "commencerConfiguration": "Commencer la configuration"
+      },
+      "etape1": {
+        "titre": "Choisissez votre plan",
+        "desc": "Commencez avec un essai Pro gratuit de 14 jours",
+        "gratuit": {
+          "nom": "Gratuit",
+          "prix": "0 GNF",
+          "desc": "Jusqu'à 2 logements",
+          "feature1": "2 logements max",
+          "feature2": "Candidatures de base",
+          "feature3": "Messagerie"
+        },
+        "pro": {
+          "nom": "Pro",
+          "prix": "120 000 GNF/mois",
+          "desc": "Jusqu'à 25 logements · 14 jours gratuits",
+          "badge": "Recommandé",
+          "feature1": "25 logements",
+          "feature2": "Orange Money + MTN",
+          "feature3": "Documents PDF",
+          "feature4": "Alertes auto",
+          "feature5": "Rapports"
+        },
+        "agence": {
+          "nom": "Agence",
+          "prix": "300 000 GNF/mois",
+          "desc": "Biens illimités · Multi-utilisateurs",
+          "feature1": "Biens illimités",
+          "feature2": "Multi-users",
+          "feature3": "API",
+          "feature4": "Support dédié"
+        },
+        "continuerAvecGratuit": "Continuer avec le plan Gratuit",
+        "continuerAvecPro": "Continuer avec l'essai Pro",
+        "continuerAvecAgence": "Continuer avec le plan Agence"
+      },
+      "etape2": {
+        "titre": "Ajoutez votre premier bien",
+        "desc": "Publiez votre logement en 5 minutes. Titre, adresse, prix, photos — et les candidatures arrivent directement.",
+        "ceQueVousDevezPreparer": "Ce que vous devez préparer :",
+        "photos": "Photos du logement (au moins 1)",
+        "adresse": "Adresse exacte + ville",
+        "prix": "Prix mensuel en GNF",
+        "chambres": "Nombre de chambres et superficie",
+        "plusTard": "Plus tard",
+        "ajouterMaintenant": "Ajouter maintenant"
+      },
+      "etape3": {
+        "titre": "Fonctionnalités clés",
+        "desc": "Tout ce que Werdhe fait pour vous automatiquement",
+        "alertesAuto": {
+          "titre": "Alertes automatiques",
+          "desc": "Rappel loyer J-3, mise en demeure J+5, bail expirant J-30"
+        },
+        "documentsUnClic": {
+          "titre": "Documents en 1 clic",
+          "desc": "Bail, quittance, état des lieux, mise en demeure en PDF"
+        },
+        "rapportsFinanciers": {
+          "titre": "Rapports financiers",
+          "desc": "Graphiques revenus, taux occupation, export CSV/PDF"
+        },
+        "scoreConfiance": {
+          "titre": "Score de confiance",
+          "desc": "Évaluez chaque locataire avant d'accepter une candidature"
+        },
+        "messagerieIntegree": {
+          "titre": "Messagerie intégrée",
+          "desc": "Communiquez avec vos locataires depuis la plateforme"
+        },
+        "suivant": "Suivant"
+      },
+      "etape4": {
+        "titre": "Vous êtes prêt ! 🚀",
+        "desc": "Votre espace propriétaire est configuré. Ajoutez votre premier bien et commencez à recevoir des candidatures dès aujourd'hui.",
+        "checklist": "✅ Votre checklist de démarrage",
+        "creerCompte": "Créer un compte",
+        "choisirPlan": "Choisir un plan",
+        "ajouterLogement": "Ajouter un logement",
+        "recevoirCandidature": "Recevoir une candidature",
+        "signerBail": "Signer un bail",
+        "ajouterMonPremierBien": "🏠 Ajouter mon premier bien",
+        "explorerDashboard": "Explorer le dashboard d'abord",
+        "toastBienvenue": "Bienvenue sur Werdhe ! Ajoutez votre premier bien 🏠"
+      }
+    },
+    "jeConnaisDejaWerdhe": "Je connais déjà Werdhe — passer"
+  },
+  "tourTooltip": {
+    "passerLeTutoriel": "Passer le tutoriel",
+    "suivant": "Suivant",
+    "terminer": "Terminer"
+  }
+}

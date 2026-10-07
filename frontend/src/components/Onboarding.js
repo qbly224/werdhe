@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import {
   Home, Users, FileText, Bell, CreditCard,
   Search, CalendarCheck, Key, ChevronRight,
@@ -11,48 +12,12 @@ import {
   TrendingUp, Shield, MessageCircle, ChevronLeft
 } from 'lucide-react';
 
-// ─── ÉTAPES LOCATAIRE (simple) ───────────────────────────────────
-var ETAPES_LOCATAIRE = [
-  {
-    icon:    <Search size={52} strokeWidth={1} color="#1B6B3A" />,
-    titre:   'Bienvenue sur Werdhe 🎉',
-    desc:    'Trouvez votre logement idéal en Guinée. Filtrez par ville, prix, superficie. Sans intermédiaire, sans frais cachés.',
-    cta:     'Commencer',
-    couleur: '#1B6B3A',
-    bg:      '#E8F5E9',
-  },
-  {
-    icon:    <CalendarCheck size={52} strokeWidth={1} color="#1565C0" />,
-    titre:   'Candidatez en ligne',
-    desc:    'Trouvez un logement et envoyez votre candidature directement. Dossier numérique, réponse rapide.',
-    cta:     'Suivant',
-    couleur: '#1565C0',
-    bg:      '#E3F2FD',
-  },
-  {
-    icon:    <FileText size={52} strokeWidth={1} color="#7B1FA2" />,
-    titre:   'Dossier et signature',
-    desc:    'Uploadez vos documents une seule fois. Le bail se signe électroniquement — plus besoin de se déplacer.',
-    cta:     'Suivant',
-    couleur: '#7B1FA2',
-    bg:      '#F3E5F5',
-  },
-  {
-    icon:    <Key size={52} strokeWidth={1} color="#1B6B3A" />,
-    titre:   'Vous êtes prêt !',
-    desc:    "L'espace locataire est 100% gratuit, pour toujours. Commencez à chercher votre logement dès maintenant.",
-    cta:     'Chercher un logement',
-    couleur: '#1B6B3A',
-    bg:      '#E8F5E9',
-    dernier: true,
-  },
-];
-
 // ─── ONBOARDING PROPRIÉTAIRE AVANCÉ ─────────────────────────────
 function OnboardingProprioAvance({ onTermine }) {
   var navigate  = useNavigate();
   var auth      = useAuth();
   var user      = auth.user;
+  var t         = useTranslation('logements').t;
 
   var [etape, setEtape]           = useState(0);
   var [planChoisi, setPlanChoisi] = useState('pro');
@@ -83,7 +48,7 @@ function OnboardingProprioAvance({ onTermine }) {
   function terminer() {
     marquerTermine();
     navigate('/dashboard/biens');
-    toast.success('Bienvenue sur Werdhe ! Ajoutez votre premier bien 🏠');
+    toast.success(t('onboarding.proprio.etape4.toastBienvenue'));
   }
 
   function passer() {
@@ -95,18 +60,18 @@ function OnboardingProprioAvance({ onTermine }) {
       <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
         <div style={{ background: '#fff', borderRadius: 20, padding: '28px 24px', maxWidth: 340, width: '100%', textAlign: 'center' }}>
           <div style={{ fontSize: 40, marginBottom: 14 }}>🤔</div>
-          <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>Passer le tutoriel ?</h3>
+          <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>{t('onboarding.passerTutoriel.titre')}</h3>
           <p style={{ fontSize: 14, color: '#666', margin: '0 0 24px', lineHeight: 1.6 }}>
-            Quelques minutes maintenant vous feront gagner beaucoup de temps plus tard.
+            {t('onboarding.passerTutoriel.descProprio')}
           </p>
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={function() { setQuitter(false); }}
               style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#1B2B22', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-              Continuer
+              {t('onboarding.passerTutoriel.continuer')}
             </button>
             <button onClick={marquerTermine}
               style={{ flex: 1, padding: '12px', borderRadius: 10, border: 'none', background: '#F5F5F5', color: '#888', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-              Passer quand même
+              {t('onboarding.passerTutoriel.passerQuandMeme')}
             </button>
           </div>
         </div>
@@ -129,14 +94,14 @@ function OnboardingProprioAvance({ onTermine }) {
             {etape > 0 && (
               <button onClick={precedent}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#aaa', display: 'flex', alignItems: 'center', gap: 4, fontSize: 13 }}>
-                <ChevronLeft size={16} strokeWidth={2} /> Retour
+                <ChevronLeft size={16} strokeWidth={2} /> {t('onboarding.retour')}
               </button>
             )}
           </div>
           <span style={{ fontSize: 12, color: '#aaa', fontWeight: 600 }}>{etape + 1} / {TOTAL}</span>
           <button onClick={passer}
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#aaa', display: 'flex', alignItems: 'center', gap: 4, fontSize: 13 }}>
-            <X size={14} strokeWidth={2} /> Passer
+            <X size={14} strokeWidth={2} /> {t('onboarding.passer')}
           </button>
         </div>
 
@@ -147,18 +112,18 @@ function OnboardingProprioAvance({ onTermine }) {
               <Home size={48} strokeWidth={1} color="#1B6B3A" />
             </div>
             <h2 style={{ fontSize: 24, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px', lineHeight: 1.2 }}>
-              Bienvenue sur Werdhe, {user && user.prenom} ! 🎉
+              {t('onboarding.proprio.etape0.bienvenue', { prenom: user && user.prenom })}
             </h2>
             <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, margin: '0 0 24px', maxWidth: 380, marginLeft: 'auto', marginRight: 'auto' }}>
-              Gérez tous vos logements depuis un seul tableau de bord. Candidatures, paiements, documents — tout est centralisé.
+              {t('onboarding.proprio.etape0.desc')}
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 24 }}>
               {[
-                { icon: '📊', titre: 'Dashboard complet', desc: 'Tout en un seul endroit' },
-                { icon: '💰', titre: 'Paiements auto',    desc: 'Alertes et quittances' },
-                { icon: '📋', titre: 'Candidatures',      desc: 'Dossiers en ligne' },
-                { icon: '⚡', titre: 'Alertes temps réel', desc: 'Loyers, baux, preavis' },
+                { icon: '📊', titre: t('onboarding.proprio.etape0.dashboardComplet'), desc: t('onboarding.proprio.etape0.dashboardCompletDesc') },
+                { icon: '💰', titre: t('onboarding.proprio.etape0.paiementsAuto'),    desc: t('onboarding.proprio.etape0.paiementsAutoDesc') },
+                { icon: '📋', titre: t('onboarding.proprio.etape0.candidatures'),      desc: t('onboarding.proprio.etape0.candidaturesDesc') },
+                { icon: '⚡', titre: t('onboarding.proprio.etape0.alertesTempsReel'), desc: t('onboarding.proprio.etape0.alertesTempsReelDesc') },
               ].map(function(item, i) {
                 return (
                   <div key={i} style={{ background: '#F7F8F7', borderRadius: 12, padding: '12px 14px', textAlign: 'left', display: 'flex', gap: 10, alignItems: 'center' }}>
@@ -174,7 +139,7 @@ function OnboardingProprioAvance({ onTermine }) {
 
             <button onClick={suivant}
               style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-              Commencer la configuration <ChevronRight size={18} strokeWidth={2} />
+              {t('onboarding.proprio.etape0.commencerConfiguration')} <ChevronRight size={18} strokeWidth={2} />
             </button>
           </div>
         )}
@@ -182,38 +147,38 @@ function OnboardingProprioAvance({ onTermine }) {
         {/* ═══ ÉTAPE 1 — CHOISIR LE PLAN ════════════════════════ */}
         {etape === 1 && (
           <div style={{ padding: '20px 28px 28px' }}>
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 6px' }}>Choisissez votre plan</h2>
-            <p style={{ fontSize: 13, color: '#888', margin: '0 0 18px' }}>Commencez avec un essai Pro gratuit de 14 jours</p>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 6px' }}>{t('onboarding.proprio.etape1.titre')}</h2>
+            <p style={{ fontSize: 13, color: '#888', margin: '0 0 18px' }}>{t('onboarding.proprio.etape1.desc')}</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
               {[
                 {
                   id:    'gratuit',
-                  nom:   'Gratuit',
-                  prix:  '0 GNF',
-                  desc:  'Jusqu\'à 2 logements',
+                  nom:   t('onboarding.proprio.etape1.gratuit.nom'),
+                  prix:  t('onboarding.proprio.etape1.gratuit.prix'),
+                  desc:  t('onboarding.proprio.etape1.gratuit.desc'),
                   color: '#888',
                   bg:    '#F5F5F5',
-                  features: ['2 logements max', 'Candidatures de base', 'Messagerie'],
+                  features: [t('onboarding.proprio.etape1.gratuit.feature1'), t('onboarding.proprio.etape1.gratuit.feature2'), t('onboarding.proprio.etape1.gratuit.feature3')],
                 },
                 {
                   id:    'pro',
-                  nom:   'Pro',
-                  prix:  '120 000 GNF/mois',
-                  desc:  'Jusqu\'à 25 logements · 14 jours gratuits',
+                  nom:   t('onboarding.proprio.etape1.pro.nom'),
+                  prix:  t('onboarding.proprio.etape1.pro.prix'),
+                  desc:  t('onboarding.proprio.etape1.pro.desc'),
                   color: '#1B6B3A',
                   bg:    '#E8F5E9',
-                  badge: 'Recommandé',
-                  features: ['25 logements', 'Orange Money + MTN', 'Documents PDF', 'Alertes auto', 'Rapports'],
+                  badge: t('onboarding.proprio.etape1.pro.badge'),
+                  features: [t('onboarding.proprio.etape1.pro.feature1'), t('onboarding.proprio.etape1.pro.feature2'), t('onboarding.proprio.etape1.pro.feature3'), t('onboarding.proprio.etape1.pro.feature4'), t('onboarding.proprio.etape1.pro.feature5')],
                 },
                 {
                   id:    'agence',
-                  nom:   'Agence',
-                  prix:  '300 000 GNF/mois',
-                  desc:  'Biens illimités · Multi-utilisateurs',
+                  nom:   t('onboarding.proprio.etape1.agence.nom'),
+                  prix:  t('onboarding.proprio.etape1.agence.prix'),
+                  desc:  t('onboarding.proprio.etape1.agence.desc'),
                   color: '#7B1FA2',
                   bg:    '#F3E5F5',
-                  features: ['Biens illimités', 'Multi-users', 'API', 'Support dédié'],
+                  features: [t('onboarding.proprio.etape1.agence.feature1'), t('onboarding.proprio.etape1.agence.feature2'), t('onboarding.proprio.etape1.agence.feature3'), t('onboarding.proprio.etape1.agence.feature4')],
                 },
               ].map(function(plan) {
                 var sel = planChoisi === plan.id;
@@ -251,7 +216,7 @@ function OnboardingProprioAvance({ onTermine }) {
 
             <button onClick={suivant}
               style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-              Continuer avec {planChoisi === 'gratuit' ? 'le plan Gratuit' : planChoisi === 'pro' ? 'l\'essai Pro' : 'le plan Agence'} <ChevronRight size={16} strokeWidth={2} />
+              {planChoisi === 'gratuit' ? t('onboarding.proprio.etape1.continuerAvecGratuit') : planChoisi === 'pro' ? t('onboarding.proprio.etape1.continuerAvecPro') : t('onboarding.proprio.etape1.continuerAvecAgence')} <ChevronRight size={16} strokeWidth={2} />
             </button>
           </div>
         )}
@@ -262,18 +227,18 @@ function OnboardingProprioAvance({ onTermine }) {
             <div style={{ width: 90, height: 90, background: '#E3F2FD', borderRadius: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px' }}>
               <Building2 size={48} strokeWidth={1} color="#1565C0" />
             </div>
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>Ajoutez votre premier bien</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>{t('onboarding.proprio.etape2.titre')}</h2>
             <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, margin: '0 0 20px' }}>
-              Publiez votre logement en 5 minutes. Titre, adresse, prix, photos — et les candidatures arrivent directement.
+              {t('onboarding.proprio.etape2.desc')}
             </p>
 
             <div style={{ background: '#F7F8F7', borderRadius: 14, padding: '16px 18px', marginBottom: 20, textAlign: 'left' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 12 }}>Ce que vous devez préparer :</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 12 }}>{t('onboarding.proprio.etape2.ceQueVousDevezPreparer')}</div>
               {[
-                { icon: '📸', label: 'Photos du logement (au moins 1)' },
-                { icon: '📍', label: 'Adresse exacte + ville' },
-                { icon: '💰', label: 'Prix mensuel en GNF' },
-                { icon: '🛏', label: 'Nombre de chambres et superficie' },
+                { icon: '📸', label: t('onboarding.proprio.etape2.photos') },
+                { icon: '📍', label: t('onboarding.proprio.etape2.adresse') },
+                { icon: '💰', label: t('onboarding.proprio.etape2.prix') },
+                { icon: '🛏', label: t('onboarding.proprio.etape2.chambres') },
               ].map(function(item, i) {
                 return (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, fontSize: 13, color: '#555' }}>
@@ -287,11 +252,11 @@ function OnboardingProprioAvance({ onTermine }) {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               <button onClick={suivant}
                 style={{ padding: '12px', borderRadius: 12, border: '1.5px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-                Plus tard
+                {t('onboarding.proprio.etape2.plusTard')}
               </button>
               <button onClick={function() { marquerTermine(); navigate('/logements/ajouter'); }}
                 style={{ padding: '12px', borderRadius: 12, border: 'none', background: '#1565C0', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-                <Home size={14} strokeWidth={2} /> Ajouter maintenant
+                <Home size={14} strokeWidth={2} /> {t('onboarding.proprio.etape2.ajouterMaintenant')}
               </button>
             </div>
           </div>
@@ -300,16 +265,16 @@ function OnboardingProprioAvance({ onTermine }) {
         {/* ═══ ÉTAPE 3 — FONCTIONNALITÉS ═════════════════════════ */}
         {etape === 3 && (
           <div style={{ padding: '20px 28px 28px' }}>
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 6px' }}>Fonctionnalités clés</h2>
-            <p style={{ fontSize: 13, color: '#888', margin: '0 0 18px' }}>Tout ce que Werdhe fait pour vous automatiquement</p>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 6px' }}>{t('onboarding.proprio.etape3.titre')}</h2>
+            <p style={{ fontSize: 13, color: '#888', margin: '0 0 18px' }}>{t('onboarding.proprio.etape3.desc')}</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
               {[
-                { icon: <Bell size={20} strokeWidth={1.5} color="#E65100" />, bg: '#FFF3E0', titre: 'Alertes automatiques', desc: 'Rappel loyer J-3, mise en demeure J+5, bail expirant J-30' },
-                { icon: <FileText size={20} strokeWidth={1.5} color="#1B6B3A" />, bg: '#E8F5E9', titre: 'Documents en 1 clic', desc: 'Bail, quittance, état des lieux, mise en demeure en PDF' },
-                { icon: <TrendingUp size={20} strokeWidth={1.5} color="#1565C0" />, bg: '#E3F2FD', titre: 'Rapports financiers', desc: 'Graphiques revenus, taux occupation, export CSV/PDF' },
-                { icon: <Shield size={20} strokeWidth={1.5} color="#7B1FA2" />, bg: '#F3E5F5', titre: 'Score de confiance', desc: 'Évaluez chaque locataire avant d\'accepter une candidature' },
-                { icon: <MessageCircle size={20} strokeWidth={1.5} color="#37474F" />, bg: '#ECEFF1', titre: 'Messagerie intégrée', desc: 'Communiquez avec vos locataires depuis la plateforme' },
+                { icon: <Bell size={20} strokeWidth={1.5} color="#E65100" />, bg: '#FFF3E0', titre: t('onboarding.proprio.etape3.alertesAuto.titre'), desc: t('onboarding.proprio.etape3.alertesAuto.desc') },
+                { icon: <FileText size={20} strokeWidth={1.5} color="#1B6B3A" />, bg: '#E8F5E9', titre: t('onboarding.proprio.etape3.documentsUnClic.titre'), desc: t('onboarding.proprio.etape3.documentsUnClic.desc') },
+                { icon: <TrendingUp size={20} strokeWidth={1.5} color="#1565C0" />, bg: '#E3F2FD', titre: t('onboarding.proprio.etape3.rapportsFinanciers.titre'), desc: t('onboarding.proprio.etape3.rapportsFinanciers.desc') },
+                { icon: <Shield size={20} strokeWidth={1.5} color="#7B1FA2" />, bg: '#F3E5F5', titre: t('onboarding.proprio.etape3.scoreConfiance.titre'), desc: t('onboarding.proprio.etape3.scoreConfiance.desc') },
+                { icon: <MessageCircle size={20} strokeWidth={1.5} color="#37474F" />, bg: '#ECEFF1', titre: t('onboarding.proprio.etape3.messagerieIntegree.titre'), desc: t('onboarding.proprio.etape3.messagerieIntegree.desc') },
               ].map(function(feat, i) {
                 return (
                   <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '12px 14px', background: '#F7F8F7', borderRadius: 12 }}>
@@ -327,7 +292,7 @@ function OnboardingProprioAvance({ onTermine }) {
 
             <button onClick={suivant}
               style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-              Suivant <ChevronRight size={16} strokeWidth={2} />
+              {t('onboarding.proprio.etape3.suivant')} <ChevronRight size={16} strokeWidth={2} />
             </button>
           </div>
         )}
@@ -339,20 +304,20 @@ function OnboardingProprioAvance({ onTermine }) {
               <Star size={48} strokeWidth={1} color="#F5A623" fill="#F5A623" />
             </div>
             <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>
-              Vous êtes prêt ! 🚀
+              {t('onboarding.proprio.etape4.titre')}
             </h2>
             <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, margin: '0 0 24px' }}>
-              Votre espace propriétaire est configuré. Ajoutez votre premier bien et commencez à recevoir des candidatures dès aujourd'hui.
+              {t('onboarding.proprio.etape4.desc')}
             </p>
 
             <div style={{ background: '#F0FBF0', border: '1px solid #A5D6A7', borderRadius: 12, padding: '14px 18px', marginBottom: 24, textAlign: 'left' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B5E20', marginBottom: 10 }}>✅ Votre checklist de démarrage</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B5E20', marginBottom: 10 }}>{t('onboarding.proprio.etape4.checklist')}</div>
               {[
-                { label: 'Créer un compte',         fait: true  },
-                { label: 'Choisir un plan',         fait: true  },
-                { label: 'Ajouter un logement',     fait: false },
-                { label: 'Recevoir une candidature', fait: false },
-                { label: 'Signer un bail',          fait: false },
+                { label: t('onboarding.proprio.etape4.creerCompte'),         fait: true  },
+                { label: t('onboarding.proprio.etape4.choisirPlan'),         fait: true  },
+                { label: t('onboarding.proprio.etape4.ajouterLogement'),     fait: false },
+                { label: t('onboarding.proprio.etape4.recevoirCandidature'), fait: false },
+                { label: t('onboarding.proprio.etape4.signerBail'),          fait: false },
               ].map(function(item, i) {
                 return (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, fontSize: 13, color: item.fait ? '#1B6B3A' : '#888' }}>
@@ -368,11 +333,11 @@ function OnboardingProprioAvance({ onTermine }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <button onClick={terminer}
                 style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                🏠 Ajouter mon premier bien <ArrowRight size={16} strokeWidth={2.5} />
+                {t('onboarding.proprio.etape4.ajouterMonPremierBien')} <ArrowRight size={16} strokeWidth={2.5} />
               </button>
               <button onClick={marquerTermine}
                 style={{ width: '100%', padding: '11px', borderRadius: 12, border: 'none', background: 'transparent', color: '#888', fontSize: 13, cursor: 'pointer' }}>
-                Explorer le dashboard d'abord
+                {t('onboarding.proprio.etape4.explorerDashboard')}
               </button>
             </div>
           </div>
@@ -396,6 +361,7 @@ export default function Onboarding({ onTermine }) {
   var auth       = useAuth();
   var user       = auth.user;
   var navigate   = useNavigate();
+  var t          = useTranslation('logements').t;
   var [quitter, setQuitter] = useState(false);
 
   var estProprio = user && (user.role === 'proprietaire' || user.role === 'les_deux' || user.role === 'admin');
@@ -411,6 +377,41 @@ export default function Onboarding({ onTermine }) {
   }
 
   // ─── LOCATAIRE (version simple) ──────────────────────────────
+  var ETAPES_LOCATAIRE = [
+    {
+      icon:    <Search size={52} strokeWidth={1} color="#1B6B3A" />,
+      titre:   t('onboarding.locataire.etape1.titre'),
+      desc:    t('onboarding.locataire.etape1.desc'),
+      cta:     t('onboarding.locataire.etape1.cta'),
+      couleur: '#1B6B3A',
+      bg:      '#E8F5E9',
+    },
+    {
+      icon:    <CalendarCheck size={52} strokeWidth={1} color="#1565C0" />,
+      titre:   t('onboarding.locataire.etape2.titre'),
+      desc:    t('onboarding.locataire.etape2.desc'),
+      cta:     t('onboarding.locataire.etape2.cta'),
+      couleur: '#1565C0',
+      bg:      '#E3F2FD',
+    },
+    {
+      icon:    <FileText size={52} strokeWidth={1} color="#7B1FA2" />,
+      titre:   t('onboarding.locataire.etape3.titre'),
+      desc:    t('onboarding.locataire.etape3.desc'),
+      cta:     t('onboarding.locataire.etape3.cta'),
+      couleur: '#7B1FA2',
+      bg:      '#F3E5F5',
+    },
+    {
+      icon:    <Key size={52} strokeWidth={1} color="#1B6B3A" />,
+      titre:   t('onboarding.locataire.etape4.titre'),
+      desc:    t('onboarding.locataire.etape4.desc'),
+      cta:     t('onboarding.locataire.etape4.cta'),
+      couleur: '#1B6B3A',
+      bg:      '#E8F5E9',
+      dernier: true,
+    },
+  ];
   var [etape, setEtape] = useState(0);
   var etapes = ETAPES_LOCATAIRE;
   var e      = etapes[etape];
@@ -429,16 +430,16 @@ export default function Onboarding({ onTermine }) {
       <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
         <div style={{ background: '#fff', borderRadius: 20, padding: '28px 24px', maxWidth: 340, width: '100%', textAlign: 'center' }}>
           <div style={{ fontSize: 36, marginBottom: 14 }}>🤔</div>
-          <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>Passer le tutoriel ?</h3>
-          <p style={{ fontSize: 14, color: '#666', margin: '0 0 24px', lineHeight: 1.6 }}>Vous pouvez y revenir depuis les paramètres.</p>
+          <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>{t('onboarding.passerTutoriel.titre')}</h3>
+          <p style={{ fontSize: 14, color: '#666', margin: '0 0 24px', lineHeight: 1.6 }}>{t('onboarding.passerTutoriel.descLocataire')}</p>
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={function() { setQuitter(false); }}
               style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#1B2B22', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-              Continuer
+              {t('onboarding.passerTutoriel.continuer')}
             </button>
             <button onClick={marquerTermine}
               style={{ flex: 1, padding: '12px', borderRadius: 10, border: 'none', background: '#F5F5F5', color: '#888', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-              Passer quand même
+              {t('onboarding.passerTutoriel.passerQuandMeme')}
             </button>
           </div>
         </div>
@@ -456,7 +457,7 @@ export default function Onboarding({ onTermine }) {
           <div style={{ fontSize: 12, color: '#aaa', fontWeight: 600 }}>{etape + 1} / {etapes.length}</div>
           <button onClick={function() { setQuitter(true); }}
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#aaa', display: 'flex', alignItems: 'center', gap: 4, fontSize: 13 }}>
-            <X size={14} strokeWidth={2} /> Passer
+            <X size={14} strokeWidth={2} /> {t('onboarding.passer')}
           </button>
         </div>
         <div style={{ padding: '24px 28px 28px', textAlign: 'center' }}>
@@ -479,7 +480,7 @@ export default function Onboarding({ onTermine }) {
           {etape === 0 && (
             <button onClick={function() { setQuitter(true); }}
               style={{ width: '100%', marginTop: 10, padding: '10px', borderRadius: 10, border: 'none', background: 'transparent', color: '#aaa', fontSize: 13, cursor: 'pointer' }}>
-              Je connais déjà Werdhe — passer
+              {t('onboarding.jeConnaisDejaWerdhe')}
             </button>
           )}
         </div>
