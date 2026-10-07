@@ -817,6 +817,8 @@ useEffect(function() {
               ['Accueil', '/'],
               ['Logements', '/logements'],
               ['Tarifs', '/pricing'],
+              ['Blog', '/blog'],
+              ['Estimation de loyer', '/estimation'],
               ['À propos', '/a-propos'],
               ['Se connecter', '/login'],
             ].map(function(l) {
