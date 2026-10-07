@@ -9,6 +9,7 @@ import GestionPhotos from '../components/GestionPhotos';
 import OngletPreavisComponent from '../components/OngletPreavis';
 import OngletPaiementsComponent from '../components/OngletPaiements';
 import ModalPaiementMobile from '../components/ModalPaiementMobile';
+import ModalSignatureBail from '../components/ModalSignatureBail';
 import useDarkMode from '../hooks/useDarkMode';
 import { t, changerLangue, getLangue } from '../services/i18n';
 import RechercheGlobale from '../components/dashboard/RechercheGlobale';
@@ -1256,6 +1257,8 @@ function OngletReservationsProprio(props) {
   var [msgs, setMsgs] = useState([]);
   var [newMsg, setNewMsg] = useState('');
   var [bailSigne, setBailSigne] = useState(false);
+  var [showSignatureProprio, setShowSignatureProprio] = useState(false);
+  var [signatureProcessing, setSignatureProcessing] = useState(false);
 
   // Polling toutes les 10s pour mettre à jour le statut
 
@@ -1303,17 +1306,42 @@ useEffect(function() {
       });
   }
 
-  function signerBail() {
-    api.patch('/reservations/' + selectionne.id + '/signer-bail', { role: 'proprietaire' })
+  function signerBail(nomComplet) {
+    setSignatureProcessing(true);
+    api.patch('/reservations/' + selectionne.id + '/signer-bail', { nom_complet: nomComplet, accepte: true })
       .then(function() {
         setBailSigne(true);
+        setSignatureProcessing(false);
+        setShowSignatureProprio(false);
         toast.success('Bail signé ! En attente de la signature du locataire.');
         if (recharger) recharger();
       })
-      .catch(function() {
-        setBailSigne(true);
-        toast.success('Bail signé !');
+      .catch(function(err) {
+        setSignatureProcessing(false);
+        toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur signature bail');
       });
+  }
+
+  function telechargerBailSigne(reservationId) {
+    api.get('/documents?type=contrat_bail')
+      .then(function(res) {
+        var docs = (res.data.documents || []).filter(function(d) { return d.reservation_id === reservationId; });
+        if (docs.length === 0) { toast.error('Bail non trouvé pour cette location'); return; }
+        return api.get('/documents/' + docs[0].id + '/telecharger?format=pdf', { responseType: 'blob' })
+          .then(function(res2) {
+            var typePdf = (res2.headers && res2.headers['content-type'] || '').indexOf('pdf') !== -1;
+            var blob = new Blob([res2.data], { type: typePdf ? 'application/pdf' : 'text/html; charset=utf-8' });
+            var url  = window.URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'Bail_' + reservationId.slice(0, 8) + (typePdf ? '.pdf' : '.html'));
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            toast.success('Bail téléchargé');
+          });
+      })
+      .catch(function() { toast.error('Erreur téléchargement'); });
   }
 
   function envoyerMessage() {
@@ -1658,7 +1686,7 @@ useEffect(function() {
                 );
               })}
             </div>
-            <div onClick={function() { if (!bailSigne) signerBail(); }}
+            <div onClick={function() { if (!bailSigne) setShowSignatureProprio(true); }}
               style={{ padding: 16, border: bailSigne ? '1.5px solid #1B6B3A' : '1.5px dashed #1B6B3A', background: bailSigne ? '#E8F5E9' : '#F0FBF0', borderRadius: 12, textAlign: 'center', cursor: bailSigne ? 'default' : 'pointer', marginBottom: 14 }}>
               {bailSigne ? (
                 <div>
@@ -1674,6 +1702,14 @@ useEffect(function() {
                 </div>
               )}
             </div>
+            {showSignatureProprio && (
+              <ModalSignatureBail
+                nomSuggere={((user && user.prenom) || '') + ' ' + ((user && user.nom) || '')}
+                loading={signatureProcessing}
+                onClose={function() { if (!signatureProcessing) setShowSignatureProprio(false); }}
+                onConfirm={signerBail}
+              />
+            )}
           </div>
         )}
 
@@ -1714,6 +1750,10 @@ useEffect(function() {
                 </div>
               );
             })}
+            <button type="button" onClick={function() { telechargerBailSigne(r.id); }}
+              style={{ width: '100%', marginTop: 16, padding: 12, borderRadius: 10, border: '1.5px solid #1B6B3A', background: '#fff', color: '#1B6B3A', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+              Télécharger le bail signé (PDF)
+            </button>
           </div>
         )}
 
@@ -2698,28 +2738,18 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
   }
 
   function telecharger(doc) {
-    api.get('/documents/' + doc.id + '/telecharger', { responseType: 'blob' })
+    api.get('/documents/' + doc.id + '/telecharger?format=pdf', { responseType: 'blob' })
       .then(function(res) {
-        var blob = new Blob([res.data], { type: 'text/html; charset=utf-8' });
+        var typePdf = (res.headers && res.headers['content-type'] || '').indexOf('pdf') !== -1;
+        var blob = new Blob([res.data], { type: typePdf ? 'application/pdf' : 'text/html; charset=utf-8' });
         var url  = window.URL.createObjectURL(blob);
-        // Ouvrir dans une fenêtre d'impression pour sauvegarder en PDF
-        var win = window.open(url, '_blank');
-        if (win) {
-          win.focus();
-          setTimeout(function() {
-            try { win.print(); } catch(e) {}
-          }, 1200);
-          toast.success('Document ouvert - choisissez "Enregistrer en PDF"');
-        } else {
-          // Fallback : télécharger directement
-          var link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', (doc.titre || 'document').replace(/\s+/g, '_') + '.html');
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-          toast.success('Document téléchargé');
-        }
+        var link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', (doc.titre || 'document').replace(/\s+/g, '_') + (typePdf ? '.pdf' : '.html'));
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        toast.success('Document téléchargé');
       }).catch(function() { toast.error('Erreur téléchargement'); });
   }
 

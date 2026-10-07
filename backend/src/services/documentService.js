@@ -1013,4 +1013,72 @@ const genererDocument = async ({
   }
 };
 
-module.exports = { genererDocument };
+// ================================================
+// CERTIFICAT DE SIGNATURE ÉLECTRONIQUE
+// Ajouté au contrat de bail avant export PDF, preuve d'acceptation
+// de chaque partie (nom, date/heure, IP, empreinte).
+// ================================================
+function genererHTMLCertificatSignature(signatures) {
+  if (!signatures || signatures.length === 0) return '';
+
+  var lignes = signatures.map(function(s) {
+    var date = new Date(s.signe_at).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' });
+    return `
+      <tr>
+        <td><strong>${s.role === 'proprietaire' ? 'Bailleur' : 'Preneur'}</strong></td>
+        <td>${s.nom_complet}</td>
+        <td>${date}</td>
+        <td style="font-family:monospace;font-size:11px">${s.ip_adresse || '—'}</td>
+      </tr>
+    `;
+  }).join('');
+
+  return `
+    <div class="section" style="margin-top:30px; page-break-inside: avoid;">
+      <h3>Certificat de signature électronique</h3>
+      <div class="article">
+        <p style="font-size:12px;color:#666;margin-bottom:10px">
+          Ce document a été signé électroniquement par les parties ci-dessous. Chaque signature a
+          été recueillie avec le nom complet saisi par le signataire, l'horodatage et l'adresse IP
+          de connexion, constituant une preuve d'acceptation des termes du présent contrat.
+        </p>
+        <table>
+          <thead>
+            <tr><th>Partie</th><th>Nom complet</th><th>Signé le</th><th>Adresse IP</th></tr>
+          </thead>
+          <tbody>${lignes}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+// ================================================
+// CONVERTIR UN DOCUMENT HTML EN PDF (Puppeteer)
+// ================================================
+async function genererPdfDepuisHtml(html) {
+  const chromium = require('@sparticuz/chromium');
+  const puppeteer = require('puppeteer-core');
+
+  const browser = await puppeteer.launch({
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath(),
+    headless: true,
+  });
+
+  try {
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'networkidle0' });
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: { top: '20px', bottom: '20px', left: '20px', right: '20px' },
+    });
+    return pdfBuffer;
+  } finally {
+    await browser.close();
+  }
+}
+
+module.exports = { genererDocument, genererPdfDepuisHtml, genererHTMLCertificatSignature };
