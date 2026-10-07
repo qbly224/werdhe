@@ -1,0 +1,40 @@
+{
+  "nav": {
+    "logements": "Listings",
+    "monEspace": "My space",
+    "connexion": "Log in",
+    "inscription": "Sign up",
+    "deconnexion": "Log out",
+    "blog": "Blog",
+    "estimation": "Rent estimate"
+  },
+  "messages": {
+    "deconnexionReussie": "Logged out successfully",
+    "erreurServeur": "Server error",
+    "erreur": "An error occurred",
+    "chargement": "Loading...",
+    "succes": "Success"
+  },
+  "boutons": {
+    "enregistrer": "Save",
+    "annuler": "Cancel",
+    "continuer": "Continue",
+    "retour": "Back",
+    "suivant": "Next",
+    "fermer": "Close",
+    "confirmer": "Confirm",
+    "supprimer": "Delete",
+    "modifier": "Edit",
+    "envoyer": "Send",
+    "telecharger": "Download",
+    "rechargerPage": "Reload page"
+  },
+  "erreurBoundary": {
+    "titre": "An error occurred",
+    "texte": "Reload the page to continue."
+  },
+  "langue": {
+    "francais": "French",
+    "anglais": "English"
+  }
+}

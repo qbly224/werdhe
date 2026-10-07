@@ -22,6 +22,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import NotFound from './pages/NotFound';
 import React, { lazy, Suspense } from 'react';
 import CookieBanner from './components/CookieBanner';
+import i18n from './i18n';
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -41,11 +42,11 @@ class ErrorBoundary extends React.Component {
               <rect x="22.5" y="33" width="5" height="3" rx="1" fill="#F5A623"/>
             </svg>
           </div>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>Une erreur est survenue</h2>
-          <p style={{ fontSize: 14, color: '#888', margin: '0 0 24px' }}>Rechargez la page pour continuer.</p>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>{i18n.t('erreurBoundary.titre', { ns: 'common' })}</h2>
+          <p style={{ fontSize: 14, color: '#888', margin: '0 0 24px' }}>{i18n.t('erreurBoundary.texte', { ns: 'common' })}</p>
           <button onClick={function() { window.location.reload(); }}
             style={{ padding: '12px 24px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-            Recharger la page
+            {i18n.t('boutons.rechargerPage', { ns: 'common' })}
           </button>
         </div>
       );
