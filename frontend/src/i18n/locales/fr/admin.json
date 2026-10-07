@@ -1,1 +1,276 @@
-{}
+{
+  "admin": {
+    "loading": "Chargement panneau admin...",
+    "erreurs": {
+      "generique": "Erreur"
+    },
+    "nav": {
+      "stats": "Vue d'ensemble",
+      "users": "Utilisateurs",
+      "logements": "Logements",
+      "reservations": "Réservations",
+      "abonnements": "Abonnements",
+      "promos": "Codes Promo",
+      "blog": "Blog",
+      "logs": "Logs Audit",
+      "alertes": "Alertes"
+    },
+    "sidebar": {
+      "panneauAdmin": "Panneau Admin",
+      "syncInfo": "Sync toutes les 30s",
+      "actualiserMaintenant": "🔄 Actualiser maintenant",
+      "retourDashboard": "← Retour dashboard"
+    },
+    "statutsReservation": {
+      "enAttente": "En attente",
+      "dossierRequis": "Dossier requis",
+      "enExamen": "En examen",
+      "acceptee": "Acceptée",
+      "echanges": "Échanges",
+      "cautionRequise": "Caution requise",
+      "cautionPayee": "Caution payée",
+      "bailEnCours": "Bail en cours",
+      "bailSigne": "Bail signé",
+      "active": "Active 🗝️",
+      "refusee": "Refusée",
+      "terminee": "Terminée"
+    },
+    "plans": {
+      "gratuit": "Gratuit",
+      "essai": "Essai",
+      "pro": "Pro",
+      "agence": "Agence"
+    },
+    "stats": {
+      "tempsReelActif": "Temps réel actif",
+      "pause": "Pause",
+      "misAJour": "· Mis à jour à {{heure}}",
+      "rafraichissementDans": "· Rafraîchissement dans",
+      "boutonPause": "⏸ Pause",
+      "boutonReprendre": "▶ Reprendre",
+      "alerteCritique": "{{count}} paiement(s) en retard depuis plus de 5 jours",
+      "actionRequise": "Action requise — vérifiez les paiements en attente",
+      "kpi": {
+        "inscriptionsAujourdhui": "Inscriptions aujourd'hui",
+        "candidaturesAujourdhui": "Candidatures aujourd'hui",
+        "paiementsAujourdhui": "Paiements aujourd'hui",
+        "volumeAujourdhui": "Volume aujourd'hui"
+      },
+      "activiteRecente": "Activité récente",
+      "activiteType": {
+        "inscription": "Inscription",
+        "candidature": "Candidature",
+        "logement": "Logement",
+        "paiement": "Paiement"
+      },
+      "titre": "📊 Vue d'ensemble",
+      "derniereMiseAJour": "Dernière mise à jour : {{heure}}",
+      "actualiser": "🔄 Actualiser",
+      "kpiPrincipaux": {
+        "utilisateurs": "Utilisateurs",
+        "proprietaires": "Propriétaires",
+        "locataires": "Locataires",
+        "logementsPublies": "Logements publiés",
+        "logementsLoues": "Logements loués",
+        "reservations": "Réservations",
+        "locationsActives": "Locations actives",
+        "revenus": "Revenus (5%)"
+      },
+      "abonnementsActifs": "Abonnements actifs",
+      "inscriptions6Mois": "Inscriptions (6 mois)",
+      "repartitionReservations": "Répartition réservations",
+      "enCoursTraitement": "En cours de traitement",
+      "refuseesAnnulees": "Refusées / Annulées",
+      "alertesRecentes": "Alertes récentes",
+      "aucuneAlerte": "Aucune alerte"
+    },
+    "users": {
+      "titre": "👥 Utilisateurs",
+      "compteur": "{{filtres}} / {{total}} utilisateur(s)",
+      "rechercherPlaceholder": "🔍 Rechercher...",
+      "filtreTousRoles": "Tous les rôles",
+      "filtreLocataires": "Locataires",
+      "filtreProprietaires": "Propriétaires",
+      "filtreAdmins": "Admins",
+      "suspendu": "Suspendu",
+      "abonnementImpaye": "🔒 Abonnement impayé",
+      "inscritLe": "Inscrit le {{date}} · {{count}} réservation(s)",
+      "reactiver": "✅ Réactiver",
+      "suspendre": "🚫 Suspendre",
+      "debloquer": "🔓 Débloquer",
+      "confirmReactiver": "Réactiver cet utilisateur ?",
+      "confirmSuspendre": "Suspendre cet utilisateur ?",
+      "toastReactive": "Utilisateur réactivé",
+      "toastSuspendu": "Utilisateur suspendu",
+      "confirmDebloquer": "Débloquer l'accès de cet utilisateur (abonnement impayé) ?",
+      "toastDebloque": "Accès débloqué"
+    },
+    "logements": {
+      "titre": "🏠 Logements",
+      "compteur": "{{count}} logement(s) sur la plateforme",
+      "verifie": "✅ Vérifié",
+      "parMois": "/mois",
+      "proprietaireLabel": "Propriétaire : {{prenom}} {{nom}} · {{count}} réservation(s)",
+      "verifier": "✅ Vérifier",
+      "confirmSupprimer": "Supprimer ce logement ?",
+      "toastVerifie": "Logement vérifié !",
+      "toastSupprime": "Logement supprimé"
+    },
+    "reservations": {
+      "titre": "📅 Réservations",
+      "compteur": "{{filtres}} / {{total}} réservation(s)",
+      "tousLesStatuts": "Tous les statuts",
+      "colLocataire": "Locataire",
+      "colLogement": "Logement",
+      "colProprietaire": "Propriétaire",
+      "colMontant": "Montant",
+      "colStatut": "Statut",
+      "colDate": "Date"
+    },
+    "revenus": {
+      "titre": "💰 Revenus Werdhe",
+      "sousTitre": "Commissions et abonnements",
+      "chargement": "Chargement des revenus...",
+      "kpi": {
+        "commissionsMois": "Commissions ce mois",
+        "commissionsEncaissees": "Commissions encaissées",
+        "commissionsEnAttente": "Commissions en attente",
+        "revenusAbonnements": "Revenus abonnements",
+        "abonnesPro": "Abonnés Pro",
+        "abonnesAgence": "Abonnés Agence"
+      },
+      "evolutionTitre": "Évolution des commissions (6 mois)",
+      "aucuneCommission": "Aucune commission pour le moment."
+    },
+    "alertes": {
+      "titre": "🔔 Alertes plateforme",
+      "compteur": "{{count}} alerte(s)",
+      "aucuneAlerte": "✅ Aucune alerte active"
+    },
+    "abonnements": {
+      "titre": "💳 Abonnements",
+      "toastMisAJour": "Plan mis à jour !"
+    },
+    "blog": {
+      "titre": "📝 Blog",
+      "nouvelArticle": "+ Nouvel article",
+      "modifierArticle": "Modifier l'article",
+      "nouvelArticleTitre": "Nouvel article",
+      "labelTitre": "Titre *",
+      "labelCategorie": "Catégorie",
+      "placeholderCategorie": "Ex: Guide locataire",
+      "labelImage": "Image de couverture (URL)",
+      "placeholderUrl": "https://...",
+      "labelExtrait": "Extrait",
+      "labelContenu": "Contenu *",
+      "hintContenu": "(HTML : <h2>, <p>, <ul><li>...)",
+      "labelMetaDescription": "Meta-description (SEO)",
+      "labelPublierImmediatement": "Publier immédiatement",
+      "boutonMettreAJour": "Mettre à jour",
+      "boutonCreerArticle": "Créer l'article",
+      "boutonAnnuler": "Annuler",
+      "erreurTitreContenu": "Titre et contenu obligatoires",
+      "toastMisAJour": "Article mis à jour",
+      "toastCree": "Article créé",
+      "confirmSupprimer": "Supprimer cet article ?",
+      "toastSupprime": "Article supprimé",
+      "toastDepublie": "Article dépublié",
+      "toastPublie": "Article publié",
+      "aucunArticle": "Aucun article pour le moment.",
+      "statutPublie": "Publié",
+      "statutBrouillon": "Brouillon",
+      "sansCategorie": "Sans catégorie",
+      "nbVues": "{{count}} vue(s)",
+      "depublier": "Dépublier",
+      "publier": "Publier",
+      "modifier": "Modifier",
+      "supprimer": "Supprimer"
+    },
+    "promos": {
+      "titre": "🎟️ Codes Promo",
+      "nouveauCode": "+ Nouveau code",
+      "labelCode": "Code *",
+      "placeholderCode": "PROMO2026",
+      "labelReduction": "Réduction %",
+      "labelNbMax": "Nb max utilisations",
+      "boutonCreer": "Créer le code",
+      "toastCree": "Code créé !",
+      "reductionPlan": "-{{pct}}% sur le plan {{plan}}",
+      "utilisations": "{{nb}}/{{max}} utilisations",
+      "expireLe": "Expire le {{date}}",
+      "actif": "Actif",
+      "inactif": "Inactif",
+      "activer": "Activer",
+      "desactiver": "Désactiver"
+    },
+    "logs": {
+      "titre": "📋 Logs d'audit",
+      "compteur": "{{count}} entrée(s)",
+      "ip": "IP: {{ip}}"
+    }
+  },
+  "blogPage": {
+    "seoTitre": "Blog — Guides et actualités immobilières en Guinée",
+    "seoDescription": "Conseils pour louer, prix des loyers par quartier, documents à fournir : le blog Werdhe sur l'immobilier en Guinée.",
+    "voirLogements": "Voir les logements",
+    "titre": "Le blog Werdhe",
+    "sousTitre": "Guides pratiques, prix des loyers et conseils pour louer ou gérer un bien en Guinée",
+    "rechercherPlaceholder": "Rechercher un article...",
+    "tous": "Tous",
+    "chargement": "Chargement...",
+    "aucunArticle": "Aucun article pour le moment."
+  },
+  "blogArticle": {
+    "chargement": "Chargement...",
+    "introuvable": "Article introuvable.",
+    "retourBlog": "← Retour au blog",
+    "blog": "Blog",
+    "equipeWerdhe": "Équipe Werdhe",
+    "vues": "{{count}} vues",
+    "ctaTitre": "Prêt à trouver votre logement ?",
+    "ctaTexte": "Des centaines de biens vérifiés partout en Guinée",
+    "voirLogements": "Voir les logements",
+    "aLireAussi": "À lire aussi"
+  },
+  "estimation": {
+    "seoTitre": "Estimation de loyer gratuite en Guinée",
+    "seoDescription": "Estimez gratuitement le loyer de votre logement à Conakry ou ailleurs en Guinée grâce aux données de la plateforme Werdhe.",
+    "publierLogement": "Publier un logement",
+    "badgeGratuit": "Gratuit · Basé sur les données Werdhe",
+    "titre": "Combien vaut votre loyer ?",
+    "sousTitre": "Obtenez une estimation en quelques secondes, basée sur les logements similaires publiés en Guinée.",
+    "labelVille": "Ville / Commune *",
+    "selectionnez": "Sélectionnez...",
+    "autresVilles": "Autres villes",
+    "labelTypeBien": "Type de bien",
+    "categorieStudio": "Studio",
+    "categorieAppartement": "Appartement",
+    "categorieDuplex": "Duplex",
+    "categorieVilla": "Villa",
+    "categorieBureau": "Bureau",
+    "labelChambres": "Chambres",
+    "labelSuperficie": "Superficie (m²)",
+    "placeholderOptionnel": "Optionnel",
+    "erreurChoisirVille": "Choisissez une ville",
+    "erreurCalcul": "Impossible de calculer une estimation pour le moment.",
+    "calculEnCours": "Calcul en cours...",
+    "estimerMonLoyer": "Estimer mon loyer",
+    "estimationLabel": "Estimation",
+    "gnfParMois": "GNF / mois",
+    "baseSurComparables": "Basé sur {{count}} logement(s) similaire(s) sur Werdhe",
+    "estimationStatistique": "Estimation statistique — publiez votre bien pour affiner les prix du marché",
+    "publierMonLogement": "Publier mon logement",
+    "disclaimer": "Cette estimation est indicative et ne remplace pas l'avis d'un professionnel.",
+    "enSavoirPlus": "En savoir plus sur les",
+    "prixParQuartier": "prix par quartier à Conakry"
+  },
+  "seo": {
+    "titreParDefaut": "Werdhe — Location immobilière en Guinée",
+    "descriptionParDefaut": "Werdhe est la plateforme de référence pour louer un logement en Guinée. Trouvez votre appartement, villa ou studio à Conakry et partout en Guinée."
+  },
+  "footer": {
+    "copyright": "© 2026 Werdhe",
+    "cgu": "CGU",
+    "confidentialite": "Confidentialité"
+  }
+}

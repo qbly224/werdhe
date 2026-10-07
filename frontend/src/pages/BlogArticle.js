@@ -4,8 +4,10 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
 import api from '../services/api';
 import { Home, Calendar, Eye, ArrowLeft, ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function BlogArticle() {
+  var t = useTranslation('admin').t;
   var { slug } = useParams();
   var navigate = useNavigate();
   var [article, setArticle] = useState(null);
@@ -27,14 +29,14 @@ export default function BlogArticle() {
   }, [slug]);
 
   if (loading) {
-    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontFamily: 'system-ui' }}>Chargement...</div>;
+    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontFamily: 'system-ui' }}>{t('blogArticle.chargement')}</div>;
   }
 
   if (erreur || !article) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui', gap: 16 }}>
-        <p style={{ color: '#888' }}>Article introuvable.</p>
-        <Link to="/blog" style={{ color: '#1B6B3A', fontWeight: 700, textDecoration: 'none' }}>← Retour au blog</Link>
+        <p style={{ color: '#888' }}>{t('blogArticle.introuvable')}</p>
+        <Link to="/blog" style={{ color: '#1B6B3A', fontWeight: 700, textDecoration: 'none' }}>{t('blogArticle.retourBlog')}</Link>
       </div>
     );
   }
@@ -57,7 +59,7 @@ export default function BlogArticle() {
           <span style={{ fontWeight: 800, fontSize: 16, color: '#1B2B22' }}>Werdhe</span>
         </Link>
         <button onClick={function() { navigate('/blog'); }} style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', background: 'transparent', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <ArrowLeft size={14} strokeWidth={2} /> Blog
+          <ArrowLeft size={14} strokeWidth={2} /> {t('blogArticle.blog')}
         </button>
       </nav>
 
@@ -71,12 +73,12 @@ export default function BlogArticle() {
           {article.titre}
         </h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, fontSize: 13, color: '#888', marginBottom: 28, paddingBottom: 24, borderBottom: '1px solid #E8E8E8' }}>
-          <span>{article.auteur_nom || 'Équipe Werdhe'}</span>
+          <span>{article.auteur_nom || t('blogArticle.equipeWerdhe')}</span>
           <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <Calendar size={13} strokeWidth={1.5} />
             {article.published_at ? new Date(article.published_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}
           </span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Eye size={13} strokeWidth={1.5} /> {article.vues} vues</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Eye size={13} strokeWidth={1.5} /> {t('blogArticle.vues', { count: article.vues })}</span>
         </div>
 
         {article.image_couverture && (
@@ -90,16 +92,16 @@ export default function BlogArticle() {
         />
 
         <div style={{ marginTop: 48, padding: 24, background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', borderRadius: 16, textAlign: 'center' }}>
-          <h3 style={{ color: '#fff', fontSize: 18, fontWeight: 800, margin: '0 0 8px' }}>Prêt à trouver votre logement ?</h3>
-          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 13, margin: '0 0 18px' }}>Des centaines de biens vérifiés partout en Guinée</p>
+          <h3 style={{ color: '#fff', fontSize: 18, fontWeight: 800, margin: '0 0 8px' }}>{t('blogArticle.ctaTitre')}</h3>
+          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 13, margin: '0 0 18px' }}>{t('blogArticle.ctaTexte')}</p>
           <Link to="/logements" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 24px', borderRadius: 10, background: '#F5A623', color: '#1B2B22', fontWeight: 800, fontSize: 14, textDecoration: 'none' }}>
-            Voir les logements <ArrowRight size={15} strokeWidth={2.5} />
+            {t('blogArticle.voirLogements')} <ArrowRight size={15} strokeWidth={2.5} />
           </Link>
         </div>
 
         {similaires.length > 0 && (
           <div style={{ marginTop: 48 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22', marginBottom: 16 }}>À lire aussi</h3>
+            <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22', marginBottom: 16 }}>{t('blogArticle.aLireAussi')}</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
               {similaires.map(function(s) {
                 return (
@@ -116,7 +118,7 @@ export default function BlogArticle() {
 
       <div style={{ background: '#101A12', padding: '20px 24px', textAlign: 'center' }}>
         <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', margin: 0 }}>
-          © 2026 Werdhe · <a href="/cgu" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>CGU</a> · <a href="/confidentialite" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>Confidentialité</a>
+          {t('footer.copyright')} · <a href="/cgu" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>{t('footer.cgu')}</a> · <a href="/confidentialite" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>{t('footer.confidentialite')}</a>
         </p>
       </div>
 

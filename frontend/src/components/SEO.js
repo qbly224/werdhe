@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 
 export default function SEO({
   titre,
@@ -9,12 +10,12 @@ export default function SEO({
   type = 'website',
   noIndex = false
 }) {
+  var t = useTranslation('admin').t;
   var titreFinal = titre
     ? titre + ' — Werdhe'
-    : 'Werdhe — Location immobilière en Guinée';
+    : t('seo.titreParDefaut');
 
-  var descFinal = description ||
-    'Werdhe est la plateforme de référence pour louer un logement en Guinée. Trouvez votre appartement, villa ou studio à Conakry et partout en Guinée.';
+  var descFinal = description || t('seo.descriptionParDefaut');
 
   var imageFinal = image || 'https://werdhe.com/og-image.png';
   var urlFinal   = url || 'https://werdhe.com';
