@@ -1,1 +1,1552 @@
-{}
+{
+  "upgradeBanner": {
+    "titre": "Fonctionnalité réservée au plan {{plan}}",
+    "voirLesPlans": "Voir les plans →",
+    "messages": {
+      "mobileMoney": "Les paiements Mobile Money (Orange Money, MTN) sont disponibles à partir du plan Pro.",
+      "documentsPdf": "La génération de baux et quittances PDF est disponible à partir du plan Pro.",
+      "annuaire": "La visibilité dans l'annuaire Werdhe est disponible à partir du plan Pro.",
+      "rapports": "Les rapports financiers sont disponibles à partir du plan Pro.",
+      "maxBiens": "Vous avez atteint la limite de 2 biens du plan Gratuit. Passez au plan Pro pour jusqu'à 25 biens.",
+      "defaut": "Passez au plan supérieur pour accéder à cette fonctionnalité."
+    }
+  },
+  "badgeScore": {
+    "titre": "Score de confiance",
+    "badges": {
+      "elite": "Elite",
+      "excellent": "Excellent",
+      "fiable": "Fiable",
+      "nouveau": "Nouveau"
+    },
+    "paiementsATemps": "{{count}} paiements a temps",
+    "reclamationsResolues": "{{count}} reclamations resolues"
+  },
+  "notifPanel": {
+    "titre": "Notifications",
+    "fermer": "Fermer",
+    "aucuneNotification": "Aucune notification"
+  },
+  "ongletOverviewLocataire": {
+    "kpi": {
+      "locationsActives": "Locations actives",
+      "candidatures": "Candidatures",
+      "loyersPayes": "Loyers payés",
+      "totalVerse": "Total versé"
+    },
+    "loyerMensuel": "Loyer mensuel",
+    "dureeDuBail": "Durée du bail",
+    "moisSurDuree": "{{mois}}/{{duree}} mois",
+    "progression": "Progression : {{pct}}%",
+    "actions": {
+      "docs": "Docs",
+      "messages": "Messages",
+      "paiements": "Paiements",
+      "historique": "Historique"
+    },
+    "aucuneLocation": {
+      "titre": "Aucune location active",
+      "description": "Trouvez votre prochain logement sur Werdhe",
+      "chercherBouton": "🔍 Chercher un logement"
+    }
+  },
+  "ongletOverview": {
+    "kpi": {
+      "revenusDuMois": "Revenus du mois",
+      "tendanceHausse": "↑ +{{pct}}% vs mois dernier",
+      "tendanceBaisse": "↓ {{pct}}% vs mois dernier",
+      "tendanceStable": "Stable vs mois dernier",
+      "tauxOccupation": "Taux d'occupation",
+      "biensOccupes": "{{loues}}/{{total}} biens occupés",
+      "candidatures": "Candidatures",
+      "nouvellesCetteSemaine": "{{count}} nouvelles cette semaine",
+      "biensGeres": "Biens gérés",
+      "louesEtLibres": "{{loues}} loués · {{libres}} libres"
+    },
+    "aucuneDonnee": "Aucune donnée",
+    "revenus6mois": {
+      "titre": "Revenus 6 mois",
+      "voirTout": "Voir tout →"
+    },
+    "aFaire": {
+      "titre": "À faire",
+      "toutVoir": "Tout voir →",
+      "toutEnOrdre": "Tout est en ordre !",
+      "bailExpire": "Bail expire - {{logement}}",
+      "dansNJours": "dans {{n}}j"
+    },
+    "mesBiens": {
+      "titre": "Mes biens",
+      "gerer": "Gérer →",
+      "aucunBien": "Aucun bien publié",
+      "ajouterBien": "+ Ajouter un bien",
+      "locataire": "Locataire : {{prenom}} {{nom}}",
+      "loue": "Loué",
+      "libre": "Libre"
+    },
+    "candidatures": {
+      "titre": "Dernières candidatures",
+      "toutesVoir": "Toutes voir →",
+      "statuts": {
+        "nouvelle": "Nouvelle",
+        "dossierDemande": "Dossier demandé",
+        "enExamen": "En examen",
+        "acceptee": "Acceptée",
+        "refusee": "Refusée"
+      },
+      "score": "Score : {{score}}/100"
+    }
+  },
+  "ongletBiens": {
+    "titre": "Mes biens",
+    "biensEnGestion": "{{count}} bien(s) en gestion",
+    "limiteAtteinteUpgrader": "Limite atteinte - Upgrader",
+    "ajouterBien": "+ Ajouter un bien",
+    "aucunBienEnregistre": "Aucun bien enregistré",
+    "ajouterMonPremierBien": "+ Ajouter mon premier bien",
+    "toastBienSupprime": "Bien supprimé !",
+    "toastErreurSuppression": "Erreur suppression",
+    "toastBienModifie": "Bien modifié !",
+    "toastErreurModification": "Erreur modification",
+    "toastBienLibere": "Bien libéré immédiatement !",
+    "toastErreur": "Erreur",
+    "preavisEnvoye": "Préavis envoyé",
+    "occupe": "• Occupé",
+    "locataireDepuisLe": "{{prenom}} {{nom}} · Depuis le {{date}}",
+    "limiteAtteinte20": "Limite de 20 logements atteinte.",
+    "passerPlanAgence": "Passer au plan Agence →",
+    "locataire": {
+      "titre": "Mes locations",
+      "locationsActives": "{{count}} location(s) active(s)",
+      "chercherLogement": "Chercher un logement",
+      "aucuneLocation": {
+        "titre": "Aucune location active",
+        "description": "Réservez un logement pour commencer",
+        "trouverLogement": "Trouver un logement"
+      },
+      "depuisLe": "{{ville}} · Depuis le {{date}}",
+      "na": "N/A",
+      "active": "• Active",
+      "details": "Détails",
+      "documents": "Documents",
+      "libre": "Libre"
+    },
+    "confirmSuppression": {
+      "titre": "Confirmer la suppression",
+      "description": "Voulez-vous vraiment supprimer ce bien ? Cette action est irréversible.",
+      "supprimer": "Supprimer",
+      "annuler": "Annuler"
+    },
+    "libererModal": {
+      "titre": "⚡ Libérer immédiatement",
+      "descAvant": "Cette action va ",
+      "descGras": "terminer la location en cours",
+      "descApres": " et remettre le bien en \"Disponible\" immédiatement, sans délai de préavis.",
+      "avertissement": "Le locataire sera notifié. Cette action est irréversible.",
+      "libererMaintenant": "Libérer maintenant"
+    },
+    "editForm": {
+      "modifierTitre": "Modifier - {{titre}}",
+      "titre": "Titre",
+      "prix": "Prix (GNF)",
+      "adresse": "Adresse",
+      "statut": "Statut",
+      "statutDisponible": "Disponible",
+      "statutLoue": "Loué",
+      "statutSuspendu": "Suspendu",
+      "photosEnregistrees": "{{count}} photo(s) enregistrée(s)",
+      "sauvegarder": "Sauvegarder",
+      "annuler": "Annuler",
+      "modifier": "Modifier",
+      "supprimer": "Supprimer"
+    },
+    "preavisBanniere": {
+      "avant": "Préavis de départ envoyé à ",
+      "apres": ". En attente d'accusé de réception.",
+      "voirLePreavis": "Voir le préavis"
+    },
+    "boutons": {
+      "messagerie": "Messagerie",
+      "documents": "Documents",
+      "preavis": "Préavis",
+      "renouveler": "Renouveler"
+    },
+    "renouvModal": {
+      "titre": "Proposer un renouvellement",
+      "logement": "Logement :",
+      "dureeLabel": "Durée du renouvellement *",
+      "dureeMois": "{{n}} mois",
+      "nouveauLoyerLabel": "Nouveau loyer mensuel (GNF) - laisser vide pour conserver le même",
+      "messageLabel": "Message au locataire (optionnel)",
+      "messagePlaceholder": "Ex: Renouvellement aux mêmes conditions...",
+      "envoiEnCours": "Envoi...",
+      "envoyerLaProposition": "Envoyer la proposition"
+    }
+  },
+  "ongletLocataires": {
+    "titre": "Locataires",
+    "nbLocataires": "{{count}} locataire(s)",
+    "ajouterLocataire": "+ Ajouter un locataire",
+    "toastModifie": "Locataire modifie !",
+    "toastAjoute": "Locataire ajoute !",
+    "toastErreur": "Erreur",
+    "confirmSuppression": "Supprimer ce locataire ?",
+    "toastSupprime": "Locataire supprime !",
+    "viaWerdhe": "Locataires via Werdhe",
+    "manuels": "Locataires manuels",
+    "voirFiche": "Voir fiche",
+    "aucunManuel": {
+      "titre": "Aucun locataire manuel",
+      "description": "Ajoutez des locataires sans compte Werdhe"
+    },
+    "form": {
+      "modifierTitre": "Modifier le locataire",
+      "nouveauTitre": "Nouveau locataire",
+      "prenom": "Prenom *",
+      "nom": "Nom *",
+      "telephone": "Telephone",
+      "email": "Email",
+      "logement": "Logement",
+      "aucun": "Aucun",
+      "loyer": "Loyer (GNF)",
+      "dateEntree": "Date d'entree",
+      "sauvegarder": "Sauvegarder",
+      "ajouter": "Ajouter",
+      "annuler": "Annuler",
+      "modifier": "Modifier",
+      "supprimer": "Supprimer"
+    }
+  },
+  "ongletReservations": {
+    "locataire": {
+      "titre": "Mes Candidatures",
+      "nbCandidatures": "{{count}} candidature(s)",
+      "chercherLogement": "+ Chercher un logement",
+      "aucuneReservation": {
+        "titre": "Aucune réservation",
+        "description": "Trouvez un logement et envoyez une demande au propriétaire",
+        "trouverLogement": "Trouver un logement"
+      },
+      "voir": "Voir",
+      "demandeDu": "Demande du {{date}}",
+      "demandeEnCours": "Demande en cours",
+      "actionAttendue": "⚡ Une action est attendue de votre part",
+      "statuts": {
+        "enAttente": { "label": "Candidature envoyée", "action": "Suivre ma candidature" },
+        "dossierRequis": { "label": "Dossier demandé", "action": "Soumettre mon dossier" },
+        "enExamen": { "label": "Dossier en cours d'examen", "action": "Voir l'avancement" },
+        "acceptee": { "label": "Candidature acceptée", "action": "Démarrer les échanges" },
+        "echanges": { "label": "En discussion", "action": "Voir la discussion" },
+        "cautionRequise": { "label": "Caution à payer", "action": "Payer la caution" },
+        "cautionPayee": { "label": "Caution versée", "action": "Voir l'avancement" },
+        "bailEnCours": { "label": "Bail à signer", "action": "Signer le bail" },
+        "bailSigneProprio": { "label": "À mon tour de signer", "action": "Signer maintenant" },
+        "confirmee": { "label": "Location active", "action": "Voir le récapitulatif" },
+        "refusee": { "label": "Candidature non retenue" }
+      }
+    }
+  },
+  "scoreLocataire": {
+    "titre": "Score de confiance"
+  },
+  "dashboardMain": {
+    "toastInstalle": "Werdhe installé sur votre écran d'accueil ! 🏠",
+    "connexionRetablie": "Connexion rétablie ✅",
+    "connexionPerdue": "Connexion perdue 📡",
+    "raccourciReservations": "Réservations",
+    "toastReservationConfirmee": "Reservation confirmee !",
+    "toastReservationAnnulee": "Reservation annulee",
+    "chargement": "Chargement...",
+    "installerWerdhe": "Installer Werdhe",
+    "accesRapide": "Accès rapide depuis votre écran d'accueil",
+    "plusTard": "Plus tard",
+    "installer": "Installer",
+    "horsLigne": "Hors ligne",
+    "nav": {
+      "accueil": "Accueil",
+      "locations": "Locations",
+      "rapports": "Rapports",
+      "profil": "Profil",
+      "biens": "Biens",
+      "resas": "Résas"
+    }
+  },
+  "ongletMesLocations": {
+    "depuisLe": "Depuis le {{date}}",
+    "active": "Active"
+  },
+  "upgradePrompt": {
+    "multiUtilisateurs": {
+      "titre": "Multi-utilisateurs",
+      "desc": "Ajoutez jusqu'à 5 comptes pour votre équipe. Disponible avec le plan Agence."
+    },
+    "logementsIllimites": {
+      "titre": "Logements illimités",
+      "desc": "Vous avez atteint la limite de 20 logements du plan Pro. Passez au plan Agence pour des biens illimités."
+    },
+    "defaut": {
+      "titre": "Fonctionnalité Agence",
+      "desc": "Disponible avec le plan Agence."
+    },
+    "passerPlanAgence": "Passer au plan Agence"
+  },
+  "ongletParametres": {
+    "cycles": {
+      "mensuel": "Mensuel",
+      "semestriel": "6 mois",
+      "annuel": "Annuel"
+    },
+    "toastEssaiProDemarre": "Essai Pro démarré ! 1 mois gratuit.",
+    "toastEssaiAgenceDemarre": "Essai Agence démarré ! 1 mois gratuit.",
+    "erreur": "Erreur",
+    "toastProfilMisAJour": "Profil mis a jour !",
+    "toastErreurMiseAJour": "Erreur mise a jour",
+    "toastMdpNeCorrespondentPas": "Les mots de passe ne correspondent pas",
+    "toastMinimum6Caracteres": "Minimum 6 caracteres",
+    "toastMdpChange": "Mot de passe change !",
+    "menu": {
+      "profil": { "titre": "Mon profil", "desc": "Modifier mes informations personnelles" },
+      "mdp": { "titre": "Mot de passe", "desc": "Changer mon mot de passe" },
+      "notifs": { "titre": "Notifications", "desc": "Gérer mes préférences de notifications" },
+      "langue": { "titre": "Langue", "desc": "Francais (Guinee)" },
+      "score": { "titre": "Score de confiance", "desc": "Votre réputation sur Werdhe" },
+      "supprimer": { "titre": "Supprimer mon compte", "desc": "Action irréversible - toutes vos données seront effacées" },
+      "tour": { "titre": "Tutoriel interactif", "desc": "Relancer la visite guidée du dashboard" }
+    },
+    "titre": "Parametres",
+    "monAbonnement": "Mon abonnement",
+    "planActuel": "Plan actuel",
+    "accesLocataireGratuit": "Accès locataire gratuit",
+    "gratuit": "Gratuit",
+    "abonnementImpaye": "Abonnement impayé - accès restreint. Réglez votre abonnement pour retrouver toutes les fonctionnalités.",
+    "joursRestants": "{{type}} - {{n}} jour(s) restant(s)",
+    "essaiGratuit": "Essai gratuit",
+    "abonnement": "Abonnement",
+    "abonnementExpire": "Abonnement expiré",
+    "essaiProBouton": "Essai Pro - 1 mois gratuit",
+    "essaiAgenceBouton": "Essai Agence - 1 mois gratuit",
+    "cycleFacturation": "Cycle de facturation",
+    "payerMobileMoney": "💳 Payer par Mobile Money",
+    "abonnementTitre": "Abonnement {{plan}} - {{cycle}}",
+    "infosCompte": "Informations du compte",
+    "emailLabel": "Email :",
+    "roleLabel": "Role :",
+    "panneauAdmin": "Panneau administrateur",
+    "seDeconnecter": "Se deconnecter",
+    "modifierProfil": "Modifier mon profil",
+    "sauvegardeEnCours": "Sauvegarde...",
+    "tour": {
+      "description": "Relancez la visite guidée pour (re)découvrir toutes les fonctionnalités du dashboard.",
+      "lancer": "Lancer le tutoriel"
+    },
+    "changerMdp": "Changer le mot de passe",
+    "nouveauMdp": "Nouveau mot de passe",
+    "minimum6Caracteres": "Minimum 6 caracteres",
+    "confirmer": "Confirmer",
+    "changementEnCours": "Changement...",
+    "changer": "Changer",
+    "preferencesNotifs": "Preferences de notifications",
+    "notifs": {
+      "email": "Notifications par email",
+      "sms": "Notifications par SMS",
+      "loyers": "Alertes loyers en retard",
+      "bails": "Alertes baux expirants",
+      "pannes": "Signalements de pannes"
+    },
+    "toastPreferencesSauvegardees": "Preferences sauvegardees !",
+    "notifsPushDescription": "Recevez des alertes en temps réel même quand Werdhe est fermé.",
+    "langueInterface": "Langue de l'interface",
+    "langueFrGuinee": "Francais (Guinee)",
+    "langueFrFrance": "Francais (France)",
+    "toastLangueSauvegardee": "Langue sauvegardee !",
+    "monScoreConfiance": "Mon score de confiance",
+    "ameliorerScore": "Améliorez votre score en complétant votre profil, payant à temps et recevant de bonnes notes."
+  },
+  "supprimerCompte": {
+    "erreurMotDePasseRequis": "Entrez votre mot de passe pour confirmer",
+    "erreurSuppression": "Erreur lors de la suppression",
+    "compteSupprime": "Compte supprimé",
+    "donneesSupprimees": "Vos données ont été supprimées. Vous allez être redirigé...",
+    "titre": "Supprimer mon compte",
+    "attentionIrreversible": "Attention - Action irréversible",
+    "consequences": {
+      "profilAnonymise": "Votre profil sera anonymisé",
+      "logementsMasques": "Vos logements seront masqués",
+      "candidaturesAnnulees": "Vos candidatures actives seront annulées",
+      "messagesConserves": "Vos messages seront conservés 30 jours",
+      "donneesContractuelles": "Les données contractuelles (baux, paiements) sont conservées 5 ans"
+    },
+    "continuer": "Continuer",
+    "confirmerAvecEmailAvant": "Pour confirmer la suppression de votre compte ",
+    "confirmerAvecEmailApres": ", entrez votre mot de passe.",
+    "motDePasseActuel": "Mot de passe actuel *",
+    "votreMotDePasse": "Votre mot de passe",
+    "retour": "Retour",
+    "suppressionEnCours": "Suppression...",
+    "supprimerDefinitivement": "Supprimer définitivement"
+  },
+  "ongletRapports": {
+    "csv": {
+      "mois": "Mois",
+      "revenusGnf": "Revenus GNF",
+      "paiements": "Paiements",
+      "impayesGnf": "Impayés GNF"
+    },
+    "toastCsvTelecharge": "Export CSV téléchargé !",
+    "chargementDonnees": "Chargement des données...",
+    "aucuneDonneeFinanciere": "Aucune donnée financière",
+    "donneesApparaitront": "Les données apparaîtront dès que vous aurez des paiements enregistrés.",
+    "titre": "Rapports financiers",
+    "sousTitre": "Vue complète de vos revenus locatifs",
+    "periodes": {
+      "3mois": "3 derniers mois",
+      "6mois": "6 derniers mois",
+      "12mois": "12 derniers mois",
+      "annee": "Cette année"
+    },
+    "exportPdf": "Export PDF",
+    "kpi": {
+      "encaisseCeMois": "Encaissé ce mois",
+      "enAttente": "En attente",
+      "totalAnnuel": "Total annuel",
+      "paiementsCeMois": "Paiements ce mois",
+      "recus": "{{n}} reçus"
+    },
+    "evolutionRevenus": "Évolution des revenus",
+    "aucuneDonnee": "Aucune donnée",
+    "encaisse": "Encaissé",
+    "impayes": "Impayés",
+    "revenusEncaisses": "Revenus encaissés",
+    "tauxOccupation": "Taux d'occupation",
+    "occupation": "Occupation",
+    "revenusParBien": "Revenus par bien",
+    "aucunLogement": "Aucun logement",
+    "analyseCandidatures": "Analyse des candidatures",
+    "candidatures": {
+      "totalRecues": "Total reçues",
+      "acceptees": "Acceptées",
+      "refusees": "Refusées",
+      "enAttente": "En attente"
+    },
+    "tauxAcceptation": "Taux d'acceptation",
+    "meilleurMoisAvant": "Meilleur mois : ",
+    "previsionsTitre": "Prévisions basées sur vos 3 derniers mois",
+    "moisProchain": "Mois prochain",
+    "trimestre": "Trimestre",
+    "projectionAnnuelle": "Projection annuelle",
+    "estimationNote": "* Estimation basée sur la moyenne mensuelle des 3 derniers mois",
+    "historiquePaiements": "Historique des paiements",
+    "aucunPaiementEnregistre": "Aucun paiement enregistré"
+  },
+  "ongletHistorique": {
+    "chargement": "Chargement de votre historique...",
+    "badges": {
+      "experimente": "Locataire expérimenté",
+      "verifie": "Locataire vérifié",
+      "nouveau": "Nouveau locataire"
+    },
+    "titre": "Mon historique",
+    "sousTitre": "Toutes vos locations et paiements",
+    "kpi": {
+      "locationsTotales": "Locations totales",
+      "locationsActives": "Locations actives",
+      "totalPaye": "Total payé",
+      "noteRecue": "Note reçue",
+      "pasEncore": "Pas encore"
+    },
+    "tabs": {
+      "locations": "Locations ({{count}})",
+      "paiements": "Paiements ({{count}})",
+      "avis": "Avis ({{count}})"
+    },
+    "locations": {
+      "aucune": "Aucune location",
+      "apparaitront": "Vos locations apparaîtront ici",
+      "statuts": {
+        "active": "Active",
+        "terminee": "Terminée",
+        "enAttente": "En attente",
+        "refusee": "Refusée"
+      },
+      "depuis": "Depuis {{date}}",
+      "proprietaire": "Propriétaire :"
+    },
+    "paiements": {
+      "aucun": "Aucun paiement",
+      "apparaitront": "Vos paiements apparaîtront ici",
+      "paye": "Payé",
+      "enAttente": "En attente",
+      "totalPaye": "Total payé"
+    },
+    "notations": {
+      "aucun": "Aucun avis",
+      "apparaitront": "Les avis apparaîtront après vos locations",
+      "avisRecu": "Avis reçu",
+      "avisDonne": "Avis donné"
+    }
+  },
+  "pushToggle": {
+    "toastDesactivees": "Notifications désactivées",
+    "toastActivees": "Notifications activées ! 🔔",
+    "toastPermissionRefusee": "Permission refusée ou non supporté",
+    "titre": "Notifications push",
+    "sousTitre": "Alertes même quand l'app est fermée",
+    "activees": "Activées",
+    "desactivees": "Désactivées"
+  },
+  "boutonNotifPush": {
+    "toastErreurDesactivation": "Erreur désactivation",
+    "toastActivees": "Notifications activées",
+    "toastAutorisez": "Autorisez les notifications dans votre navigateur",
+    "titreActivees": "Notifications push (Activées)",
+    "titreDesactivees": "Notifications push (Désactivées)",
+    "sousTitre": "Candidatures, paiements, messages",
+    "items": {
+      "nouvelleCandidature": "Nouvelle candidature reçue",
+      "candidatureAcceptee": "Candidature acceptée",
+      "paiementConfirme": "Paiement confirmé",
+      "nouveauMessage": "Nouveau message",
+      "rappelLoyer": "Rappel de loyer"
+    },
+    "chargement": "⏳ ...",
+    "desactiverBouton": "Désactiver les notifications",
+    "activerBouton": "🔔 Activer les notifications"
+  },
+  "ongletReclamations": {
+    "toastEnvoyee": "Reclamation envoyee !",
+    "toastErreur": "Erreur",
+    "toastStatutMisAJour": "Statut mis a jour !",
+    "toastCommentaireAjoute": "Commentaire ajoute !",
+    "categories": {
+      "panneEau": "Panne eau",
+      "panneElectricite": "Panne electricite",
+      "panneEquipement": "Panne equipement",
+      "securite": "Securite",
+      "nuisances": "Nuisances",
+      "autre": "Autre"
+    },
+    "statuts": {
+      "ouverte": "Ouverte",
+      "enCours": "En cours",
+      "resolue": "Resolue",
+      "fermee": "Fermee"
+    },
+    "titre": "Reclamations",
+    "nbReclamations": "{{count}} reclamation(s)",
+    "signalerProbleme": "+ Signaler un probleme",
+    "form": {
+      "titreCard": "Signaler un probleme",
+      "logement": "Logement *",
+      "selectionnez": "Selectionnez",
+      "categorie": "Categorie",
+      "titreProbleme": "Titre du probleme *",
+      "titreProblemePlaceholder": "Ex: Fuite d'eau dans la cuisine",
+      "description": "Description",
+      "descriptionPlaceholder": "Decrivez le probleme...",
+      "priorite": "Priorite",
+      "prioriteBasse": "Basse",
+      "prioriteNormale": "Normale",
+      "prioriteHaute": "Haute - Urgent",
+      "photo": "Photo (optionnel)",
+      "envoyer": "Envoyer"
+    },
+    "chargement": "Chargement...",
+    "aucuneReclamation": "Aucune réclamation",
+    "fermer": "Fermer",
+    "timeline": "Timeline",
+    "ajouterCommentaire": "Ajouter un commentaire..."
+  },
+  "ongletAlertes": {
+    "toastMiseAJour": "Alerte mise a jour !",
+    "toastErreur": "Erreur",
+    "chargement": "Chargement...",
+    "titre": "Alertes",
+    "nbAlertes": "{{count}} alerte(s) active(s)",
+    "aucuneAlerte": "Aucune alerte",
+    "toutEnOrdre": "Tout est en ordre !",
+    "relancer": "Relancer",
+    "renouveler": "Renouveler",
+    "traiter": "Traiter"
+  },
+  "ongletDocuments": {
+    "titre": "Documents",
+    "nbDocuments": "{{count}} document(s)",
+    "ajouter": "Ajouter",
+    "generer": "Generer",
+    "genererUnDocument": "Generer un document",
+    "typeDeDocument": "Type de document",
+    "reservationConcernee": "Reservation concernee *",
+    "selectionnezReservation": "Selectionnez une reservation",
+    "genererEtEnvoyer": "Generer et envoyer",
+    "historique": "Historique des documents",
+    "toastDocumentGenere": "Document genere !",
+    "toastErreur": "Erreur",
+    "toastDocumentTelecharge": "Document téléchargé",
+    "toastErreurTelechargement": "Erreur téléchargement",
+    "toastEmailEnvoye": "Email envoyé !",
+    "email": "Email",
+    "docsTypes": {
+      "contratBail": { "titre": "Nouveau bail", "desc": "Generer un contrat de location" },
+      "quittance": { "titre": "Quittance de loyer", "desc": "Generer une quittance officielle" },
+      "etatLieux": { "titre": "Etat des lieux", "desc": "Entree ou sortie du locataire" },
+      "miseEnDemeure": { "titre": "Mise en demeure", "desc": "Pour loyer impaye" },
+      "rapportFinancier": { "titre": "Rapport financier", "desc": "Revenus du mois ou de l'annee" },
+      "caution": { "titre": "Caution / Depot", "desc": "Contrat de caution solidaire" },
+      "preavis": { "titre": "Preavis de depart", "desc": "Lettre de preavis locataire" }
+    },
+    "cfgDoc": {
+      "contratBail": "Contrat de bail",
+      "quittance": "Quittance",
+      "etatLieux": "État des lieux",
+      "miseEnDemeure": "Mise en demeure",
+      "preavis": "Préavis",
+      "facture": "Facture",
+      "caution": "Reçu de caution",
+      "document": "Document"
+    }
+  },
+  "ongletMessages": {
+    "titre": "Messages",
+    "sousTitre": "Partagez textes, photos et documents",
+    "toastMessageEnvoye": "Message envoye !",
+    "toastErreurEnvoi": "Erreur envoi",
+    "chargement": "Chargement...",
+    "aucuneConversation": "Aucune conversation",
+    "reservezLogement": "Reservez un logement pour contacter le proprietaire",
+    "messagesLocataires": "Les messages de vos locataires apparaitront ici",
+    "conversations": "Conversations ({{count}})",
+    "rechercherPlaceholder": "Rechercher...",
+    "photo": "📷 Photo",
+    "document": "📎 Document",
+    "nouvelleConversation": "Nouvelle conversation",
+    "selectionnezConversation": "Selectionnez une conversation",
+    "appeler": "Appeler",
+    "demarrezConversation": "Demarrez la conversation...",
+    "repondreA": "Répondre à",
+    "fichier": "📎 Fichier",
+    "ecrireMessage": "Ecrire un message..."
+  },
+  "ongletPreavisDash": {
+    "renouvellementAccepte": "Renouvellement accepté !",
+    "renouvellementRefuse": "Renouvellement refusé",
+    "erreur": "Erreur",
+    "titre": "Préavis de départ",
+    "notifierLocataire": "Notifier un locataire",
+    "notifierProprietaire": "Notifier votre propriétaire",
+    "nouveauPreavis": "+ Nouveau préavis",
+    "toastAucuneReservation": "Aucune réservation active trouvée",
+    "toastPreavisEnvoye": "Préavis envoyé ! Email + notification envoyés.",
+    "toastErreurEnvoi": "Erreur envoi préavis",
+    "toastPdfTelecharge": "PDF téléchargé !",
+    "toastPreavisTelecharge": "Préavis téléchargé !",
+    "toastErreurTelechargement": "Erreur téléchargement",
+    "motifs": {
+      "venteBien": "Vente du bien immobilier",
+      "repriseUsagePersonnel": "Reprise pour usage personnel",
+      "travauxRenovation": "Travaux de rénovation importants",
+      "nonPaiementRepete": "Non-paiement répété des loyers",
+      "troublesVoisinage": "Troubles de voisinage",
+      "finBailNonRenouvele": "Fin de bail non renouvelé",
+      "autreMotif": "Autre motif",
+      "changementVille": "Changement de ville ou de pays",
+      "achatBien": "Achat d'un bien immobilier",
+      "logementInadapte": "Logement inadapté à mes besoins",
+      "raisonsProfessionnelles": "Raisons professionnelles",
+      "raisonsFamiliales": "Raisons familiales",
+      "conditionsInsatisfaisantes": "Conditions du logement insatisfaisantes",
+      "autreRaison": "Autre raison"
+    },
+    "pdf": {
+      "titre": "Préavis",
+      "entete": "Werdhe - Préavis de départ",
+      "date": "Date : {{date}}",
+      "motif": "Motif",
+      "delai": "Délai",
+      "dateSortieEstimee": "Date de sortie estimée",
+      "genereParWerdhe": "Généré par Werdhe · werdhe.com"
+    },
+    "renouv": {
+      "titre": "Proposition(s) de renouvellement ({{count}})",
+      "proposePar": "Proposé par",
+      "duree": "Durée",
+      "moisSupplementaires": "{{n}} mois supplémentaires",
+      "nouveauLoyer": "Nouveau loyer",
+      "inchange": "Inchangé",
+      "recuLe": "Reçu le",
+      "refuser": "Refuser",
+      "accepter": "Accepter"
+    },
+    "sent": {
+      "titreOfficiel": "Préavis officiel envoyé",
+      "titre": "Préavis envoyé !",
+      "notifieSmsEmail": " a été notifié par SMS et email. Il a ",
+      "pourAccuserReception": " pour accuser réception.",
+      "proprioNotifie": "Votre propriétaire a été notifié par email et notification. Il a ",
+      "recapTitreProprio": "Préavis officiel",
+      "recapTitreLocataire": "Votre préavis officiel",
+      "bien": "Bien",
+      "motif": "Motif",
+      "locataireNotifie": "Locataire notifié",
+      "contact": "Contact",
+      "delaiAccorde": "Délai accordé",
+      "delaiDePreavis": "Délai de préavis",
+      "dateSortieEstimee": "Date de sortie estimée",
+      "statut": "Statut",
+      "enAttenteAccuse": "En attente d'accusé de réception",
+      "infoProprio": "Continuez à encaisser les loyers normalement jusqu'à la date de sortie. L'état des lieux de sortie sera planifié automatiquement dans {{n}} mois.",
+      "infoLocataire": "Continuez à payer vos loyers normalement jusqu'à la date de sortie. Un état des lieux de sortie sera planifié avec le propriétaire.",
+      "contacterLocataire": "Contacter le locataire",
+      "contacterProprio": "Contacter le proprio",
+      "telechargerPdf": "Télécharger PDF"
+    },
+    "confirm": {
+      "actionIrreversible": "Action officielle et irréversible. Le destinataire recevra un email + une notification sur la plateforme.",
+      "message": "Message",
+      "envoiEnCours": "Envoi en cours...",
+      "envoyerOfficiel": "Envoyer le préavis officiel"
+    },
+    "recus": {
+      "titre": "Préavis reçu{{s}} ({{count}})",
+      "expediteurLocataire": "{{prenom}} {{nom}} (locataire)",
+      "expediteurProprietaire": "{{prenom}} {{nom}} (propriétaire)",
+      "preavisDe": "📋 Préavis - {{logement}}",
+      "de": "De : {{expediteur}}",
+      "dateDeSortie": "Date de sortie",
+      "messageOptionnel": "Message optionnel pour expliquer votre réponse...",
+      "demanderRenouvellement": "Demander le renouvellement",
+      "accepterDepart": "Accepter le départ",
+      "repondreAuPreavis": "Répondre au préavis →"
+    },
+    "form": {
+      "alerteInfo": "Le préavis sera envoyé officiellement par email et notification à la partie concernée.",
+      "aucuneLocationActive": "Aucune location active",
+      "messageOptionnel": "Message (optionnel)",
+      "messagePersonnelPlaceholder": "Message personnel pour votre propriétaire...",
+      "selectionnez": "Sélectionnez {{bien}}{{motif}}{{delai}}",
+      "unBienVirgule": "un bien, ",
+      "unMotifEt": "un motif et ",
+      "unDelai": "un délai",
+      "preparerBouton": "Préparer le préavis officiel →"
+    }
+  },
+  "ongletPaiementsDash": {
+    "chargement": "Chargement...",
+    "delaiMois": "{{n}} mois",
+    "erreurPaiement": "Erreur lors du paiement",
+    "payModes": {
+      "om": { "label": "Orange Money", "sub": "Instantane" },
+      "mtn": { "label": "MTN MoMo", "sub": "Instantane" },
+      "cash": { "label": "Especes", "sub": "Recu PDF auto" },
+      "bank": { "label": "Virement bancaire", "sub": "BICIGUI · Ecobank" }
+    },
+    "statuts": {
+      "paye": "Payé",
+      "nonPaye": "Non paye",
+      "enRetard": "En retard",
+      "enAttente": "En attente"
+    },
+    "locataire": {
+      "titre": "Mes paiements",
+      "nbPaiements": "{{count}} paiement(s)",
+      "via": "Via {{mode}}",
+      "aucunPaiement": {
+        "titre": "Aucun paiement enregistré",
+        "description": "Vos paiements apparaîtront ici"
+      }
+    },
+    "proprio": {
+      "titre": "Gestion des paiements",
+      "sousTitre": "{{mois}} · {{count}} biens",
+      "kpi": {
+        "encaisse": "Encaisse",
+        "taux": "Taux : {{taux}}%",
+        "impayes": "Impayes",
+        "locataires": "{{count}} locataire(s)",
+        "attendu": "Attendu",
+        "totalDuMois": "Total du mois"
+      },
+      "tauxRecouvrement": "Taux de recouvrement",
+      "filtres": {
+        "tous": "Tous",
+        "payes": "Payes",
+        "nonPayes": "Non payes",
+        "enRetard": "En retard"
+      },
+      "aucunBien": "Aucun bien dans cette categorie",
+      "loyerMensuel": "Loyer mensuel",
+      "situation": "Situation",
+      "payeCeMois": "Paye ce mois",
+      "retardJours": "Retard : {{jours}} jours",
+      "nonPaye": "Non paye",
+      "voirQuittance": "Voir quittance",
+      "contacter": "Contacter",
+      "enregistrerPaiement": "Enregistrer le paiement",
+      "relancer": "Relancer"
+    },
+    "modal": {
+      "titre": "Enregistrer un paiement",
+      "modePaiement": "Mode de paiement",
+      "traitementEnCours": "Traitement...",
+      "confirmer": "Confirmer - {{montant}}",
+      "retour": "Retour",
+      "succes": {
+        "titre": "Paiement enregistre !",
+        "description": "Quittance envoyee au locataire."
+      }
+    },
+    "locataireLegacy": {
+      "monLogement": "Mon logement",
+      "enLigne": "En ligne",
+      "especes": "Especes",
+      "moisPrecedent": "Mois precedent",
+      "ilYA2Mois": "Il y a 2 mois",
+      "ilYA3Mois": "Il y a 3 mois",
+      "mesPaiements": "Mes paiements",
+      "debut": "Debut",
+      "fin": "Fin",
+      "caution": "Caution",
+      "loyerPaye": "Loyer paye - {{mois}}",
+      "loyerImpaye": "Loyer impaye - {{mois}}",
+      "quittanceEnvoyee": "Quittance envoyee",
+      "duDepuis3Jours": "Du depuis 3 jours",
+      "historiqueRecent": "Historique recent",
+      "paye": "Paye",
+      "effectuerPaiement": "Effectuer un paiement",
+      "nbMoisAPayer": "Nombre de mois a payer",
+      "unMois": "1 mois",
+      "unAn": "1 an",
+      "periodeCouverte": "Periode couverte",
+      "moisVers": "{{debut}} vers {{fin}}",
+      "recapitulatif": "Recapitulatif",
+      "bien": "Bien",
+      "moisPayes": "Mois payes",
+      "mode": "Mode",
+      "total": "Total",
+      "toastPaiementEffectue": "Paiement effectue ! Quittance generee.",
+      "confirmerMontant": "Confirmer - {{montant}}",
+      "paiementEffectue": "Paiement effectue !",
+      "recapSucces": "{{montant}} · {{n}} mois · Quittance envoyee"
+    }
+  },
+  "ongletReservationsProprio": {
+    "erreurServeur": "Erreur serveur",
+    "toastBailSigneAttenteLocataire": "Bail signé ! En attente de la signature du locataire.",
+    "toastErreurSignatureBail": "Erreur signature bail",
+    "toastBailNonTrouve": "Bail non trouvé pour cette location",
+    "toastBailTelecharge": "Bail téléchargé",
+    "toastErreurTelechargement": "Erreur téléchargement",
+    "toastErreurEnvoi": "Erreur envoi",
+    "na": "N/A",
+    "nMois": "{{n}} mois",
+    "voir": "Voir →",
+    "soumis": "Soumis ✓",
+    "retourListe": "← Retour à la liste",
+    "statuts": {
+      "enAttente": "Nouvelle candidature",
+      "dossierRequis": "Attente du dossier",
+      "enExamen": "Dossier à examiner",
+      "acceptee": "Acceptée",
+      "echanges": "En discussion",
+      "cautionRequise": "Caution en attente",
+      "cautionPayee": "Caution reçue",
+      "bailEnCours": "Bail à signer",
+      "bailSigneProprio": "Attente signature locataire",
+      "confirmee": "Location active",
+      "refusee": "Refusée"
+    },
+    "demandeRecue": {
+      "titre": "📩 Demande reçue",
+      "nonPrecisee": "Non précisée",
+      "messageLocataire": "Message du locataire",
+      "labels": {
+        "logement": "Logement",
+        "loyer": "Loyer",
+        "dateSouhaitee": "Date souhaitée",
+        "duree": "Durée",
+        "recueLe": "Reçue le",
+        "email": "Email"
+      }
+    },
+    "toastDossierDemande": "Dossier demandé ! Le locataire va uploader ses documents.",
+    "demanderDossierComplet": "Demander le dossier complet",
+    "toastCandidatureAcceptee": "Candidature acceptée ! Le locataire est notifié.",
+    "accepterSansDossier": "Accepter directement (sans dossier)",
+    "motifRefusPlaceholder": "Motif du refus (obligatoire)",
+    "toastIndiquerMotif": "Indiquez un motif de refus",
+    "toastCandidatureRefusee": "Candidature refusée. Le locataire est notifié.",
+    "refuser": "Refuser",
+    "dossierSoumisPar": "Dossier soumis par {{prenom}}",
+    "docs": {
+      "cni": "Pièce d'identité (CNI)",
+      "emploi": "Attestation d'emploi",
+      "paie": "Fiches de paie (3 mois)",
+      "garant": "Contact garant"
+    },
+    "infosCandidat": {
+      "titre": "Informations du candidat",
+      "nomComplet": "Nom complet",
+      "telephone": "Téléphone",
+      "loyer": "Loyer",
+      "locataireLabel": "Locataire"
+    },
+    "toastDossierValide": "Dossier validé ! Candidature acceptée.",
+    "validerDossier": "Valider le dossier - Accepter la candidature",
+    "toastInfosComplementaires": "Informations complémentaires demandées.",
+    "demanderInfosComplementaires": "Demander des informations complémentaires",
+    "motifRefusCourt": "Motif du refus",
+    "toastIndiquerMotifCourt": "Indiquez un motif",
+    "toastCandidatureRefuseeCourt": "Candidature refusée.",
+    "echanges": {
+      "candidatureAcceptee": "Candidature acceptée !",
+      "discutezConditions": "Discutez des conditions. Le locataire paiera la caution quand il sera prêt.",
+      "commencerDiscussion": "Commencez la discussion",
+      "messagePlaceholder": "Écrivez un message..."
+    },
+    "cautionEnAttente": {
+      "enTrainDePayer": "{{prenom}} est en train de payer la caution",
+      "serezNotifieAvant": "Vous serez notifié(e) dès que le paiement de ",
+      "serezNotifieApres": " est confirmé."
+    },
+    "cautionRecue": {
+      "titre": "Caution reçue : {{montant}} GNF",
+      "preparerBail": "Préparez maintenant le bail pour les deux signatures.",
+      "bailSeraGenere": "Le bail sera généré avec :",
+      "items": {
+        "identites": "Identités des deux parties",
+        "adresse": "Adresse complète du logement",
+        "loyerMensuel": "Loyer mensuel : {{montant}} GNF",
+        "dateEtDuree": "Date de début et durée du bail",
+        "cautionVersee": "Caution versée : {{montant}} GNF ✓"
+      }
+    },
+    "toastBailGenere": "Bail généré ! Les deux parties peuvent signer.",
+    "genererPreparerBail": "Générer et préparer le bail",
+    "bailASigner": {
+      "titre": "📝 Bail prêt à signer",
+      "debut": "Début",
+      "caution": "Caution",
+      "vousAvezSigne": "Vous avez signé !",
+      "attenteSignatureLocataire": "En attente de la signature du locataire...",
+      "appuyerPourSigner": "Appuyer pour signer le bail",
+      "signatureSecurisee": "Signature numérique sécurisée"
+    },
+    "attenteSignature": {
+      "titre": "En attente de la signature de {{prenom}}",
+      "description": "Vous avez signé. Le locataire doit maintenant signer à son tour. La page se met à jour automatiquement."
+    },
+    "locationActive": {
+      "titre": "Location active",
+      "occupeVotreLogement": "{{prenom}} {{nom}} occupe votre logement.",
+      "loyerMensuel": "Loyer mensuel",
+      "cautionVersee": "Caution versée",
+      "telechargerBail": "Télécharger le bail signé (PDF)"
+    },
+    "refusee": {
+      "titre": "Demande refusée",
+      "description": "Le locataire a été notifié du refus."
+    },
+    "liste": {
+      "titre": "Candidatures reçues",
+      "nbCandidatures": "{{count}} candidature(s)",
+      "actionsRequises": "{{count}} action(s) requise(s) de votre part",
+      "repondezAuxDemandes": "Répondez aux demandes en attente pour ne pas faire patienter vos locataires.",
+      "aucuneDemande": {
+        "titre": "Aucune demande reçue",
+        "description": "Les demandes de réservation apparaîtront ici"
+      },
+      "interventionRequise": "Votre intervention est requise",
+      "repondreMaintenant": "Répondre maintenant →",
+      "voirLeDetail": "Voir le détail →"
+    }
+  },
+  "reservationLocataire": {
+    "stepBar": {
+      "demande": "Demande",
+      "dossier": "Dossier",
+      "decision": "Décision",
+      "echanges": "Échanges",
+      "caution": "Caution",
+      "bail": "Bail",
+      "acces": "Accès"
+    },
+    "payOpts": {
+      "om": { "label": "Orange Money", "sub": "Instantané · Paiement sécurisé" },
+      "mtn": { "label": "MTN MoMo", "sub": "Instantané · MTN Guinée" },
+      "cash": { "label": "Espèces", "sub": "Remise en main propre" },
+      "bank": { "label": "Virement bancaire", "sub": "BICIGUI · Ecobank · UBA" }
+    },
+    "attenteCard": {
+      "syncTempsReel": "Synchronisation en temps réel"
+    },
+    "statutBadge": {
+      "enAttente": "Demande envoyée",
+      "dossierRequis": "Dossier demandé",
+      "enExamen": "En examen",
+      "acceptee": "Acceptée",
+      "refusee": "Refusée",
+      "echanges": "En échanges",
+      "cautionRequise": "Caution à payer",
+      "cautionPayee": "Caution versée",
+      "bailEnCours": "Bail à signer",
+      "bailSigneProprio": "Attente signature",
+      "confirmee": "Active 🗝️"
+    },
+    "header": {
+      "titre": "Ma réservation"
+    },
+    "chargement": "Chargement de votre réservation...",
+    "introuvable": {
+      "titre": "Réservation introuvable",
+      "retour": "← Retour"
+    },
+    "etape1": {
+      "attente": {
+        "message": "Demande envoyée au propriétaire",
+        "sub": "Le propriétaire a 48h pour répondre. Vous serez notifié(e) dès qu'il prend une décision."
+      },
+      "recap": {
+        "titre": "Récapitulatif de votre demande",
+        "logement": "Logement",
+        "loyerMensuel": "Loyer mensuel",
+        "dateDeDebut": "Date de début",
+        "duree": "Durée",
+        "statut": "Statut",
+        "statutEnAttente": "En attente de réponse",
+        "na": "N/A",
+        "dureeMois": "{{n}} mois"
+      }
+    },
+    "etape2": {
+      "alerteInfo": "Le propriétaire demande votre dossier. Complétez-le pour valider votre candidature.",
+      "titreDossier": "📁 Votre dossier",
+      "progression": "Progression",
+      "docs": {
+        "cni": { "label": "Pièce d'identité (CNI)", "sub": "Recto-verso · Obligatoire" },
+        "emploi": { "label": "Attestation d'emploi", "sub": "Signée · Obligatoire" },
+        "paie": { "label": "Fiches de paie (3 mois)", "sub": "Recommandé" },
+        "garant": { "label": "Contact du garant", "sub": "Optionnel" }
+      },
+      "modifier": "Modifier",
+      "ajouter": "Ajouter",
+      "fichierAjouteToast": "{{nom}} ajouté !",
+      "soumettreBouton": "Soumettre mon dossier",
+      "erreurMinDocuments": "Ajoutez au moins 2 documents",
+      "toastUploadEnCours": "Upload en cours...",
+      "toastDossierSoumis": "Dossier soumis ! Le propriétaire va examiner vos documents.",
+      "toastErreurSoumission": "Erreur soumission"
+    },
+    "etape3": {
+      "message": "Votre dossier est en cours d'examen",
+      "sub": "Le propriétaire analyse votre candidature. Vous serez notifié(e) de sa décision sous 24-48h."
+    },
+    "refusee": {
+      "titre": "Candidature non retenue",
+      "description": "Le propriétaire n'a pas retenu votre dossier. Ne vous découragez pas !",
+      "motif": "Motif",
+      "chercherAutres": "🔍 Chercher d'autres logements"
+    },
+    "etape4": {
+      "accepteeBanner": {
+        "titre": "Candidature acceptée !",
+        "sous": "Discutez des conditions avant de payer la caution."
+      },
+      "discussionSecurisee": "Discussion sécurisée",
+      "demarrerDiscussion": "Démarrez la discussion avec le propriétaire",
+      "document": "Document",
+      "messagePlaceholder": "Écrivez un message...",
+      "procederCautionBouton": "Procéder au paiement de la caution →",
+      "toastErreurEnvoiMessage": "Erreur envoi message"
+    },
+    "etape5": {
+      "alerteInfo": "Versez la caution pour sécuriser votre logement. Elle est protégée sur Werdhe.",
+      "titreCaution": "Caution - 1 mois de loyer",
+      "securiseeSurWerdhe": "Sécurisée sur Werdhe",
+      "modePaiement": "Mode de paiement",
+      "traitementEnCours": "Traitement...",
+      "verserBouton": "Verser la caution - {{montant}}",
+      "toastSucces": "Caution versée ! Le propriétaire va préparer le bail.",
+      "toastErreur": "Erreur paiement caution"
+    },
+    "etape5b": {
+      "message": "Caution enregistrée - payée directement au propriétaire",
+      "sub": "Le propriétaire va préparer le bail. Vous serez notifié(e) dès qu'il est prêt à être signé.",
+      "cautionVersee": "Caution versée : {{montant}}",
+      "protegeeJusqua": "Protégée jusqu'à l'état des lieux de sortie"
+    },
+    "etape6": {
+      "bannerSigneAttente": "Le propriétaire a signé. C'est votre tour !",
+      "bannerPret": "Le bail est prêt à signer.",
+      "lisezEtSignez": "Lisez et signez votre contrat de bail.",
+      "labels": {
+        "logement": "Logement",
+        "loyer": "Loyer",
+        "loyerParMois": "{{montant}}/mois",
+        "debut": "Début",
+        "duree": "Durée",
+        "caution": "Caution",
+        "cautionCoche": "{{montant}} ✅",
+        "loyerDuLe": "Loyer dû le",
+        "premierDuMois": "1er du mois"
+      },
+      "signatureProprietaire": "Signature Propriétaire",
+      "signe": "Signé ✓",
+      "signeBadge": "Signé",
+      "enAttente": "En attente",
+      "votreSignature": "Votre signature",
+      "signatureEnCours": "⏳ Signature...",
+      "appuyerPourSigner": "Appuyer pour signer",
+      "bailSigneAttente": {
+        "message": "Bail signé ! En attente de confirmation finale",
+        "sub": "Le propriétaire va finaliser et vous aurez officiellement accès au logement."
+      },
+      "etatDesLieuxValideToast": "État des lieux validé !"
+    },
+    "etape7": {
+      "felicitations": "Félicitations ! 🎉",
+      "acces": "Vous avez officiellement accès à votre logement.",
+      "items": {
+        "demandeAcceptee": { "titre": "Demande acceptée", "sub": "Dossier complet et approuvé" },
+        "cautionEnregistree": { "titre": "Caution enregistrée", "sub": "{{montant}} GNF · payée au propriétaire" },
+        "bailSigne": { "titre": "Bail signé", "sub": "Contrat disponible en PDF" },
+        "accesAccorde": { "titre": "Accès accordé !" }
+      },
+      "premierLoyerAvant": "Votre premier loyer de ",
+      "premierLoyerApres": " sera dû le 1er du mois prochain.",
+      "actions": {
+        "documents": "Documents",
+        "messages": "Messages",
+        "bailPdf": "Bail (PDF)"
+      }
+    },
+    "noter": {
+      "titre": "⭐ Noter votre propriétaire",
+      "commentairePlaceholder": "Commentaire optionnel...",
+      "envoyerBouton": "Envoyer ma note ({{note}}/5) →",
+      "merci": "Vous avez noté ce propriétaire. Merci !",
+      "toastSucces": "Note envoyée ! Merci pour votre retour.",
+      "toastErreur": "Erreur"
+    },
+    "bail": {
+      "toastIntrouvable": "Bail non trouvé",
+      "toastTelecharge": "Bail téléchargé",
+      "toastErreurTelechargement": "Erreur téléchargement",
+      "toastSigneSucces": "Bail signé ! En attente de confirmation finale.",
+      "toastErreurSignature": "Erreur signature bail"
+    }
+  },
+  "ongletPaiements": {
+    "chargement": "Chargement...",
+    "delaiMois": "{{n}} mois",
+    "payModes": {
+      "om": { "label": "Orange Money", "sub": "Paiement instantané" },
+      "mtn": { "label": "MTN MoMo", "sub": "Paiement instantané" },
+      "cash": { "label": "Espèces", "sub": "Reçu PDF généré automatiquement" },
+      "bank": { "label": "Virement bancaire", "sub": "BICIGUI · Ecobank · UBA" }
+    },
+    "statuts": {
+      "paye": "Payé ✓",
+      "impaye": "Non payé",
+      "enRetard": "En retard"
+    },
+    "proprietaire": {
+      "header": {
+        "titre": "💳 Gestion des paiements",
+        "sousTitre": "{{mois}} · {{count}} biens en gestion"
+      },
+      "kpi": {
+        "encaisse": "Encaissé",
+        "taux": "Taux : {{taux}}%",
+        "impayes": "Impayés",
+        "locataires": "{{count}} locataire(s)",
+        "attendu": "Attendu",
+        "totalDuMois": "Total du mois"
+      },
+      "recouvrement": "Progression du recouvrement",
+      "filtres": {
+        "tous": "Tous",
+        "payes": "Payés ✓",
+        "nonPayes": "Non payés",
+        "enRetard": "En retard ⚠️"
+      },
+      "listeVide": "Aucun bien dans cette catégorie",
+      "payeCeMois": "✓ Payé ce mois",
+      "retardJours": "⚠️ Retard : {{jours}} jours",
+      "duDepuisJours": "❌ Dû depuis {{jours}} jours",
+      "voirQuittance": "📄 Voir la quittance",
+      "contacter": "💬 Contacter",
+      "enregistrerPaiement": "💳 Enregistrer le paiement",
+      "relancer": "📤 Relancer",
+      "modal": {
+        "titre": "💳 Enregistrer un paiement",
+        "montantLoyer": "Montant du loyer — {{mois}}",
+        "enRetardDe": "⚠️ En retard de {{jours}} jours",
+        "impayeDepuis": "❌ Impayé depuis {{jours}} jours",
+        "modePaiement": "Mode de paiement",
+        "infoEspeces": "Le locataire reçoit une quittance PDF par email dès que vous confirmez le paiement en espèces.",
+        "traitementEnCours": "⏳ Traitement en cours...",
+        "confirmerPaiement": "✅ Confirmer le paiement — {{montant}}",
+        "paiementToast": "Paiement enregistré ! Quittance envoyée.",
+        "succes": {
+          "titre": "Paiement enregistré !",
+          "ligne1Avant": "Le loyer de ",
+          "ligne1Milieu": " pour ",
+          "ligne1Fin": " est confirmé.",
+          "ligne2": "Une quittance PDF a été générée et envoyée au locataire."
+        },
+        "recap": {
+          "titre": "Récapitulatif",
+          "bien": "Bien",
+          "locataire": "Locataire",
+          "montant": "Montant",
+          "mode": "Mode",
+          "date": "Date",
+          "statut": "Statut",
+          "aujourdhui": "Aujourd'hui · {{date}}",
+          "paye": "✅ Payé"
+        },
+        "retourListe": "← Retour à la liste"
+      }
+    },
+    "locataire": {
+      "paiementConfirmeToast": "Paiement confirmé !",
+      "aucuneLocation": {
+        "titre": "Aucune location active",
+        "description": "Réservez un logement pour accéder aux paiements"
+      },
+      "header": {
+        "titre": "💳 Mes paiements",
+        "sousTitre": "Mon logement · {{mois}}"
+      },
+      "succes": {
+        "titre": "Paiement confirmé !",
+        "ligne1Avant": "{{montant}} payés pour ",
+        "periodeCouverte": "Période couverte : {{debut}} — {{fin}}",
+        "ligne2": "Une quittance PDF a été générée.",
+        "recapTitre": "Récapitulatif"
+      },
+      "labels": {
+        "logement": "Logement",
+        "montant": "Montant",
+        "moisCouverts": "Mois couverts",
+        "mode": "Mode",
+        "date": "Date"
+      },
+      "maQuittance": "📄 Ma quittance",
+      "retour": "← Retour",
+      "confirmation": {
+        "titre": "Récapitulatif avant paiement",
+        "proprietaire": "Propriétaire",
+        "montantTotal": "Montant total",
+        "duree": "Durée",
+        "periode": "Période",
+        "modifier": "← Modifier",
+        "traitementEnCours": "⏳ Traitement...",
+        "confirmer": "✅ Confirmer — {{montant}}"
+      },
+      "fiche": {
+        "debutBail": "Début bail",
+        "finBail": "Fin bail",
+        "caution": "Caution",
+        "statutLoyer": "⚠️ Statut loyer — {{mois}}",
+        "enAttenteDePaiement": "En attente de paiement"
+      },
+      "historique": {
+        "titre": "Historique des 3 derniers mois",
+        "moisPrecedent": "Mois précédent",
+        "modeOrange": "🟠 Orange Money",
+        "modeMtn": "🟡 MTN MoMo",
+        "modeEspeces": "💵 Espèces"
+      },
+      "choixMois": {
+        "titre": "Combien de mois payer ?",
+        "periodeCouverte": "Période couverte",
+        "paiementAvance": "✅ Paiement de {{n}} mois en avance — Merci pour votre sérieux !"
+      },
+      "selectionne": "✓ Sélectionné",
+      "payerBouton": "Payer {{montant}} — {{n}} mois →"
+    }
+  },
+  "sidebar": {
+    "espaceProprietaire": "Espace propriétaire",
+    "espaceLocataire": "Espace locataire",
+    "nav": {
+      "tableauDeBord": "Tableau de bord",
+      "mesBiens": "Mes biens",
+      "locataires": "Locataires",
+      "candidatures": "Candidatures",
+      "paiements": "Paiements",
+      "documents": "Documents",
+      "alertes": "Alertes",
+      "messages": "Messages",
+      "rapports": "Rapports",
+      "reclamations": "Réclamations",
+      "preavis": "Préavis",
+      "parametres": "Paramètres",
+      "mesLocations": "Mes locations",
+      "historique": "Historique"
+    },
+    "plan": "Plan {{plan}}",
+    "deconnexion": "Déconnexion"
+  },
+  "rechercheGlobale": {
+    "badges": {
+      "logement": "Logement",
+      "candidature": "Candidature",
+      "paiement": "Paiement",
+      "annonce": "Annonce",
+      "page": "Page"
+    },
+    "pages": {
+      "mesBiens": "Mes biens",
+      "candidatures": "Candidatures",
+      "paiements": "Paiements",
+      "documents": "Documents",
+      "messages": "Messages",
+      "alertes": "Alertes",
+      "rapports": "Rapports",
+      "reclamations": "Réclamations",
+      "preavis": "Préavis",
+      "parametres": "Paramètres",
+      "historique": "Historique",
+      "locataires": "Locataires"
+    },
+    "allerVers": "Aller vers {{titre}}",
+    "bouton": {
+      "rechercher": "Rechercher...",
+      "raccourci": "Ctrl+K"
+    },
+    "modal": {
+      "inputPlaceholder": "Chercher logement, locataire, page...",
+      "esc": "Esc",
+      "raccourcis": "Raccourcis",
+      "aucunResultatPour": "Aucun résultat pour",
+      "footer": {
+        "naviguer": "↑↓ Naviguer",
+        "selectionner": "↵ Sélectionner",
+        "fermer": "Esc Fermer",
+        "rechercheEnCours": "Recherche..."
+      }
+    }
+  },
+  "modalSignatureBail": {
+    "titre": "Signer le bail",
+    "description": "Votre signature électronique sera horodatée et associée à votre adresse IP, comme preuve d'acceptation du contrat.",
+    "labelNom": "Tapez votre nom complet pour signer",
+    "placeholderNom": "Ex: Mamadou Diallo",
+    "certification": "Je certifie l'exactitude de mon identité et j'accepte les termes de ce contrat de bail.",
+    "annuler": "Annuler",
+    "signatureEnCours": "Signature...",
+    "signerLeBail": "Signer le bail"
+  },
+  "modalPaiementMobile": {
+    "erreurPaiement": "Erreur paiement",
+    "paiementConfirmeToast": "Paiement confirme ! 🎉",
+    "erreurConfirmation": "Erreur confirmation",
+    "titre": "💳 Paiement Mobile Money",
+    "montantAPayer": "Montant à payer",
+    "choisirOperateur": "Choisissez votre operateur",
+    "orangeMoney": "Orange Money",
+    "mtnMomo": "MTN MoMo",
+    "paiementInstantane": "Paiement instantane",
+    "saisirNumero": "Saisissez votre numero",
+    "numeroTelephone": "Numero de telephone",
+    "numerosOrange": "Numeros Orange : 060, 065, 066, 067, 068",
+    "numerosMtn": "Numeros MTN : 061, 062, 063, 064",
+    "retour": "Retour",
+    "envoiEnCours": "Envoi...",
+    "envoyerLaDemande": "Envoyer la demande",
+    "demandeEnvoyee": "Demande envoyee !",
+    "expireDans": "⏱️ Expire dans {{temps}}",
+    "instructions": "Instructions :",
+    "reference": "Ref : {{ref}}",
+    "modeDemonstration": "🧪 Mode demonstration — cliquez pour simuler la confirmation",
+    "confirmationEnCours": "Confirmation...",
+    "simulerConfirmation": "Simuler la confirmation du paiement",
+    "paiementConfirme": "Paiement confirme !",
+    "votrePaiementDe": "Votre paiement de",
+    "aEteConfirme": "a ete confirme. Une quittance vous sera envoyee par email.",
+    "fermer": "Fermer"
+  },
+  "etatDesLieux": {
+    "pieces": {
+      "salon": "Salon / Séjour",
+      "cuisine": "Cuisine",
+      "chambre1": "Chambre 1",
+      "chambre2": "Chambre 2",
+      "sdb": "Salle de bain",
+      "toilettes": "Toilettes",
+      "entree": "Entrée / Couloir",
+      "general": "État général"
+    },
+    "signatureCanvas": {
+      "signezDabord": "Signez d'abord dans la zone",
+      "signatureEnregistreeToast": "Signature enregistrée !",
+      "signatureEnregistree": "Signature enregistrée",
+      "recommencer": "Recommencer",
+      "signezIci": "✍️ Signez ici",
+      "effacer": "Effacer",
+      "validerMaSignature": "Valider ma signature"
+    },
+    "photoAjouteePour": "Photo ajoutée pour {{piece}}",
+    "deuxPartiesDoiventSigner": "Les deux parties doivent signer",
+    "etatEnregistreEtSigne": "État des lieux enregistré et signé !",
+    "erreurEnregistrement": "Erreur lors de l'enregistrement",
+    "confirmation": {
+      "titreEntree": "État des lieux d'entrée signé !",
+      "titreSortie": "État des lieux de sortie signé !",
+      "description": "Le document est généré et envoyé aux deux parties par email. Il est disponible dans l'espace Documents.",
+      "resume": "Résumé",
+      "continuer": "Continuer →"
+    },
+    "header": {
+      "titreEntree": "📋 État des lieux d'entrée",
+      "titreSortie": "📋 État des lieux de sortie",
+      "piecesRenseignees": "{{progress}}/{{total}} pièces renseignées",
+      "signaturesDesDeuxParties": "Signatures des deux parties"
+    },
+    "observationsPlaceholder": "Observations (optionnel)",
+    "photoAjoutee": "Photo ajoutée ✓",
+    "ajouterUnePhoto": "Ajouter une photo",
+    "renseignezAuMoins3Pieces": "Renseignez au moins 3 pièces",
+    "passerAuxSignatures": "✍️ Passer aux signatures →",
+    "avertissementLegal": "⚖️ Les deux signatures sont obligatoires pour valider l'état des lieux. Ce document a valeur légale.",
+    "signaturesDesParties": "Signatures des parties",
+    "signatureProprietaire": "Signature du Propriétaire *",
+    "signatureLocataire": "Signature du Locataire *",
+    "retour": "← Retour",
+    "enregistrementEnCours": "⏳ Enregistrement...",
+    "validerEtatDesLieux": "✅ Valider l'état des lieux"
+  },
+  "ongletPreavis": {
+    "chargement": "Chargement...",
+    "na": "N/A",
+    "aucuneNote": "Aucune note",
+    "modifier": "← Modifier",
+    "confirmerEnvoiTitre": "⚠️ Confirmer l'envoi du préavis",
+    "telechargerPdf": "📄 Télécharger PDF",
+    "delaiMois": "{{n}} mois",
+    "motifsLocataire": {
+      "changementVille": "Changement de ville ou de pays",
+      "achatBien": "Achat d'un bien immobilier",
+      "logementNeCorrespondPlus": "Logement ne correspond plus à mes besoins",
+      "raisonsProfessionnelles": "Raisons professionnelles",
+      "raisonsFamiliales": "Raisons familiales",
+      "conditionsInsatisfaisantes": "Conditions du logement insatisfaisantes",
+      "autreRaison": "Autre raison"
+    },
+    "motifsProprio": {
+      "venteBien": "Vente du bien immobilier",
+      "repriseUsagePersonnel": "Reprise du bien pour usage personnel",
+      "travauxRenovation": "Travaux de rénovation importants",
+      "nonPaiementRepete": "Non-paiement répété des loyers",
+      "troublesVoisinage": "Troubles de voisinage",
+      "finBailNonRenouvele": "Fin de bail non renouvelé",
+      "autreMotif": "Autre motif"
+    },
+    "dispatcher": {
+      "titre": "📤 Préavis de départ",
+      "sousTitreProprio": "Envoyez un préavis officiel à un locataire",
+      "sousTitreLocataire": "Notifiez votre propriétaire de votre départ"
+    },
+    "locataire": {
+      "header": {
+        "titre": "📤 Préavis de départ",
+        "monLogement": "Mon logement"
+      },
+      "envoye": {
+        "toastSucces": "Préavis envoyé au propriétaire !",
+        "titre": "Préavis envoyé !",
+        "descAvant": "Votre propriétaire a été notifié par SMS. Il a ",
+        "descApres": " pour accuser réception.",
+        "recapTitre": "📋 Votre préavis officiel",
+        "labels": {
+          "logement": "Logement",
+          "motif": "Motif",
+          "delaiPreavis": "Délai de préavis",
+          "dateDepartEstimee": "Date de départ estimée",
+          "statut": "Statut"
+        },
+        "statutEnAttenteConfirmation": "⏳ En attente de confirmation",
+        "infoContinuerPaiement": "ℹ️ Continuez à payer vos loyers normalement jusqu'à la date de sortie. Un état des lieux de sortie sera planifié avec le propriétaire.",
+        "contacterProprio": "💬 Contacter le proprio"
+      },
+      "confirm": {
+        "actionOfficielle": "Action officielle",
+        "description": "Ce préavis sera envoyé officiellement à votre propriétaire par SMS et notification. Il ne pourra pas être annulé.",
+        "labels": {
+          "logement": "Logement",
+          "motif": "Motif",
+          "delai": "Délai",
+          "dateDeSortie": "Date de sortie",
+          "note": "Note"
+        },
+        "envoyerLePreavis": "📤 Envoyer le préavis"
+      },
+      "form": {
+        "alerteLegaleAvant": "En Guinée, le délai légal de préavis est d'",
+        "alerteLegaleGras": "1 mois minimum",
+        "alerteLegaleApres": ". Votre propriétaire recevra une notification officielle par SMS et via l'application Werdhe.",
+        "motifLabel": "Motif de départ *",
+        "delaiLabel": "Délai de préavis *",
+        "dateDepartEstimeeLabel": "📅 Date de départ estimée",
+        "messageLabel": "Message au propriétaire (optionnel)",
+        "messagePlaceholder": "Ajoutez un message personnel pour expliquer votre départ...",
+        "erreurSelection": "Sélectionnez un motif et un délai",
+        "preparerBouton": "📋 Préparer le préavis officiel",
+        "erreurSelectionContinuer": "Sélectionnez un motif et un délai pour continuer"
+      }
+    },
+    "proprio": {
+      "header": {
+        "titre": "📋 Envoyer un préavis",
+        "sousTitre": "Notification officielle au locataire"
+      },
+      "envoye": {
+        "toastSucces": "Préavis officiel envoyé ! {{locataire}} a été notifié.",
+        "titre": "Préavis officiel envoyé",
+        "descMid": "a été notifié par SMS et notification push. Il a ",
+        "descApres": " pour accuser réception sur la plateforme.",
+        "recapTitre": "📋 Préavis officiel",
+        "labels": {
+          "bien": "Bien",
+          "locataireNotifie": "Locataire notifié",
+          "contact": "Contact",
+          "motif": "Motif",
+          "delaiAccorde": "Délai accordé",
+          "dateDeSortieEstimee": "Date de sortie estimée",
+          "statut": "Statut"
+        },
+        "statutEnAttente": "⏳ En attente d'accusé de réception",
+        "infoAvant": "ℹ️ Continuez à encaisser les loyers normalement jusqu'à la date de sortie. L'état des lieux de sortie sera planifié automatiquement dans ",
+        "contacterLocataire": "💬 Contacter le locataire"
+      },
+      "confirm": {
+        "actionOfficielleIrreversible": "Action officielle et irréversible",
+        "descAvant": "Ce préavis sera envoyé officiellement à ",
+        "descApres": " par SMS et notification. Il apparaîtra dans l'historique du bien.",
+        "labels": {
+          "bien": "Bien",
+          "locataire": "Locataire",
+          "motif": "Motif",
+          "delai": "Délai",
+          "dateDeSortie": "Date de sortie",
+          "note": "Note"
+        },
+        "envoyerOfficiel": "📤 Envoyer le préavis officiel"
+      },
+      "form": {
+        "alerteInfo": "Le préavis sera envoyé par SMS et notification push directement au locataire. Il apparaîtra comme une notification officielle sur son application.",
+        "bienLabel": "Bien concerné *",
+        "aucunBienDisponible": "Tous vos biens ont déjà un préavis en cours",
+        "motifLabel": "Motif du préavis *",
+        "delaiLabel": "Délai accordé au locataire *",
+        "dateSortieEstimeeLabel": "📅 Date de sortie estimée",
+        "messageLabel": "Message au locataire (optionnel)",
+        "messagePlaceholder": "Ajoutez un message pour expliquer la situation au locataire...",
+        "erreurChampsObligatoires": "Remplissez tous les champs obligatoires",
+        "continuerBouton": "📋 Continuer — Préparer le préavis officiel",
+        "erreurSelectionComplete": "Sélectionnez un bien, un motif et un délai"
+      }
+    }
+  }
+}

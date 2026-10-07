@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 // Modal Mobile Money générique : réutilisable pour un paiement de loyer
 // (reservation_id) ou un paiement d'abonnement (plan/cycle), selon les
 // endpoints et le payload passés en props.
 export default function ModalPaiementMobile(props) {
+  var t = useTranslation('dashboard').t;
   var onClose = props.onClose;
   var onSuccess = props.onSuccess;
   var reservation = props.reservation;
@@ -47,7 +49,7 @@ export default function ModalPaiementMobile(props) {
         demarrerCompteur();
       })
       .catch(function(err) {
-        toast.error(err.response && err.response.data ? err.response.data.erreur : 'Erreur paiement');
+        toast.error(err.response && err.response.data ? err.response.data.erreur : t('modalPaiementMobile.erreurPaiement'));
       })
       .finally(function() { setLoading(false); });
   }
@@ -68,11 +70,11 @@ export default function ModalPaiementMobile(props) {
     setConfirming(true);
     api.patch(endpoints.confirmer + id, { statut: 'complete' })
       .then(function() {
-        toast.success('Paiement confirme ! 🎉');
+        toast.success(t('modalPaiementMobile.paiementConfirmeToast'));
         setEtape(4);
         if (onSuccess) onSuccess();
       })
-      .catch(function() { toast.error('Erreur confirmation'); })
+      .catch(function() { toast.error(t('modalPaiementMobile.erreurConfirmation')); })
       .finally(function() { setConfirming(false); });
   }
 
@@ -103,7 +105,7 @@ export default function ModalPaiementMobile(props) {
 
         <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px'}}>
           <h2 style={{margin:0, fontSize:'18px', fontWeight:'700', color:'#1B2B22'}}>
-            💳 Paiement Mobile Money
+            {t('modalPaiementMobile.titre')}
           </h2>
           <button
             onClick={onClose}
@@ -113,7 +115,7 @@ export default function ModalPaiementMobile(props) {
         </div>
 
         <div style={{textAlign:'center', marginBottom:'20px', padding:'12px', background:'#F0F4F1', borderRadius:'10px'}}>
-          <div style={{fontSize:'13px', color:'#666', marginBottom:'4px'}}>Montant à payer</div>
+          <div style={{fontSize:'13px', color:'#666', marginBottom:'4px'}}>{t('modalPaiementMobile.montantAPayer')}</div>
           <div style={{fontSize:'24px', fontWeight:'800', color:'#1B6B3A'}}>
             {Number(montant).toLocaleString('fr-FR')} GNF
           </div>
@@ -123,7 +125,7 @@ export default function ModalPaiementMobile(props) {
         {etape === 1 && (
           <div>
             <div style={{fontSize:'13px', fontWeight:'600', color:'#555', marginBottom:'12px'}}>
-              Choisissez votre operateur
+              {t('modalPaiementMobile.choisirOperateur')}
             </div>
             <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px', marginBottom:'16px'}}>
               <div
@@ -141,8 +143,8 @@ export default function ModalPaiementMobile(props) {
                   display:'flex', alignItems:'center', justifyContent:'center',
                   margin:'0 auto 10px', color:'#fff', fontWeight:'800', fontSize:'16px'
                 }}>OM</div>
-                <div style={{fontWeight:'700', fontSize:'14px', color:'#E65100'}}>Orange Money</div>
-                <div style={{fontSize:'11px', color:'#888', marginTop:'4px'}}>Paiement instantane</div>
+                <div style={{fontWeight:'700', fontSize:'14px', color:'#E65100'}}>{t('modalPaiementMobile.orangeMoney')}</div>
+                <div style={{fontSize:'11px', color:'#888', marginTop:'4px'}}>{t('modalPaiementMobile.paiementInstantane')}</div>
               </div>
 
               <div
@@ -160,8 +162,8 @@ export default function ModalPaiementMobile(props) {
                   display:'flex', alignItems:'center', justifyContent:'center',
                   margin:'0 auto 10px', color:'#1B2B22', fontWeight:'800', fontSize:'14px'
                 }}>MTN</div>
-                <div style={{fontWeight:'700', fontSize:'14px', color:'#F57F17'}}>MTN MoMo</div>
-                <div style={{fontSize:'11px', color:'#888', marginTop:'4px'}}>Paiement instantane</div>
+                <div style={{fontWeight:'700', fontSize:'14px', color:'#F57F17'}}>{t('modalPaiementMobile.mtnMomo')}</div>
+                <div style={{fontSize:'11px', color:'#888', marginTop:'4px'}}>{t('modalPaiementMobile.paiementInstantane')}</div>
               </div>
             </div>
           </div>
@@ -186,15 +188,15 @@ export default function ModalPaiementMobile(props) {
               </div>
               <div>
                 <div style={{fontWeight:'700', fontSize:'13px', color:'#1B2B22'}}>
-                  {operateur === 'orange' ? 'Orange Money' : 'MTN MoMo'}
+                  {operateur === 'orange' ? t('modalPaiementMobile.orangeMoney') : t('modalPaiementMobile.mtnMomo')}
                 </div>
-                <div style={{fontSize:'11px', color:'#888'}}>Saisissez votre numero</div>
+                <div style={{fontSize:'11px', color:'#888'}}>{t('modalPaiementMobile.saisirNumero')}</div>
               </div>
             </div>
 
             <div style={{marginBottom:'16px'}}>
               <label style={{fontSize:'13px', fontWeight:'600', color:'#555', display:'block', marginBottom:'6px'}}>
-                Numero de telephone
+                {t('modalPaiementMobile.numeroTelephone')}
               </label>
               <div style={{display:'flex', gap:'8px'}}>
                 <div style={{
@@ -219,7 +221,7 @@ export default function ModalPaiementMobile(props) {
                 />
               </div>
               <div style={{fontSize:'11px', color:'#aaa', marginTop:'5px'}}>
-                {operateur === 'orange' ? 'Numeros Orange : 060, 065, 066, 067, 068' : 'Numeros MTN : 061, 062, 063, 064'}
+                {operateur === 'orange' ? t('modalPaiementMobile.numerosOrange') : t('modalPaiementMobile.numerosMtn')}
               </div>
             </div>
 
@@ -229,7 +231,7 @@ export default function ModalPaiementMobile(props) {
                 onClick={function() { setEtape(1); }}
                 style={{flex:1, padding:'12px', background:'#f5f5f5', color:'#555', border:'none', borderRadius:'9px', fontSize:'14px', cursor:'pointer'}}
               >
-                Retour
+                {t('modalPaiementMobile.retour')}
               </button>
               <button
                 type="button"
@@ -243,7 +245,7 @@ export default function ModalPaiementMobile(props) {
                   fontWeight:'700', cursor: loading ? 'not-allowed' : 'pointer'
                 }}
               >
-                {loading ? 'Envoi...' : 'Envoyer la demande'}
+                {loading ? t('modalPaiementMobile.envoiEnCours') : t('modalPaiementMobile.envoyerLaDemande')}
               </button>
             </div>
           </div>
@@ -261,14 +263,14 @@ export default function ModalPaiementMobile(props) {
                 {operateur === 'orange' ? '📱' : '📲'}
               </div>
               <div style={{fontSize:'15px', fontWeight:'700', color:'#1B2B22', marginBottom:'6px'}}>
-                Demande envoyee !
+                {t('modalPaiementMobile.demandeEnvoyee')}
               </div>
               <div style={{fontSize:'13px', color:'#888', lineHeight:'1.6', marginBottom:'12px'}}>
                 {paiementData.message}
               </div>
               {compteur > 0 && (
                 <div style={{fontSize:'12px', color:'#E65100', fontWeight:'600', marginBottom:'12px'}}>
-                  ⏱️ Expire dans {formatTimer(compteur)}
+                  {t('modalPaiementMobile.expireDans', { temps: formatTimer(compteur) })}
                 </div>
               )}
             </div>
@@ -276,7 +278,7 @@ export default function ModalPaiementMobile(props) {
             {paiementData.instructions && (
               <div style={{background:'#F8F9FA', borderRadius:'10px', padding:'14px', marginBottom:'16px'}}>
                 <div style={{fontSize:'12px', fontWeight:'700', color:'#555', marginBottom:'8px'}}>
-                  Instructions :
+                  {t('modalPaiementMobile.instructions')}
                 </div>
                 {paiementData.instructions.map(function(inst, i) {
                   return (
@@ -292,7 +294,7 @@ export default function ModalPaiementMobile(props) {
             )}
 
             <div style={{fontSize:'11px', color:'#aaa', textAlign:'center', marginBottom:'12px'}}>
-              Ref : {paiementData.reference}
+              {t('modalPaiementMobile.reference', { ref: paiementData.reference })}
             </div>
 
             {paiementData.simulation && (
@@ -302,7 +304,7 @@ export default function ModalPaiementMobile(props) {
                   borderRadius:'10px', padding:'12px', marginBottom:'12px',
                   fontSize:'12px', color:'#1B5E20', textAlign:'center'
                 }}>
-                  🧪 Mode demonstration — cliquez pour simuler la confirmation
+                  {t('modalPaiementMobile.modeDemonstration')}
                 </div>
                 <button
                   type="button"
@@ -315,7 +317,7 @@ export default function ModalPaiementMobile(props) {
                     fontSize:'14px', fontWeight:'700', cursor: confirming ? 'not-allowed' : 'pointer'
                   }}
                 >
-                  {confirming ? 'Confirmation...' : 'Simuler la confirmation du paiement'}
+                  {confirming ? t('modalPaiementMobile.confirmationEnCours') : t('modalPaiementMobile.simulerConfirmation')}
                 </button>
               </div>
             )}
@@ -330,19 +332,19 @@ export default function ModalPaiementMobile(props) {
               margin:'0 auto 16px', fontSize:'32px'
             }}>✅</div>
             <div style={{fontSize:'18px', fontWeight:'700', color:'#1B2B22', marginBottom:'8px'}}>
-              Paiement confirme !
+              {t('modalPaiementMobile.paiementConfirme')}
             </div>
             <div style={{fontSize:'13px', color:'#888', marginBottom:'20px', lineHeight:'1.6'}}>
-              Votre paiement de{' '}
+              {t('modalPaiementMobile.votrePaiementDe')}{' '}
               <strong style={{color:'#1B6B3A'}}>{Number(montant).toLocaleString('fr-FR')} GNF</strong>
-              {' '}a ete confirme. Une quittance vous sera envoyee par email.
+              {' '}{t('modalPaiementMobile.aEteConfirme')}
             </div>
             <button
               type="button"
               onClick={onClose}
               style={{width:'100%', padding:'13px', background:'#1B6B3A', color:'#fff', border:'none', borderRadius:'9px', fontSize:'14px', fontWeight:'700', cursor:'pointer'}}
             >
-              Fermer
+              {t('modalPaiementMobile.fermer')}
             </button>
           </div>
         )}
