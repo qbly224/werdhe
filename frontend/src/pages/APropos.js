@@ -158,7 +158,7 @@ export default function APropos() {
               })}
             </div>
             <div style={{ background: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)', borderRadius: 20, padding: 32, textAlign: 'center', minHeight: 280, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ fontSize: 64, marginBottom: 16 }}>🏠</div>
+              <div style={{ marginBottom: 16 }}><Home size={64} strokeWidth={1.3} color="#1B6B3A" /></div>
               <div style={{ fontSize: 18, fontWeight: 800, color: '#1B6B3A', marginBottom: 8 }}>Werdhe</div>
               <div style={{ fontSize: 13, color: '#555', lineHeight: 1.6 }}>
                 {t('apropos.mission.tagline1')}<br/>{t('apropos.mission.tagline2')}

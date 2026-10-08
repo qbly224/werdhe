@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
-import { ChevronLeft, Shield } from 'lucide-react';
+import { ChevronLeft, Shield, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 function getSections(t) {
@@ -51,8 +51,8 @@ export default function Confidentialite() {
         </div>
 
         {/* Intro */}
-        <div style={{ background: '#E3F2FD', border: '1px solid #90CAF9', borderRadius: 12, padding: '14px 18px', marginBottom: 28, fontSize: 13, color: '#1565C0', lineHeight: 1.6 }}>
-          🔒 {t('confidentialite.intro')}
+        <div style={{ background: '#E3F2FD', border: '1px solid #90CAF9', borderRadius: 12, padding: '14px 18px', marginBottom: 28, fontSize: 13, color: '#1565C0', lineHeight: 1.6, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+          <Lock size={16} strokeWidth={1.5} style={{ flexShrink: 0, marginTop: 2 }} /> {t('confidentialite.intro')}
         </div>
 
         {/* Sections */}

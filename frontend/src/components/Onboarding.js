@@ -9,7 +9,8 @@ import {
   Home, Users, FileText, Bell, CreditCard,
   Search, CalendarCheck, Key, ChevronRight,
   Check, X, Zap, Building2, Star, ArrowRight,
-  TrendingUp, Shield, MessageCircle, ChevronLeft
+  TrendingUp, Shield, MessageCircle, ChevronLeft,
+  BarChart3, Wallet, ClipboardList, Camera, MapPin, BedDouble
 } from 'lucide-react';
 
 // ─── ONBOARDING PROPRIÉTAIRE AVANCÉ ─────────────────────────────
@@ -120,14 +121,15 @@ function OnboardingProprioAvance({ onTermine }) {
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 24 }}>
               {[
-                { icon: '📊', titre: t('onboarding.proprio.etape0.dashboardComplet'), desc: t('onboarding.proprio.etape0.dashboardCompletDesc') },
-                { icon: '💰', titre: t('onboarding.proprio.etape0.paiementsAuto'),    desc: t('onboarding.proprio.etape0.paiementsAutoDesc') },
-                { icon: '📋', titre: t('onboarding.proprio.etape0.candidatures'),      desc: t('onboarding.proprio.etape0.candidaturesDesc') },
-                { icon: '⚡', titre: t('onboarding.proprio.etape0.alertesTempsReel'), desc: t('onboarding.proprio.etape0.alertesTempsReelDesc') },
+                { icon: BarChart3, titre: t('onboarding.proprio.etape0.dashboardComplet'), desc: t('onboarding.proprio.etape0.dashboardCompletDesc') },
+                { icon: Wallet, titre: t('onboarding.proprio.etape0.paiementsAuto'),    desc: t('onboarding.proprio.etape0.paiementsAutoDesc') },
+                { icon: ClipboardList, titre: t('onboarding.proprio.etape0.candidatures'),      desc: t('onboarding.proprio.etape0.candidaturesDesc') },
+                { icon: Zap, titre: t('onboarding.proprio.etape0.alertesTempsReel'), desc: t('onboarding.proprio.etape0.alertesTempsReelDesc') },
               ].map(function(item, i) {
+                var Icone = item.icon;
                 return (
                   <div key={i} style={{ background: '#F7F8F7', borderRadius: 12, padding: '12px 14px', textAlign: 'left', display: 'flex', gap: 10, alignItems: 'center' }}>
-                    <span style={{ fontSize: 22 }}>{item.icon}</span>
+                    <Icone size={22} strokeWidth={1.5} color="#1B6B3A" />
                     <div>
                       <div style={{ fontSize: 12, fontWeight: 700, color: '#1B2B22' }}>{item.titre}</div>
                       <div style={{ fontSize: 11, color: '#888' }}>{item.desc}</div>
@@ -235,14 +237,15 @@ function OnboardingProprioAvance({ onTermine }) {
             <div style={{ background: '#F7F8F7', borderRadius: 14, padding: '16px 18px', marginBottom: 20, textAlign: 'left' }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 12 }}>{t('onboarding.proprio.etape2.ceQueVousDevezPreparer')}</div>
               {[
-                { icon: '📸', label: t('onboarding.proprio.etape2.photos') },
-                { icon: '📍', label: t('onboarding.proprio.etape2.adresse') },
-                { icon: '💰', label: t('onboarding.proprio.etape2.prix') },
-                { icon: '🛏', label: t('onboarding.proprio.etape2.chambres') },
+                { icon: Camera, label: t('onboarding.proprio.etape2.photos') },
+                { icon: MapPin, label: t('onboarding.proprio.etape2.adresse') },
+                { icon: Wallet, label: t('onboarding.proprio.etape2.prix') },
+                { icon: BedDouble, label: t('onboarding.proprio.etape2.chambres') },
               ].map(function(item, i) {
+                var Icone = item.icon;
                 return (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, fontSize: 13, color: '#555' }}>
-                    <span style={{ fontSize: 18 }}>{item.icon}</span>
+                    <Icone size={18} strokeWidth={1.5} color="#1B6B3A" />
                     {item.label}
                   </div>
                 );

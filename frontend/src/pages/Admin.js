@@ -5,6 +5,12 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import {
+  BarChart3, Users, Home, CalendarCheck, CreditCard, Ticket, Newspaper, ScrollText, Bell,
+  UserPlus, Wallet, HelpCircle, KeyRound, Building2, CheckCircle2, DoorOpen, Clock,
+  ClipboardList, Star, Zap, AlertTriangle, Trash2,
+} from 'lucide-react';
+import Logo from '../components/Logo';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n) + ' GNF'; };
 
@@ -199,15 +205,15 @@ export default function Admin() {
   });
 
 var NAV = [
-  { id: 'stats',        label: t('admin.nav.stats'),        icon: '📊' },
-  { id: 'users',        label: t('admin.nav.users'),        icon: '👥' },
-  { id: 'logements',    label: t('admin.nav.logements'),    icon: '🏠' },
-  { id: 'reservations', label: t('admin.nav.reservations'), icon: '📅' },
-  { id: 'abonnements',  label: t('admin.nav.abonnements'),  icon: '💳' },
-  { id: 'promos',       label: t('admin.nav.promos'),       icon: '🎟️' },
-  { id: 'blog',         label: t('admin.nav.blog'),         icon: '📝' },
-  { id: 'logs',         label: t('admin.nav.logs'),         icon: '📋' },
-  { id: 'alertes',      label: t('admin.nav.alertes'),      icon: '🔔' },
+  { id: 'stats',        label: t('admin.nav.stats'),        icon: BarChart3 },
+  { id: 'users',        label: t('admin.nav.users'),        icon: Users },
+  { id: 'logements',    label: t('admin.nav.logements'),    icon: Home },
+  { id: 'reservations', label: t('admin.nav.reservations'), icon: CalendarCheck },
+  { id: 'abonnements',  label: t('admin.nav.abonnements'),  icon: CreditCard },
+  { id: 'promos',       label: t('admin.nav.promos'),       icon: Ticket },
+  { id: 'blog',         label: t('admin.nav.blog'),         icon: Newspaper },
+  { id: 'logs',         label: t('admin.nav.logs'),         icon: ScrollText },
+  { id: 'alertes',      label: t('admin.nav.alertes'),      icon: Bell },
 ];
 
   var cfgStatuts = {
@@ -228,7 +234,7 @@ var NAV = [
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', fontFamily: 'system-ui', flexDirection: 'column', gap: 12 }}>
-        <div style={{ fontSize: 32 }}>🏠</div>
+        <Home size={32} strokeWidth={1.5} color="#1B6B3A" />
         <div style={{ color: '#888' }}>{t('admin.loading')}</div>
       </div>
     );
@@ -240,7 +246,7 @@ var NAV = [
       {/* ── SIDEBAR ───────────────────────────────────────────── */}
       <div className="admin-sidebar" style={{ width: 220, background: '#1B2B22', minHeight: '100vh', padding: '0', flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
         <div style={{ padding: '20px 16px', borderBottom: '0.5px solid rgba(255,255,255,0.1)' }}>
-          <div style={{ color: '#fff', fontWeight: 800, fontSize: 18 }}>🏠 Werdhe</div>
+          <Logo size={26} showText={true} darkBg={true} />
           <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11, marginTop: 3 }}>{t('admin.sidebar.panneauAdmin')}</div>
           <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
             <div style={{ width: 8, height: 8, background: '#34A853', borderRadius: '50%' }} />
@@ -254,7 +260,7 @@ var NAV = [
             return (
               <button key={n.id} onClick={function() { setOnglet(n.id); }}
                 style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10, border: 'none', background: actif ? 'rgba(255,255,255,0.12)' : 'transparent', color: actif ? '#fff' : 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: actif ? 700 : 400, cursor: 'pointer', marginBottom: 4, textAlign: 'left' }}>
-                <span>{n.icon}</span>
+                <n.icon size={16} strokeWidth={1.5} />
                 {n.label}
               </button>
             );
@@ -281,8 +287,8 @@ var NAV = [
       {NAV.map(function(n) {
         return (
           <button key={n.id} onClick={function() { setOnglet(n.id); }}
-            style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: onglet === n.id ? 'rgba(255,255,255,0.2)' : 'transparent', color: '#fff', fontSize: 12, cursor: 'pointer', whiteSpace: 'nowrap', fontWeight: onglet === n.id ? 700 : 400 }}>
-            {n.icon} {n.label}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, border: 'none', background: onglet === n.id ? 'rgba(255,255,255,0.2)' : 'transparent', color: '#fff', fontSize: 12, cursor: 'pointer', whiteSpace: 'nowrap', fontWeight: onglet === n.id ? 700 : 400 }}>
+            <n.icon size={14} strokeWidth={1.5} /> {n.label}
           </button>
         );
       })}
@@ -317,7 +323,7 @@ var NAV = [
 {/* ─── ALERTES CRITIQUES ───────────────────────────────────── */}
 {liveData && liveData.alertes_critiques > 0 && (
   <div style={{ background: '#FFEBEE', border: '1px solid #FFCDD2', borderRadius: 12, padding: '14px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
-    <span style={{ fontSize: 24 }}>🚨</span>
+    <AlertTriangle size={24} strokeWidth={1.5} color="#B71C1C" />
     <div>
       <div style={{ fontSize: 14, fontWeight: 700, color: '#B71C1C' }}>
         {t('admin.stats.alerteCritique', { count: liveData.alertes_critiques })}
@@ -331,14 +337,14 @@ var NAV = [
 {liveData && (
   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 16 }}>
     {[
-      { label: t('admin.stats.kpi.inscriptionsAujourdhui'), val: liveData.inscriptions_aujourdhui, icon: '👥', color: '#1B6B3A', bg: '#E8F5E9' },
-      { label: t('admin.stats.kpi.candidaturesAujourdhui'), val: liveData.candidatures_aujourdhui, icon: '📅', color: '#1565C0', bg: '#E3F2FD' },
-      { label: t('admin.stats.kpi.paiementsAujourdhui'),    val: liveData.paiements_aujourdhui.nb, icon: '💳', color: '#7B1FA2', bg: '#F3E5F5' },
-      { label: t('admin.stats.kpi.volumeAujourdhui'),       val: new Intl.NumberFormat('fr-FR').format(liveData.paiements_aujourdhui.total) + ' GNF', icon: '💰', color: '#E65100', bg: '#FFF3E0' },
+      { label: t('admin.stats.kpi.inscriptionsAujourdhui'), val: liveData.inscriptions_aujourdhui, icon: UserPlus, color: '#1B6B3A', bg: '#E8F5E9' },
+      { label: t('admin.stats.kpi.candidaturesAujourdhui'), val: liveData.candidatures_aujourdhui, icon: CalendarCheck, color: '#1565C0', bg: '#E3F2FD' },
+      { label: t('admin.stats.kpi.paiementsAujourdhui'),    val: liveData.paiements_aujourdhui.nb, icon: CreditCard, color: '#7B1FA2', bg: '#F3E5F5' },
+      { label: t('admin.stats.kpi.volumeAujourdhui'),       val: new Intl.NumberFormat('fr-FR').format(liveData.paiements_aujourdhui.total) + ' GNF', icon: Wallet, color: '#E65100', bg: '#FFF3E0' },
     ].map(function(k, i) {
       return (
         <div key={i} style={{ background: k.bg, borderRadius: 12, padding: '14px 16px', borderLeft: '4px solid ' + k.color }}>
-          <div style={{ fontSize: 22, marginBottom: 6 }}>{k.icon}</div>
+          <div style={{ marginBottom: 6 }}><k.icon size={22} strokeWidth={1.5} color={k.color} /></div>
           <div style={{ fontSize: 20, fontWeight: 800, color: k.color }}>{k.val}</div>
           <div style={{ fontSize: 11, color: '#555', marginTop: 4 }}>{k.label}</div>
         </div>
@@ -351,21 +357,21 @@ var NAV = [
 {liveData && liveData.activite && liveData.activite.length > 0 && (
   <div style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
     <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
-      <span>⚡</span> {t('admin.stats.activiteRecente')}
+      <Zap size={16} strokeWidth={1.5} /> {t('admin.stats.activiteRecente')}
     </div>
     <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
       {liveData.activite.map(function(a, i) {
         var cfg = {
-          inscription: { icon: '👤', color: '#1B6B3A', bg: '#E8F5E9', label: t('admin.stats.activiteType.inscription') },
-          candidature: { icon: '📅', color: '#1565C0', bg: '#E3F2FD', label: t('admin.stats.activiteType.candidature') },
-          logement:    { icon: '🏠', color: '#7B1FA2', bg: '#F3E5F5', label: t('admin.stats.activiteType.logement')    },
-          paiement:    { icon: '💰', color: '#E65100', bg: '#FFF3E0', label: t('admin.stats.activiteType.paiement')    },
-        }[a.type] || { icon: '•', color: '#888', bg: '#F5F5F5', label: a.type };
+          inscription: { icon: UserPlus, color: '#1B6B3A', bg: '#E8F5E9', label: t('admin.stats.activiteType.inscription') },
+          candidature: { icon: CalendarCheck, color: '#1565C0', bg: '#E3F2FD', label: t('admin.stats.activiteType.candidature') },
+          logement:    { icon: Home, color: '#7B1FA2', bg: '#F3E5F5', label: t('admin.stats.activiteType.logement')    },
+          paiement:    { icon: Wallet, color: '#E65100', bg: '#FFF3E0', label: t('admin.stats.activiteType.paiement')    },
+        }[a.type] || { icon: HelpCircle, color: '#888', bg: '#F5F5F5', label: a.type };
 
         return (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: i < liveData.activite.length - 1 ? '0.5px solid #F5F5F5' : 'none' }}>
-            <div style={{ width: 32, height: 32, background: cfg.bg, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>
-              {cfg.icon}
+            <div style={{ width: 32, height: 32, background: cfg.bg, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <cfg.icon size={16} strokeWidth={1.5} color={cfg.color} />
             </div>
             <div style={{ flex: 1 }}>
               <span style={{ fontSize: 12, fontWeight: 700, color: cfg.color, marginRight: 8 }}>{cfg.label}</span>
@@ -403,18 +409,18 @@ var NAV = [
             {/* KPIs principaux */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14, marginBottom: 24 }}>
               {[
-                { label: t('admin.stats.kpiPrincipaux.utilisateurs'),      val: stats.total_users,         icon: '👥', color: '#1565C0', bg: '#E3F2FD' },
-                { label: t('admin.stats.kpiPrincipaux.proprietaires'),     val: stats.total_proprietaires, icon: '🔑', color: '#1B6B3A', bg: '#E8F5E9' },
-                { label: t('admin.stats.kpiPrincipaux.locataires'),        val: stats.total_locataires,    icon: '🏠', color: '#7B1FA2', bg: '#F3E5F5' },
-                { label: t('admin.stats.kpiPrincipaux.logementsPublies'), val: stats.total_logements,     icon: '🏢', color: '#E65100', bg: '#FFF3E0' },
-                { label: t('admin.stats.kpiPrincipaux.logementsLoues'),   val: stats.logements_loues,     icon: '✅', color: '#1B6B3A', bg: '#E8F5E9' },
-                { label: t('admin.stats.kpiPrincipaux.reservations'),      val: stats.total_reservations,  icon: '📅', color: '#1565C0', bg: '#E3F2FD' },
-                { label: t('admin.stats.kpiPrincipaux.locationsActives'), val: stats.total_confirmees,    icon: '🗝️', color: '#1B6B3A', bg: '#E8F5E9' },
-                { label: t('admin.stats.kpiPrincipaux.revenus'),      val: GNF(stats.revenus_plateforme || 0), icon: '💰', color: '#C8860A', bg: '#FFF8E1' },
+                { label: t('admin.stats.kpiPrincipaux.utilisateurs'),      val: stats.total_users,         icon: Users, color: '#1565C0', bg: '#E3F2FD' },
+                { label: t('admin.stats.kpiPrincipaux.proprietaires'),     val: stats.total_proprietaires, icon: KeyRound, color: '#1B6B3A', bg: '#E8F5E9' },
+                { label: t('admin.stats.kpiPrincipaux.locataires'),        val: stats.total_locataires,    icon: Home, color: '#7B1FA2', bg: '#F3E5F5' },
+                { label: t('admin.stats.kpiPrincipaux.logementsPublies'), val: stats.total_logements,     icon: Building2, color: '#E65100', bg: '#FFF3E0' },
+                { label: t('admin.stats.kpiPrincipaux.logementsLoues'),   val: stats.logements_loues,     icon: CheckCircle2, color: '#1B6B3A', bg: '#E8F5E9' },
+                { label: t('admin.stats.kpiPrincipaux.reservations'),      val: stats.total_reservations,  icon: CalendarCheck, color: '#1565C0', bg: '#E3F2FD' },
+                { label: t('admin.stats.kpiPrincipaux.locationsActives'), val: stats.total_confirmees,    icon: DoorOpen, color: '#1B6B3A', bg: '#E8F5E9' },
+                { label: t('admin.stats.kpiPrincipaux.revenus'),      val: GNF(stats.revenus_plateforme || 0), icon: Wallet, color: '#C8860A', bg: '#FFF8E1' },
               ].map(function(s, i) {
                 return (
                   <div key={i} style={{ background: s.bg, borderRadius: 14, padding: 16, borderLeft: '4px solid ' + s.color }}>
-                    <div style={{ fontSize: 24, marginBottom: 6 }}>{s.icon}</div>
+                    <div style={{ marginBottom: 6 }}><s.icon size={24} strokeWidth={1.5} color={s.color} /></div>
                     <div style={{ fontSize: 20, fontWeight: 800, color: s.color }}>{s.val}</div>
                     <div style={{ fontSize: 11, color: '#555', marginTop: 4 }}>{s.label}</div>
                   </div>
@@ -511,7 +517,7 @@ var NAV = [
                 {alertes.slice(0, 5).map(function(a, i) {
                   return (
                     <div key={i} style={{ display: 'flex', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #F5F5F5' }}>
-                      <span style={{ fontSize: 16, flexShrink: 0 }}>{a.type === 'loyer_retard' ? '⚠️' : '📋'}</span>
+                      <span style={{ flexShrink: 0 }}>{a.type === 'loyer_retard' ? <AlertTriangle size={16} strokeWidth={1.5} color="#F5A623" /> : <ClipboardList size={16} strokeWidth={1.5} color="#1565C0" />}</span>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22' }}>{a.titre}</div>
                         <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{new Date(a.created_at).toLocaleDateString('fr-FR')}</div>
@@ -608,7 +614,9 @@ var NAV = [
                 var nbResas = reservations.filter(function(r) { return r.logement_id === l.id; }).length;
                 return (
                   <div key={l.id} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-                    <div style={{ width: 44, height: 44, background: l.statut === 'loue' ? '#E8F5E9' : '#FFF8E1', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>🏠</div>
+                    <div style={{ width: 44, height: 44, background: l.statut === 'loue' ? '#E8F5E9' : '#FFF8E1', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <Home size={20} strokeWidth={1.5} color={l.statut === 'loue' ? '#1B6B3A' : '#F5A623'} />
+                    </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                         <span style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{l.titre}</span>
@@ -630,8 +638,8 @@ var NAV = [
                         </button>
                       )}
                       <button onClick={function() { supprimerLogement(l.id); }}
-                        style={{ padding: '6px 12px', borderRadius: 8, background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
-                        🗑️
+                        style={{ padding: '6px 12px', borderRadius: 8, background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                        <Trash2 size={14} strokeWidth={1.8} />
                       </button>
                     </div>
                   </div>
@@ -708,16 +716,16 @@ var NAV = [
         {/* KPIs */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 24 }}>
           {[
-            { label: t('admin.revenus.kpi.commissionsMois'),     val: GNF(revenus.commissions.total_commissions || 0),   icon: '💰', color: '#1B6B3A', bg: '#E8F5E9' },
-            { label: t('admin.revenus.kpi.commissionsEncaissees'),   val: GNF(revenus.commissions.encaisse || 0),            icon: '✅', color: '#1B6B3A', bg: '#E8F5E9' },
-            { label: t('admin.revenus.kpi.commissionsEnAttente'),   val: GNF(revenus.commissions.en_attente || 0),          icon: '⏳', color: '#E65100', bg: '#FFF3E0' },
-            { label: t('admin.revenus.kpi.revenusAbonnements'),      val: GNF(revenus.abonnements.revenus_abonnements || 0), icon: '📋', color: '#1565C0', bg: '#E3F2FD' },
-            { label: t('admin.revenus.kpi.abonnesPro'),              val: revenus.abonnements.nb_pro || 0,                   icon: '⭐', color: '#1B6B3A', bg: '#E8F5E9' },
-            { label: t('admin.revenus.kpi.abonnesAgence'),           val: revenus.abonnements.nb_agence || 0,                icon: '🏢', color: '#7B1FA2', bg: '#F3E5F5' },
+            { label: t('admin.revenus.kpi.commissionsMois'),     val: GNF(revenus.commissions.total_commissions || 0),   icon: Wallet, color: '#1B6B3A', bg: '#E8F5E9' },
+            { label: t('admin.revenus.kpi.commissionsEncaissees'),   val: GNF(revenus.commissions.encaisse || 0),            icon: CheckCircle2, color: '#1B6B3A', bg: '#E8F5E9' },
+            { label: t('admin.revenus.kpi.commissionsEnAttente'),   val: GNF(revenus.commissions.en_attente || 0),          icon: Clock, color: '#E65100', bg: '#FFF3E0' },
+            { label: t('admin.revenus.kpi.revenusAbonnements'),      val: GNF(revenus.abonnements.revenus_abonnements || 0), icon: ClipboardList, color: '#1565C0', bg: '#E3F2FD' },
+            { label: t('admin.revenus.kpi.abonnesPro'),              val: revenus.abonnements.nb_pro || 0,                   icon: Star, color: '#1B6B3A', bg: '#E8F5E9' },
+            { label: t('admin.revenus.kpi.abonnesAgence'),           val: revenus.abonnements.nb_agence || 0,                icon: Building2, color: '#7B1FA2', bg: '#F3E5F5' },
           ].map(function(s, i) {
             return (
               <div key={i} style={{ background: s.bg, borderRadius: 14, padding: 16, borderLeft: '4px solid ' + s.color }}>
-                <div style={{ fontSize: 24, marginBottom: 6 }}>{s.icon}</div>
+                <div style={{ marginBottom: 6 }}><s.icon size={24} strokeWidth={1.5} color={s.color} /></div>
                 <div style={{ fontSize: 20, fontWeight: 800, color: s.color }}>{s.val}</div>
                 <div style={{ fontSize: 11, color: '#555', marginTop: 4 }}>{s.label}</div>
               </div>
@@ -772,7 +780,7 @@ var NAV = [
                 var couleur = a.priorite === 'haute' ? '#E53935' : a.type === 'loyer_retard' ? '#F5A623' : '#1565C0';
                 return (
                   <div key={i} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderLeft: '4px solid ' + couleur, display: 'flex', gap: 12 }}>
-                    <span style={{ fontSize: 22, flexShrink: 0 }}>{a.type === 'loyer_retard' ? '⚠️' : a.type === 'bail_bientot' ? '📋' : '🔔'}</span>
+                    <span style={{ flexShrink: 0 }}>{a.type === 'loyer_retard' ? <AlertTriangle size={20} strokeWidth={1.5} color="#F5A623" /> : a.type === 'bail_bientot' ? <ClipboardList size={20} strokeWidth={1.5} color="#1565C0" /> : <Bell size={20} strokeWidth={1.5} color="#555" />}</span>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{a.titre}</div>
                       <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>{a.description}</div>

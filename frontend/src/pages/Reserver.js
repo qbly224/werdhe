@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { Home, MapPin } from 'lucide-react';
 
 const GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 
@@ -103,15 +104,15 @@ export default function Reserver() {
       {/* ── FICHE LOGEMENT (données réelles) ───────────────────── */}
       <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
         <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginBottom: 14 }}>
-          <div style={{ width: 64, height: 56, background: '#E8F5E9', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, flexShrink: 0 }}>
-            🏠
+          <div style={{ width: 64, height: 56, background: '#E8F5E9', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <Home size={24} strokeWidth={1.5} color="#1B6B3A" />
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontWeight: 700, fontSize: 15, color: '#1B2B22' }}>
               {logement.titre}
             </div>
-            <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>
-              📍 {logement.adresse}{logement.ville ? ', ' + logement.ville : ''}
+            <div style={{ fontSize: 12, color: '#888', marginTop: 3, display: 'flex', alignItems: 'center', gap: 4 }}>
+              <MapPin size={12} strokeWidth={1.5} /> {logement.adresse}{logement.ville ? ', ' + logement.ville : ''}
             </div>
             <div style={{ fontSize: 17, fontWeight: 700, color: '#1B6B3A', marginTop: 4 }}>
               {GNF(loyer)} / mois

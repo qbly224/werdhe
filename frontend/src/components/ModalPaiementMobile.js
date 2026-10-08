@@ -2,6 +2,7 @@ import { useState } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { Smartphone, CheckCircle2 } from 'lucide-react';
 
 // Modal Mobile Money générique : réutilisable pour un paiement de loyer
 // (reservation_id) ou un paiement d'abonnement (plan/cycle), selon les
@@ -258,9 +259,9 @@ export default function ModalPaiementMobile(props) {
                 width:'56px', height:'56px', borderRadius:'50%',
                 background: operateur === 'orange' ? '#FFF3E0' : '#FFFDE7',
                 display:'flex', alignItems:'center', justifyContent:'center',
-                margin:'0 auto 12px', fontSize:'28px'
+                margin:'0 auto 12px'
               }}>
-                {operateur === 'orange' ? '📱' : '📲'}
+                <Smartphone size={26} strokeWidth={1.5} color={operateur === 'orange' ? '#E65100' : '#F9A825'} />
               </div>
               <div style={{fontSize:'15px', fontWeight:'700', color:'#1B2B22', marginBottom:'6px'}}>
                 {t('modalPaiementMobile.demandeEnvoyee')}
@@ -329,8 +330,8 @@ export default function ModalPaiementMobile(props) {
             <div style={{
               width:'64px', height:'64px', borderRadius:'50%', background:'#E8F5E9',
               display:'flex', alignItems:'center', justifyContent:'center',
-              margin:'0 auto 16px', fontSize:'32px'
-            }}>✅</div>
+              margin:'0 auto 16px'
+            }}><CheckCircle2 size={32} strokeWidth={1.5} color="#1B6B3A" /></div>
             <div style={{fontSize:'18px', fontWeight:'700', color:'#1B2B22', marginBottom:'8px'}}>
               {t('modalPaiementMobile.paiementConfirme')}
             </div>

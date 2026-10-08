@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { BedDouble, Bath, Maximize2, ArrowRight, MapPin, Search, SlidersHorizontal, X, Home, Building2 } from 'lucide-react';
 import Logo from '../components/Logo';
+import { CATEGORIE_INFO, CATEGORIE_DEFAUT } from '../components/CarteLogement';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import MapView from '../components/MapView';
@@ -242,14 +243,14 @@ export default function Logements() {
       <div style={{ padding: '16px', maxWidth: 900, margin: '0 auto' }}>
         {loading && (
           <div style={{ textAlign: 'center', padding: '40px 0', color: '#888' }}>
-            <div style={{ fontSize: 36, marginBottom: 10 }}>🔍</div>
+            <div style={{ marginBottom: 10, display: 'flex', justifyContent: 'center' }}><Search size={36} strokeWidth={1.5} color="#aaa" /></div>
             {t('logements.etatRecherche.enCours')}
           </div>
         )}
 
         {!loading && logements.length === 0 && (
           <div style={{ textAlign: 'center', padding: '50px 20px' }}>
-            <div style={{ fontSize: 48, marginBottom: 14 }}>🏠</div>
+            <div style={{ marginBottom: 14, display: 'flex', justifyContent: 'center' }}><Home size={48} strokeWidth={1.5} color="#ccc" /></div>
             <div style={{ fontSize: 17, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>{t('logements.etatRecherche.aucunResultat')}</div>
             <div style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>{t('logements.etatRecherche.autresCriteres')}</div>
             {nbFiltresActifs > 0 && (
@@ -280,6 +281,8 @@ export default function Logements() {
     })
     .map(function(l) {
     var estNouveau = (new Date() - new Date(l.created_at)) < 7 * 24 * 60 * 60 * 1000;
+    var catInfo = CATEGORIE_INFO[l.categorie] || CATEGORIE_DEFAUT;
+    var CatIcon = catInfo.icon;
             return (
               <div key={l.id}
                 onClick={function() { navigate('/logements/' + l.id); }}
@@ -293,13 +296,8 @@ export default function Logements() {
   <img src={optimiserImage(typeof l.photos[0] === 'string' ? l.photos[0] : l.photos[0].url, 400, 75)} alt={l.titre} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
 ) : (
   <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1B6B3A 0%, #2D9E5F 50%, #E8F5E9 100%)' }}>
-    <span style={{ fontSize: 48, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.2))' }}>
-      {l.categorie === 'villa' || l.categorie === 'villa_luxe' ? '🏡'
-       : l.categorie === 'studio'           ? '🏢'
-       : l.categorie === 'appartement'      ? '🏬'
-       : l.categorie === 'bureau'           ? '🏪'
-       : l.categorie === 'duplex'           ? '🏘️'
-       : '🏠'}
+    <span style={{ display: 'flex', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.2))' }}>
+      <CatIcon size={40} strokeWidth={1.5} color="#fff" />
     </span>
     <div style={{ color: 'rgba(255,255,255,0.9)', fontSize: 12, fontWeight: 600, marginTop: 8, textTransform: 'capitalize', letterSpacing: 0.5 }}>
       {l.categorie ? l.categorie.replace(/_/g, ' ') : t('logements.carte.logementParDefaut')}
@@ -323,7 +321,7 @@ export default function Logements() {
 
                 <div style={{ padding: '14px 16px' }}>
                   <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 4 }}>{l.titre}</div>
-                  <div style={{ fontSize: 12, color: '#888', marginBottom: 8 }}>📍 {l.adresse}, {l.ville}</div>
+                  <div style={{ fontSize: 12, color: '#888', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}><MapPin size={12} strokeWidth={1.5} /> {l.adresse}, {l.ville}</div>
                   <div style={{ fontSize: 18, fontWeight: 800, color: '#1B6B3A', marginBottom: 10 }}>{GNF(l.prix_mensuel)}<span style={{ fontSize: 12, fontWeight: 400, color: '#888' }}>{t('logements.carte.prixParMois')}</span></div>
 
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>

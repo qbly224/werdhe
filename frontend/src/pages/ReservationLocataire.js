@@ -7,14 +7,19 @@ import ModalSignatureBail from '../components/ModalSignatureBail';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import {
+  Banknote, Landmark, CheckCircle2, KeyRound, XCircle, Send, Search, ShieldCheck,
+  ClipboardList, FileText, Home, Paperclip, Camera, Lock, Check, FileSignature,
+  MessageCircle, Star, PenLine
+} from 'lucide-react';
 
 const GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 
 var PAY_OPTS = [
   { id: 'om',   labelKey: 'om',   color: '#FF6600', textColor: '#fff', abbr: 'OM' },
   { id: 'mtn',  labelKey: 'mtn',  color: '#FFCC00', textColor: '#1B2B22', abbr: 'MM' },
-  { id: 'cash', labelKey: 'cash', icon: '💵' },
-  { id: 'bank', labelKey: 'bank', icon: '🏦' },
+  { id: 'cash', labelKey: 'cash', icon: Banknote },
+  { id: 'bank', labelKey: 'bank', icon: Landmark },
 ];
 
 // ─── BARRE DE PROGRESSION ──────────────────────────────────────────
@@ -46,7 +51,7 @@ function StepBar({ etape }) {
                 boxShadow: active ? '0 0 0 4px #C8E6C9' : 'none',
                 flexShrink: 0, transition: 'all .3s'
               }}>
-                {done ? '✓' : s.id}
+                {done ? <Check size={14} strokeWidth={2.2} /> : s.id}
               </div>
               <div style={{ fontSize: 9, marginTop: 3, whiteSpace: 'nowrap', color: active ? '#1B6B3A' : '#999', fontWeight: active ? 700 : 400 }}>
                 {t('reservationLocataire.stepBar.' + s.labelKey)}
@@ -85,9 +90,12 @@ function AttenteCard({ icone, message, sub }) {
     var t = setInterval(function() { setDots(function(d) { return d.length >= 3 ? '.' : d + '.'; }); }, 600);
     return function() { clearInterval(t); };
   }, []);
+  var IconeComp = typeof icone === 'function' ? icone : null;
   return (
     <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', marginBottom: 14 }}>
-      <div style={{ fontSize: 40, marginBottom: 12 }}>{icone || '⏳'}</div>
+      <div style={{ fontSize: 40, marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
+        {IconeComp ? <IconeComp size={40} strokeWidth={1.4} color="#1B6B3A" /> : (icone || '⏳')}
+      </div>
       <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', marginBottom: 6 }}>{message}{dots}</div>
       <div style={{ fontSize: 13, color: '#888', lineHeight: 1.6 }}>{sub}</div>
       <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
@@ -326,7 +334,9 @@ export default function ReservationLocataire() {
     return (
       <div style={{ fontFamily: 'system-ui, sans-serif', maxWidth: 560, margin: '0 auto', padding: 16 }}>
         <div style={{ textAlign: 'center', padding: 60 }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>❌</div>
+          <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
+            <XCircle size={40} strokeWidth={1.5} color="#E53935" />
+          </div>
           <div style={{ fontSize: 16, fontWeight: 700 }}>{t('reservationLocataire.introuvable.titre')}</div>
           <button onClick={function() { navigate('/dashboard'); }}
             style={{ marginTop: 16, padding: '10px 20px', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>
@@ -377,7 +387,7 @@ export default function ReservationLocataire() {
       {statut === 'en_attente' && (
         <div>
           <AttenteCard
-            icone="📤"
+            icone={Send}
             message={t('reservationLocataire.etape1.attente.message')}
             sub={t('reservationLocataire.etape1.attente.sub')}
           />
@@ -405,7 +415,7 @@ export default function ReservationLocataire() {
       {statut === 'dossier_requis' && (
         <div>
           <div style={{ background: '#E3F2FD', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
-            <span>📋</span>
+            <ClipboardList size={16} strokeWidth={1.6} color="#1565C0" />
             <span style={{ fontSize: 13, color: '#1565C0', lineHeight: 1.5, fontWeight: 600 }}>
               {t('reservationLocataire.etape2.alerteInfo')}
             </span>
@@ -431,8 +441,8 @@ export default function ReservationLocataire() {
                 var added = Boolean(docs[doc.key]);
                 return (
                   <div key={doc.key} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 0', borderBottom: '0.5px solid #F5F5F5' }}>
-                    <div style={{ width: 38, height: 38, borderRadius: 10, background: added ? '#E8F5E9' : '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
-                      {added ? '✅' : '📄'}
+                    <div style={{ width: 38, height: 38, borderRadius: 10, background: added ? '#E8F5E9' : '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      {added ? <CheckCircle2 size={18} strokeWidth={1.6} color="#1B6B3A" /> : <FileText size={18} strokeWidth={1.6} color="#999" />}
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>
@@ -469,7 +479,7 @@ export default function ReservationLocataire() {
       {/* ═══ ÉTAPE 3 : EN EXAMEN ════════════════════════════════════ */}
       {statut === 'en_examen' && (
         <AttenteCard
-          icone="🔍"
+          icone={Search}
           message={t('reservationLocataire.etape3.message')}
           sub={t('reservationLocataire.etape3.sub')}
         />
@@ -508,13 +518,15 @@ export default function ReservationLocataire() {
           </div>
           <div style={{ background: '#fff', borderRadius: 14, overflow: 'hidden', marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
             <div style={{ background: '#1B6B3A', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 32, height: 32, background: 'rgba(255,255,255,0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>🏠</div>
+              <div style={{ width: 32, height: 32, background: 'rgba(255,255,255,0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Home size={16} strokeWidth={1.6} color="#fff" />
+              </div>
               <div style={{ color: '#fff', fontWeight: 700, fontSize: 13 }}>{t('reservationLocataire.etape4.discussionSecurisee')}</div>
               <label style={{ marginLeft: 'auto', cursor: 'pointer' }}>
                 <input type="file" accept="image/*,.pdf" style={{ display: 'none' }} onChange={function(e) {
                   if (e.target.files && e.target.files[0]) setFichierMsg(e.target.files[0]);
                 }} />
-                <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 18 }}>📎</div>
+                <Paperclip size={16} strokeWidth={1.6} color="rgba(255,255,255,0.8)" />
               </label>
             </div>
             <div ref={chatRef} style={{ height: 250, overflowY: 'auto', padding: '12px', display: 'flex', flexDirection: 'column', gap: 8, background: '#F8F9F8' }}>
@@ -527,7 +539,11 @@ export default function ReservationLocataire() {
                   <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: isMoi ? 'flex-end' : 'flex-start' }}>
                     <div style={{ maxWidth: '80%', padding: '9px 13px', borderRadius: isMoi ? '16px 16px 4px 16px' : '16px 16px 16px 4px', background: isMoi ? '#1B6B3A' : '#fff', color: isMoi ? '#fff' : '#1B2B22', fontSize: 13, lineHeight: 1.5, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
                       {m.type === 'photo' && m.fichier_url && <img src={m.fichier_url} alt="photo" style={{ maxWidth: '100%', maxHeight: 160, borderRadius: 8, marginBottom: m.contenu ? 6 : 0 }} />}
-                      {m.type === 'document' && m.fichier_url && <a href={m.fichier_url} target="_blank" rel="noreferrer" style={{ color: isMoi ? '#fff' : '#1B6B3A', textDecoration: 'none', fontSize: 12 }}>📎 {m.fichier_nom || t('reservationLocataire.etape4.document')}</a>}
+                      {m.type === 'document' && m.fichier_url && (
+                        <a href={m.fichier_url} target="_blank" rel="noreferrer" style={{ color: isMoi ? '#fff' : '#1B6B3A', textDecoration: 'none', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                          <Paperclip size={12} strokeWidth={1.8} /> {m.fichier_nom || t('reservationLocataire.etape4.document')}
+                        </a>
+                      )}
                       {m.contenu && <div>{m.contenu}</div>}
                       <div style={{ fontSize: 10, opacity: 0.7, marginTop: 3, textAlign: 'right' }}>
                         {new Date(m.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
@@ -539,7 +555,9 @@ export default function ReservationLocataire() {
             </div>
             {fichierMsg && (
               <div style={{ padding: '6px 12px', background: '#E8F5E9', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 12, color: '#1B5E20' }}>{fichierMsg.type.startsWith('image/') ? '📷' : '📎'} {fichierMsg.name}</span>
+                <span style={{ fontSize: 12, color: '#1B5E20', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  {fichierMsg.type.startsWith('image/') ? <Camera size={13} strokeWidth={1.8} /> : <Paperclip size={13} strokeWidth={1.8} />} {fichierMsg.name}
+                </span>
                 <button onClick={function() { setFichierMsg(null); }} style={{ background: 'none', border: 'none', color: '#E53935', cursor: 'pointer', fontWeight: 700 }}>×</button>
               </div>
             )}
@@ -562,7 +580,7 @@ export default function ReservationLocataire() {
       {statut === 'caution_requise' && (
         <div>
           <div style={{ background: '#FFF3E0', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
-            <span>🔒</span>
+            <Lock size={16} strokeWidth={1.6} color="#E65100" />
             <span style={{ fontSize: 12, color: '#E65100', lineHeight: 1.5 }}>
               {t('reservationLocataire.etape5.alerteInfo')}
             </span>
@@ -581,14 +599,14 @@ export default function ReservationLocataire() {
                 <div key={p.id} onClick={function() { setPayMode(p.id); }}
                   style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', border: payMode === p.id ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: payMode === p.id ? '#F0FBF0' : '#fff', borderRadius: 12, marginBottom: 8, cursor: 'pointer', transition: 'all .2s' }}>
                   <div style={{ width: 40, height: 40, background: p.color || '#E8F5E9', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: p.icon ? 20 : 13, fontWeight: 700, color: p.textColor || '#1B6B3A', flexShrink: 0 }}>
-                    {p.icon || p.abbr}
+                    {p.icon ? <p.icon size={20} strokeWidth={1.6} color={p.textColor || '#1B6B3A'} /> : p.abbr}
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 14, fontWeight: 600, color: '#1B2B22' }}>{t('reservationLocataire.payOpts.' + p.labelKey + '.label')}</div>
                     <div style={{ fontSize: 11, color: '#888' }}>{t('reservationLocataire.payOpts.' + p.labelKey + '.sub')}</div>
                   </div>
                   <div style={{ width: 22, height: 22, borderRadius: '50%', border: payMode === p.id ? 'none' : '1.5px solid #E0E0E0', background: payMode === p.id ? '#1B6B3A' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {payMode === p.id && <span style={{ color: '#fff', fontSize: 12 }}>✓</span>}
+                    {payMode === p.id && <Check size={13} strokeWidth={2.2} color="#fff" />}
                   </div>
                 </div>
               );
@@ -605,12 +623,12 @@ export default function ReservationLocataire() {
       {statut === 'caution_payee' && (
         <div>
           <AttenteCard
-            icone="🛡️"
+            icone={ShieldCheck}
             message={t('reservationLocataire.etape5b.message')}
             sub={t('reservationLocataire.etape5b.sub')}
           />
           <div style={{ background: '#E8F5E9', borderRadius: 12, padding: 14, display: 'flex', gap: 8 }}>
-            <span>✅</span>
+            <CheckCircle2 size={18} strokeWidth={1.6} color="#1B5E20" />
             <div>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#1B5E20' }}>{t('reservationLocataire.etape5b.cautionVersee', { montant: GNF(loyer) })}</div>
               <div style={{ fontSize: 11, color: '#2E7D32', marginTop: 2 }}>{t('reservationLocataire.etape5b.protegeeJusqua')}</div>
@@ -623,7 +641,7 @@ export default function ReservationLocataire() {
       {(statut === 'bail_en_cours' || statut === 'bail_signe_proprio') && (
         <div>
           <div style={{ background: '#F3E5F5', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
-            <span>📝</span>
+            <FileSignature size={18} strokeWidth={1.6} color="#6A1B9A" />
             <div>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#6A1B9A' }}>
                 {statut === 'bail_signe_proprio' ? t('reservationLocataire.etape6.bannerSigneAttente') : t('reservationLocataire.etape6.bannerPret')}
@@ -671,7 +689,7 @@ export default function ReservationLocataire() {
                   <div style={{ fontSize: 13, color: '#1A4FA0' }}>{t('reservationLocataire.etape6.signatureEnCours')}</div>
                 ) : (
                   <>
-                    <div style={{ fontSize: 24 }}>✍️</div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}><PenLine size={22} strokeWidth={1.6} color="#1A4FA0" /></div>
                     <div style={{ fontSize: 11, color: '#1A4FA0', marginTop: 4 }}>{t('reservationLocataire.etape6.appuyerPourSigner')}</div>
                   </>
                 )}
@@ -698,20 +716,24 @@ export default function ReservationLocataire() {
       {statut === 'confirmee' && (
         <div>
           <div style={{ textAlign: 'center', marginBottom: 20 }}>
-            <div style={{ width: 80, height: 80, background: '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', fontSize: 40 }}>🗝️</div>
+            <div style={{ width: 80, height: 80, background: '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
+              <KeyRound size={40} strokeWidth={1.5} color="#1B6B3A" />
+            </div>
             <div style={{ fontSize: 22, fontWeight: 700, color: '#1B6B3A', marginBottom: 6 }}>{t('reservationLocataire.etape7.felicitations')}</div>
             <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6 }}>{t('reservationLocataire.etape7.acces')}</div>
           </div>
           <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
             {[
-              { icon: '✅', title: t('reservationLocataire.etape7.items.demandeAcceptee.titre'),   sub: t('reservationLocataire.etape7.items.demandeAcceptee.sub') },
-              { icon: '✅', title: t('reservationLocataire.etape7.items.cautionEnregistree.titre'), sub: t('reservationLocataire.etape7.items.cautionEnregistree.sub', { montant: GNF(loyer) }) },
-              { icon: '✅', title: t('reservationLocataire.etape7.items.bailSigne.titre'),          sub: t('reservationLocataire.etape7.items.bailSigne.sub') },
-              { icon: '🗝️', title: t('reservationLocataire.etape7.items.accesAccorde.titre'),      sub: logement && (logement.titre || logement.nom), highlight: true },
+              { icon: CheckCircle2, title: t('reservationLocataire.etape7.items.demandeAcceptee.titre'),   sub: t('reservationLocataire.etape7.items.demandeAcceptee.sub') },
+              { icon: CheckCircle2, title: t('reservationLocataire.etape7.items.cautionEnregistree.titre'), sub: t('reservationLocataire.etape7.items.cautionEnregistree.sub', { montant: GNF(loyer) }) },
+              { icon: CheckCircle2, title: t('reservationLocataire.etape7.items.bailSigne.titre'),          sub: t('reservationLocataire.etape7.items.bailSigne.sub') },
+              { icon: KeyRound, title: t('reservationLocataire.etape7.items.accesAccorde.titre'),      sub: logement && (logement.titre || logement.nom), highlight: true },
             ].map(function(item, i) {
               return (
                 <div key={i} style={{ display: 'flex', gap: 12, padding: '10px 0', borderBottom: i < 3 ? '0.5px solid #F5F5F5' : 'none' }}>
-                  <div style={{ width: 34, height: 34, background: item.highlight ? '#1B6B3A' : '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0 }}>{item.icon}</div>
+                  <div style={{ width: 34, height: 34, background: item.highlight ? '#1B6B3A' : '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <item.icon size={16} strokeWidth={1.6} color={item.highlight ? '#fff' : '#1B6B3A'} />
+                  </div>
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: item.highlight ? '#1B6B3A' : '#1B2B22' }}>{item.title}</div>
                     <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{item.sub}</div>
@@ -731,7 +753,7 @@ export default function ReservationLocataire() {
     navigate('/dashboard');
   }}
     style={{ padding: 14, border: '0.5px solid #E0E0E0', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-    <div style={{ fontSize: 22 }}>📄</div>
+    <FileText size={20} strokeWidth={1.6} color="#1B2B22" />
     <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22' }}>{t('reservationLocataire.etape7.actions.documents')}</div>
   </button>
   <button onClick={function() {
@@ -739,12 +761,12 @@ export default function ReservationLocataire() {
     navigate('/dashboard');
   }}
     style={{ padding: 14, border: '0.5px solid #E0E0E0', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-    <div style={{ fontSize: 22 }}>💬</div>
+    <MessageCircle size={20} strokeWidth={1.6} color="#1B2B22" />
     <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22' }}>{t('reservationLocataire.etape7.actions.messages')}</div>
   </button>
   <button onClick={telechargerBailSigne}
     style={{ padding: 14, border: '0.5px solid #E0E0E0', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-    <div style={{ fontSize: 22 }}>🗝️</div>
+    <KeyRound size={20} strokeWidth={1.6} color="#1B2B22" />
     <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22' }}>{t('reservationLocataire.etape7.actions.bailPdf')}</div>
   </button>
 </div>
@@ -761,8 +783,8 @@ export default function ReservationLocataire() {
       {[1, 2, 3, 4, 5].map(function(n) {
         return (
           <button key={n} onClick={function() { setNoteSelectionnee(n); }}
-            style={{ fontSize: 28, background: 'none', border: 'none', cursor: 'pointer', opacity: noteSelectionnee >= n ? 1 : 0.3, transform: noteSelectionnee >= n ? 'scale(1.1)' : 'scale(1)', transition: 'all .15s' }}>
-            ⭐
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, display: 'flex', opacity: noteSelectionnee >= n ? 1 : 0.3, transform: noteSelectionnee >= n ? 'scale(1.1)' : 'scale(1)', transition: 'all .15s' }}>
+            <Star size={28} strokeWidth={1.5} color="#F5A623" fill={noteSelectionnee >= n ? '#F5A623' : 'none'} />
           </button>
         );
       })}
