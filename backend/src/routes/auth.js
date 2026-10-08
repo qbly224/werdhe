@@ -117,7 +117,7 @@ if (user.role === 'admin') {
       const { Resend } = require('resend');
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from:    'Werdhe <no-reply@werdhe.com>',
+        from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
         to:      user.email,
         subject: '🔐 Code de vérification Admin — Werdhe',
         html: `
@@ -244,7 +244,7 @@ if (userExistant.rows.length > 0 && userExistant.rows[0].email && process.env.RE
     const { Resend } = require('resend');
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
-      from:    'Werdhe <no-reply@werdhe.com>',
+      from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
       to:      userExistant.rows[0].email,
       subject: '🔐 Votre code de connexion Werdhe',
       html: `
@@ -636,7 +636,7 @@ router.post('/contact', async (req, res) => {
       const { Resend } = require('resend');
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from:    'Werdhe <no-reply@werdhe.com>',
+        from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
         to:      'contact@werdhe.com',
         replyTo: email,
         subject: '[Contact Werdhe] ' + (sujet || 'Nouveau message'),

@@ -77,7 +77,7 @@ router.post('/', verifierToken, async (req, res) => {
         const { Resend } = require('resend');
         const resend = new Resend(process.env.RESEND_API_KEY);
         await resend.emails.send({
-          from:    'Werdhe <no-reply@werdhe.com>',
+          from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
           to:      r.loc_email,
           subject: '🔄 Proposition de renouvellement — ' + r.logement_titre,
           html: `
@@ -187,7 +187,7 @@ router.patch('/:id/repondre', verifierToken, async (req, res) => {
           const { Resend } = require('resend');
           const resend = new Resend(process.env.RESEND_API_KEY);
           await resend.emails.send({
-            from: 'Werdhe <no-reply@werdhe.com>',
+            from: process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
             to:   rn.prop_email,
             subject: '✅ Renouvellement accepté — ' + rn.logement_titre,
             html: `<div style="font-family:sans-serif;max-width:500px;margin:0 auto">

@@ -37,7 +37,7 @@ cron.schedule('0 8 * * *', async function() {
     for (var r of result.rows) {
       // Email au locataire
       await resend.emails.send({
-        from: 'Werdhe <no-reply@werdhe.com>',
+        from: process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
         to: r.loc_email,
         subject: '🔔 Rappel : votre loyer est dû dans 3 jours',
         html: `
@@ -116,7 +116,7 @@ cron.schedule('0 9 * * *', async function() {
 
       // Notifier le propriétaire
       await resend.emails.send({
-        from: 'Werdhe <no-reply@werdhe.com>',
+        from: process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
         to: r.prop_email,
         subject: '📋 Bail expirant dans 30 jours — ' + r.logement_titre,
         html: `
@@ -136,7 +136,7 @@ cron.schedule('0 9 * * *', async function() {
 
       // Notifier le locataire
       await resend.emails.send({
-        from: 'Werdhe <no-reply@werdhe.com>',
+        from: process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
         to: r.loc_email,
         subject: '📋 Votre bail expire dans 30 jours',
         html: `
@@ -217,7 +217,7 @@ cron.schedule('0 10 * * *', async function() {
         const { Resend } = require('resend');
         const resend = new Resend(process.env.RESEND_API_KEY);
         await resend.emails.send({
-          from:    'Werdhe <no-reply@werdhe.com>',
+          from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
           to:      p.loc_email,
           subject: '⚠️ Rappel — Votre départ est dans 5 jours',
           html: `
@@ -330,7 +330,7 @@ cron.schedule('0 7 * * *', async function() {
 
           // Email au locataire
           await resend.emails.send({
-            from:    'Werdhe <no-reply@werdhe.com>',
+            from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
             to:      loc.loc_email,
             subject: '⚠️ Mise en demeure — Loyer impayé',
             html: `
@@ -359,7 +359,7 @@ cron.schedule('0 7 * * *', async function() {
 
           // Email au propriétaire
           await resend.emails.send({
-            from:    'Werdhe <no-reply@werdhe.com>',
+            from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
             to:      loc.prop_email,
             subject: '⚠️ Loyer impayé — ' + loc.logement_titre,
             html: `
@@ -454,7 +454,7 @@ cron.schedule('30 8 * * *', async function() {
     for (var r3 of rappelsJ3.rows) {
       try {
         await resend.emails.send({
-          from:    'Werdhe <no-reply@werdhe.com>',
+          from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
           to:      r3.email,
           subject: '⏰ Votre abonnement Werdhe a expiré',
           html: `
@@ -498,7 +498,7 @@ cron.schedule('30 8 * * *', async function() {
     for (var r5 of blocagesJ5.rows) {
       try {
         await resend.emails.send({
-          from:    'Werdhe <no-reply@werdhe.com>',
+          from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
           to:      r5.email,
           subject: '🔒 Accès Werdhe bloqué — abonnement impayé',
           html: `
