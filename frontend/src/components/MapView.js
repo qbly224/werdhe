@@ -2,6 +2,17 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+// Icônes inline (lucide-react) pour les popups Leaflet, qui attendent du HTML brut
+var ICONES_SVG = {
+  maison:   '<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  localisation: '<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+  lit:      '<path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8"/><path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M12 4v6"/><path d="M2 18h20"/>',
+  surface:  '<path d="M15 3h6v6"/><path d="m21 3-7 7"/><path d="m3 21 7-7"/><path d="M9 21H3v-6"/>',
+};
+function svgInline(nom, taille, couleur) {
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="' + taille + '" height="' + taille + '" viewBox="0 0 24 24" fill="none" stroke="' + (couleur || 'currentColor') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px">' + ICONES_SVG[nom] + '</svg>';
+}
+
 // Coordonnées des villes de Guinée
 var COORDS_GUINEE = {
   'conakry':     [9.6412, -13.5784],
@@ -126,18 +137,18 @@ export default function MapView({ logements, onSelectLogement }) {
         // Popup
         var photoHtml = l.photos && l.photos.length > 0
           ? `<img src="${l.photos[0]}" style="width:100%;height:90px;object-fit:cover;border-radius:8px;margin-bottom:8px;" />`
-          : `<div style="height:90px;background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;font-size:28px;">🏠</div>`;
+          : `<div style="height:90px;background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;color:#1B6B3A;">${svgInline('maison', 32)}</div>`;
 
         marker.bindPopup(`
           <div style="font-family:system-ui;width:200px;padding:4px">
             ${photoHtml}
             <div style="font-size:13px;font-weight:700;color:#1B2B22;margin-bottom:4px">${l.titre}</div>
-            <div style="font-size:11px;color:#888;margin-bottom:6px">📍 ${l.ville}</div>
+            <div style="font-size:11px;color:#888;margin-bottom:6px">${svgInline('localisation', 11)} ${l.ville}</div>
             <div style="font-size:15px;font-weight:800;color:#1B6B3A;margin-bottom:8px">
               ${new Intl.NumberFormat('fr-FR').format(l.prix_mensuel)} ${t('mapView.popup.prixParMois')}
             </div>
-            ${l.nb_chambres ? `<span style="font-size:11px;color:#555">🛏️ ${t('mapView.popup.chambresAbrev', { count: l.nb_chambres })} </span>` : ''}
-            ${l.superficie ? `<span style="font-size:11px;color:#555">📐 ${l.superficie}m²</span>` : ''}
+            ${l.nb_chambres ? `<span style="font-size:11px;color:#555">${svgInline('lit', 11)} ${t('mapView.popup.chambresAbrev', { count: l.nb_chambres })} </span>` : ''}
+            ${l.superficie ? `<span style="font-size:11px;color:#555">${svgInline('surface', 11)} ${l.superficie}m²</span>` : ''}
             <div style="margin-top:10px">
               <a href="/logements/${l.id}"
                 style="display:block;background:#1B6B3A;color:#fff;padding:8px;border-radius:8px;text-align:center;text-decoration:none;font-size:12px;font-weight:700;">

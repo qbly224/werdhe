@@ -8,8 +8,9 @@ import { useTranslation } from 'react-i18next';
 import {
   BarChart3, Users, Home, CalendarCheck, CreditCard, Ticket, Newspaper, ScrollText, Bell,
   UserPlus, Wallet, HelpCircle, KeyRound, Building2, CheckCircle2, DoorOpen, Clock,
-  ClipboardList, Star,
+  ClipboardList, Star, Zap, AlertTriangle, Trash2,
 } from 'lucide-react';
+import Logo from '../components/Logo';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n) + ' GNF'; };
 
@@ -233,7 +234,7 @@ var NAV = [
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', fontFamily: 'system-ui', flexDirection: 'column', gap: 12 }}>
-        <div style={{ fontSize: 32 }}>🏠</div>
+        <Home size={32} strokeWidth={1.5} color="#1B6B3A" />
         <div style={{ color: '#888' }}>{t('admin.loading')}</div>
       </div>
     );
@@ -245,7 +246,7 @@ var NAV = [
       {/* ── SIDEBAR ───────────────────────────────────────────── */}
       <div className="admin-sidebar" style={{ width: 220, background: '#1B2B22', minHeight: '100vh', padding: '0', flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
         <div style={{ padding: '20px 16px', borderBottom: '0.5px solid rgba(255,255,255,0.1)' }}>
-          <div style={{ color: '#fff', fontWeight: 800, fontSize: 18 }}>🏠 Werdhe</div>
+          <Logo size={26} showText={true} darkBg={true} />
           <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11, marginTop: 3 }}>{t('admin.sidebar.panneauAdmin')}</div>
           <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
             <div style={{ width: 8, height: 8, background: '#34A853', borderRadius: '50%' }} />
@@ -322,7 +323,7 @@ var NAV = [
 {/* ─── ALERTES CRITIQUES ───────────────────────────────────── */}
 {liveData && liveData.alertes_critiques > 0 && (
   <div style={{ background: '#FFEBEE', border: '1px solid #FFCDD2', borderRadius: 12, padding: '14px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
-    <span style={{ fontSize: 24 }}>🚨</span>
+    <AlertTriangle size={24} strokeWidth={1.5} color="#B71C1C" />
     <div>
       <div style={{ fontSize: 14, fontWeight: 700, color: '#B71C1C' }}>
         {t('admin.stats.alerteCritique', { count: liveData.alertes_critiques })}
@@ -356,7 +357,7 @@ var NAV = [
 {liveData && liveData.activite && liveData.activite.length > 0 && (
   <div style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
     <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
-      <span>⚡</span> {t('admin.stats.activiteRecente')}
+      <Zap size={16} strokeWidth={1.5} /> {t('admin.stats.activiteRecente')}
     </div>
     <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
       {liveData.activite.map(function(a, i) {
@@ -516,7 +517,7 @@ var NAV = [
                 {alertes.slice(0, 5).map(function(a, i) {
                   return (
                     <div key={i} style={{ display: 'flex', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #F5F5F5' }}>
-                      <span style={{ fontSize: 16, flexShrink: 0 }}>{a.type === 'loyer_retard' ? '⚠️' : '📋'}</span>
+                      <span style={{ flexShrink: 0 }}>{a.type === 'loyer_retard' ? <AlertTriangle size={16} strokeWidth={1.5} color="#F5A623" /> : <ClipboardList size={16} strokeWidth={1.5} color="#1565C0" />}</span>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22' }}>{a.titre}</div>
                         <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{new Date(a.created_at).toLocaleDateString('fr-FR')}</div>
@@ -613,7 +614,9 @@ var NAV = [
                 var nbResas = reservations.filter(function(r) { return r.logement_id === l.id; }).length;
                 return (
                   <div key={l.id} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-                    <div style={{ width: 44, height: 44, background: l.statut === 'loue' ? '#E8F5E9' : '#FFF8E1', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>🏠</div>
+                    <div style={{ width: 44, height: 44, background: l.statut === 'loue' ? '#E8F5E9' : '#FFF8E1', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <Home size={20} strokeWidth={1.5} color={l.statut === 'loue' ? '#1B6B3A' : '#F5A623'} />
+                    </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                         <span style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{l.titre}</span>
@@ -635,8 +638,8 @@ var NAV = [
                         </button>
                       )}
                       <button onClick={function() { supprimerLogement(l.id); }}
-                        style={{ padding: '6px 12px', borderRadius: 8, background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
-                        🗑️
+                        style={{ padding: '6px 12px', borderRadius: 8, background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                        <Trash2 size={14} strokeWidth={1.8} />
                       </button>
                     </div>
                   </div>
@@ -777,7 +780,7 @@ var NAV = [
                 var couleur = a.priorite === 'haute' ? '#E53935' : a.type === 'loyer_retard' ? '#F5A623' : '#1565C0';
                 return (
                   <div key={i} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderLeft: '4px solid ' + couleur, display: 'flex', gap: 12 }}>
-                    <span style={{ fontSize: 22, flexShrink: 0 }}>{a.type === 'loyer_retard' ? '⚠️' : a.type === 'bail_bientot' ? '📋' : '🔔'}</span>
+                    <span style={{ flexShrink: 0 }}>{a.type === 'loyer_retard' ? <AlertTriangle size={20} strokeWidth={1.5} color="#F5A623" /> : a.type === 'bail_bientot' ? <ClipboardList size={20} strokeWidth={1.5} color="#1565C0" /> : <Bell size={20} strokeWidth={1.5} color="#555" />}</span>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{a.titre}</div>
                       <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>{a.description}</div>

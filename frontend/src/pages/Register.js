@@ -6,7 +6,7 @@ import api from '../services/api';
 import toast from 'react-hot-toast';
 import {
   Home, User, Mail, Phone, Lock, Eye, EyeOff,
-  Check, ChevronRight, ChevronLeft, ArrowRight, Building2, Search
+  Check, ChevronRight, ChevronLeft, ArrowRight, Building2, Search, Gift
 } from 'lucide-react';
 import Logo from '../components/Logo';
 import { useTranslation } from 'react-i18next';
@@ -195,12 +195,12 @@ export default function Register() {
 
                 {role === 'proprietaire' && (
                   <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#1B5E20', display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span>✅</span> {t('register.essaiPlan', { plan: planInitial === 'agence' ? t('register.plans.agence') : t('register.plans.pro') })}
+                    <Check size={14} strokeWidth={2} /> {t('register.essaiPlan', { plan: planInitial === 'agence' ? t('register.plans.agence') : t('register.plans.pro') })}
                   </div>
                 )}
                 {role === 'locataire' && (
                   <div style={{ background: '#E3F2FD', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#1565C0', display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span>🎁</span> {t('register.gratuitLocataires')}
+                    <Gift size={14} strokeWidth={1.5} /> {t('register.gratuitLocataires')}
                   </div>
                 )}
 
@@ -283,8 +283,8 @@ export default function Register() {
                     onChange={function(e) { setCodeParrainage(e.target.value.toUpperCase()); }}
                     style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'monospace', letterSpacing: 1, boxSizing: 'border-box' }} />
                   {codeParrainage && (
-                    <div style={{ fontSize: 12, color: '#1B6B3A', marginTop: 4 }}>
-                      🎁 {t('register.creditParrainage')}
+                    <div style={{ fontSize: 12, color: '#1B6B3A', marginTop: 4, display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <Gift size={13} strokeWidth={1.5} /> {t('register.creditParrainage')}
                     </div>
                   )}
                 </div>
@@ -312,7 +312,7 @@ export default function Register() {
                 {/* Récapitulatif */}
                 <div style={{ background: '#F7F8F7', borderRadius: 12, padding: '12px 16px', marginBottom: 20, fontSize: 13 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                    <span style={{ fontSize: 16 }}>{role === 'proprietaire' ? '🏠' : '🔍'}</span>
+                    {role === 'proprietaire' ? <Home size={16} strokeWidth={1.5} /> : <Search size={16} strokeWidth={1.5} />}
                     <span style={{ fontWeight: 700, color: '#1B2B22' }}>{prenom} {nom}</span>
                     <span style={{ background: couleurBg, color: couleur, borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>
                       {role === 'proprietaire' ? t('register.roles.proprietaire.titre') : t('register.roles.locataire.titre')}

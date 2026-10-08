@@ -51,7 +51,7 @@ function StepBar({ etape }) {
                 boxShadow: active ? '0 0 0 4px #C8E6C9' : 'none',
                 flexShrink: 0, transition: 'all .3s'
               }}>
-                {done ? '✓' : s.id}
+                {done ? <Check size={14} strokeWidth={2.2} /> : s.id}
               </div>
               <div style={{ fontSize: 9, marginTop: 3, whiteSpace: 'nowrap', color: active ? '#1B6B3A' : '#999', fontWeight: active ? 700 : 400 }}>
                 {t('reservationLocataire.stepBar.' + s.labelKey)}

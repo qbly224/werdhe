@@ -4,7 +4,7 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { Home } from 'lucide-react';
+import { Home, CheckCircle2, Scale, Check, Send } from 'lucide-react';
 
 const addDays = (n) => {
   var d = new Date();
@@ -84,7 +84,7 @@ function PreavisLocataire() {
       {step === 'sent' ? (
         /* ── ENVOYÉ ── */
         <div style={{ background: '#fff', borderRadius: 14, padding: 24, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', textAlign: 'center' }}>
-          <div style={{ width: 72, height: 72, background: '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: 36 }}>✅</div>
+          <div style={{ width: 72, height: 72, background: '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}><CheckCircle2 size={36} strokeWidth={1.5} color="#1B6B3A" /></div>
           <div style={{ fontSize: 20, fontWeight: 700, color: '#1B6B3A', marginBottom: 8 }}>{t('ongletPreavis.locataire.envoye.titre')}</div>
           <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6, marginBottom: 20 }}>
             {t('ongletPreavis.locataire.envoye.descAvant')}<b>48h</b>{t('ongletPreavis.locataire.envoye.descApres')}
@@ -152,7 +152,7 @@ function PreavisLocataire() {
         <div>
           {/* Alerte légale */}
           <div style={{ background: '#FFF8E1', borderRadius: 12, padding: '12px 14px', marginBottom: 16, display: 'flex', gap: 8 }}>
-            <span>⚖️</span>
+            <Scale size={16} strokeWidth={1.5} />
             <span style={{ fontSize: 12, color: '#7B4F00', lineHeight: 1.6 }}>
               {t('ongletPreavis.locataire.form.alerteLegaleAvant')}<b>{t('ongletPreavis.locataire.form.alerteLegaleGras')}</b>{t('ongletPreavis.locataire.form.alerteLegaleApres')}
             </span>
@@ -170,7 +170,7 @@ function PreavisLocataire() {
                     <div key={m} onClick={function() { setMotif(m); }}
                       style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', border: motif === m ? '1.5px solid #37474F' : '0.5px solid #E0E0E0', background: motif === m ? '#F5F5F5' : '#FAFAFA', borderRadius: 10, cursor: 'pointer' }}>
                       <div style={{ width: 18, height: 18, borderRadius: '50%', border: motif === m ? 'none' : '1.5px solid #CCC', background: motif === m ? '#37474F' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        {motif === m && <span style={{ color: '#fff', fontSize: 11 }}>✓</span>}
+                        {motif === m && <Check size={12} strokeWidth={2.2} color="#fff" />}
                       </div>
                       <span style={{ fontSize: 13, color: motif === m ? '#263238' : '#555' }}>{t('ongletPreavis.motifsLocataire.' + opt.key)}</span>
                     </div>
@@ -294,7 +294,7 @@ function PreavisProprio() {
       {step === 'sent' ? (
         /* ── ENVOYÉ ── */
         <div style={{ background: '#fff', borderRadius: 14, padding: 24, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', textAlign: 'center' }}>
-          <div style={{ width: 72, height: 72, background: '#FFF8E1', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: 36 }}>📤</div>
+          <div style={{ width: 72, height: 72, background: '#FFF8E1', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}><Send size={32} strokeWidth={1.5} color="#E65100" /></div>
           <div style={{ fontSize: 20, fontWeight: 700, color: '#C62828', marginBottom: 8 }}>{t('ongletPreavis.proprio.envoye.titre')}</div>
           <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6, marginBottom: 20 }}>
             <b>{bien && bien.locataire}</b> {t('ongletPreavis.proprio.envoye.descMid')}<b>48h</b>{t('ongletPreavis.proprio.envoye.descApres')}
@@ -364,7 +364,7 @@ function PreavisProprio() {
         /* ── FORMULAIRE ── */
         <div>
           <div style={{ background: '#FFF8E1', borderRadius: 12, padding: '12px 14px', marginBottom: 16, display: 'flex', gap: 8 }}>
-            <span>⚖️</span>
+            <Scale size={16} strokeWidth={1.5} />
             <span style={{ fontSize: 12, color: '#7B4F00', lineHeight: 1.6 }}>{t('ongletPreavis.proprio.form.alerteInfo')}</span>
           </div>
 
@@ -383,7 +383,7 @@ function PreavisProprio() {
                         <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>{b.nom}</div>
                         <div style={{ fontSize: 11, color: '#888' }}>{b.locataire} · {b.tel}</div>
                       </div>
-                      {bien && bien.id === b.id && <span style={{ color: '#C62828', fontSize: 16 }}>✓</span>}
+                      {bien && bien.id === b.id && <Check size={16} strokeWidth={2.2} color="#C62828" />}
                     </div>
                   );
                 })}
@@ -403,7 +403,7 @@ function PreavisProprio() {
                     <div key={m} onClick={function() { setMotif(m); }}
                       style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', border: motif === m ? '1.5px solid #C62828' : '0.5px solid #E0E0E0', background: motif === m ? '#FFEBEE' : '#FAFAFA', borderRadius: 10, cursor: 'pointer' }}>
                       <div style={{ width: 18, height: 18, borderRadius: '50%', border: motif === m ? 'none' : '1.5px solid #CCC', background: motif === m ? '#C62828' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        {motif === m && <span style={{ color: '#fff', fontSize: 11 }}>✓</span>}
+                        {motif === m && <Check size={12} strokeWidth={2.2} color="#fff" />}
                       </div>
                       <span style={{ fontSize: 13, color: motif === m ? '#B71C1C' : '#555' }}>{t('ongletPreavis.motifsProprio.' + opt.key)}</span>
                     </div>

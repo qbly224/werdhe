@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { CheckCircle2, Camera } from 'lucide-react';
 
 var PIECES = [
   { id: 'salon',     labelKey: 'salon' },
@@ -91,7 +92,7 @@ function SignatureCanvas({ label, onSigne }) {
       <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22', marginBottom: 8 }}>{label}</div>
       {signe ? (
         <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 20 }}>✅</span>
+          <CheckCircle2 size={20} strokeWidth={1.5} color="#1B6B3A" />
           <span style={{ fontSize: 13, fontWeight: 600, color: '#1B5E20' }}>{t('etatDesLieux.signatureCanvas.signatureEnregistree')}</span>
           <button onClick={effacer} style={{ marginLeft: 'auto', background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 12 }}>{t('etatDesLieux.signatureCanvas.recommencer')}</button>
         </div>
@@ -197,7 +198,7 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
   if (step === 'confirmation') {
     return (
       <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center' }}>
-        <div style={{ fontSize: 48, marginBottom: 14 }}>✅</div>
+        <div style={{ marginBottom: 14, display: 'flex', justifyContent: 'center' }}><CheckCircle2 size={48} strokeWidth={1.5} color="#1B6B3A" /></div>
         <div style={{ fontSize: 20, fontWeight: 700, color: '#1B6B3A', marginBottom: 8 }}>
           {type === 'entree' ? t('etatDesLieux.confirmation.titreEntree') : t('etatDesLieux.confirmation.titreSortie')}
         </div>
@@ -272,8 +273,8 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
                 {/* Photo */}
                 <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
                   <input type="file" accept="image/*" style={{ display: 'none' }} onChange={function(e) { if (e.target.files[0]) handlePhoto(piece.id, e.target.files[0]); }} />
-                  <div style={{ padding: '6px 12px', borderRadius: 8, background: photos[piece.id] ? '#E8F5E9' : '#F5F5F5', color: photos[piece.id] ? '#1B6B3A' : '#888', fontSize: 12, fontWeight: 600, border: photos[piece.id] ? '0.5px solid #A5D6A7' : '0.5px solid #E0E0E0' }}>
-                    📷 {photos[piece.id] ? t('etatDesLieux.photoAjoutee') : t('etatDesLieux.ajouterUnePhoto')}
+                  <div style={{ padding: '6px 12px', borderRadius: 8, background: photos[piece.id] ? '#E8F5E9' : '#F5F5F5', color: photos[piece.id] ? '#1B6B3A' : '#888', fontSize: 12, fontWeight: 600, border: photos[piece.id] ? '0.5px solid #A5D6A7' : '0.5px solid #E0E0E0', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Camera size={14} strokeWidth={1.5} /> {photos[piece.id] ? t('etatDesLieux.photoAjoutee') : t('etatDesLieux.ajouterUnePhoto')}
                   </div>
                   {photos[piece.id] && (
                     <img src={photos[piece.id].url} alt={t('etatDesLieux.pieces.' + piece.labelKey)} style={{ width: 40, height: 40, borderRadius: 6, objectFit: 'cover' }} />

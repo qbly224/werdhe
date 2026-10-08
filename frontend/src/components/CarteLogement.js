@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Crown, Castle, Home, Tent, Construction, Fence, Building2, Layers,
   Landmark, Hotel, BedDouble, DoorOpen, TriangleAlert, Store, Briefcase,
-  Warehouse, Building, ShoppingBag
+  Warehouse, Building, ShoppingBag, MapPin
 } from 'lucide-react';
 import './CarteLogement.css';
 
@@ -74,8 +74,8 @@ const CarteLogement = ({ logement }) => {
       <div className="carte-body">
         <h3 className="carte-titre">{logement.titre}</h3>
 
-        <p className="carte-adresse">
-          📍 {logement.adresse}, {logement.ville}
+        <p className="carte-adresse" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <MapPin size={13} strokeWidth={1.5} /> {logement.adresse}, {logement.ville}
         </p>
 
         <div className="carte-details">

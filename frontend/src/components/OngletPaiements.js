@@ -4,7 +4,7 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { Banknote, Landmark, Home, Building2 } from 'lucide-react';
+import { Banknote, Landmark, Home, Building2, CheckCircle2, User, X, MapPin, Check, Info } from 'lucide-react';
 
 const GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 
@@ -177,7 +177,7 @@ export function PaiementsProprietaire() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
         {filtered.length === 0 && (
           <div style={{ textAlign: 'center', padding: 40, color: '#888', fontSize: 14 }}>
-            <div style={{ fontSize: 40, marginBottom: 10 }}>✅</div>
+            <div style={{ marginBottom: 10, display: 'flex', justifyContent: 'center' }}><CheckCircle2 size={40} strokeWidth={1.5} /></div>
             {t('ongletPaiements.proprietaire.listeVide')}
           </div>
         )}
@@ -194,7 +194,7 @@ export function PaiementsProprietaire() {
                   </div>
                   <div>
                     <div style={{ fontWeight: 700, fontSize: 14, color: '#1B2B22' }}>{b.nom}</div>
-                    <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>👤 {b.locataire}</div>
+                    <div style={{ fontSize: 12, color: '#888', marginTop: 2, display: 'flex', alignItems: 'center', gap: 4 }}><User size={12} strokeWidth={1.5} /> {b.locataire}</div>
                     <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6B3A', marginTop: 3 }}>{GNF(b.loyer)} / mois</div>
                   </div>
                 </div>
@@ -246,7 +246,7 @@ export function PaiementsProprietaire() {
                     <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{t('ongletPaiements.proprietaire.modal.titre')}</div>
                     <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{modal.nom} · {modal.locataire}</div>
                   </div>
-                  <button onClick={closeModal} style={{ width: 32, height: 32, borderRadius: '50%', border: 'none', background: '#F5F5F5', cursor: 'pointer', fontSize: 16 }}>✕</button>
+                  <button onClick={closeModal} style={{ width: 32, height: 32, borderRadius: '50%', border: 'none', background: '#F5F5F5', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={16} strokeWidth={1.8} /></button>
                 </div>
 
                 <div style={{ background: '#F0FBF0', borderRadius: 12, padding: 14, marginBottom: 18, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -272,7 +272,7 @@ export function PaiementsProprietaire() {
                         <div style={{ fontSize: 11, color: '#888' }}>{t('ongletPaiements.payModes.' + p.labelKey + '.sub')}</div>
                       </div>
                       <div style={{ width: 22, height: 22, borderRadius: '50%', border: selectedMode === p.id ? 'none' : '1.5px solid #E0E0E0', background: selectedMode === p.id ? '#1B6B3A' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        {selectedMode === p.id && <span style={{ color: '#fff', fontSize: 12 }}>✓</span>}
+                        {selectedMode === p.id && <Check size={13} strokeWidth={2.2} color="#fff" />}
                       </div>
                     </div>
                   );
@@ -280,7 +280,7 @@ export function PaiementsProprietaire() {
 
                 {selectedMode === 'cash' && (
                   <div style={{ background: '#FFF8E1', borderRadius: 10, padding: 12, marginBottom: 14, display: 'flex', gap: 8 }}>
-                    <span>ℹ️</span>
+                    <Info size={16} strokeWidth={1.5} color="#7B4F00" style={{ flexShrink: 0 }} />
                     <span style={{ fontSize: 12, color: '#7B4F00', lineHeight: 1.5 }}>{t('ongletPaiements.proprietaire.modal.infoEspeces')}</span>
                   </div>
                 )}
@@ -292,7 +292,7 @@ export function PaiementsProprietaire() {
               </div>
             ) : (
               <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                <div style={{ width: 70, height: 70, background: '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: 36 }}>✅</div>
+                <div style={{ width: 70, height: 70, background: '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}><CheckCircle2 size={36} strokeWidth={1.5} color="#1B6B3A" /></div>
                 <div style={{ fontSize: 20, fontWeight: 700, color: '#1B6B3A', marginBottom: 8 }}>{t('ongletPaiements.proprietaire.modal.succes.titre')}</div>
                 <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6, marginBottom: 20 }}>
                   {t('ongletPaiements.proprietaire.modal.succes.ligne1Avant')}<b>{GNF(modal.loyer)}</b>{t('ongletPaiements.proprietaire.modal.succes.ligne1Milieu')}<b>{modal.locataire}</b>{t('ongletPaiements.proprietaire.modal.succes.ligne1Fin')}<br />
@@ -398,7 +398,7 @@ export function PaiementsLocataire() {
   if (!logement) {
     return (
       <div style={{ textAlign: 'center', padding: 40 }}>
-        <div style={{ fontSize: 40, marginBottom: 12 }}>🏠</div>
+        <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}><Home size={40} strokeWidth={1.5} /></div>
         <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>{t('ongletPaiements.locataire.aucuneLocation.titre')}</div>
         <div style={{ fontSize: 13, color: '#888' }}>{t('ongletPaiements.locataire.aucuneLocation.description')}</div>
       </div>
@@ -417,7 +417,7 @@ export function PaiementsLocataire() {
       {step === 'success' ? (
         /* ── VUE SUCCÈS ── */
         <div style={{ background: '#fff', borderRadius: 14, padding: 24, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', textAlign: 'center' }}>
-          <div style={{ width: 72, height: 72, background: '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: 36 }}>✅</div>
+          <div style={{ width: 72, height: 72, background: '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}><CheckCircle2 size={36} strokeWidth={1.5} color="#1B6B3A" /></div>
           <div style={{ fontSize: 20, fontWeight: 700, color: '#1B6B3A', marginBottom: 8 }}>{t('ongletPaiements.locataire.succes.titre')}</div>
           <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6, marginBottom: 20 }}>
             {t('ongletPaiements.locataire.succes.ligne1Avant', { montant: GNF(total) })}<b>{t('ongletPaiements.delaiMois', { n: nbMois })}</b>.<br />
@@ -490,7 +490,7 @@ export function PaiementsLocataire() {
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 700, fontSize: 14, color: '#1B2B22' }}>{logement.nom}</div>
-                <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>📍 {logement.quartier}</div>
+                <div style={{ fontSize: 12, color: '#888', marginTop: 2, display: 'flex', alignItems: 'center', gap: 4 }}><MapPin size={12} strokeWidth={1.5} /> {logement.quartier}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
                   <div style={{ width: 26, height: 26, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 10, fontWeight: 700 }}>{logement.proprio_initials}</div>
                   <span style={{ fontSize: 12, color: '#555' }}>{logement.proprio}</span>

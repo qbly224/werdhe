@@ -2,6 +2,7 @@ import { useState } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { Loader2, Camera, Star, Trash2 } from 'lucide-react';
 import './PhotoUpload.css';
 
 const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
@@ -91,12 +92,12 @@ const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
 
         {uploading ? (
           <div className="drop-uploading">
-            <span className="spinner">⏳</span>
+            <Loader2 className="spinner" size={28} strokeWidth={1.5} />
             <p>{t('photoUpload.dropZone.uploading')}</p>
           </div>
         ) : (
           <div className="drop-content">
-            <span>📸</span>
+            <Camera size={32} strokeWidth={1.5} color="#1B6B3A" />
             <p>{t('photoUpload.dropZone.dragText')} <strong>{t('photoUpload.dropZone.dragTextBold')}</strong></p>
             <small>{t('photoUpload.dropZone.formats')}</small>
           </div>
@@ -125,13 +126,13 @@ const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
                     className="photo-btn btn-etoile"
                     onClick={() => handlePrincipale(photo.public_id)}
                     title={t('photoUpload.actions.definirPrincipale')}
-                  >⭐</button>
+                  ><Star size={14} strokeWidth={1.8} /></button>
                 )}
                 <button
                   className="photo-btn btn-supprimer"
                   onClick={() => handleSupprimer(photo.public_id)}
                   title={t('photoUpload.actions.supprimer')}
-                >🗑️</button>
+                ><Trash2 size={14} strokeWidth={1.8} /></button>
               </div>
             </div>
           ))}

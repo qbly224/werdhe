@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { Home, Smartphone, CheckCircle2 } from 'lucide-react';
 
 function getIndicatifs(t) {
   return [
@@ -138,8 +139,8 @@ export default function LoginTelephone() {
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <div style={{ width: 56, height: 56, background: '#1B6B3A', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', fontSize: 26 }}>
-            🏠
+          <div style={{ width: 56, height: 56, background: '#1B6B3A', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
+            <Home size={26} strokeWidth={1.5} color="#fff" />
           </div>
           <div style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', marginBottom: 6 }}>
             {etape === 'telephone' ? t('loginTelephone.connexionParTelephone')
@@ -186,8 +187,8 @@ export default function LoginTelephone() {
 
             {/* Prévisualisation du numéro */}
             {telephone && (
-              <div style={{ background: '#F0FBF0', borderRadius: 8, padding: '8px 12px', marginBottom: 16, fontSize: 12, color: '#1B6B3A', fontWeight: 600 }}>
-                📱 {indicatif} {telephone}
+              <div style={{ background: '#F0FBF0', borderRadius: 8, padding: '8px 12px', marginBottom: 16, fontSize: 12, color: '#1B6B3A', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Smartphone size={14} strokeWidth={1.5} /> {indicatif} {telephone}
               </div>
             )}
 
@@ -276,8 +277,8 @@ export default function LoginTelephone() {
         {/* ── ÉTAPE 3 : INFOS COMPTE (nouveau) ────────────── */}
         {etape === 'infos' && (
           <div>
-            <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#1B5E20', fontWeight: 600 }}>
-              ✅ {t('loginTelephone.numeroVerifie', { tel: telComplet })}
+            <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#1B5E20', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <CheckCircle2 size={14} strokeWidth={1.5} /> {t('loginTelephone.numeroVerifie', { tel: telComplet })}
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>

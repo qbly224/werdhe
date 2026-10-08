@@ -6,7 +6,7 @@ import Navbar from '../components/Navbar';
 import PhotoUpload from '../components/PhotoUpload';
 import toast from 'react-hot-toast';
 import './AjouterLogement.css';
-import { MapPin, Home, Building2, Building, Warehouse, Store, BedDouble, DoorOpen, Landmark, Hotel, ShoppingBag, Factory, Sparkles, Camera, AlertTriangle } from 'lucide-react';
+import { MapPin, Home, Building2, Building, Warehouse, Store, BedDouble, DoorOpen, Landmark, Hotel, ShoppingBag, Sparkles, Camera, AlertTriangle, Crown, Castle, Tent, Construction, Fence, Layers, TriangleAlert, Briefcase } from 'lucide-react';
 
 // NOTE : label/description sont traduits à l'affichage via t('ajouterLogement.categories.types.<value>.*'),
 // et groupe via t('ajouterLogement.categories.groupes.<groupe>'). value/groupe restent des identifiants stables.
@@ -14,25 +14,25 @@ var CATEGORIES = [
   {
     groupe: 'villas',
     types: [
-      { value: 'villa_luxe',     icon: <Building2  size={22} strokeWidth={1.5} color="#7B1FA2" />, hasChambres: true,  chambresMin: 4, chambresMax: 20, hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'villa_standard', icon: <Building2  size={22} strokeWidth={1.5} color="#1B6B3A" />, hasChambres: true,  chambresMin: 3, chambresMax: 10, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'villa_luxe',     icon: <Crown      size={22} strokeWidth={1.5} color="#7B1FA2" />, hasChambres: true,  chambresMin: 4, chambresMax: 20, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'villa_standard', icon: <Castle     size={22} strokeWidth={1.5} color="#1B6B3A" />, hasChambres: true,  chambresMin: 3, chambresMax: 10, hasSallesBain: true,  hasSuperficie: true  },
     ]
   },
   {
     groupe: 'maisons',
     types: [
       { value: 'maison_moderne',   icon: <Home       size={22} strokeWidth={1.5} color="#1565C0" />, hasChambres: true,  chambresMin: 1, chambresMax: 15, hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'maison_banco',     icon: <Home       size={22} strokeWidth={1.5} color="#E65100" />, hasChambres: true,  chambresMin: 1, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'maison_chantier',  icon: <Building   size={22} strokeWidth={1.5} color="#888"    />, hasChambres: true,  chambresMin: 1, chambresMax: 10, hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'concession',       icon: <Landmark   size={22} strokeWidth={1.5} color="#1B6B3A" />, hasChambres: true,  chambresMin: 1, chambresMax: 30, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'maison_banco',     icon: <Tent       size={22} strokeWidth={1.5} color="#E65100" />, hasChambres: true,  chambresMin: 1, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'maison_chantier',  icon: <Construction size={22} strokeWidth={1.5} color="#888"  />, hasChambres: true,  chambresMin: 1, chambresMax: 10, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'concession',       icon: <Fence      size={22} strokeWidth={1.5} color="#1B6B3A" />, hasChambres: true,  chambresMin: 1, chambresMax: 30, hasSallesBain: true,  hasSuperficie: true  },
     ]
   },
   {
     groupe: 'appartements',
     types: [
       { value: 'appartement',      icon: <Building2  size={22} strokeWidth={1.5} color="#1565C0" />, hasChambres: true,  chambresMin: 1, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'duplex',           icon: <Building2  size={22} strokeWidth={1.5} color="#7B1FA2" />, hasChambres: true,  chambresMin: 2, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'logement_social',  icon: <Building   size={22} strokeWidth={1.5} color="#37474F" />, hasChambres: true,  chambresMin: 1, chambresMax: 5,  hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'duplex',           icon: <Layers     size={22} strokeWidth={1.5} color="#7B1FA2" />, hasChambres: true,  chambresMin: 2, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'logement_social',  icon: <Landmark   size={22} strokeWidth={1.5} color="#37474F" />, hasChambres: true,  chambresMin: 1, chambresMax: 5,  hasSallesBain: true,  hasSuperficie: true  },
     ]
   },
   {
@@ -41,15 +41,15 @@ var CATEGORIES = [
       { value: 'studio_moderne',    icon: <Hotel      size={22} strokeWidth={1.5} color="#1B6B3A" />, hasChambres: false, chambresFixed: 1,               hasSallesBain: true,  hasSuperficie: true  },
       { value: 'chambre_habitant',  icon: <BedDouble  size={22} strokeWidth={1.5} color="#E65100" />, hasChambres: false, chambresFixed: 1,               hasSallesBain: false, hasSuperficie: true  },
       { value: 'chambre_cour',      icon: <DoorOpen   size={22} strokeWidth={1.5} color="#888"    />, hasChambres: false, chambresFixed: 1,               hasSallesBain: false, hasSuperficie: true  },
-      { value: 'habitat_precaire',  icon: <Home       size={22} strokeWidth={1.5} color="#B71C1C" />, hasChambres: true,  chambresMin: 0, chambresMax: 5,  hasSallesBain: false, hasSuperficie: false },
+      { value: 'habitat_precaire',  icon: <TriangleAlert size={22} strokeWidth={1.5} color="#B71C1C" />, hasChambres: true,  chambresMin: 0, chambresMax: 5,  hasSallesBain: false, hasSuperficie: false },
     ]
   },
   {
     groupe: 'locauxCommerciaux',
     types: [
       { value: 'boutique',          icon: <Store      size={22} strokeWidth={1.5} color="#E65100" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
-      { value: 'bureau',            icon: <Warehouse  size={22} strokeWidth={1.5} color="#1565C0" />, hasChambres: true,  chambresMin: 0, chambresMax: 20, hasSallesBain: false, hasSuperficie: true  },
-      { value: 'entrepot',          icon: <Factory    size={22} strokeWidth={1.5} color="#37474F" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'bureau',            icon: <Briefcase  size={22} strokeWidth={1.5} color="#1565C0" />, hasChambres: true,  chambresMin: 0, chambresMax: 20, hasSallesBain: false, hasSuperficie: true  },
+      { value: 'entrepot',          icon: <Warehouse  size={22} strokeWidth={1.5} color="#37474F" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
       { value: 'local_commercial',  icon: <Building   size={22} strokeWidth={1.5} color="#7B1FA2" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
       { value: 'centre_commercial', icon: <ShoppingBag size={22} strokeWidth={1.5} color="#1B6B3A" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
     ]

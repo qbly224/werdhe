@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { Home, Search, ArrowLeft, RefreshCw, CreditCard, Phone } from 'lucide-react';
+import { Home, Search, SearchX, ArrowLeft, RefreshCw, CreditCard, Phone } from 'lucide-react';
 import SEO from '../components/SEO';
 import { useTranslation } from 'react-i18next';
 
@@ -77,7 +77,7 @@ export default function NotFound() {
           404
         </div>
         <div style={{ width: 140, height: 140, background: 'rgba(255,255,255,0.06)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid rgba(255,255,255,0.1)', position: 'relative' }}>
-          <div style={{ fontSize: 60 }}>🏚️</div>
+          <SearchX size={60} strokeWidth={1.3} color="rgba(255,255,255,0.8)" />
         </div>
       </div>
 
