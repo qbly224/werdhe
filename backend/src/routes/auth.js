@@ -658,6 +658,71 @@ router.post('/contact', async (req, res) => {
     res.status(500).json({ erreur: err.message });
   }
 });
+// ─── MOT DE PASSE OUBLIÉ — DEMANDER UN LIEN DE RÉINITIALISATION ──
+router.post('/forgot-password', async (req, res) => {
+  try {
+    var { email } = req.body;
+    if (!email) return res.status(400).json({ erreur: 'Email requis' });
+
+    var result = await db.query('SELECT id, prenom, email FROM users WHERE email = $1', [email]);
+    if (result.rows.length > 0) {
+      var user = result.rows[0];
+      var token = crypto.randomBytes(32).toString('hex');
+      var expireAt = new Date(Date.now() + 60 * 60 * 1000); // 1h
+
+      await db.query(
+        'INSERT INTO reinitialisations_mot_de_passe (user_id, token, expire_at, ip_address) VALUES ($1, $2, $3, $4)',
+        [user.id, token, expireAt, req.ip]
+      );
+
+      var lienReset = (process.env.FRONTEND_URL || 'https://werdhe.com') + '/reset-password?token=' + token;
+      emailService.envoyerEmailReset(user.email, user.prenom, lienReset).catch(function(e) {
+        console.warn('[forgot-password] Email non envoyé:', e.message);
+      });
+    }
+
+    // Réponse générique qu'un compte existe ou non, pour ne pas révéler les emails enregistrés
+    res.json({ message: 'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.' });
+  } catch (err) {
+    console.error('[POST /auth/forgot-password]', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+});
+
+// ─── MOT DE PASSE OUBLIÉ — APPLIQUER LE NOUVEAU MOT DE PASSE ─────
+router.post('/reset-password', async (req, res) => {
+  try {
+    var { token, nouveau_mot_de_passe } = req.body;
+    if (!token || !nouveau_mot_de_passe) {
+      return res.status(400).json({ erreur: 'Token et nouveau mot de passe requis' });
+    }
+    if (nouveau_mot_de_passe.length < 6) {
+      return res.status(400).json({ erreur: 'Le mot de passe doit contenir au moins 6 caractères' });
+    }
+
+    var result = await db.query(
+      `SELECT * FROM reinitialisations_mot_de_passe
+       WHERE token = $1 AND utilise = FALSE AND expire_at > NOW()`,
+      [token]
+    );
+    if (result.rows.length === 0) {
+      return res.status(400).json({ erreur: 'Lien invalide ou expiré' });
+    }
+
+    var reinit = result.rows[0];
+    var hash = await bcrypt.hash(nouveau_mot_de_passe, 10);
+
+    await db.query('UPDATE users SET mot_de_passe = $1 WHERE id = $2', [hash, reinit.user_id]);
+    await db.query('UPDATE reinitialisations_mot_de_passe SET utilise = TRUE WHERE id = $1', [reinit.id]);
+    await audit.log(reinit.user_id, 'reinitialisation_mot_de_passe', {}, req.ip);
+
+    res.json({ message: 'Mot de passe mis à jour' });
+  } catch (err) {
+    console.error('[POST /auth/reset-password]', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+});
+
 // ─── SCORE DE CONFIANCE ──────────────────────────────────────────
 router.get('/mon-score', verifierToken, async (req, res) => {
   try {
