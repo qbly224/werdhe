@@ -7,7 +7,7 @@ import api from '../services/api';
 import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Maximize2,
   Zap, Droplets, Wind, Shield, Car, Trees, ArrowRight,
-  Copy, Check, Phone, Star, Home, Share2, ImageOff
+  Copy, Check, Phone, Star, Home, Share2, ImageOff, CheckCircle2, Lock
 } from 'lucide-react';
 import Logo from '../components/Logo';
 import { useTranslation } from 'react-i18next';
@@ -142,8 +142,10 @@ export default function LogementDetail() {
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.5))' }} />
 
                   {/* Badge statut */}
-                  <div style={{ position: 'absolute', top: 14, right: 14, background: logement.statut === 'disponible' ? '#1B6B3A' : '#888', color: '#fff', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
-                    {logement.statut === 'disponible' ? t('logementDetail.badge.disponible') : t('logementDetail.badge.occupe')}
+                  <div style={{ position: 'absolute', top: 14, right: 14, background: logement.statut === 'disponible' ? '#1B6B3A' : '#888', color: '#fff', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5 }}>
+                    {logement.statut === 'disponible'
+                      ? (<><CheckCircle2 size={13} strokeWidth={2} /> {t('logementDetail.badge.disponible')}</>)
+                      : (<><Lock size={13} strokeWidth={2} /> {t('logementDetail.badge.occupe')}</>)}
                   </div>
 
                   {/* Compteur photos */}
@@ -209,7 +211,7 @@ export default function LogementDetail() {
                 {logement.superficie && (
                   <div style={{ background: '#F7F8F7', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
                     <Maximize2 size={24} strokeWidth={1.5} color="#7B1FA2" style={{ marginBottom: 6 }} />
-                    <div style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22' }}>{logement.superficie}</div>
+                    <div style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22' }}>{parseFloat(logement.superficie)}</div>
                     <div style={{ fontSize: 11, color: '#888' }}>{t('logementDetail.caracteristiques.superficie')}</div>
                   </div>
                 )}

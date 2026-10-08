@@ -5,7 +5,8 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { Home, MapPin } from 'lucide-react';
+import { Home, MapPin, ArrowLeft, Loader2, Send, Info } from 'lucide-react';
+import { CATEGORIE_INFO, CATEGORIE_DEFAUT } from '../components/CarteLogement';
 
 const GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 
@@ -73,7 +74,9 @@ export default function Reserver() {
   if (loading) {
     return (
       <div style={{ fontFamily: 'system-ui, sans-serif', maxWidth: 560, margin: '0 auto', padding: 20, textAlign: 'center', paddingTop: 80 }}>
-        <div style={{ fontSize: 36, marginBottom: 12 }}>⏳</div>
+        <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
+          <Loader2 size={36} strokeWidth={1.5} color="#1B6B3A" className="spin-loader" />
+        </div>
         <div style={{ fontSize: 15, color: '#888' }}>{t('reserver.chargement.logement')}</div>
       </div>
     );
@@ -91,8 +94,8 @@ export default function Reserver() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <button
             onClick={function() { navigate(-1); }}
-            style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', fontSize: 22, cursor: 'pointer', padding: 0, flexShrink: 0 }}>
-            ←
+            style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer', padding: 0, flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+            <ArrowLeft size={22} strokeWidth={2} />
           </button>
           <div>
             <div style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>{t('reserver.header.titre')}</div>
@@ -137,14 +140,18 @@ export default function Reserver() {
           )}
           {logement.superficie && (
             <span style={{ background: '#F5F5F5', color: '#666', padding: '3px 10px', borderRadius: 20, fontSize: 11 }}>
-              {t('reserver.fiche.superficie', { superficie: logement.superficie })}
+              {t('reserver.fiche.superficie', { superficie: parseFloat(logement.superficie) })}
             </span>
           )}
-          {logement.categorie && (
-            <span style={{ background: '#F5F5F5', color: '#666', padding: '3px 10px', borderRadius: 20, fontSize: 11 }}>
-              {logement.categorie}
-            </span>
-          )}
+          {logement.categorie && (function() {
+            var catInfo = CATEGORIE_INFO[logement.categorie] || CATEGORIE_DEFAUT;
+            var CatIcon = catInfo.icon;
+            return (
+              <span style={{ background: '#F5F5F5', color: '#666', padding: '3px 10px', borderRadius: 20, fontSize: 11, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                <CatIcon size={11} strokeWidth={1.8} /> {t(catInfo.label_key)}
+              </span>
+            );
+          })()}
         </div>
 
         {/* Propriétaire */}
@@ -224,7 +231,7 @@ export default function Reserver() {
 
           {/* Info */}
           <div style={{ background: '#E3F2FD', borderRadius: 10, padding: '10px 14px', display: 'flex', gap: 8 }}>
-            <span style={{ fontSize: 16, flexShrink: 0 }}>ℹ️</span>
+            <Info size={16} strokeWidth={2} color="#0D47A1" style={{ flexShrink: 0 }} />
             <span style={{ fontSize: 12, color: '#0D47A1', lineHeight: 1.5 }}>
               {t('reserver.formulaire.infoDelai')}
             </span>
@@ -238,9 +245,12 @@ export default function Reserver() {
           style={{
             width: '100%', border: 'none', borderRadius: 12, padding: 15,
             fontSize: 15, fontWeight: 700, cursor: envoi ? 'not-allowed' : 'pointer',
-            background: envoi ? '#999' : '#1B6B3A', color: '#fff'
+            background: envoi ? '#999' : '#1B6B3A', color: '#fff',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8
           }}>
-          {envoi ? t('reserver.bouton.envoiEnCours') : t('reserver.bouton.envoyer')}
+          {envoi
+            ? (<><Loader2 size={16} strokeWidth={2} className="spin-loader" /> {t('reserver.bouton.envoiEnCours')}</>)
+            : (<><Send size={16} strokeWidth={2} /> {t('reserver.bouton.envoyer')}</>)}
         </button>
       </form>
 
