@@ -86,7 +86,7 @@
       "retour": "Back"
     },
     "badge": {
-      "disponible": "✅ Available",
+      "disponible": "Available",
       "occupe": "Occupied"
     },
     "compteurPhotos": "{{actuelle}} / {{total}}",
@@ -170,8 +170,8 @@
       "infoDelai": "No payment at this stage. The landlord has 48h to respond. You'll be able to track progress directly from your dashboard."
     },
     "bouton": {
-      "envoiEnCours": "⏳ Sending...",
-      "envoyer": "📤 Send my application to the landlord"
+      "envoiEnCours": "Sending...",
+      "envoyer": "Send my application to the landlord"
     }
   },
   "carteLogement": {
@@ -197,18 +197,18 @@
       "logementParDefaut": "Property"
     },
     "statut": {
-      "disponible": "✅ Available",
-      "loue": "🔴 Rented"
+      "disponible": "Available",
+      "loue": "Rented"
     },
     "etat": {
-      "neuf": "✨ New",
-      "aRenover": "🔧 Needs renovation",
-      "enConstruction": "🏗️ Under construction"
+      "neuf": "New",
+      "aRenover": "Needs renovation",
+      "enConstruction": "Under construction"
     },
-    "nbPhotos": "📸 {{count}}",
-    "chambresAbrev": "🛏 {{count}} bd",
-    "sdbAbrev": "🚿 {{count}} bath",
-    "superficieAbrev": "📐 {{superficie}} m²",
+    "nbPhotos": "{{count}}",
+    "chambresAbrev": "{{count}} bd",
+    "sdbAbrev": "{{count}} bath",
+    "superficieAbrev": "{{superficie}} m²",
     "prixParMois": "/month",
     "details": "Details",
     "reserver": "Apply"

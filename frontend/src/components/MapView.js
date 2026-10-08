@@ -148,7 +148,7 @@ export default function MapView({ logements, onSelectLogement }) {
               ${new Intl.NumberFormat('fr-FR').format(l.prix_mensuel)} ${t('mapView.popup.prixParMois')}
             </div>
             ${l.nb_chambres ? `<span style="font-size:11px;color:#555">${svgInline('lit', 11)} ${t('mapView.popup.chambresAbrev', { count: l.nb_chambres })} </span>` : ''}
-            ${l.superficie ? `<span style="font-size:11px;color:#555">${svgInline('surface', 11)} ${l.superficie}m²</span>` : ''}
+            ${l.superficie ? `<span style="font-size:11px;color:#555">${svgInline('surface', 11)} ${parseFloat(l.superficie)}m²</span>` : ''}
             <div style="margin-top:10px">
               <a href="/logements/${l.id}"
                 style="display:block;background:#1B6B3A;color:#fff;padding:8px;border-radius:8px;text-align:center;text-decoration:none;font-size:12px;font-weight:700;">

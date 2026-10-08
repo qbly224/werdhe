@@ -312,9 +312,9 @@ export default function Logements() {
     {t('logements.carte.nouveau')}
   </div>
 )}
-                  {l.categorie && (
-                    <div style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(0,0,0,0.5)', color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11 }}>
-                      {l.categorie}
+                  {l.categorie && l.photos && l.photos.length > 0 && (
+                    <div style={{ position: 'absolute', bottom: 10, left: 10, background: 'rgba(0,0,0,0.55)', color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <CatIcon size={12} strokeWidth={1.8} /> {t(catInfo.label_key)}
                     </div>
                   )}
                 </div>
@@ -337,7 +337,7 @@ export default function Logements() {
                     )}
                     {l.superficie && (
                       <span style={{ background: '#F5F5F5', color: '#555', padding: '3px 8px', borderRadius: 6, fontSize: 11, display: 'flex', alignItems: 'center', gap: 3 }}>
-                        <Maximize2 size={11} strokeWidth={1.5} /> {t('logements.carte.superficieAbrev', { superficie: l.superficie })}
+                        <Maximize2 size={11} strokeWidth={1.5} /> {t('logements.carte.superficieAbrev', { superficie: parseFloat(l.superficie) })}
                       </span>
                     )}
                   </div>

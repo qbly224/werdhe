@@ -86,7 +86,7 @@
       "retour": "Retour"
     },
     "badge": {
-      "disponible": "✅ Disponible",
+      "disponible": "Disponible",
       "occupe": "Occupé"
     },
     "compteurPhotos": "{{actuelle}} / {{total}}",
@@ -170,8 +170,8 @@
       "infoDelai": "Aucun paiement à cette étape. Le propriétaire a 48h pour répondre. Vous suivrez l'avancement directement dans votre tableau de bord."
     },
     "bouton": {
-      "envoiEnCours": "⏳ Envoi en cours...",
-      "envoyer": "📤 Envoyer ma candidature au propriétaire"
+      "envoiEnCours": "Envoi en cours...",
+      "envoyer": "Envoyer ma candidature au propriétaire"
     }
   },
   "carteLogement": {
@@ -197,18 +197,18 @@
       "logementParDefaut": "Logement"
     },
     "statut": {
-      "disponible": "✅ Disponible",
-      "loue": "🔴 Loué"
+      "disponible": "Disponible",
+      "loue": "Loué"
     },
     "etat": {
-      "neuf": "✨ Neuf",
-      "aRenover": "🔧 À rénover",
-      "enConstruction": "🏗️ En construction"
+      "neuf": "Neuf",
+      "aRenover": "À rénover",
+      "enConstruction": "En construction"
     },
-    "nbPhotos": "📸 {{count}}",
-    "chambresAbrev": "🛏 {{count}} ch.",
-    "sdbAbrev": "🚿 {{count}} sdb.",
-    "superficieAbrev": "📐 {{superficie}} m²",
+    "nbPhotos": "{{count}}",
+    "chambresAbrev": "{{count}} ch.",
+    "sdbAbrev": "{{count}} sdb.",
+    "superficieAbrev": "{{superficie}} m²",
     "prixParMois": "/mois",
     "details": "Détails",
     "reserver": "Réserver"

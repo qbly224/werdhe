@@ -189,7 +189,7 @@ export default function ProfilPublic() {
                       {(l.nb_chambres || l.superficie) && (
                         <div style={{ display: 'flex', gap: 10, marginTop: 8, fontSize: 11, color: '#888' }}>
                           {l.nb_chambres && <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><BedDouble size={12} strokeWidth={1.5} /> {l.nb_chambres} {t('profilPublic.logementCard.chambresAbbrev')}</span>}
-                          {l.superficie && <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Maximize2 size={12} strokeWidth={1.5} /> {l.superficie}m²</span>}
+                          {l.superficie && <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Maximize2 size={12} strokeWidth={1.5} /> {parseFloat(l.superficie)}m²</span>}
                         </div>
                       )}
                     </div>

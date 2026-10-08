@@ -215,7 +215,7 @@ export default function CarteLeaflet({ logements, hauteur }) {
                         )}
                         {l.superficie && (
                           <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: '#555' }}>
-                            <Maximize2 size={13} strokeWidth={1.5} /> {t('carteLeaflet.popup.superficieAbrev', { superficie: l.superficie })}
+                            <Maximize2 size={13} strokeWidth={1.5} /> {t('carteLeaflet.popup.superficieAbrev', { superficie: parseFloat(l.superficie) })}
                           </span>
                         )}
                       </div>

@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import {
   Crown, Castle, Home, Tent, Construction, Fence, Building2, Layers,
   Landmark, Hotel, BedDouble, DoorOpen, TriangleAlert, Store, Briefcase,
-  Warehouse, Building, ShoppingBag, MapPin
+  Warehouse, Building, ShoppingBag, MapPin, Bath, Maximize2, Sparkles,
+  Wrench, Image as ImageIcon, CheckCircle2, Lock
 } from 'lucide-react';
 import './CarteLogement.css';
 
@@ -59,14 +60,18 @@ const CarteLogement = ({ logement }) => {
             <CatIcon size={56} strokeWidth={1.5} color="#1B6B3A" />
           </span>
         )}
-        <span className={`carte-statut ${logement.statut}`}>
-          {logement.statut === 'disponible' ? t('carteLogement.statut.disponible') : t('carteLogement.statut.loue')}
+        <span className={`carte-statut ${logement.statut}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+          {logement.statut === 'disponible'
+            ? (<><CheckCircle2 size={12} strokeWidth={1.8} /> {t('carteLogement.statut.disponible')}</>)
+            : (<><Lock size={12} strokeWidth={1.8} /> {t('carteLogement.statut.loue')}</>)}
         </span>
         <span className="carte-categorie-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
           <CatIcon size={12} strokeWidth={1.8} /> {cat.label}
         </span>
         {photos.length > 1 && (
-          <span className="carte-nb-photos">{t('carteLogement.nbPhotos', { count: photos.length })}</span>
+          <span className="carte-nb-photos" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            <ImageIcon size={12} strokeWidth={1.8} /> {t('carteLogement.nbPhotos', { count: photos.length })}
+          </span>
         )}
       </div>
 
@@ -80,19 +85,25 @@ const CarteLogement = ({ logement }) => {
 
         <div className="carte-details">
           {logement.nb_chambres > 0 && (
-            <span>{t('carteLogement.chambresAbrev', { count: logement.nb_chambres })}</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <BedDouble size={12} strokeWidth={1.5} /> {t('carteLogement.chambresAbrev', { count: logement.nb_chambres })}
+            </span>
           )}
           {logement.nb_salles_bain > 0 && (
-            <span>{t('carteLogement.sdbAbrev', { count: logement.nb_salles_bain })}</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <Bath size={12} strokeWidth={1.5} /> {t('carteLogement.sdbAbrev', { count: logement.nb_salles_bain })}
+            </span>
           )}
           {logement.superficie && (
-            <span>{t('carteLogement.superficieAbrev', { superficie: logement.superficie })}</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <Maximize2 size={12} strokeWidth={1.5} /> {t('carteLogement.superficieAbrev', { superficie: parseFloat(logement.superficie) })}
+            </span>
           )}
           {logement.etat && logement.etat !== 'bon_etat' && (
-            <span>
-              {logement.etat === 'neuf' ? t('carteLogement.etat.neuf')
-                : logement.etat === 'a_renover' ? t('carteLogement.etat.aRenover')
-                : logement.etat === 'en_construction' ? t('carteLogement.etat.enConstruction')
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              {logement.etat === 'neuf' ? (<><Sparkles size={12} strokeWidth={1.5} /> {t('carteLogement.etat.neuf')}</>)
+                : logement.etat === 'a_renover' ? (<><Wrench size={12} strokeWidth={1.5} /> {t('carteLogement.etat.aRenover')}</>)
+                : logement.etat === 'en_construction' ? (<><Construction size={12} strokeWidth={1.5} /> {t('carteLogement.etat.enConstruction')}</>)
                 : ''}
             </span>
           )}
