@@ -4,6 +4,7 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { Banknote, Landmark, Home, Building2 } from 'lucide-react';
 
 const GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 
@@ -25,8 +26,8 @@ MOIS_ACTUEL = MOIS_ACTUEL.charAt(0).toUpperCase() + MOIS_ACTUEL.slice(1);
 var PAY_MODES = [
   { id: 'om', labelKey: 'om', color: '#FF6600', text: '#fff', abbr: 'OM' },
   { id: 'mtn', labelKey: 'mtn', color: '#FFCC00', text: '#1B2B22', abbr: 'MM' },
-  { id: 'cash', labelKey: 'cash', icon: '💵' },
-  { id: 'bank', labelKey: 'bank', icon: '🏦' },
+  { id: 'cash', labelKey: 'cash', icon: Banknote },
+  { id: 'bank', labelKey: 'bank', icon: Landmark },
 ];
 
 var STATUT_CONFIG = {
@@ -60,7 +61,7 @@ export function PaiementsProprietaire() {
             statut: l.statut_paiement || (Math.random() > 0.5 ? 'paye' : Math.random() > 0.5 ? 'en_retard' : 'impaye'),
             locataire: l.locataire_nom || 'Locataire',
             jours: l.jours_retard || Math.floor(Math.random() * 15),
-            icon: '🏠'
+            icon: Home
           });
         });
         setBiens(logements);
@@ -68,10 +69,10 @@ export function PaiementsProprietaire() {
       .catch(function() {
         // Données démo si backend pas encore dispo
         setBiens([
-          { id: '1', nom: 'Villa Ratoma', type: 'Villa', loyer: 2500000, statut: 'en_retard', locataire: 'Mamadou Diallo', jours: 12, icon: '🏠' },
-          { id: '2', nom: 'Appart Kaloum 2', type: 'Appartement', loyer: 1800000, statut: 'impaye', locataire: 'Fatoumata Camara', jours: 3, icon: '🏢' },
-          { id: '3', nom: 'Studio Matam', type: 'Studio', loyer: 900000, statut: 'paye', locataire: 'Sekou Konaté', jours: 0, icon: '🏠' },
-          { id: '4', nom: 'Appart Dixinn', type: 'Appartement', loyer: 1500000, statut: 'impaye', locataire: 'Ibrahima Bah', jours: 7, icon: '🏢' },
+          { id: '1', nom: 'Villa Ratoma', type: 'Villa', loyer: 2500000, statut: 'en_retard', locataire: 'Mamadou Diallo', jours: 12, icon: Home },
+          { id: '2', nom: 'Appart Kaloum 2', type: 'Appartement', loyer: 1800000, statut: 'impaye', locataire: 'Fatoumata Camara', jours: 3, icon: Building2 },
+          { id: '3', nom: 'Studio Matam', type: 'Studio', loyer: 900000, statut: 'paye', locataire: 'Sekou Konaté', jours: 0, icon: Home },
+          { id: '4', nom: 'Appart Dixinn', type: 'Appartement', loyer: 1500000, statut: 'impaye', locataire: 'Ibrahima Bah', jours: 7, icon: Building2 },
         ]);
       })
       .finally(function() { setLoading(false); });
@@ -188,7 +189,9 @@ export function PaiementsProprietaire() {
             <div key={b.id} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.04)', borderLeft: '4px solid ' + borderColor }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                 <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                  <div style={{ width: 40, height: 40, background: '#F0FBF0', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>{b.icon}</div>
+                  <div style={{ width: 40, height: 40, background: '#F0FBF0', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <b.icon size={22} strokeWidth={1.6} color="#1B6B3A" />
+                  </div>
                   <div>
                     <div style={{ fontWeight: 700, fontSize: 14, color: '#1B2B22' }}>{b.nom}</div>
                     <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>👤 {b.locataire}</div>
@@ -262,7 +265,7 @@ export function PaiementsProprietaire() {
                     <div key={p.id} onClick={function() { setSelectedMode(p.id); }}
                       style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', border: selectedMode === p.id ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: selectedMode === p.id ? '#F0FBF0' : '#fff', borderRadius: 12, marginBottom: 8, cursor: 'pointer', transition: 'all .2s' }}>
                       <div style={{ width: 40, height: 40, background: p.color || '#E8F5E9', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: p.icon ? 20 : 13, fontWeight: 700, color: p.text || '#1B6B3A', flexShrink: 0 }}>
-                        {p.icon || p.abbr}
+                        {p.icon ? <p.icon size={20} strokeWidth={1.6} color={p.text || '#1B6B3A'} /> : p.abbr}
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontSize: 14, fontWeight: 600, color: '#1B2B22' }}>{t('ongletPaiements.payModes.' + p.labelKey + '.label')}</div>
@@ -360,7 +363,7 @@ export function PaiementsLocataire() {
             debut: active.date_debut ? new Date(active.date_debut).toLocaleDateString('fr-FR') : 'N/A',
             fin: active.date_fin ? new Date(active.date_fin).toLocaleDateString('fr-FR') : 'N/A',
             statut_loyer: 'impaye',
-            icon: '🏢',
+            icon: Building2,
             reservation_id: active.id
           });
         }
@@ -482,7 +485,9 @@ export function PaiementsLocataire() {
           {/* Fiche logement */}
           <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
             <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', marginBottom: 14 }}>
-              <div style={{ width: 52, height: 52, background: '#E3F2FD', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, flexShrink: 0 }}>{logement.icon}</div>
+              <div style={{ width: 52, height: 52, background: '#E3F2FD', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <logement.icon size={26} strokeWidth={1.6} color="#1A4FA0" />
+              </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 700, fontSize: 14, color: '#1B2B22' }}>{logement.nom}</div>
                 <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>📍 {logement.quartier}</div>
@@ -578,7 +583,7 @@ export function PaiementsLocataire() {
                   <div key={p.id} onClick={function() { setMode(p.id); }}
                     style={{ padding: 14, border: mode === p.id ? '2px solid #1A4FA0' : '0.5px solid #E0E0E0', background: mode === p.id ? '#E3F2FD' : '#FAFAFA', borderRadius: 12, cursor: 'pointer', transition: 'all .2s', textAlign: 'center' }}>
                     <div style={{ width: 44, height: 44, background: p.color || '#F0F0F0', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: p.icon ? 22 : 15, fontWeight: 700, color: p.text || '#1B2B22', margin: '0 auto 8px' }}>
-                      {p.icon || p.abbr}
+                      {p.icon ? <p.icon size={22} strokeWidth={1.6} color={p.text || '#1B2B22'} /> : p.abbr}
                     </div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>{t('ongletPaiements.payModes.' + p.labelKey + '.label')}</div>
                     <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{t('ongletPaiements.payModes.' + p.labelKey + '.sub')}</div>

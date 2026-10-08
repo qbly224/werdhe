@@ -4,6 +4,7 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { Home } from 'lucide-react';
 
 const addDays = (n) => {
   var d = new Date();
@@ -248,18 +249,18 @@ function PreavisProprio() {
             loyer: Number(r.montant_total || r.prix_mensuel),
             debut: r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : 'N/A',
             preavis: null,
-            icon: '🏠'
+            icon: Home
           };
         });
         setBiens(actives.length > 0 ? actives : [
-          { id: '1', nom: 'Villa Ratoma', locataire: 'Mamadou Diallo', tel: '+224 622 11 22 33', loyer: 2500000, debut: '1er mars 2024', preavis: null, icon: '🏠' },
-          { id: '3', nom: 'Studio Matam', locataire: 'Sekou Konaté', tel: '+224 655 77 88 99', loyer: 900000, debut: '1er janvier 2025', preavis: null, icon: '🏠' },
+          { id: '1', nom: 'Villa Ratoma', locataire: 'Mamadou Diallo', tel: '+224 622 11 22 33', loyer: 2500000, debut: '1er mars 2024', preavis: null, icon: Home },
+          { id: '3', nom: 'Studio Matam', locataire: 'Sekou Konaté', tel: '+224 655 77 88 99', loyer: 900000, debut: '1er janvier 2025', preavis: null, icon: Home },
         ]);
       })
       .catch(function() {
         setBiens([
-          { id: '1', nom: 'Villa Ratoma', locataire: 'Mamadou Diallo', tel: '+224 622 11 22 33', loyer: 2500000, debut: '1er mars 2024', preavis: null, icon: '🏠' },
-          { id: '3', nom: 'Studio Matam', locataire: 'Sekou Konaté', tel: '+224 655 77 88 99', loyer: 900000, debut: '1er janvier 2025', preavis: null, icon: '🏠' },
+          { id: '1', nom: 'Villa Ratoma', locataire: 'Mamadou Diallo', tel: '+224 622 11 22 33', loyer: 2500000, debut: '1er mars 2024', preavis: null, icon: Home },
+          { id: '3', nom: 'Studio Matam', locataire: 'Sekou Konaté', tel: '+224 655 77 88 99', loyer: 900000, debut: '1er janvier 2025', preavis: null, icon: Home },
         ]);
       })
       .finally(function() { setLoading(false); });
@@ -377,7 +378,7 @@ function PreavisProprio() {
                   return (
                     <div key={b.id} onClick={function() { setBien(b); }}
                       style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 12px', border: bien && bien.id === b.id ? '2px solid #C62828' : '0.5px solid #E0E0E0', background: bien && bien.id === b.id ? '#FFEBEE' : '#FAFAFA', borderRadius: 10, cursor: 'pointer' }}>
-                      <span style={{ fontSize: 20 }}>{b.icon}</span>
+                      <b.icon size={20} strokeWidth={1.6} color="#555" />
                       <div style={{ flex: 1 }}>
                         <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>{b.nom}</div>
                         <div style={{ fontSize: 11, color: '#888' }}>{b.locataire} · {b.tel}</div>
