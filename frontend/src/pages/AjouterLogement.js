@@ -6,7 +6,7 @@ import Navbar from '../components/Navbar';
 import PhotoUpload from '../components/PhotoUpload';
 import toast from 'react-hot-toast';
 import './AjouterLogement.css';
-import { MapPin, Home, Building2, Building, Warehouse, Store, BedDouble, DoorOpen, Landmark, Hotel, ShoppingBag, Factory, Sparkles } from 'lucide-react';
+import { MapPin, Home, Building2, Building, Warehouse, Store, BedDouble, DoorOpen, Landmark, Hotel, ShoppingBag, Factory, Sparkles, Camera, AlertTriangle } from 'lucide-react';
 
 // NOTE : label/description sont traduits à l'affichage via t('ajouterLogement.categories.types.<value>.*'),
 // et groupe via t('ajouterLogement.categories.groupes.<groupe>'). value/groupe restent des identifiants stables.
@@ -577,7 +577,7 @@ const AjouterLogement = () => {
           {etape === 5 && logementCree && (
             <div className="etape-card">
               <div className="photos-etape-header">
-                <span>📸</span>
+                <span style={{ display: 'flex' }}><Camera size={40} strokeWidth={1.5} color="#1B6B3A" /></span>
                 <div>
                   <h2>{t('ajouterLogement.etape5.titre')} <span style={{ color: '#E53935', fontSize: 14 }}>*</span></h2>
                   <p>{t('ajouterLogement.etape5.sousTitre')}</p>
@@ -595,7 +595,7 @@ const AjouterLogement = () => {
               <div className="form-actions" style={{marginTop: '24px'}}>
                 {photosAjoutees.length === 0 && (
   <div style={{ background: '#FFF8E1', border: '1px solid #FFE082', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#7B4F00', display: 'flex', alignItems: 'center', gap: 8 }}>
-    <span>⚠️</span> {t('ajouterLogement.etape5.avertissementPhoto')}
+    <AlertTriangle size={16} strokeWidth={1.5} color="#F5A623" /> {t('ajouterLogement.etape5.avertissementPhoto')}
   </div>
 )}
 <button

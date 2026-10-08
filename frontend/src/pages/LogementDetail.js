@@ -7,7 +7,7 @@ import api from '../services/api';
 import {
   ChevronLeft, ChevronRight, MapPin, BedDouble, Bath, Maximize2,
   Zap, Droplets, Wind, Shield, Car, Trees, ArrowRight,
-  Copy, Check, Phone, Star, Home, Share2
+  Copy, Check, Phone, Star, Home, Share2, ImageOff
 } from 'lucide-react';
 import Logo from '../components/Logo';
 import { useTranslation } from 'react-i18next';
@@ -130,7 +130,9 @@ export default function LogementDetail() {
             {/* Galerie photos */}
             <div style={{ borderRadius: 18, overflow: 'hidden', marginBottom: 20, position: 'relative', background: '#1B2B22' }}>
               {photos.length === 0 ? (
-                <div style={{ height: 380, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1B6B3A, #2D9E5F)', fontSize: 64 }}>🏠</div>
+                <div style={{ height: 380, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1B6B3A, #2D9E5F)' }}>
+                  <ImageOff size={56} strokeWidth={1.5} color="rgba(255,255,255,0.85)" />
+                </div>
               ) : (
                 <div style={{ position: 'relative', height: 380 }}>
                   <img src={photos[photoActive]} alt={logement.titre}
@@ -265,7 +267,7 @@ export default function LogementDetail() {
                         <div style={{ height: 110, background: sPhoto ? 'none' : '#E8F5E9', overflow: 'hidden' }}>
                           {sPhoto
                             ? <img src={sPhoto} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28 }}>🏠</div>
+                            : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ImageOff size={24} strokeWidth={1.5} color="#A5D6A7" /></div>
                           }
                         </div>
                         <div style={{ padding: '10px 12px' }}>
