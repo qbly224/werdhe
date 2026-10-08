@@ -36,7 +36,7 @@ async function envoyerFactureParEmail(userId, plan, montant, cycle, debut, fin) 
     var u = userInfo.rows[0];
     if (!u) return;
     await resend.emails.send({
-      from:    'Werdhe <no-reply@werdhe.com>',
+      from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
       to:      u.email,
       subject: '🧾 Facture abonnement Werdhe — Plan ' + plan.charAt(0).toUpperCase() + plan.slice(1),
       html: `

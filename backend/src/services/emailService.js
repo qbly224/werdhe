@@ -248,7 +248,7 @@ function ligne(label, valeur) {
 // ══
 async function envoyer(to, subject, html) {
   try {
-    await resend.emails.send({ from: 'Werdhe <no-reply@werdhe.com>', to: Array.isArray(to) ? to : [to], subject, html });
+    await resend.emails.send({ from: process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>', to: Array.isArray(to) ? to : [to], subject, html });
     return true;
   } catch (err) { console.warn('[Email]', err.message); return false; }
 }

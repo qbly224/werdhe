@@ -72,7 +72,7 @@ router.post('/', verifierToken, async (req, res) => {
         const resend     = new Resend(process.env.RESEND_API_KEY);
 
         await resend.emails.send({
-          from:    'Werdhe <no-reply@werdhe.com>',
+          from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
           to:      destEmail,
           subject: estLocataire
             ? '📤 Préavis de départ — ' + r.logement_titre
@@ -277,7 +277,7 @@ router.patch('/:id/repondre', verifierToken, async (req, res) => {
           const resend = new Resend(process.env.RESEND_API_KEY);
           var destEmail = p.type === 'locataire' ? p.loc_email : p.prop_email;
           await resend.emails.send({
-            from:    'Werdhe <no-reply@werdhe.com>',
+            from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
             to:      destEmail,
             subject: '✅ Préavis accepté — ' + p.logement_titre,
             html: `
