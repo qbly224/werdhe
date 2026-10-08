@@ -26,7 +26,9 @@ import {
   Banknote, TrendingUp, Receipt, Shield,
   ChevronRight, ChevronLeft, Info, Zap,
   FileSignature, BedDouble, Bath, Maximize2,
-  LogOut, UserCheck, Award, AlertCircle, Gift, HelpCircle
+  LogOut, UserCheck, Award, AlertCircle, Gift, HelpCircle,
+  ClipboardList, Building, Check, Scale, Inbox,
+  Paperclip, CheckCheck, SmilePlus, Globe
 } from 'lucide-react';
 import Onboarding from '../components/Onboarding';
 import { activerNotificationsPush, estAbonne, desactiverNotifications } from '../services/pushService';
@@ -171,7 +173,7 @@ function NotifPanel(props) {
         return (
           <div key={i} className="notif-item">
             <div className="notif-item-icon">
-              {a.type === 'loyer_retard' ? '⚠️' : a.type === 'bail_bientot' ? '📋' : '🔔'}
+              {a.type === 'loyer_retard' ? <AlertTriangle size={16} strokeWidth={1.5} /> : a.type === 'bail_bientot' ? <ClipboardList size={16} strokeWidth={1.5} /> : <Bell size={16} strokeWidth={1.5} />}
             </div>
             <div>
               <div className="notif-item-text">{a.titre}</div>
@@ -232,7 +234,7 @@ function OngletOverviewLocataire(props) {
               <div style={{ height: 100, background: photo ? 'none' : 'linear-gradient(135deg,#1B6B3A,#2D9E5F)', overflow: 'hidden', position: 'relative' }}>
                 {photo
                   ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontSize: 40 }}>🏠</div>
+                  : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}><Home size={36} strokeWidth={1.5} color="#fff" /></div>
                 }
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.55))', display: 'flex', alignItems: 'flex-end', padding: '10px 14px' }}>
                   <div>
@@ -633,7 +635,7 @@ function OngletBiens(props) {
 
         {locationsActives.length === 0 && (
           <div className="dash-empty-state">
-            <span>🏠</span>
+            <Home size={48} strokeWidth={1} color="#C8E6C9" />
             <h3>{t('ongletBiens.locataire.aucuneLocation.titre')}</h3>
             <p>{t('ongletBiens.locataire.aucuneLocation.description')}</p>
             <Link to="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
@@ -646,7 +648,7 @@ function OngletBiens(props) {
           return (
             <div key={r.id} style={{ background: '#fff', borderRadius: 16, padding: 18, marginBottom: 14, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid #1B6B3A' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
-                <div style={{ width: 48, height: 48, background: '#E8F5E9', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>🏠</div>
+                <div style={{ width: 48, height: 48, background: '#E8F5E9', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Home size={22} strokeWidth={1.5} color="#1B6B3A" /></div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{r.logement_titre}</div>
                   <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>
@@ -752,7 +754,7 @@ function OngletBiens(props) {
 
       {stats.logements.length === 0 && (
         <div className="dash-empty-state">
-          <span>🏠</span>
+          <Home size={48} strokeWidth={1} color="#C8E6C9" />
           <h3>{t('ongletBiens.aucunBienEnregistre')}</h3>
           <Link to="/logements/ajouter" className="btn-green" style={{ textDecoration: 'none', display: 'inline-block' }}>
             {t('ongletBiens.ajouterMonPremierBien')}
@@ -813,7 +815,7 @@ function OngletBiens(props) {
               {/* En-tête bien */}
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
                 <div style={{ width: 48, height: 48, background: estOccupe ? '#E8F5E9' : '#FFF8E1', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>
-                  {b.categorie && b.categorie.includes('villa') ? '🏡' : b.categorie && b.categorie.includes('studio') ? '🏢' : '🏠'}
+                  {b.categorie && b.categorie.includes('villa') ? <Home size={22} strokeWidth={1.5} /> : b.categorie && b.categorie.includes('studio') ? <Building2 size={22} strokeWidth={1.5} /> : <Building size={22} strokeWidth={1.5} />}
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{b.titre}</div>
@@ -856,7 +858,7 @@ function OngletBiens(props) {
               {/* Bannière préavis actif */}
               {preavisActif && (
                 <div style={{ background: '#FFEBEE', borderRadius: 10, padding: '10px 14px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#B71C1C' }}>
-                  <span>📋</span>
+                  <ClipboardList size={14} strokeWidth={1.5} />
                   <span>
                     {t('ongletBiens.preavisBanniere.avant')}<b>{locataire && locataire.locataire_prenom + ' ' + locataire.locataire_nom}</b>{t('ongletBiens.preavisBanniere.apres')}
                     {' '}<span style={{ textDecoration: 'underline', cursor: 'pointer' }} onClick={function() { if (setOnglet) setOnglet('/dashboard/preavis'); }}>{t('ongletBiens.preavisBanniere.voirLePreavis')}</span>
@@ -1097,7 +1099,7 @@ function OngletLocataires(props) {
       <h3 style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>{t('ongletLocataires.manuels')}</h3>
       {locatairesManue.length === 0 && !showForm && (
         <div className="dash-empty-state">
-          <span>👥</span>
+          <Users size={48} strokeWidth={1} color="#C8E6C9" />
           <h3>{t('ongletLocataires.aucunManuel.titre')}</h3>
           <p>{t('ongletLocataires.aucunManuel.description')}</p>
         </div>
@@ -1111,8 +1113,8 @@ function OngletLocataires(props) {
               <div>
                 <div className="locataire-row-name">{l.prenom} {l.nom}</div>
                 <div className="locataire-row-sub">
-                  {l.telephone && '📞 ' + l.telephone}
-                  {l.logement_titre && ' · 🏠 ' + l.logement_titre}
+                  {l.telephone && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Phone size={12} strokeWidth={1.5} /> {l.telephone}</span>}
+                  {l.logement_titre && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}> · <Home size={12} strokeWidth={1.5} /> {l.logement_titre}</span>}
                 </div>
               </div>
             </div>
@@ -1415,8 +1417,8 @@ useEffect(function() {
                 {r.logement_titre} · {new Intl.NumberFormat('fr-FR').format(loyer)} GNF/mois
               </div>
               {r.locataire_telephone && (
-                <a href={'tel:' + r.locataire_telephone} style={{ color: 'rgba(255,255,255,0.85)', fontSize: 12, marginTop: 3, display: 'block' }}>
-                  📞 {r.locataire_telephone}
+                <a href={'tel:' + r.locataire_telephone} style={{ color: 'rgba(255,255,255,0.85)', fontSize: 12, marginTop: 3, display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Phone size={12} strokeWidth={1.5} /> {r.locataire_telephone}
                 </a>
               )}
             </div>
@@ -1614,7 +1616,7 @@ useEffect(function() {
                   onKeyDown={function(e) { if (e.key === 'Enter') envoyerMessage(); }}
                   placeholder={t('ongletReservationsProprio.echanges.messagePlaceholder')}
                   style={{ flex: 1, padding: '9px 14px', borderRadius: 20, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: '#F8F8F8' }} />
-                <button onClick={envoyerMessage} style={{ width: 38, height: 38, borderRadius: '50%', background: '#1B6B3A', border: 'none', color: '#fff', fontSize: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>↗</button>
+                <button onClick={envoyerMessage} style={{ width: 38, height: 38, borderRadius: '50%', background: '#1B6B3A', border: 'none', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Send size={16} strokeWidth={1.5} /></button>
               </div>
             </div>
           </div>
@@ -1623,7 +1625,7 @@ useEffect(function() {
         {/* ─ CAUTION EN ATTENTE ─ */}
         {r.statut === 'caution_requise' && (
           <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontSize: 36, marginBottom: 12 }}>⏳</div>
+            <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}><Clock size={32} strokeWidth={1.5} color="#888" /></div>
             <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>
               {t('ongletReservationsProprio.cautionEnAttente.enTrainDePayer', { prenom: r.locataire_prenom })}
             </div>
@@ -1660,7 +1662,7 @@ useEffect(function() {
               ].map(function(item) {
                 return (
                   <div key={item} style={{ display: 'flex', gap: 8, padding: '5px 0', fontSize: 13, color: '#555' }}>
-                    <span style={{ color: '#1B6B3A' }}>✓</span>
+                    <Check size={14} strokeWidth={1.5} color="#1B6B3A" />
                     <span>{item}</span>
                   </div>
                 );
@@ -1685,7 +1687,7 @@ useEffect(function() {
                 [t('ongletReservationsProprio.demandeRecue.labels.loyer'), new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF/mois'],
                 [t('ongletReservationsProprio.bailASigner.debut'), r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : t('ongletReservationsProprio.na')],
                 [t('ongletReservationsProprio.demandeRecue.labels.duree'), r.duree_mois ? t('ongletReservationsProprio.nMois', { n: r.duree_mois }) : t('ongletReservationsProprio.na')],
-                [t('ongletReservationsProprio.bailASigner.caution'), new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF ✓'],
+                [t('ongletReservationsProprio.bailASigner.caution'), <span key="caution-ok" style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}>{new Intl.NumberFormat('fr-FR').format(loyer)} GNF <Check size={11} strokeWidth={2} color="#1B6B3A" /></span>],
               ].map(function(row) {
                 return (
                   <div key={row[0]} style={{ fontSize: 11, color: '#666' }}>
@@ -1704,7 +1706,7 @@ useEffect(function() {
                 </div>
               ) : (
                 <div>
-                  <div style={{ fontSize: 28, marginBottom: 6 }}>✍️</div>
+                  <div style={{ marginBottom: 6, display: 'flex', justifyContent: 'center' }}><FileSignature size={26} strokeWidth={1.5} color="#1B6B3A" /></div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: '#1B6B3A' }}>{t('ongletReservationsProprio.bailASigner.appuyerPourSigner')}</div>
                   <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{t('ongletReservationsProprio.bailASigner.signatureSecurisee')}</div>
                 </div>
@@ -1724,7 +1726,7 @@ useEffect(function() {
         {/* ─ EN ATTENTE SIGNATURE LOCATAIRE ─ */}
         {r.statut === 'bail_signe_proprio' && (
           <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontSize: 36, marginBottom: 12 }}>⏳</div>
+            <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}><Clock size={32} strokeWidth={1.5} color="#888" /></div>
             <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>
               {t('ongletReservationsProprio.attenteSignature.titre', { prenom: r.locataire_prenom })}
             </div>
@@ -1788,7 +1790,7 @@ useEffect(function() {
 
       {actionsRequises.length > 0 && (
         <div style={{ background: '#FFEBEE', borderRadius: 12, padding: '12px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 20 }}>⚡</span>
+          <Zap size={20} strokeWidth={1.5} color="#B71C1C" />
           <div>
             <div style={{ fontSize: 14, fontWeight: 700, color: '#B71C1C' }}>
               {t('ongletReservationsProprio.liste.actionsRequises', { count: actionsRequises.length })}
@@ -1802,7 +1804,7 @@ useEffect(function() {
 
       {reservations.length === 0 && (
         <div className="dash-empty-state">
-          <span>📅</span>
+          <CalendarCheck size={48} strokeWidth={1} color="#C8E6C9" />
           <h3>{t('ongletReservationsProprio.liste.aucuneDemande.titre')}</h3>
           <p>{t('ongletReservationsProprio.liste.aucuneDemande.description')}</p>
         </div>
@@ -1825,7 +1827,7 @@ useEffect(function() {
                     <div style={{ fontSize: 11, color: '#888' }}>{r.locataire_telephone}</div>
                   </div>
                 </div>
-                <div style={{ fontSize: 12, color: '#555' }}>🏠 {r.logement_titre}</div>
+                <div style={{ fontSize: 12, color: '#555', display: 'flex', alignItems: 'center', gap: 4 }}><Home size={12} strokeWidth={1.5} /> {r.logement_titre}</div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6B3A', marginTop: 3 }}>
                   {new Intl.NumberFormat('fr-FR').format(r.prix_mensuel || r.montant_total || 0)} GNF/mois
                 </div>
@@ -1959,7 +1961,7 @@ return {
     });
     if (bl.length === 0) bl = [
       { id: '1', nom: 'Villa Ratoma', locataire: 'Mamadou Diallo', quartier: 'Ratoma', loyer: 2500000, statut: 'en_retard', jours: 12, icon: <Home size={24} strokeWidth={1.5} /> },
-      { id: '2', nom: 'Appart Kaloum 2', locataire: 'Fatoumata Camara', quartier: 'Kaloum', loyer: 1800000, statut: 'impaye', jours: 3, icon: '🏢' },
+      { id: '2', nom: 'Appart Kaloum 2', locataire: 'Fatoumata Camara', quartier: 'Kaloum', loyer: 1800000, statut: 'impaye', jours: 3, icon: <Building2 size={24} strokeWidth={1.5} /> },
       { id: '3', nom: 'Studio Matam', locataire: 'Sekou Konate', quartier: 'Matam', loyer: 900000, statut: 'paye', jours: 0, icon: <Home size={24} strokeWidth={1.5} /> }
     ];
     setBiensList(bl);
@@ -2064,7 +2066,7 @@ return {
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}}><div><div style={{fontSize:'16px',fontWeight:'700'}}>{t('ongletPaiementsDash.modal.titre')}</div><div style={{fontSize:'12px',color:'#888'}}>{modal.nom} · {modal.locataire}</div></div><button type="button" onClick={fermerModal} style={{width:'32px',height:'32px',borderRadius:'50%',border:'none',background:'#F5F5F5',cursor:'pointer'}}>x</button></div>
             <div style={{background:'#F0F4F1',borderRadius:'12px',padding:'14px',marginBottom:'18px',display:'flex',justifyContent:'space-between',alignItems:'center'}}><div><div style={{fontSize:'12px',color:'#555'}}>{t('ongletPaiementsDash.proprio.loyerMensuel')}</div></div><div style={{fontSize:'22px',fontWeight:'700',color:'#1B6B3A'}}>{GNF(modal.loyer)}</div></div>
             <div style={{fontSize:'13px',fontWeight:'700',marginBottom:'12px'}}>{t('ongletPaiementsDash.modal.modePaiement')}</div>
-            {PAY_MODES.map(function(p){return(<div key={p.id} onClick={function(){setSelectedMode(p.id);}} style={{display:'flex',alignItems:'center',gap:'12px',padding:'12px 14px',border:selectedMode===p.id?'2px solid #1B6B3A':'0.5px solid #E0E0E0',background:selectedMode===p.id?'#E8F5E9':'#fff',borderRadius:'12px',marginBottom:'8px',cursor:'pointer'}}><div style={{width:'40px',height:'40px',background:p.color||'#E8F5E9',borderRadius:'10px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:p.icon?'20px':'13px',fontWeight:'700',color:p.text||'#1B6B3A'}}>{p.icon||p.abbr}</div><div style={{flex:1}}><div style={{fontSize:'14px',fontWeight:'600'}}>{p.label}</div><div style={{fontSize:'11px',color:'#888'}}>{p.sub}</div></div><div style={{width:'22px',height:'22px',borderRadius:'50%',border:selectedMode===p.id?'none':'1.5px solid #E0E0E0',background:selectedMode===p.id?'#1B6B3A':'transparent',display:'flex',alignItems:'center',justifyContent:'center'}}>{selectedMode===p.id&&<span style={{color:'#fff',fontSize:'12px'}}>✓</span>}</div></div>);})}
+            {PAY_MODES.map(function(p){return(<div key={p.id} onClick={function(){setSelectedMode(p.id);}} style={{display:'flex',alignItems:'center',gap:'12px',padding:'12px 14px',border:selectedMode===p.id?'2px solid #1B6B3A':'0.5px solid #E0E0E0',background:selectedMode===p.id?'#E8F5E9':'#fff',borderRadius:'12px',marginBottom:'8px',cursor:'pointer'}}><div style={{width:'40px',height:'40px',background:p.color||'#E8F5E9',borderRadius:'10px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:p.icon?'20px':'13px',fontWeight:'700',color:p.text||'#1B6B3A'}}>{p.icon||p.abbr}</div><div style={{flex:1}}><div style={{fontSize:'14px',fontWeight:'600'}}>{p.label}</div><div style={{fontSize:'11px',color:'#888'}}>{p.sub}</div></div><div style={{width:'22px',height:'22px',borderRadius:'50%',border:selectedMode===p.id?'none':'1.5px solid #E0E0E0',background:selectedMode===p.id?'#1B6B3A':'transparent',display:'flex',alignItems:'center',justifyContent:'center'}}>{selectedMode===p.id&&<Check size={12} strokeWidth={2} color="#fff" />}</div></div>);})}
             <button type="button" onClick={confirmerPaiement} disabled={processing} style={{width:'100%',background:processing?'#999':'#1B6B3A',color:'#fff',border:'none',borderRadius:'12px',padding:'14px',fontSize:'15px',fontWeight:'700',cursor:processing?'not-allowed':'pointer',marginTop:'6px'}}>{processing?t('ongletPaiementsDash.modal.traitementEnCours'):t('ongletPaiementsDash.modal.confirmer', { montant: GNF(modal.loyer) })}</button>
           </div>):(<div style={{textAlign:'center',padding:'20px 0'}}>
             <div style={{width:'70px',height:'70px',background:'#E8F5E9',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px',fontSize:'36px'}}><CheckCircle size={36} strokeWidth={1.5} color="#1B6B3A"/></div>
@@ -2107,8 +2109,8 @@ function PaiementsLocataire(props) {
       <div style={{background:'#1A4FA0',borderRadius:'14px',padding:'16px 18px',marginBottom:'18px'}}><div style={{color:'#fff',fontWeight:'700',fontSize:'16px'}}>{t('ongletPaiementsDash.locataireLegacy.mesPaiements')}</div><div style={{color:'rgba(255,255,255,.75)',fontSize:'12px',marginTop:'2px'}}>{moisActuel}</div></div>
       <div style={{background:'#fff',borderRadius:'14px',padding:'16px',marginBottom:'14px',boxShadow:'0 2px 10px rgba(0,0,0,.06)'}}>
         <div style={{display:'flex',gap:'12px',alignItems:'flex-start',marginBottom:'14px'}}>
-          <div style={{width:'52px',height:'52px',background:'#E3F2FD',borderRadius:'12px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'28px'}}>🏢</div>
-          <div style={{flex:1}}><div style={{fontWeight:'700',fontSize:'14px',color:'#1B2B22'}}>{logement.nom}</div><div style={{fontSize:'12px',color:'#888',marginTop:'2px'}}>📍 {logement.quartier}</div><div style={{display:'flex',alignItems:'center',gap:'8px',marginTop:'6px'}}><div style={{width:'26px',height:'26px',background:'#1B6B3A',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:'10px',fontWeight:'700'}}>{logement.propIni}</div><span style={{fontSize:'12px',color:'#555'}}>{logement.proprio}</span></div></div>
+          <div style={{width:'52px',height:'52px',background:'#E3F2FD',borderRadius:'12px',display:'flex',alignItems:'center',justifyContent:'center'}}><Building2 size={26} strokeWidth={1.5} color="#1565C0" /></div>
+          <div style={{flex:1}}><div style={{fontWeight:'700',fontSize:'14px',color:'#1B2B22'}}>{logement.nom}</div><div style={{fontSize:'12px',color:'#888',marginTop:'2px',display:'flex',alignItems:'center',gap:4}}><MapPin size={11} strokeWidth={1.5} /> {logement.quartier}</div><div style={{display:'flex',alignItems:'center',gap:'8px',marginTop:'6px'}}><div style={{width:'26px',height:'26px',background:'#1B6B3A',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:'10px',fontWeight:'700'}}>{logement.propIni}</div><span style={{fontSize:'12px',color:'#555'}}>{logement.proprio}</span></div></div>
           <div style={{textAlign:'right'}}><div style={{fontSize:'16px',fontWeight:'700',color:'#1A4FA0'}}>{GNF(logement.loyer)}</div><div style={{fontSize:'10px',color:'#888'}}>/ mois</div></div>
         </div>
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'8px',marginBottom:'14px'}}>
@@ -2136,7 +2138,7 @@ function PaiementsLocataire(props) {
         <div style={{marginBottom:'16px'}}>
           <div style={{fontSize:'13px',fontWeight:'600',marginBottom:'10px'}}>{t('ongletPaiementsDash.modal.modePaiement')}</div>
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
-            {PAY_MODES.map(function(p){return(<div key={p.id} onClick={function(){setMode(p.id);}} style={{display:'flex',alignItems:'center',gap:'10px',padding:'11px 12px',cursor:'pointer',border:mode===p.id?'2px solid #1A4FA0':'0.5px solid #E0E0E0',background:mode===p.id?'#E3F2FD':'#fff',borderRadius:'10px'}}><div style={{width:'34px',height:'34px',background:p.color||'#E8F5E9',borderRadius:'8px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:p.icon?'18px':'11px',fontWeight:'700',color:p.text||'#1B6B3A',flexShrink:0}}>{p.icon||p.abbr}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:'12px',fontWeight:'600',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.label}</div><div style={{fontSize:'10px',color:'#888'}}>{p.sub}</div></div>{mode===p.id&&<span style={{color:'#1A4FA0',fontSize:'14px',flexShrink:0}}>✓</span>}</div>);})}
+            {PAY_MODES.map(function(p){return(<div key={p.id} onClick={function(){setMode(p.id);}} style={{display:'flex',alignItems:'center',gap:'10px',padding:'11px 12px',cursor:'pointer',border:mode===p.id?'2px solid #1A4FA0':'0.5px solid #E0E0E0',background:mode===p.id?'#E3F2FD':'#fff',borderRadius:'10px'}}><div style={{width:'34px',height:'34px',background:p.color||'#E8F5E9',borderRadius:'8px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:p.icon?'18px':'11px',fontWeight:'700',color:p.text||'#1B6B3A',flexShrink:0}}>{p.icon||p.abbr}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:'12px',fontWeight:'600',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.label}</div><div style={{fontSize:'10px',color:'#888'}}>{p.sub}</div></div>{mode===p.id&&<Check size={14} strokeWidth={2} color="#1A4FA0" style={{flexShrink:0}} />}</div>);})}
           </div>
         </div>
         <div style={{background:'#F8F8F8',borderRadius:'10px',padding:'12px 14px',marginBottom:'14px'}}>
@@ -2333,8 +2335,8 @@ function repondre(preavisId, reponse) {
           {renouvellements.map(function(rn) {
             return (
               <div key={rn.id} style={{ background: '#fff', borderRadius: 14, padding: 18, marginBottom: 12, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid #1565C0' }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>
-                  🔄 {rn.logement_titre}
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <RefreshCw size={14} strokeWidth={1.5} /> {rn.logement_titre}
                 </div>
                 <div style={{ background: '#E3F2FD', borderRadius: 10, padding: 12, marginBottom: 14 }}>
                   {[
@@ -2399,7 +2401,7 @@ function repondre(preavisId, reponse) {
 
           {/* Récap préavis */}
           <div style={{ background: '#FFF8E1', borderRadius: 12, padding: 16, marginBottom: 16 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#7B4F00', marginBottom: 10 }}>📋 {estProprietaire ? t('ongletPreavisDash.sent.recapTitreProprio') : t('ongletPreavisDash.sent.recapTitreLocataire')}</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#7B4F00', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}><ClipboardList size={14} strokeWidth={1.5} /> {estProprietaire ? t('ongletPreavisDash.sent.recapTitreProprio') : t('ongletPreavisDash.sent.recapTitreLocataire')}</div>
             {[
               estProprietaire ? [t('ongletPreavisDash.sent.bien'), bien && bien.logement_titre] : [t('ongletReservationsProprio.demandeRecue.labels.logement'), reservation && reservation.logement_titre],
               estProprietaire ? [t('ongletPreavisDash.sent.locataireNotifie'), resultat.dest_prenom + ' ' + resultat.dest_nom] : null,
@@ -2420,7 +2422,7 @@ function repondre(preavisId, reponse) {
 
           {/* Info suite */}
           <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginBottom: 20, fontSize: 12, color: '#1B5E20', display: 'flex', gap: 6 }}>
-            <span>ℹ️</span>
+            <Info size={14} strokeWidth={1.5} />
             <span style={{ lineHeight: 1.5 }}>
               {estProprietaire
                 ? t('ongletPreavisDash.sent.infoProprio', { n: delai })
@@ -2478,7 +2480,7 @@ function repondre(preavisId, reponse) {
 {preavisRecus.length > 0 && (
   <div style={{ marginBottom: 20 }}>
     <div style={{ fontSize: 14, fontWeight: 700, color: '#B71C1C', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
-      <span>📩</span> {t('ongletPreavisDash.recus.titre', { count: preavisRecus.length, s: preavisRecus.length > 1 ? 's' : '' })}
+      <Inbox size={16} strokeWidth={1.5} /> {t('ongletPreavisDash.recus.titre', { count: preavisRecus.length, s: preavisRecus.length > 1 ? 's' : '' })}
     </div>
     {preavisRecus.map(function(p) {
       var dateSortie = p.date_sortie_estimee ? new Date(p.date_sortie_estimee).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : t('ongletReservationsProprio.na');
@@ -2561,7 +2563,7 @@ function repondre(preavisId, reponse) {
       {step === 'form' && (
         <div style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
           <div style={{ background: '#FFF8E1', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#7B4F00', display: 'flex', gap: 6 }}>
-            <span>⚖️</span>
+            <Scale size={14} strokeWidth={1.5} />
             <span>{t('ongletPreavisDash.form.alerteInfo')}</span>
           </div>
 
@@ -2574,12 +2576,12 @@ function repondre(preavisId, reponse) {
                 return (
                   <div key={b.id} onClick={function() { setBien(b); }}
                     style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 12px', border: bien && bien.id === b.id ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: bien && bien.id === b.id ? '#E8F5E9' : '#FAFAFA', borderRadius: 10, marginBottom: 8, cursor: 'pointer' }}>
-                    <span style={{ fontSize: 20 }}>🏠</span>
+                    <Home size={18} strokeWidth={1.5} />
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 13, fontWeight: 600 }}>{b.logement_titre}</div>
                       <div style={{ fontSize: 11, color: '#888' }}>{b.locataire_prenom} {b.locataire_nom} · {b.locataire_telephone}</div>
                     </div>
-                    {bien && bien.id === b.id && <span style={{ color: '#1B6B3A', fontWeight: 700 }}>✓</span>}
+                    {bien && bien.id === b.id && <Check size={16} strokeWidth={2} color="#1B6B3A" />}
                   </div>
                 );
               })}
@@ -2595,7 +2597,7 @@ function repondre(preavisId, reponse) {
                 <div key={m} onClick={function() { setMotif(m); }}
                   style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', border: motif === m ? '1.5px solid #1B6B3A' : '0.5px solid #E0E0E0', background: motif === m ? '#E8F5E9' : '#FAFAFA', borderRadius: 10, marginBottom: 6, cursor: 'pointer' }}>
                   <div style={{ width: 18, height: 18, borderRadius: '50%', border: motif === m ? 'none' : '1.5px solid #CCC', background: motif === m ? '#1B6B3A' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    {motif === m && <span style={{ color: '#fff', fontSize: 11 }}>✓</span>}
+                    {motif === m && <Check size={11} strokeWidth={2} color="#fff" />}
                   </div>
                   <span style={{ fontSize: 13, color: motif === m ? '#1B5E20' : '#555' }}>{opt.label}</span>
                 </div>
@@ -2837,18 +2839,19 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
           <h3 style={{ marginBottom: 14 }}>{t('ongletDocuments.historique')}</h3>
           {documents.map(function(doc) {
             var cfgDoc = {
-              contrat_bail:    { icon: '📜', color: '#1B6B3A', bg: '#E8F5E9', label: t('ongletDocuments.cfgDoc.contratBail')    },
-              quittance:       { icon: '🧾', color: '#1565C0', bg: '#E3F2FD', label: t('ongletDocuments.cfgDoc.quittance')           },
-              etat_lieux:      { icon: '📋', color: '#E65100', bg: '#FFF3E0', label: t('ongletDocuments.cfgDoc.etatLieux')      },
-              mise_en_demeure: { icon: '⚠️', color: '#B71C1C', bg: '#FFEBEE', label: t('ongletDocuments.cfgDoc.miseEnDemeure')     },
-              preavis:         { icon: '📤', color: '#37474F', bg: '#ECEFF1', label: t('ongletDocuments.cfgDoc.preavis')              },
-              facture:         { icon: '💰', color: '#7B1FA2', bg: '#F3E5F5', label: t('ongletDocuments.cfgDoc.facture')              },
-              caution:         { icon: '🔐', color: '#1B6B3A', bg: '#E8F5E9', label: t('ongletDocuments.cfgDoc.caution')     },
-            }[doc.type] || { icon: '📄', color: '#888', bg: '#F5F5F5', label: t('ongletDocuments.cfgDoc.document') };
+              contrat_bail:    { icon: FileSignature, color: '#1B6B3A', bg: '#E8F5E9', label: t('ongletDocuments.cfgDoc.contratBail')    },
+              quittance:       { icon: Receipt,        color: '#1565C0', bg: '#E3F2FD', label: t('ongletDocuments.cfgDoc.quittance')           },
+              etat_lieux:      { icon: ClipboardList,  color: '#E65100', bg: '#FFF3E0', label: t('ongletDocuments.cfgDoc.etatLieux')      },
+              mise_en_demeure: { icon: AlertTriangle,   color: '#B71C1C', bg: '#FFEBEE', label: t('ongletDocuments.cfgDoc.miseEnDemeure')     },
+              preavis:         { icon: Send,            color: '#37474F', bg: '#ECEFF1', label: t('ongletDocuments.cfgDoc.preavis')              },
+              facture:         { icon: Banknote,        color: '#7B1FA2', bg: '#F3E5F5', label: t('ongletDocuments.cfgDoc.facture')              },
+              caution:         { icon: Lock,            color: '#1B6B3A', bg: '#E8F5E9', label: t('ongletDocuments.cfgDoc.caution')     },
+            }[doc.type] || { icon: FileText, color: '#888', bg: '#F5F5F5', label: t('ongletDocuments.cfgDoc.document') };
+            var CfgDocIcon = cfgDoc.icon;
             return (
               <div key={doc.id} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', borderRadius: 12, background: '#F7F8F7', marginBottom: 8 }}>
-                <div style={{ width: 42, height: 42, background: cfgDoc.bg, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>
-                  {cfgDoc.icon}
+                <div style={{ width: 42, height: 42, background: cfgDoc.bg, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <CfgDocIcon size={20} strokeWidth={1.5} color={cfgDoc.color} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{doc.titre}</div>
@@ -3066,7 +3069,7 @@ function OngletMessages() {
                         {m.type === 'document' && m.fichier_url && (
                           <a href={m.fichier_url} target="_blank" rel="noreferrer"
                             style={{ display: 'flex', alignItems: 'center', gap: 8, color: estMoi ? '#fff' : '#1B6B3A', textDecoration: 'none', padding: '8px', background: estMoi ? 'rgba(255,255,255,0.15)' : '#f0f0f0', borderRadius: 8, fontSize: 13 }}>
-                            <span>📎</span><span>{m.fichier_nom || t('ongletMessages.document')}</span>
+                            <Paperclip size={14} strokeWidth={1.5} /><span>{m.fichier_nom || t('ongletMessages.document')}</span>
                           </a>
                         )}
                         {m.contenu && <div>{m.contenu}</div>}
@@ -3075,8 +3078,8 @@ function OngletMessages() {
                             {new Date(m.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                           </span>
                           {estMoi && (
-                            <span style={{ fontSize: 11, opacity: m.lu ? 1 : 0.4, color: 'rgba(255,255,255,0.9)' }}>
-                              {m.lu ? '✓✓' : '✓'}
+                            <span style={{ opacity: m.lu ? 1 : 0.4, color: 'rgba(255,255,255,0.9)', display: 'inline-flex', alignItems: 'center' }}>
+                              {m.lu ? <CheckCheck size={13} strokeWidth={2} /> : <Check size={13} strokeWidth={2} />}
                             </span>
                           )}
                         </div>
@@ -3096,7 +3099,7 @@ function OngletMessages() {
                           style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, padding: '1px 4px', opacity: 0.35 }}
                           onMouseEnter={function(e) { e.currentTarget.style.opacity = '1'; }}
                           onMouseLeave={function(e) { e.currentTarget.style.opacity = '0.35'; }}>
-                          😊
+                          <SmilePlus size={14} strokeWidth={1.5} />
                         </button>
                       </div>
 
@@ -3141,7 +3144,7 @@ function OngletMessages() {
               )}
               {fichier && (
                 <div style={{ padding: '8px 16px', background: '#E8F5E9', borderTop: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: '13px', color: '#1B5E20' }}>{fichier.type.startsWith('image/') ? '📷' : '📎'} {fichier.name}</span>
+                  <span style={{ fontSize: '13px', color: '#1B5E20', display: 'inline-flex', alignItems: 'center', gap: 5 }}>{fichier.type.startsWith('image/') ? <Camera size={14} strokeWidth={1.5} /> : <Paperclip size={14} strokeWidth={1.5} />} {fichier.name}</span>
                   <button type="button" onClick={function() { setFichier(null); }} style={{ background: 'none', border: 'none', color: '#E53935', cursor: 'pointer', fontWeight: '700' }}>x</button>
                 </div>
               )}
@@ -3150,7 +3153,7 @@ function OngletMessages() {
                 <label style={{ cursor: 'pointer', flexShrink: 0 }}>
                   <input type="file" accept="image/*,.pdf,.doc,.docx" style={{ display: 'none' }}
                     onChange={function(e) { if (e.target.files && e.target.files[0]) setFichier(e.target.files[0]); }} />
-                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#F0F4F1', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', cursor: 'pointer' }}>📎</div>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#F0F4F1', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><Paperclip size={16} strokeWidth={1.5} /></div>
                 </label>
                 <input type="text" placeholder={t('ongletMessages.ecrireMessage')} value={message}
                   onChange={function(e) { setMessage(e.target.value); }}
@@ -3354,8 +3357,8 @@ function OngletReclamations() {
                 {timeline.map(function(tl) {
                   return (
                     <div key={tl.id} style={{ display: 'flex', gap: 10, marginBottom: '10px' }}>
-                      <div style={{ width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0, background: tl.type === 'creation' ? '#E8F5E9' : tl.type === 'statut_change' ? '#FFF3E0' : '#E3F2FD', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>
-                        {tl.type === 'creation' ? '🔧' : tl.type === 'statut_change' ? '🔄' : '<MessageCircle size={14} strokeWidth={1.5} />'}
+                      <div style={{ width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0, background: tl.type === 'creation' ? '#E8F5E9' : tl.type === 'statut_change' ? '#FFF3E0' : '#E3F2FD', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {tl.type === 'creation' ? <Wrench size={14} strokeWidth={1.5} color="#1B6B3A" /> : tl.type === 'statut_change' ? <RefreshCw size={14} strokeWidth={1.5} color="#E65100" /> : <MessageCircle size={14} strokeWidth={1.5} color="#1565C0" />}
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontSize: '13px', color: '#333' }}>{tl.contenu}</div>
@@ -3604,7 +3607,7 @@ function OngletHistorique(props) {
                   <div style={{ width: 100, height: 100, background: photo ? 'none' : 'linear-gradient(135deg,#E8F5E9,#C8E6C9)', flexShrink: 0, overflow: 'hidden' }}>
                     {photo
                       ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 32 }}>🏠</div>
+                      : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Home size={28} strokeWidth={1.5} color="#A5D6A7" /></div>
                     }
                   </div>
 
@@ -3625,7 +3628,7 @@ function OngletHistorique(props) {
                     <div style={{ display: 'flex', gap: 16, fontSize: 12, color: '#555' }}>
                       <span style={{ fontWeight: 700, color: '#1B6B3A' }}>{GNFf(r.prix_mensuel)} GNF/mois</span>
                       {r.date_debut && <span>{t('ongletHistorique.locations.depuis', { date: new Date(r.date_debut).toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' }) })}</span>}
-                      {r.nb_chambres && <span>🛏 {r.nb_chambres} ch.</span>}
+                      {r.nb_chambres && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><BedDouble size={12} strokeWidth={1.5} /> {r.nb_chambres} ch.</span>}
                     </div>
 
                     <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>
@@ -3950,7 +3953,7 @@ function OngletRapports(props) {
             </div>
             {data.meilleur_mois && (
               <div style={{ marginTop: 10, fontSize: 12, color: '#888', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span>🏆</span>
+                <Award size={14} strokeWidth={1.5} color="#F5A623" />
                 <span>{t('ongletRapports.meilleurMoisAvant')}<strong style={{ color: '#1B6B3A' }}>{data.meilleur_mois.mois}</strong> - {GNF(data.meilleur_mois.total)} GNF</span>
               </div>
             )}
@@ -4224,7 +4227,7 @@ function OngletParametres(props) {
     { id: 'profil', icon: <UserCheck size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.profil.titre'), desc: t('ongletParametres.menu.profil.desc') },
     { id: 'mdp', icon: <Shield size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.mdp.titre'), desc: t('ongletParametres.menu.mdp.desc') },
     { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.notifs.titre'), desc: t('ongletParametres.menu.notifs.desc') },
-    { id: 'langue', icon: '🌐', titre: t('ongletParametres.menu.langue.titre'), desc: t('ongletParametres.menu.langue.desc') },
+    { id: 'langue', icon: <Globe size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.langue.titre'), desc: t('ongletParametres.menu.langue.desc') },
     { id: 'score', icon: <Star size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.score.titre'), desc: t('ongletParametres.menu.score.desc') },
     { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.notifs.titre'), desc: t('ongletParametres.menu.notifs.desc') },
     { id: 'supprimer', icon: <Trash2 size={22} strokeWidth={1.5} color="#E53935" />, titre: t('ongletParametres.menu.supprimer.titre'), desc: t('ongletParametres.menu.supprimer.desc'), danger: true },
@@ -4453,7 +4456,7 @@ function OngletParametres(props) {
                 style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 10, cursor: 'pointer', border: langue === l.code ? '2px solid #1B6B3A' : '1px solid #e0e0e0', background: langue === l.code ? '#E8F5E9' : '#fff', marginBottom: 8, transition: 'all 0.15s' }}>
                 <span style={{ fontSize: 24 }}>{l.flag}</span>
                 <span style={{ fontSize: 14, fontWeight: langue === l.code ? 600 : 400 }}>{l.label}</span>
-                {langue === l.code && <span style={{ marginLeft: 'auto', color: '#1B6B3A', fontWeight: 700 }}>✓</span>}
+                {langue === l.code && <Check size={16} strokeWidth={2} color="#1B6B3A" style={{ marginLeft: 'auto' }} />}
               </div>
             );
           })}
@@ -4553,7 +4556,7 @@ function OngletMesLocations(props) {
           return (
             <div key={r.id} style={{ background: '#fff', borderRadius: 16, padding: 18, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid #1B6B3A' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
-                <div style={{ width: 48, height: 48, background: '#E8F5E9', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>🏠</div>
+                <div style={{ width: 48, height: 48, background: '#E8F5E9', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><Home size={22} strokeWidth={1.5} color="#1B6B3A" /></div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{r.logement_titre}</div>
                   <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>
@@ -4764,7 +4767,7 @@ useEffect(function() {
       // G + R → Réservations
       if (e.key === 'r') { setOnglet('/dashboard/reservations'); toast(t('dashboardMain.raccourciReservations'),      { duration: 800 }); }
       // G + M → Messages
-      if (e.key === 'm') { setOnglet('/dashboard/messages');     toast('<MessageCircle size={14} strokeWidth={1.5} /> ' + t('sidebar.nav.messages'),          { duration: 800 }); }
+      if (e.key === 'm') { setOnglet('/dashboard/messages');     toast(<span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><MessageCircle size={14} strokeWidth={1.5} /> {t('sidebar.nav.messages')}</span>, { duration: 800 }); }
       // G + P → Paiements
       if (e.key === 'p') { setOnglet('/dashboard/paiements');    toast(t('sidebar.nav.paiements'),         { duration: 800 }); }
       // G + H → Accueil (overview)
@@ -4893,7 +4896,7 @@ function chargerDonnees() {
 {/* Bannière installation PWA */}
 {showInstall && (
   <div style={{ position: 'fixed', bottom: isMobile ? 70 : 20, left: '50%', transform: 'translateX(-50%)', background: '#1B2B22', color: '#fff', borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.25)', zIndex: 9999, maxWidth: 380, width: 'calc(100% - 32px)' }}>
-    <div style={{ fontSize: 28, flexShrink: 0 }}>🏠</div>
+    <div style={{ flexShrink: 0 }}><Download size={26} strokeWidth={1.5} color="#fff" /></div>
     <div style={{ flex: 1 }}>
       <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 3 }}>{t('dashboardMain.installerWerdhe')}</div>
       <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>{t('dashboardMain.accesRapide')}</div>
