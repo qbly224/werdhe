@@ -119,25 +119,32 @@ if (user.role === 'admin') {
       await resend.emails.send({
         from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
         to:      user.email,
-        subject: '🔐 Code de vérification Admin — Werdhe',
+        subject: 'Code de vérification Admin — Werdhe',
         html: `
-          <div style="font-family:sans-serif;max-width:400px;margin:0 auto">
-            <div style="background:#1B2B22;padding:20px;border-radius:12px 12px 0 0">
-              <h2 style="color:#F5A623;margin:0">🔐 Werdhe Admin</h2>
-            </div>
-            <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
-              <p>Tentative de connexion admin depuis <b>${req.ip}</b></p>
-              <div style="background:#1B2B22;border-radius:12px;padding:20px;text-align:center;margin:16px 0">
-                <div style="font-size:40px;font-weight:900;color:#F5A623;letter-spacing:10px;font-family:monospace">
-                  ${codeOTP}
+          <!DOCTYPE html>
+          <html>
+          <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+          <body style="margin:0;padding:0;background:#F7F8F7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+            <div style="max-width:420px;margin:0 auto;padding:40px 16px;">
+              <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+                <div style="background:#14251A;padding:28px 24px;text-align:center;">
+                  <table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;"><tr>
+                    <td style="width:38px;height:38px;border-radius:10px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:18px;color:#14251A;">W</td>
+                    <td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:18px;color:#fff;">Werdhe Admin</td>
+                  </tr></table>
                 </div>
+                <div style="padding:32px;">
+                  <p style="margin:0 0 20px;color:#444;font-size:14px;line-height:1.6;">Tentative de connexion admin depuis <strong>${req.ip}</strong>.</p>
+                  <div style="background:#14251A;border-radius:12px;padding:20px;text-align:center;margin:0 0 20px;">
+                    <div style="font-size:36px;font-weight:900;color:#F5A623;letter-spacing:8px;font-family:'Courier New',monospace;">${codeOTP}</div>
+                  </div>
+                  <p style="margin:0;color:#888;font-size:12px;line-height:1.6;">Ce code expire dans <strong>10 minutes</strong>. Si ce n'est pas vous, changez votre mot de passe immédiatement.</p>
+                </div>
+                <div style="background:#FAFAFA;padding:16px;text-align:center;font-size:11px;color:#aaa;border-top:1px solid #F0F0F0;">© 2026 Werdhe</div>
               </div>
-              <p style="color:#888;font-size:12px">
-                ⚠️ Ce code expire dans <b>10 minutes</b>.<br/>
-                Si ce n'est pas vous, changez votre mot de passe immédiatement.
-              </p>
             </div>
-          </div>
+          </body>
+          </html>
         `
       });
     } catch (e) {
@@ -246,20 +253,32 @@ if (userExistant.rows.length > 0 && userExistant.rows[0].email && process.env.RE
     await resend.emails.send({
       from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
       to:      userExistant.rows[0].email,
-      subject: '🔐 Votre code de connexion Werdhe',
+      subject: 'Votre code de connexion Werdhe',
       html: `
-        <div style="font-family:sans-serif;max-width:400px;margin:0 auto">
-          <div style="background:#1B6B3A;padding:20px;border-radius:12px 12px 0 0">
-            <h2 style="color:#fff;margin:0">🏠 Werdhe</h2>
-          </div>
-          <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
-            <p>Votre code de connexion :</p>
-            <div style="background:#F0FBF0;border:2px solid #1B6B3A;border-radius:12px;padding:20px;text-align:center;margin:16px 0">
-              <div style="font-size:36px;font-weight:800;color:#1B6B3A;letter-spacing:8px">${code}</div>
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+        <body style="margin:0;padding:0;background:#F7F8F7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+          <div style="max-width:420px;margin:0 auto;padding:40px 16px;">
+            <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+              <div style="background:#14251A;padding:28px 24px;text-align:center;">
+                <table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;"><tr>
+                  <td style="width:38px;height:38px;border-radius:10px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:18px;color:#14251A;">W</td>
+                  <td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:18px;color:#fff;">Werdhe</td>
+                </tr></table>
+              </div>
+              <div style="padding:32px;">
+                <p style="margin:0 0 16px;color:#444;font-size:14px;">Votre code de connexion :</p>
+                <div style="background:#F0FBF0;border:1.5px solid #1B6B3A;border-radius:12px;padding:20px;text-align:center;margin:0 0 20px;">
+                  <div style="font-size:34px;font-weight:800;color:#1B6B3A;letter-spacing:8px;font-family:'Courier New',monospace;">${code}</div>
+                </div>
+                <p style="margin:0;color:#888;font-size:12px;">Ce code expire dans <strong>10 minutes</strong>. Ne le partagez avec personne.</p>
+              </div>
+              <div style="background:#FAFAFA;padding:16px;text-align:center;font-size:11px;color:#aaa;border-top:1px solid #F0F0F0;">© 2026 Werdhe</div>
             </div>
-            <p style="color:#888;font-size:12px">Ce code expire dans <b>10 minutes</b>. Ne le partagez avec personne.</p>
           </div>
-        </div>
+        </body>
+        </html>
       `
     });
     console.log('[OTP] Email envoyé à', userExistant.rows[0].email);

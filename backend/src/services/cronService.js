@@ -39,11 +39,11 @@ cron.schedule('0 8 * * *', async function() {
       await resend.emails.send({
         from: process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
         to: r.loc_email,
-        subject: '🔔 Rappel : votre loyer est dû dans 3 jours',
+        subject: 'Rappel : votre loyer est dû dans 3 jours',
         html: `
           <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
             <div style="background:#1B6B3A;padding:20px;border-radius:10px 10px 0 0">
-              <h2 style="color:#fff;margin:0">🏠 Werdhe</h2>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe</td></tr></table>
             </div>
             <div style="background:#fff;padding:24px;border-radius:0 0 10px 10px;border:1px solid #e0e0e0">
               <p>Bonjour <b>${r.loc_prenom}</b>,</p>
@@ -118,11 +118,11 @@ cron.schedule('0 9 * * *', async function() {
       await resend.emails.send({
         from: process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
         to: r.prop_email,
-        subject: '📋 Bail expirant dans 30 jours — ' + r.logement_titre,
+        subject: 'Bail expirant dans 30 jours — ' + r.logement_titre,
         html: `
           <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
             <div style="background:#1B6B3A;padding:20px;border-radius:10px 10px 0 0">
-              <h2 style="color:#fff;margin:0">🏠 Werdhe</h2>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe</td></tr></table>
             </div>
             <div style="background:#fff;padding:24px;border-radius:0 0 10px 10px;border:1px solid #e0e0e0">
               <p>Bonjour <b>${r.prop_prenom}</b>,</p>
@@ -138,11 +138,11 @@ cron.schedule('0 9 * * *', async function() {
       await resend.emails.send({
         from: process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
         to: r.loc_email,
-        subject: '📋 Votre bail expire dans 30 jours',
+        subject: 'Votre bail expire dans 30 jours',
         html: `
           <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
             <div style="background:#1B6B3A;padding:20px;border-radius:10px 10px 0 0">
-              <h2 style="color:#fff;margin:0">🏠 Werdhe</h2>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe</td></tr></table>
             </div>
             <div style="background:#fff;padding:24px;border-radius:0 0 10px 10px;border:1px solid #e0e0e0">
               <p>Bonjour <b>${r.loc_prenom}</b>,</p>
@@ -219,11 +219,11 @@ cron.schedule('0 10 * * *', async function() {
         await resend.emails.send({
           from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
           to:      p.loc_email,
-          subject: '⚠️ Rappel — Votre départ est dans 5 jours',
+          subject: 'Rappel — Votre départ est dans 5 jours',
           html: `
             <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
               <div style="background:#C62828;padding:20px;border-radius:12px 12px 0 0">
-                <h2 style="color:#fff;margin:0">🏠 Werdhe — Rappel important</h2>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe — Rappel important</td></tr></table>
               </div>
               <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
                 <p>Bonjour <b>${p.loc_prenom}</b>,</p>
@@ -332,11 +332,15 @@ cron.schedule('0 7 * * *', async function() {
           await resend.emails.send({
             from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
             to:      loc.loc_email,
-            subject: '⚠️ Mise en demeure — Loyer impayé',
+            subject: 'Mise en demeure — Loyer impayé',
             html: `
               <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
                 <div style="background:#B71C1C;padding:20px;border-radius:12px 12px 0 0">
-                  <h2 style="color:#fff;margin:0">⚠️ Mise en demeure</h2>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;"><tr>
+                    <td style="width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,0.2);text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:14px;color:#fff;">W</td>
+                    <td style="padding-left:8px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:700;font-size:14px;color:rgba(255,255,255,0.85);">Werdhe</td>
+                  </tr></table>
+                  <h2 style="color:#fff;margin:0;font-size:19px;">Mise en demeure</h2>
                 </div>
                 <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
                   <p>Bonjour <b>${loc.loc_prenom}</b>,</p>
@@ -361,11 +365,11 @@ cron.schedule('0 7 * * *', async function() {
           await resend.emails.send({
             from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
             to:      loc.prop_email,
-            subject: '⚠️ Loyer impayé — ' + loc.logement_titre,
+            subject: 'Loyer impayé — ' + loc.logement_titre,
             html: `
               <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
                 <div style="background:#E65100;padding:20px;border-radius:12px 12px 0 0">
-                  <h2 style="color:#fff;margin:0">🏠 Werdhe — Alerte loyer</h2>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe — Alerte loyer</td></tr></table>
                 </div>
                 <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
                   <p>Bonjour <b>${loc.prop_prenom}</b>,</p>
@@ -456,11 +460,11 @@ cron.schedule('30 8 * * *', async function() {
         await resend.emails.send({
           from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
           to:      r3.email,
-          subject: '⏰ Votre abonnement Werdhe a expiré',
+          subject: 'Votre abonnement Werdhe a expiré',
           html: `
             <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
               <div style="background:#F5A623;padding:20px;border-radius:10px 10px 0 0">
-                <h2 style="color:#1B2B22;margin:0">🏠 Werdhe</h2>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#1B2B22;">Werdhe</td></tr></table>
               </div>
               <div style="background:#fff;padding:24px;border-radius:0 0 10px 10px;border:1px solid #e0e0e0">
                 <p>Bonjour <b>${r3.prenom}</b>,</p>
@@ -500,11 +504,15 @@ cron.schedule('30 8 * * *', async function() {
         await resend.emails.send({
           from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
           to:      r5.email,
-          subject: '🔒 Accès Werdhe bloqué — abonnement impayé',
+          subject: 'Accès Werdhe bloqué — abonnement impayé',
           html: `
             <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
               <div style="background:#B71C1C;padding:20px;border-radius:10px 10px 0 0">
-                <h2 style="color:#fff;margin:0">🔒 Accès bloqué</h2>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;"><tr>
+                  <td style="width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,0.2);text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:14px;color:#fff;">W</td>
+                  <td style="padding-left:8px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:700;font-size:14px;color:rgba(255,255,255,0.85);">Werdhe</td>
+                </tr></table>
+                <h2 style="color:#fff;margin:0;font-size:19px;">Accès bloqué</h2>
               </div>
               <div style="background:#fff;padding:24px;border-radius:0 0 10px 10px;border:1px solid #e0e0e0">
                 <p>Bonjour <b>${r5.prenom}</b>,</p>

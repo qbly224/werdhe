@@ -65,7 +65,7 @@ router.post('/', verifierToken, async (req, res) => {
         r.proprietaire_id,
         r.locataire_id,
         r.logement_id,
-        '🔄 Proposition de renouvellement — ' + r.logement_titre,
+        'Proposition de renouvellement — ' + r.logement_titre,
         'Le propriétaire propose un renouvellement de ' + nouvelle_duree_mois + ' mois.'
           + (nouveau_prix ? ' Nouveau loyer : ' + new Intl.NumberFormat('fr-FR').format(nouveau_prix) + ' GNF/mois.' : '')
       ]
@@ -79,11 +79,11 @@ router.post('/', verifierToken, async (req, res) => {
         await resend.emails.send({
           from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
           to:      r.loc_email,
-          subject: '🔄 Proposition de renouvellement — ' + r.logement_titre,
+          subject: 'Proposition de renouvellement — ' + r.logement_titre,
           html: `
             <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
               <div style="background:#1565C0;padding:20px;border-radius:12px 12px 0 0">
-                <h2 style="color:#fff;margin:0">🏠 Werdhe — Renouvellement</h2>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe — Renouvellement</td></tr></table>
               </div>
               <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
                 <p>Bonjour <b>${r.loc_prenom}</b>,</p>
@@ -175,7 +175,7 @@ router.patch('/:id/repondre', verifierToken, async (req, res) => {
          WHERE r.id = $4`,
         [
           rn.proprietaire_id,
-          '✅ Renouvellement accepté — ' + rn.logement_titre,
+          'Renouvellement accepté — ' + rn.logement_titre,
           'Le locataire a accepté le renouvellement de ' + rn.nouvelle_duree_mois + ' mois.',
           rn.reservation_id
         ]
@@ -189,10 +189,10 @@ router.patch('/:id/repondre', verifierToken, async (req, res) => {
           await resend.emails.send({
             from: process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
             to:   rn.prop_email,
-            subject: '✅ Renouvellement accepté — ' + rn.logement_titre,
+            subject: 'Renouvellement accepté — ' + rn.logement_titre,
             html: `<div style="font-family:sans-serif;max-width:500px;margin:0 auto">
               <div style="background:#1B6B3A;padding:20px;border-radius:12px 12px 0 0">
-                <h2 style="color:#fff;margin:0">🏠 Werdhe</h2>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe</td></tr></table>
               </div>
               <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
                 <p>Bonjour <b>${rn.prop_prenom}</b>,</p>
