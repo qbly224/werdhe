@@ -38,11 +38,11 @@ async function envoyerFactureParEmail(userId, plan, montant, cycle, debut, fin) 
     await resend.emails.send({
       from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
       to:      u.email,
-      subject: '🧾 Facture abonnement Werdhe — Plan ' + plan.charAt(0).toUpperCase() + plan.slice(1),
+      subject: 'Facture abonnement Werdhe — Plan ' + plan.charAt(0).toUpperCase() + plan.slice(1),
       html: `
         <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
           <div style="background:#1B6B3A;padding:20px;border-radius:12px 12px 0 0">
-            <h2 style="color:#fff;margin:0">🏠 Werdhe — Facture</h2>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe — Facture</td></tr></table>
           </div>
           <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
             <p>Bonjour <b>${u.prenom} ${u.nom}</b>,</p>
