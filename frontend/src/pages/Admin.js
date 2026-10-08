@@ -5,6 +5,11 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import {
+  BarChart3, Users, Home, CalendarCheck, CreditCard, Ticket, Newspaper, ScrollText, Bell,
+  UserPlus, Wallet, HelpCircle, KeyRound, Building2, CheckCircle2, DoorOpen, Clock,
+  ClipboardList, Star,
+} from 'lucide-react';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n) + ' GNF'; };
 
@@ -199,15 +204,15 @@ export default function Admin() {
   });
 
 var NAV = [
-  { id: 'stats',        label: t('admin.nav.stats'),        icon: '📊' },
-  { id: 'users',        label: t('admin.nav.users'),        icon: '👥' },
-  { id: 'logements',    label: t('admin.nav.logements'),    icon: '🏠' },
-  { id: 'reservations', label: t('admin.nav.reservations'), icon: '📅' },
-  { id: 'abonnements',  label: t('admin.nav.abonnements'),  icon: '💳' },
-  { id: 'promos',       label: t('admin.nav.promos'),       icon: '🎟️' },
-  { id: 'blog',         label: t('admin.nav.blog'),         icon: '📝' },
-  { id: 'logs',         label: t('admin.nav.logs'),         icon: '📋' },
-  { id: 'alertes',      label: t('admin.nav.alertes'),      icon: '🔔' },
+  { id: 'stats',        label: t('admin.nav.stats'),        icon: BarChart3 },
+  { id: 'users',        label: t('admin.nav.users'),        icon: Users },
+  { id: 'logements',    label: t('admin.nav.logements'),    icon: Home },
+  { id: 'reservations', label: t('admin.nav.reservations'), icon: CalendarCheck },
+  { id: 'abonnements',  label: t('admin.nav.abonnements'),  icon: CreditCard },
+  { id: 'promos',       label: t('admin.nav.promos'),       icon: Ticket },
+  { id: 'blog',         label: t('admin.nav.blog'),         icon: Newspaper },
+  { id: 'logs',         label: t('admin.nav.logs'),         icon: ScrollText },
+  { id: 'alertes',      label: t('admin.nav.alertes'),      icon: Bell },
 ];
 
   var cfgStatuts = {
@@ -254,7 +259,7 @@ var NAV = [
             return (
               <button key={n.id} onClick={function() { setOnglet(n.id); }}
                 style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10, border: 'none', background: actif ? 'rgba(255,255,255,0.12)' : 'transparent', color: actif ? '#fff' : 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: actif ? 700 : 400, cursor: 'pointer', marginBottom: 4, textAlign: 'left' }}>
-                <span>{n.icon}</span>
+                <n.icon size={16} strokeWidth={1.5} />
                 {n.label}
               </button>
             );
@@ -281,8 +286,8 @@ var NAV = [
       {NAV.map(function(n) {
         return (
           <button key={n.id} onClick={function() { setOnglet(n.id); }}
-            style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: onglet === n.id ? 'rgba(255,255,255,0.2)' : 'transparent', color: '#fff', fontSize: 12, cursor: 'pointer', whiteSpace: 'nowrap', fontWeight: onglet === n.id ? 700 : 400 }}>
-            {n.icon} {n.label}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, border: 'none', background: onglet === n.id ? 'rgba(255,255,255,0.2)' : 'transparent', color: '#fff', fontSize: 12, cursor: 'pointer', whiteSpace: 'nowrap', fontWeight: onglet === n.id ? 700 : 400 }}>
+            <n.icon size={14} strokeWidth={1.5} /> {n.label}
           </button>
         );
       })}
@@ -331,14 +336,14 @@ var NAV = [
 {liveData && (
   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 16 }}>
     {[
-      { label: t('admin.stats.kpi.inscriptionsAujourdhui'), val: liveData.inscriptions_aujourdhui, icon: '👥', color: '#1B6B3A', bg: '#E8F5E9' },
-      { label: t('admin.stats.kpi.candidaturesAujourdhui'), val: liveData.candidatures_aujourdhui, icon: '📅', color: '#1565C0', bg: '#E3F2FD' },
-      { label: t('admin.stats.kpi.paiementsAujourdhui'),    val: liveData.paiements_aujourdhui.nb, icon: '💳', color: '#7B1FA2', bg: '#F3E5F5' },
-      { label: t('admin.stats.kpi.volumeAujourdhui'),       val: new Intl.NumberFormat('fr-FR').format(liveData.paiements_aujourdhui.total) + ' GNF', icon: '💰', color: '#E65100', bg: '#FFF3E0' },
+      { label: t('admin.stats.kpi.inscriptionsAujourdhui'), val: liveData.inscriptions_aujourdhui, icon: UserPlus, color: '#1B6B3A', bg: '#E8F5E9' },
+      { label: t('admin.stats.kpi.candidaturesAujourdhui'), val: liveData.candidatures_aujourdhui, icon: CalendarCheck, color: '#1565C0', bg: '#E3F2FD' },
+      { label: t('admin.stats.kpi.paiementsAujourdhui'),    val: liveData.paiements_aujourdhui.nb, icon: CreditCard, color: '#7B1FA2', bg: '#F3E5F5' },
+      { label: t('admin.stats.kpi.volumeAujourdhui'),       val: new Intl.NumberFormat('fr-FR').format(liveData.paiements_aujourdhui.total) + ' GNF', icon: Wallet, color: '#E65100', bg: '#FFF3E0' },
     ].map(function(k, i) {
       return (
         <div key={i} style={{ background: k.bg, borderRadius: 12, padding: '14px 16px', borderLeft: '4px solid ' + k.color }}>
-          <div style={{ fontSize: 22, marginBottom: 6 }}>{k.icon}</div>
+          <div style={{ marginBottom: 6 }}><k.icon size={22} strokeWidth={1.5} color={k.color} /></div>
           <div style={{ fontSize: 20, fontWeight: 800, color: k.color }}>{k.val}</div>
           <div style={{ fontSize: 11, color: '#555', marginTop: 4 }}>{k.label}</div>
         </div>
@@ -356,16 +361,16 @@ var NAV = [
     <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
       {liveData.activite.map(function(a, i) {
         var cfg = {
-          inscription: { icon: '👤', color: '#1B6B3A', bg: '#E8F5E9', label: t('admin.stats.activiteType.inscription') },
-          candidature: { icon: '📅', color: '#1565C0', bg: '#E3F2FD', label: t('admin.stats.activiteType.candidature') },
-          logement:    { icon: '🏠', color: '#7B1FA2', bg: '#F3E5F5', label: t('admin.stats.activiteType.logement')    },
-          paiement:    { icon: '💰', color: '#E65100', bg: '#FFF3E0', label: t('admin.stats.activiteType.paiement')    },
-        }[a.type] || { icon: '•', color: '#888', bg: '#F5F5F5', label: a.type };
+          inscription: { icon: UserPlus, color: '#1B6B3A', bg: '#E8F5E9', label: t('admin.stats.activiteType.inscription') },
+          candidature: { icon: CalendarCheck, color: '#1565C0', bg: '#E3F2FD', label: t('admin.stats.activiteType.candidature') },
+          logement:    { icon: Home, color: '#7B1FA2', bg: '#F3E5F5', label: t('admin.stats.activiteType.logement')    },
+          paiement:    { icon: Wallet, color: '#E65100', bg: '#FFF3E0', label: t('admin.stats.activiteType.paiement')    },
+        }[a.type] || { icon: HelpCircle, color: '#888', bg: '#F5F5F5', label: a.type };
 
         return (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: i < liveData.activite.length - 1 ? '0.5px solid #F5F5F5' : 'none' }}>
-            <div style={{ width: 32, height: 32, background: cfg.bg, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>
-              {cfg.icon}
+            <div style={{ width: 32, height: 32, background: cfg.bg, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <cfg.icon size={16} strokeWidth={1.5} color={cfg.color} />
             </div>
             <div style={{ flex: 1 }}>
               <span style={{ fontSize: 12, fontWeight: 700, color: cfg.color, marginRight: 8 }}>{cfg.label}</span>
@@ -403,18 +408,18 @@ var NAV = [
             {/* KPIs principaux */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14, marginBottom: 24 }}>
               {[
-                { label: t('admin.stats.kpiPrincipaux.utilisateurs'),      val: stats.total_users,         icon: '👥', color: '#1565C0', bg: '#E3F2FD' },
-                { label: t('admin.stats.kpiPrincipaux.proprietaires'),     val: stats.total_proprietaires, icon: '🔑', color: '#1B6B3A', bg: '#E8F5E9' },
-                { label: t('admin.stats.kpiPrincipaux.locataires'),        val: stats.total_locataires,    icon: '🏠', color: '#7B1FA2', bg: '#F3E5F5' },
-                { label: t('admin.stats.kpiPrincipaux.logementsPublies'), val: stats.total_logements,     icon: '🏢', color: '#E65100', bg: '#FFF3E0' },
-                { label: t('admin.stats.kpiPrincipaux.logementsLoues'),   val: stats.logements_loues,     icon: '✅', color: '#1B6B3A', bg: '#E8F5E9' },
-                { label: t('admin.stats.kpiPrincipaux.reservations'),      val: stats.total_reservations,  icon: '📅', color: '#1565C0', bg: '#E3F2FD' },
-                { label: t('admin.stats.kpiPrincipaux.locationsActives'), val: stats.total_confirmees,    icon: '🗝️', color: '#1B6B3A', bg: '#E8F5E9' },
-                { label: t('admin.stats.kpiPrincipaux.revenus'),      val: GNF(stats.revenus_plateforme || 0), icon: '💰', color: '#C8860A', bg: '#FFF8E1' },
+                { label: t('admin.stats.kpiPrincipaux.utilisateurs'),      val: stats.total_users,         icon: Users, color: '#1565C0', bg: '#E3F2FD' },
+                { label: t('admin.stats.kpiPrincipaux.proprietaires'),     val: stats.total_proprietaires, icon: KeyRound, color: '#1B6B3A', bg: '#E8F5E9' },
+                { label: t('admin.stats.kpiPrincipaux.locataires'),        val: stats.total_locataires,    icon: Home, color: '#7B1FA2', bg: '#F3E5F5' },
+                { label: t('admin.stats.kpiPrincipaux.logementsPublies'), val: stats.total_logements,     icon: Building2, color: '#E65100', bg: '#FFF3E0' },
+                { label: t('admin.stats.kpiPrincipaux.logementsLoues'),   val: stats.logements_loues,     icon: CheckCircle2, color: '#1B6B3A', bg: '#E8F5E9' },
+                { label: t('admin.stats.kpiPrincipaux.reservations'),      val: stats.total_reservations,  icon: CalendarCheck, color: '#1565C0', bg: '#E3F2FD' },
+                { label: t('admin.stats.kpiPrincipaux.locationsActives'), val: stats.total_confirmees,    icon: DoorOpen, color: '#1B6B3A', bg: '#E8F5E9' },
+                { label: t('admin.stats.kpiPrincipaux.revenus'),      val: GNF(stats.revenus_plateforme || 0), icon: Wallet, color: '#C8860A', bg: '#FFF8E1' },
               ].map(function(s, i) {
                 return (
                   <div key={i} style={{ background: s.bg, borderRadius: 14, padding: 16, borderLeft: '4px solid ' + s.color }}>
-                    <div style={{ fontSize: 24, marginBottom: 6 }}>{s.icon}</div>
+                    <div style={{ marginBottom: 6 }}><s.icon size={24} strokeWidth={1.5} color={s.color} /></div>
                     <div style={{ fontSize: 20, fontWeight: 800, color: s.color }}>{s.val}</div>
                     <div style={{ fontSize: 11, color: '#555', marginTop: 4 }}>{s.label}</div>
                   </div>
@@ -708,16 +713,16 @@ var NAV = [
         {/* KPIs */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 24 }}>
           {[
-            { label: t('admin.revenus.kpi.commissionsMois'),     val: GNF(revenus.commissions.total_commissions || 0),   icon: '💰', color: '#1B6B3A', bg: '#E8F5E9' },
-            { label: t('admin.revenus.kpi.commissionsEncaissees'),   val: GNF(revenus.commissions.encaisse || 0),            icon: '✅', color: '#1B6B3A', bg: '#E8F5E9' },
-            { label: t('admin.revenus.kpi.commissionsEnAttente'),   val: GNF(revenus.commissions.en_attente || 0),          icon: '⏳', color: '#E65100', bg: '#FFF3E0' },
-            { label: t('admin.revenus.kpi.revenusAbonnements'),      val: GNF(revenus.abonnements.revenus_abonnements || 0), icon: '📋', color: '#1565C0', bg: '#E3F2FD' },
-            { label: t('admin.revenus.kpi.abonnesPro'),              val: revenus.abonnements.nb_pro || 0,                   icon: '⭐', color: '#1B6B3A', bg: '#E8F5E9' },
-            { label: t('admin.revenus.kpi.abonnesAgence'),           val: revenus.abonnements.nb_agence || 0,                icon: '🏢', color: '#7B1FA2', bg: '#F3E5F5' },
+            { label: t('admin.revenus.kpi.commissionsMois'),     val: GNF(revenus.commissions.total_commissions || 0),   icon: Wallet, color: '#1B6B3A', bg: '#E8F5E9' },
+            { label: t('admin.revenus.kpi.commissionsEncaissees'),   val: GNF(revenus.commissions.encaisse || 0),            icon: CheckCircle2, color: '#1B6B3A', bg: '#E8F5E9' },
+            { label: t('admin.revenus.kpi.commissionsEnAttente'),   val: GNF(revenus.commissions.en_attente || 0),          icon: Clock, color: '#E65100', bg: '#FFF3E0' },
+            { label: t('admin.revenus.kpi.revenusAbonnements'),      val: GNF(revenus.abonnements.revenus_abonnements || 0), icon: ClipboardList, color: '#1565C0', bg: '#E3F2FD' },
+            { label: t('admin.revenus.kpi.abonnesPro'),              val: revenus.abonnements.nb_pro || 0,                   icon: Star, color: '#1B6B3A', bg: '#E8F5E9' },
+            { label: t('admin.revenus.kpi.abonnesAgence'),           val: revenus.abonnements.nb_agence || 0,                icon: Building2, color: '#7B1FA2', bg: '#F3E5F5' },
           ].map(function(s, i) {
             return (
               <div key={i} style={{ background: s.bg, borderRadius: 14, padding: 16, borderLeft: '4px solid ' + s.color }}>
-                <div style={{ fontSize: 24, marginBottom: 6 }}>{s.icon}</div>
+                <div style={{ marginBottom: 6 }}><s.icon size={24} strokeWidth={1.5} color={s.color} /></div>
                 <div style={{ fontSize: 20, fontWeight: 800, color: s.color }}>{s.val}</div>
                 <div style={{ fontSize: 11, color: '#555', marginTop: 4 }}>{s.label}</div>
               </div>

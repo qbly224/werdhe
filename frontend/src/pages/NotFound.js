@@ -1,15 +1,15 @@
 /* eslint-disable */
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { Home, Search, ArrowLeft, RefreshCw } from 'lucide-react';
+import { Home, Search, ArrowLeft, RefreshCw, CreditCard, Phone } from 'lucide-react';
 import SEO from '../components/SEO';
 import { useTranslation } from 'react-i18next';
 
 function getSuggestions(t) {
   return [
-    { icon: '🏠', label: t('notFound.suggestions.logements'), path: '/logements' },
-    { icon: '💳', label: t('notFound.suggestions.tarifs'),        path: '/pricing'   },
-    { icon: '📞', label: t('notFound.suggestions.contact'),         path: '/contact'   },
+    { icon: Home,       label: t('notFound.suggestions.logements'), path: '/logements' },
+    { icon: CreditCard, label: t('notFound.suggestions.tarifs'),        path: '/pricing'   },
+    { icon: Phone,      label: t('notFound.suggestions.contact'),         path: '/contact'   },
   ];
 }
 
@@ -126,7 +126,7 @@ export default function NotFound() {
                 style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'rgba(255,255,255,0.05)', borderRadius: 12, border: '0.5px solid rgba(255,255,255,0.08)', textDecoration: 'none', transition: 'all .2s' }}
                 onMouseEnter={function(e) { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
                 onMouseLeave={function(e) { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}>
-                <span style={{ fontSize: 20 }}>{s.icon}</span>
+                <s.icon size={18} strokeWidth={1.5} color="rgba(255,255,255,0.8)" />
                 <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>{s.label}</span>
                 <span style={{ marginLeft: 'auto', color: 'rgba(255,255,255,0.3)', fontSize: 18 }}>→</span>
               </Link>
