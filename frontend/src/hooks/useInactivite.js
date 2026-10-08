@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { Clock, Lock } from 'lucide-react';
 
 var DELAI_INACTIVITE = 60 * 60 * 1000; // 1 heure
 var AVERTISSEMENT    = 5  * 60 * 1000; // 5 minutes avant
@@ -37,7 +38,7 @@ export default function useInactivite(actif) {
             </div>
           );
         },
-        { duration: Infinity, position: 'top-center', icon: '⏰' }
+        { duration: Infinity, position: 'top-center', icon: <Clock size={16} strokeWidth={1.5} /> }
       );
     }, DELAI_INACTIVITE - AVERTISSEMENT);
 
@@ -46,7 +47,7 @@ export default function useInactivite(actif) {
       toast.dismiss();
       auth.logout();
       navigate('/login');
-      toast('Session expirée - reconnectez-vous', { icon: '🔒', duration: 5000 });
+      toast('Session expirée - reconnectez-vous', { icon: <Lock size={16} strokeWidth={1.5} />, duration: 5000 });
     }, DELAI_INACTIVITE);
   }, [actif, auth, navigate]);
 

@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Phone } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Phone, ShieldCheck } from 'lucide-react';
 import Logo from '../components/Logo';
 import { useTranslation } from 'react-i18next';
 
@@ -84,7 +84,7 @@ export default function Login() {
     try {
       var res = await api.post('/auth/login', { email, mot_de_passe: password });
       if (res.data.requires_2fa) {
-        toast(t('login.code2faEnvoye'), { icon: '🔐' });
+        toast(t('login.code2faEnvoye'), { icon: <ShieldCheck size={16} strokeWidth={1.5} /> });
         navigate('/admin/2fa', { state: { user_id: res.data.user_id, email } });
         return;
       }

@@ -6,7 +6,7 @@ import api from '../services/api';
 import toast from 'react-hot-toast';
 import ModalPaiementMobile from '../components/ModalPaiementMobile';
 import { useAuth } from '../context/AuthContext';
-import { Check, X, ChevronDown, ChevronUp, Zap, Building2, Users, ArrowRight, Home } from 'lucide-react';
+import { Check, X, ChevronDown, ChevronUp, Zap, Building2, Users, ArrowRight, Home, Info } from 'lucide-react';
 import Logo from '../components/Logo';
 import { useTranslation } from 'react-i18next';
 
@@ -147,7 +147,7 @@ export default function Pricing() {
       .catch(function(err) {
         // Essai déjà utilisé ou abonnement déjà actif → payer directement
         var msg = err.response && err.response.data ? err.response.data.erreur : '';
-        toast(msg || t('pricing.essaiDejaUtilise'), { icon: 'ℹ️' });
+        toast(msg || t('pricing.essaiDejaUtilise'), { icon: <Info size={16} strokeWidth={1.5} /> });
         setShowPaiement(planId);
       })
       .finally(function() { setEssaiEnCours(null); });
