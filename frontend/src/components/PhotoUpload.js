@@ -2,7 +2,7 @@ import { useState } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { Loader2, Camera, Star, Trash2 } from 'lucide-react';
+import { Loader2, Camera, Star, Trash2, CheckCircle2 } from 'lucide-react';
 import './PhotoUpload.css';
 
 const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
@@ -29,7 +29,7 @@ const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
       );
       setPhotos(res.data.photos);
       if (onUpdate) onUpdate(res.data.photos);
-      toast.success(t('photoUpload.toasts.ajoutees', { count: files.length }));
+      toast.success(t('photoUpload.toasts.ajoutees', { count: files.length }), { icon: <CheckCircle2 size={16} strokeWidth={1.8} /> });
     } catch (err) {
       toast.error(err.response?.data?.erreur || t('photoUpload.toasts.erreurUpload'));
     } finally {
@@ -60,7 +60,7 @@ const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
       );
       setPhotos(res.data.photos);
       if (onUpdate) onUpdate(res.data.photos);
-      toast.success(t('photoUpload.toasts.principaleDefinie'));
+      toast.success(t('photoUpload.toasts.principaleDefinie'), { icon: <CheckCircle2 size={16} strokeWidth={1.8} /> });
     } catch (err) {
       toast.error(t('photoUpload.toasts.erreur'));
     }
@@ -116,7 +116,10 @@ const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
 
               {/* Badge photo principale */}
               {index === 0 && (
-                <span className="badge-principale">{t('photoUpload.badgePrincipale')}</span>
+                <span className="badge-principale" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <Star size={12} strokeWidth={1.8} />
+                  {t('photoUpload.badgePrincipale')}
+                </span>
               )}
 
               {/* Actions */}

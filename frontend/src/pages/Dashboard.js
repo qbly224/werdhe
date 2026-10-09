@@ -28,7 +28,8 @@ import {
   FileSignature, BedDouble, Bath, Maximize2,
   LogOut, UserCheck, Award, AlertCircle, Gift, HelpCircle,
   ClipboardList, Building, Check, Scale, Inbox,
-  Paperclip, CheckCheck, SmilePlus, Globe
+  Paperclip, CheckCheck, SmilePlus, Globe,
+  Smartphone, CheckCircle2
 } from 'lucide-react';
 import Onboarding from '../components/Onboarding';
 import { activerNotificationsPush, estAbonne, desactiverNotifications } from '../services/pushService';
@@ -290,7 +291,7 @@ function OngletOverviewLocataire(props) {
           <Home size={48} strokeWidth={1} color="#C8E6C9" />
           <h3>{t('ongletOverviewLocataire.aucuneLocation.titre')}</h3>
           <p>{t('ongletOverviewLocataire.aucuneLocation.description')}</p>
-          <Link to="/logements" className="btn-green" style={{ textDecoration: 'none' }}>{t('ongletOverviewLocataire.aucuneLocation.chercherBouton')}</Link>
+          <Link to="/logements" className="btn-green" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}><Search size={14} strokeWidth={1.75} /> {t('ongletOverviewLocataire.aucuneLocation.chercherBouton')}</Link>
         </div>
       )}
     </div>
@@ -714,7 +715,7 @@ function OngletBiens(props) {
     {showLiberer && (
   <div className="modal-overlay">
     <div className="modal-box">
-      <h3 style={{ color: '#C62828' }}>{t('ongletBiens.libererModal.titre')}</h3>
+      <h3 style={{ color: '#C62828', display: 'flex', alignItems: 'center', gap: 6 }}><Zap size={16} strokeWidth={1.75} /> {t('ongletBiens.libererModal.titre')}</h3>
       <p style={{ fontSize: 13, color: '#555', lineHeight: 1.6 }}>
         {t('ongletBiens.libererModal.descAvant')}<b>{t('ongletBiens.libererModal.descGras')}</b>{t('ongletBiens.libererModal.descApres')}
       </p>
@@ -1211,8 +1212,8 @@ function OngletReservations(props) {
               </div>
 
               {cfg.urgent && (
-                <div style={{ background: '#FFF8E1', borderRadius: 8, padding: '7px 12px', marginBottom: 10, fontSize: 12, color: '#7B4F00', fontWeight: 600 }}>
-                  {t('ongletReservations.locataire.actionAttendue')}
+                <div style={{ background: '#FFF8E1', borderRadius: 8, padding: '7px 12px', marginBottom: 10, fontSize: 12, color: '#7B4F00', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Zap size={14} strokeWidth={1.75} /> {t('ongletReservations.locataire.actionAttendue')}
                 </div>
               )}
 
@@ -1431,7 +1432,7 @@ useEffect(function() {
         {/* ─ NOUVELLE DEMANDE ─ */}
         {r.statut === 'en_attente' && (
           <div style={{ background: '#fff', borderRadius: 14, padding: 18, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>{t('ongletReservationsProprio.demandeRecue.titre')}</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}><Inbox size={15} strokeWidth={1.75} /> {t('ongletReservationsProprio.demandeRecue.titre')}</div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 16 }}>
               {[
@@ -1521,7 +1522,7 @@ useEffect(function() {
               </a>
             )}
             {d.ok && !d.url && (
-              <span style={{ fontSize: 11, color: '#1B6B3A', fontWeight: 600 }}>{t('ongletReservationsProprio.soumis')}</span>
+              <span style={{ fontSize: 11, color: '#1B6B3A', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}><CheckCircle2 size={12} strokeWidth={1.75} /> {t('ongletReservationsProprio.soumis')}</span>
             )}
           </div>
         );
@@ -1679,7 +1680,7 @@ useEffect(function() {
         {/* ─ BAIL À SIGNER ─ */}
         {r.statut === 'bail_en_cours' && (
           <div style={{ background: '#fff', borderRadius: 14, padding: 18, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>{t('ongletReservationsProprio.bailASigner.titre')}</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}><FileSignature size={15} strokeWidth={1.75} /> {t('ongletReservationsProprio.bailASigner.titre')}</div>
             <div style={{ background: '#F8F8F8', borderRadius: 10, padding: 12, marginBottom: 16, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
               {[
                 [t('ongletReservationsProprio.infosCandidat.locataireLabel'), r.locataire_prenom + ' ' + r.locataire_nom],
@@ -2494,7 +2495,7 @@ function repondre(preavisId, reponse) {
         <div key={p.id} style={{ background: '#fff', borderRadius: 14, padding: 18, marginBottom: 12, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid #C62828' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{t('ongletPreavisDash.recus.preavisDe', { logement: p.logement_titre })}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', display: 'flex', alignItems: 'center', gap: 6 }}><ClipboardList size={14} strokeWidth={1.75} /> {t('ongletPreavisDash.recus.preavisDe', { logement: p.logement_titre })}</div>
               <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>{t('ongletPreavisDash.recus.de', { expediteur: expediteur })}</div>
             </div>
             {diff !== null && (
@@ -3008,7 +3009,11 @@ function OngletMessages() {
                     )}
                   </div>
                   <div className="msg-thread-preview">
-                    {c.type === 'photo' ? t('ongletMessages.photo') : c.type === 'document' ? t('ongletMessages.document') : (c.contenu || t('ongletMessages.nouvelleConversation'))}
+                    {c.type === 'photo' ? (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Camera size={12} strokeWidth={1.75} /> {t('ongletMessages.photo')}</span>
+                    ) : c.type === 'document' ? (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Paperclip size={12} strokeWidth={1.75} /> {t('ongletMessages.document')}</span>
+                    ) : (c.contenu || t('ongletMessages.nouvelleConversation'))}
                   </div>
                   {c.logement_titre && <div style={{ fontSize: '11px', color: '#1B6B3A' }}>{c.logement_titre}</div>}
                 </div>
@@ -3135,7 +3140,9 @@ function OngletMessages() {
                   <div style={{ flex: 1, borderLeft: '3px solid #1B6B3A', paddingLeft: 10 }}>
                     <div style={{ fontSize: 11, color: '#1B6B3A', fontWeight: 700, marginBottom: 2 }}>{t('ongletMessages.repondreA')}</div>
                     <div style={{ fontSize: 13, color: '#555', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {replyTo.contenu ? replyTo.contenu.slice(0, 60) : t('ongletMessages.fichier')}
+                      {replyTo.contenu ? replyTo.contenu.slice(0, 60) : (
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Paperclip size={12} strokeWidth={1.75} /> {t('ongletMessages.fichier')}</span>
+                      )}
                     </div>
                   </div>
                   <button onClick={function() { setReplyTo(null); }}
@@ -3495,8 +3502,8 @@ function BoutonNotifPush() {
       </div>
 
       <button onClick={toggleNotifs} disabled={loading}
-        style={{ width: '100%', padding: '12px', borderRadius: 12, border: 'none', background: loading ? '#aaa' : abonne ? '#FFEBEE' : '#1B6B3A', color: loading ? '#fff' : abonne ? '#B71C1C' : '#fff', fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
-        {loading ? t('boutonNotifPush.chargement') : abonne ? t('boutonNotifPush.desactiverBouton') : t('boutonNotifPush.activerBouton')}
+        style={{ width: '100%', padding: '12px', borderRadius: 12, border: 'none', background: loading ? '#aaa' : abonne ? '#FFEBEE' : '#1B6B3A', color: loading ? '#fff' : abonne ? '#B71C1C' : '#fff', fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+        {loading ? t('boutonNotifPush.chargement') : abonne ? t('boutonNotifPush.desactiverBouton') : (<><Bell size={14} strokeWidth={1.75} /> {t('boutonNotifPush.activerBouton')}</>)}
       </button>
     </div>
   );
@@ -4316,8 +4323,8 @@ function OngletParametres(props) {
         })}
       </div>
       <button onClick={function() { setShowPaiementAbo(monAbonnement.plan); }}
-        style={{ width: '100%', background: '#1B2B22', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-        {t('ongletParametres.payerMobileMoney')}
+        style={{ width: '100%', background: '#1B2B22', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+        <Smartphone size={14} strokeWidth={1.75} /> {t('ongletParametres.payerMobileMoney')}
       </button>
     </div>
   )}

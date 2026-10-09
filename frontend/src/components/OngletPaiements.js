@@ -4,7 +4,7 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { Banknote, Landmark, Home, Building2, CheckCircle2, User, X, MapPin, Check, Info } from 'lucide-react';
+import { Banknote, Landmark, Home, Building2, CheckCircle2, User, X, MapPin, Check, Info, Wallet, AlertTriangle, Receipt, MessageCircle, Send, AlertCircle, ShieldCheck } from 'lucide-react';
 
 const GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 
@@ -126,7 +126,7 @@ export function PaiementsProprietaire() {
 
       {/* HEADER */}
       <div style={{ background: '#1B6B3A', borderRadius: 14, padding: '14px 18px', marginBottom: 18 }}>
-        <div style={{ color: '#fff', fontWeight: 700, fontSize: 16, marginBottom: 2 }}>{t('ongletPaiements.proprietaire.header.titre')}</div>
+        <div style={{ color: '#fff', fontWeight: 700, fontSize: 16, marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}><Wallet size={16} strokeWidth={1.75} /> {t('ongletPaiements.proprietaire.header.titre')}</div>
         <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12 }}>{t('ongletPaiements.proprietaire.header.sousTitre', { mois: MOIS_ACTUEL, count: biens.length })}</div>
       </div>
 
@@ -202,29 +202,35 @@ export function PaiementsProprietaire() {
                   <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: s.bg, color: s.color, border: '0.5px solid ' + s.border }}>
                     {sLabel}
                   </span>
-                  <div style={{ fontSize: 10, color: '#888', marginTop: 4 }}>
-                    {b.statut === 'paye' ? t('ongletPaiements.proprietaire.payeCeMois') : b.statut === 'en_retard' ? t('ongletPaiements.proprietaire.retardJours', { jours: b.jours }) : t('ongletPaiements.proprietaire.duDepuisJours', { jours: b.jours })}
+                  <div style={{ fontSize: 10, color: '#888', marginTop: 4, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 3 }}>
+                    {b.statut === 'paye' ? (
+                      <><CheckCircle2 size={11} strokeWidth={1.75} /> {t('ongletPaiements.proprietaire.payeCeMois')}</>
+                    ) : b.statut === 'en_retard' ? (
+                      <><AlertTriangle size={11} strokeWidth={1.75} /> {t('ongletPaiements.proprietaire.retardJours', { jours: b.jours })}</>
+                    ) : (
+                      <><AlertTriangle size={11} strokeWidth={1.75} /> {t('ongletPaiements.proprietaire.duDepuisJours', { jours: b.jours })}</>
+                    )}
                   </div>
                 </div>
               </div>
 
               {b.statut === 'paye' ? (
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <button style={{ flex: 1, background: '#F0FBF0', color: '#1B6B3A', border: '0.5px solid #A5D6A7', borderRadius: 10, padding: 9, fontSize: 13, cursor: 'pointer', fontWeight: 600 }}>
-                    {t('ongletPaiements.proprietaire.voirQuittance')}
+                  <button style={{ flex: 1, background: '#F0FBF0', color: '#1B6B3A', border: '0.5px solid #A5D6A7', borderRadius: 10, padding: 9, fontSize: 13, cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                    <Receipt size={13} strokeWidth={1.75} /> {t('ongletPaiements.proprietaire.voirQuittance')}
                   </button>
-                  <button style={{ flex: 1, background: '#F5F5F5', color: '#555', border: '0.5px solid #E0E0E0', borderRadius: 10, padding: 9, fontSize: 13, cursor: 'pointer' }}>
-                    {t('ongletPaiements.proprietaire.contacter')}
+                  <button style={{ flex: 1, background: '#F5F5F5', color: '#555', border: '0.5px solid #E0E0E0', borderRadius: 10, padding: 9, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                    <MessageCircle size={13} strokeWidth={1.75} /> {t('ongletPaiements.proprietaire.contacter')}
                   </button>
                 </div>
               ) : (
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button onClick={function() { openModal(b); }}
-                    style={{ flex: 2, background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-                    {t('ongletPaiements.proprietaire.enregistrerPaiement')}
+                    style={{ flex: 2, background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                    <Wallet size={13} strokeWidth={1.75} /> {t('ongletPaiements.proprietaire.enregistrerPaiement')}
                   </button>
-                  <button style={{ flex: 1, background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', borderRadius: 10, padding: 10, fontSize: 13, cursor: 'pointer', fontWeight: 600 }}>
-                    {t('ongletPaiements.proprietaire.relancer')}
+                  <button style={{ flex: 1, background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', borderRadius: 10, padding: 10, fontSize: 13, cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                    <Send size={13} strokeWidth={1.75} /> {t('ongletPaiements.proprietaire.relancer')}
                   </button>
                 </div>
               )}
@@ -243,7 +249,7 @@ export function PaiementsProprietaire() {
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                   <div>
-                    <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{t('ongletPaiements.proprietaire.modal.titre')}</div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', display: 'flex', alignItems: 'center', gap: 6 }}><Wallet size={16} strokeWidth={1.75} /> {t('ongletPaiements.proprietaire.modal.titre')}</div>
                     <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{modal.nom} · {modal.locataire}</div>
                   </div>
                   <button onClick={closeModal} style={{ width: 32, height: 32, borderRadius: '50%', border: 'none', background: '#F5F5F5', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={16} strokeWidth={1.8} /></button>
@@ -252,7 +258,8 @@ export function PaiementsProprietaire() {
                 <div style={{ background: '#F0FBF0', borderRadius: 12, padding: 14, marginBottom: 18, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                     <div style={{ fontSize: 12, color: '#555', fontWeight: 600 }}>{t('ongletPaiements.proprietaire.modal.montantLoyer', { mois: MOIS_ACTUEL })}</div>
-                    <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>
+                    <div style={{ fontSize: 11, color: '#888', marginTop: 2, display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <AlertTriangle size={11} strokeWidth={1.75} />
                       {modal.statut === 'en_retard' ? t('ongletPaiements.proprietaire.modal.enRetardDe', { jours: modal.jours }) : t('ongletPaiements.proprietaire.modal.impayeDepuis', { jours: modal.jours })}
                     </div>
                   </div>
@@ -286,8 +293,8 @@ export function PaiementsProprietaire() {
                 )}
 
                 <button onClick={confirmerPaiement} disabled={processing}
-                  style={{ width: '100%', background: processing ? '#999' : '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: processing ? 'not-allowed' : 'pointer', marginTop: 6 }}>
-                  {processing ? t('ongletPaiements.proprietaire.modal.traitementEnCours') : t('ongletPaiements.proprietaire.modal.confirmerPaiement', { montant: GNF(modal.loyer) })}
+                  style={{ width: '100%', background: processing ? '#999' : '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: processing ? 'not-allowed' : 'pointer', marginTop: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                  {processing ? t('ongletPaiements.proprietaire.modal.traitementEnCours') : (<><CheckCircle2 size={15} strokeWidth={1.75} /> {t('ongletPaiements.proprietaire.modal.confirmerPaiement', { montant: GNF(modal.loyer) })}</>)}
                 </button>
               </div>
             ) : (
@@ -306,12 +313,12 @@ export function PaiementsProprietaire() {
                     [t('ongletPaiements.proprietaire.modal.recap.montant'), GNF(modal.loyer)],
                     [t('ongletPaiements.proprietaire.modal.recap.mode'), PAY_MODES.find(function(p) { return p.id === selectedMode; }) ? t('ongletPaiements.payModes.' + PAY_MODES.find(function(p) { return p.id === selectedMode; }).labelKey + '.label') : ''],
                     [t('ongletPaiements.proprietaire.modal.recap.date'), t('ongletPaiements.proprietaire.modal.recap.aujourdhui', { date: new Date().toLocaleDateString('fr-FR') })],
-                    [t('ongletPaiements.proprietaire.modal.recap.statut'), t('ongletPaiements.proprietaire.modal.recap.paye')],
+                    [t('ongletPaiements.proprietaire.modal.recap.statut'), t('ongletPaiements.proprietaire.modal.recap.paye'), true],
                   ].map(function(row) {
                     return (
                       <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#555', padding: '4px 0', borderBottom: '0.5px solid #F0F0F0' }}>
                         <span style={{ fontWeight: 600 }}>{row[0]}</span>
-                        <span>{row[1]}</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>{row[2] && <CheckCircle2 size={12} strokeWidth={1.75} />}{row[1]}</span>
                       </div>
                     );
                   })}
@@ -410,7 +417,7 @@ export function PaiementsLocataire() {
 
       {/* HEADER */}
       <div style={{ background: '#1A4FA0', borderRadius: 14, padding: '16px 18px', marginBottom: 18 }}>
-        <div style={{ color: '#fff', fontWeight: 700, fontSize: 16 }}>{t('ongletPaiements.locataire.header.titre')}</div>
+        <div style={{ color: '#fff', fontWeight: 700, fontSize: 16, display: 'flex', alignItems: 'center', gap: 6 }}><Wallet size={16} strokeWidth={1.75} /> {t('ongletPaiements.locataire.header.titre')}</div>
         <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 12, marginTop: 2 }}>{t('ongletPaiements.locataire.header.sousTitre', { mois: MOIS_ACTUEL })}</div>
       </div>
 
@@ -442,7 +449,7 @@ export function PaiementsLocataire() {
             })}
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
-            <button style={{ flex: 1, background: '#E8F5E9', color: '#1B6B3A', border: '0.5px solid #A5D6A7', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer', fontWeight: 600 }}>{t('ongletPaiements.locataire.maQuittance')}</button>
+            <button style={{ flex: 1, background: '#E8F5E9', color: '#1B6B3A', border: '0.5px solid #A5D6A7', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Receipt size={13} strokeWidth={1.75} /> {t('ongletPaiements.locataire.maQuittance')}</button>
             <button onClick={function() { setStep('select'); setNbMois(1); }}
               style={{ flex: 1, background: '#1A4FA0', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer', fontWeight: 700 }}>{t('ongletPaiements.locataire.retour')}</button>
           </div>
@@ -473,8 +480,8 @@ export function PaiementsLocataire() {
               <button onClick={function() { setStep('select'); }}
                 style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer' }}>{t('ongletPaiements.locataire.confirmation.modifier')}</button>
               <button onClick={payer}
-                style={{ flex: 2, background: step === 'loading' ? '#999' : '#1A4FA0', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-                {step === 'loading' ? t('ongletPaiements.locataire.confirmation.traitementEnCours') : t('ongletPaiements.locataire.confirmation.confirmer', { montant: GNF(total) })}
+                style={{ flex: 2, background: step === 'loading' ? '#999' : '#1A4FA0', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                {step === 'loading' ? t('ongletPaiements.locataire.confirmation.traitementEnCours') : (<><CheckCircle2 size={14} strokeWidth={1.75} /> {t('ongletPaiements.locataire.confirmation.confirmer', { montant: GNF(total) })}</>)}
               </button>
             </div>
           </div>
@@ -515,7 +522,7 @@ export function PaiementsLocataire() {
 
             <div style={{ background: '#FFEBEE', borderRadius: 10, padding: '10px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <div style={{ fontSize: 12, color: '#B71C1C', fontWeight: 600 }}>{t('ongletPaiements.locataire.fiche.statutLoyer', { mois: MOIS_ACTUEL })}</div>
+                <div style={{ fontSize: 12, color: '#B71C1C', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}><AlertCircle size={13} strokeWidth={1.75} /> {t('ongletPaiements.locataire.fiche.statutLoyer', { mois: MOIS_ACTUEL })}</div>
                 <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{t('ongletPaiements.locataire.fiche.enAttenteDePaiement')}</div>
               </div>
               <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2' }}>{t('ongletPaiements.statuts.impaye')}</span>
@@ -533,8 +540,14 @@ export function PaiementsLocataire() {
                       <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>
                         {p.date_paiement ? new Date(p.date_paiement).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }) : t('ongletPaiements.locataire.historique.moisPrecedent')}
                       </div>
-                      <div style={{ fontSize: 11, color: '#888' }}>
-                        {p.mode_paiement === 'orange_money' ? t('ongletPaiements.locataire.historique.modeOrange') : p.mode_paiement === 'mtn_momo' ? t('ongletPaiements.locataire.historique.modeMtn') : t('ongletPaiements.locataire.historique.modeEspeces')}
+                      <div style={{ fontSize: 11, color: '#888', display: 'flex', alignItems: 'center', gap: 4 }}>
+                        {p.mode_paiement === 'orange_money' ? (
+                          <><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#FF6600' }} /> {t('ongletPaiements.locataire.historique.modeOrange')}</>
+                        ) : p.mode_paiement === 'mtn_momo' ? (
+                          <><span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: '#FFCC00' }} /> {t('ongletPaiements.locataire.historique.modeMtn')}</>
+                        ) : (
+                          <><Banknote size={12} strokeWidth={1.75} /> {t('ongletPaiements.locataire.historique.modeEspeces')}</>
+                        )}
                       </div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
@@ -568,8 +581,8 @@ export function PaiementsLocataire() {
               <div style={{ fontSize: 20, fontWeight: 700, color: '#1A4FA0' }}>{GNF(total)}</div>
             </div>
             {nbMois >= 3 && (
-              <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '8px 12px', fontSize: 12, color: '#1B5E20' }}>
-                {t('ongletPaiements.locataire.choixMois.paiementAvance', { n: nbMois })}
+              <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '8px 12px', fontSize: 12, color: '#1B5E20', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <ShieldCheck size={13} strokeWidth={1.75} /> {t('ongletPaiements.locataire.choixMois.paiementAvance', { n: nbMois })}
               </div>
             )}
           </div>
@@ -587,7 +600,7 @@ export function PaiementsLocataire() {
                     </div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>{t('ongletPaiements.payModes.' + p.labelKey + '.label')}</div>
                     <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{t('ongletPaiements.payModes.' + p.labelKey + '.sub')}</div>
-                    {mode === p.id && <div style={{ fontSize: 11, color: '#1A4FA0', fontWeight: 700, marginTop: 4 }}>{t('ongletPaiements.locataire.selectionne')}</div>}
+                    {mode === p.id && <div style={{ fontSize: 11, color: '#1A4FA0', fontWeight: 700, marginTop: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}><Check size={12} strokeWidth={2} /> {t('ongletPaiements.locataire.selectionne')}</div>}
                   </div>
                 );
               })}

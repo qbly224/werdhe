@@ -3,6 +3,7 @@ import { useState } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { Camera } from 'lucide-react';
 
 export default function GestionPhotos({ logementId, photosInitiales, onUpdate }) {
   var t = useTranslation('profil').t;
@@ -52,7 +53,8 @@ export default function GestionPhotos({ logementId, photosInitiales, onUpdate })
 
   return (
     <div>
-      <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>
+      <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+        <Camera size={15} strokeWidth={1.8} />
         {t('gestionPhotos.titre', { count: photos.length })}
       </div>
 

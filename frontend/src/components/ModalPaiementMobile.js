@@ -2,7 +2,7 @@ import { useState } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { Smartphone, CheckCircle2 } from 'lucide-react';
+import { Smartphone, CheckCircle2, Clock, FlaskConical } from 'lucide-react';
 
 // Modal Mobile Money générique : réutilisable pour un paiement de loyer
 // (reservation_id) ou un paiement d'abonnement (plan/cycle), selon les
@@ -105,8 +105,8 @@ export default function ModalPaiementMobile(props) {
       <div style={styles.modal}>
 
         <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px'}}>
-          <h2 style={{margin:0, fontSize:'18px', fontWeight:'700', color:'#1B2B22'}}>
-            {t('modalPaiementMobile.titre')}
+          <h2 style={{margin:0, fontSize:'18px', fontWeight:'700', color:'#1B2B22', display:'flex', alignItems:'center', gap:8}}>
+            <Smartphone size={18} strokeWidth={1.75} /> {t('modalPaiementMobile.titre')}
           </h2>
           <button
             onClick={onClose}
@@ -270,8 +270,8 @@ export default function ModalPaiementMobile(props) {
                 {paiementData.message}
               </div>
               {compteur > 0 && (
-                <div style={{fontSize:'12px', color:'#E65100', fontWeight:'600', marginBottom:'12px'}}>
-                  {t('modalPaiementMobile.expireDans', { temps: formatTimer(compteur) })}
+                <div style={{fontSize:'12px', color:'#E65100', fontWeight:'600', marginBottom:'12px', display:'flex', alignItems:'center', justifyContent:'center', gap:4}}>
+                  <Clock size={12} strokeWidth={1.75} /> {t('modalPaiementMobile.expireDans', { temps: formatTimer(compteur) })}
                 </div>
               )}
             </div>
@@ -303,9 +303,10 @@ export default function ModalPaiementMobile(props) {
                 <div style={{
                   background:'#E8F5E9', border:'1px dashed #1B6B3A',
                   borderRadius:'10px', padding:'12px', marginBottom:'12px',
-                  fontSize:'12px', color:'#1B5E20', textAlign:'center'
+                  fontSize:'12px', color:'#1B5E20', textAlign:'center',
+                  display:'flex', alignItems:'center', justifyContent:'center', gap:6
                 }}>
-                  {t('modalPaiementMobile.modeDemonstration')}
+                  <FlaskConical size={13} strokeWidth={1.75} /> {t('modalPaiementMobile.modeDemonstration')}
                 </div>
                 <button
                   type="button"

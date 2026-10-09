@@ -311,7 +311,7 @@
       "moyen": "Medium",
       "fort": "Strong"
     },
-    "compteCreeSucces": "Account created successfully! 🎉",
+    "compteCreeSucces": "Account created successfully!",
     "erreurCreation": "Error creating the account",
     "etapes": {
       "role": "Your role",
@@ -410,14 +410,14 @@
   },
   "login2fa": {
     "entrezChiffres": "Enter the 6 digits",
-    "connexionReussie": "Admin login successful 🔐",
+    "connexionReussie": "Admin login successful",
     "codeInvalide": "Invalid code",
     "titre": "Two-step verification",
     "codeEnvoyeA": "Code sent to",
     "codeValideEncore": "Code still valid for",
     "codeExpire": "Code expired — please log in again",
-    "verificationEnCours": "⏳ Verifying...",
-    "confirmer": "🔐 Confirm",
+    "verificationEnCours": "Verifying...",
+    "confirmer": "Confirm",
     "retourConnexion": "Back to login"
   },
   "loginTelephone": {
@@ -447,12 +447,12 @@
     "quelquesInfos": "A few details to finish up",
     "numeroDeTelephone": "Phone number",
     "placeholderTelephone": "e.g. 621 41 42 85",
-    "envoiEnCours": "⏳ Sending...",
+    "envoiEnCours": "Sending...",
     "recevoirCode": "Receive the code →",
     "ou": "Or",
     "connexionParEmail": "log in with email",
-    "verificationEnCours": "⏳ Verifying...",
-    "confirmerCode": "✅ Confirm the code",
+    "verificationEnCours": "Verifying...",
+    "confirmerCode": "Confirm the code",
     "renvoyerDans": "Resend in",
     "renvoyerCode": "Resend code",
     "changerNumero": "Change number",
@@ -460,12 +460,12 @@
     "champPrenom": "First name",
     "champNom": "Last name *",
     "jeSuis": "I am *",
-    "roleLocataire": "🏠 Tenant",
+    "roleLocataire": "Tenant",
     "roleLocataireDesc": "I'm looking for a home",
-    "roleProprietaire": "🔑 Landlord",
+    "roleProprietaire": "Landlord",
     "roleProprietaireDesc": "I rent out properties",
-    "creationEnCours": "⏳ Creating...",
-    "creerMonCompte": "🚀 Create my account"
+    "creationEnCours": "Creating...",
+    "creerMonCompte": "Create my account"
   },
   "otp": {
     "retour": "Back",
@@ -492,7 +492,7 @@
   },
   "authCallback": {
     "connexionEchouee": "Google sign-in failed. Please try again.",
-    "bienvenue": "Welcome {{prenom}}! 🎉",
+    "bienvenue": "Welcome {{prenom}}!",
     "erreurConnexion": "Sign-in error",
     "connexionEnCours": "Signing in with Google..."
   },
@@ -628,7 +628,7 @@
     },
     "champMessage": "Message *",
     "placeholderMessage": "Describe your question or issue in detail...",
-    "envoiEnCours": "⏳ Sending...",
+    "envoiEnCours": "Sending...",
     "envoyerMessage": "Send message",
     "delaiReponse": "We usually reply within 24 hours on business days",
     "erreurChampsObligatoires": "Please fill in all required fields",

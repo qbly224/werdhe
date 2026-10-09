@@ -18,7 +18,7 @@
     "sidebar": {
       "panneauAdmin": "Admin Panel",
       "syncInfo": "Syncs every 30s",
-      "actualiserMaintenant": "🔄 Refresh now",
+      "actualiserMaintenant": "Refresh now",
       "retourDashboard": "← Back to dashboard"
     },
     "statutsReservation": {
@@ -31,7 +31,7 @@
       "cautionPayee": "Deposit paid",
       "bailEnCours": "Lease in progress",
       "bailSigne": "Lease signed",
-      "active": "Active 🗝️",
+      "active": "Active",
       "refusee": "Declined",
       "terminee": "Completed"
     },
@@ -46,8 +46,8 @@
       "pause": "Paused",
       "misAJour": "· Updated at {{heure}}",
       "rafraichissementDans": "· Refreshing in",
-      "boutonPause": "⏸ Pause",
-      "boutonReprendre": "▶ Resume",
+      "boutonPause": "Pause",
+      "boutonReprendre": "Resume",
       "alerteCritique": "{{count}} payment(s) overdue by more than 5 days",
       "actionRequise": "Action required — check pending payments",
       "kpi": {
@@ -63,9 +63,9 @@
         "logement": "Listing",
         "paiement": "Payment"
       },
-      "titre": "📊 Overview",
+      "titre": "Overview",
       "derniereMiseAJour": "Last updated: {{heure}}",
-      "actualiser": "🔄 Refresh",
+      "actualiser": "Refresh",
       "kpiPrincipaux": {
         "utilisateurs": "Users",
         "proprietaires": "Landlords",
@@ -85,19 +85,19 @@
       "aucuneAlerte": "No alerts"
     },
     "users": {
-      "titre": "👥 Users",
+      "titre": "Users",
       "compteur": "{{filtres}} / {{total}} user(s)",
-      "rechercherPlaceholder": "🔍 Search...",
+      "rechercherPlaceholder": "Search...",
       "filtreTousRoles": "All roles",
       "filtreLocataires": "Tenants",
       "filtreProprietaires": "Landlords",
       "filtreAdmins": "Admins",
       "suspendu": "Suspended",
-      "abonnementImpaye": "🔒 Unpaid subscription",
+      "abonnementImpaye": "Unpaid subscription",
       "inscritLe": "Joined on {{date}} · {{count}} booking(s)",
-      "reactiver": "✅ Reactivate",
-      "suspendre": "🚫 Suspend",
-      "debloquer": "🔓 Unblock",
+      "reactiver": "Reactivate",
+      "suspendre": "Suspend",
+      "debloquer": "Unblock",
       "confirmReactiver": "Reactivate this user?",
       "confirmSuspendre": "Suspend this user?",
       "toastReactive": "User reactivated",
@@ -106,18 +106,18 @@
       "toastDebloque": "Access unblocked"
     },
     "logements": {
-      "titre": "🏠 Listings",
+      "titre": "Listings",
       "compteur": "{{count}} listing(s) on the platform",
-      "verifie": "✅ Verified",
+      "verifie": "Verified",
       "parMois": "/month",
       "proprietaireLabel": "Landlord: {{prenom}} {{nom}} · {{count}} booking(s)",
-      "verifier": "✅ Verify",
+      "verifier": "Verify",
       "confirmSupprimer": "Delete this listing?",
       "toastVerifie": "Listing verified!",
       "toastSupprime": "Listing deleted"
     },
     "reservations": {
-      "titre": "📅 Bookings",
+      "titre": "Bookings",
       "compteur": "{{filtres}} / {{total}} booking(s)",
       "tousLesStatuts": "All statuses",
       "colLocataire": "Tenant",
@@ -128,7 +128,7 @@
       "colDate": "Date"
     },
     "revenus": {
-      "titre": "💰 Werdhe Revenue",
+      "titre": "Werdhe Revenue",
       "sousTitre": "Commissions and subscriptions",
       "chargement": "Loading revenue...",
       "kpi": {
@@ -143,16 +143,16 @@
       "aucuneCommission": "No commissions yet."
     },
     "alertes": {
-      "titre": "🔔 Platform alerts",
+      "titre": "Platform alerts",
       "compteur": "{{count}} alert(s)",
-      "aucuneAlerte": "✅ No active alerts"
+      "aucuneAlerte": "No active alerts"
     },
     "abonnements": {
-      "titre": "💳 Subscriptions",
+      "titre": "Subscriptions",
       "toastMisAJour": "Plan updated!"
     },
     "blog": {
-      "titre": "📝 Blog",
+      "titre": "Blog",
       "nouvelArticle": "+ New article",
       "modifierArticle": "Edit article",
       "nouvelArticleTitre": "New article",
@@ -187,7 +187,7 @@
       "supprimer": "Delete"
     },
     "promos": {
-      "titre": "🎟️ Promo Codes",
+      "titre": "Promo Codes",
       "nouveauCode": "+ New code",
       "labelCode": "Code *",
       "placeholderCode": "PROMO2026",
@@ -204,7 +204,7 @@
       "desactiver": "Deactivate"
     },
     "logs": {
-      "titre": "📋 Audit Logs",
+      "titre": "Audit Logs",
       "compteur": "{{count}} entries",
       "ip": "IP: {{ip}}"
     }

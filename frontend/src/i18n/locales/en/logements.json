@@ -414,7 +414,7 @@
   "onboarding": {
     "locataire": {
       "etape1": {
-        "titre": "Welcome to Werdhe 🎉",
+        "titre": "Welcome to Werdhe",
         "desc": "Find your ideal home in Guinea. Filter by city, price, and area. No middleman, no hidden fees.",
         "cta": "Get started"
       },
@@ -445,7 +445,7 @@
     "retour": "Back",
     "proprio": {
       "etape0": {
-        "bienvenue": "Welcome to Werdhe, {{prenom}}! 🎉",
+        "bienvenue": "Welcome to Werdhe, {{prenom}}!",
         "desc": "Manage all your properties from a single dashboard. Applications, payments, documents — everything centralized.",
         "dashboardComplet": "Full dashboard",
         "dashboardCompletDesc": "Everything in one place",
@@ -529,17 +529,17 @@
         "suivant": "Next"
       },
       "etape4": {
-        "titre": "You're all set! 🚀",
+        "titre": "You're all set!",
         "desc": "Your landlord space is configured. Add your first property and start receiving applications today.",
-        "checklist": "✅ Your getting-started checklist",
+        "checklist": "Your getting-started checklist",
         "creerCompte": "Create an account",
         "choisirPlan": "Choose a plan",
         "ajouterLogement": "Add a property",
         "recevoirCandidature": "Receive an application",
         "signerBail": "Sign a lease",
-        "ajouterMonPremierBien": "🏠 Add my first property",
+        "ajouterMonPremierBien": "Add my first property",
         "explorerDashboard": "Explore the dashboard first",
-        "toastBienvenue": "Welcome to Werdhe! Add your first property 🏠"
+        "toastBienvenue": "Welcome to Werdhe! Add your first property"
       }
     },
     "jeConnaisDejaWerdhe": "I already know Werdhe — skip"

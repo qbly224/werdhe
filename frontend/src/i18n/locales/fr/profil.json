@@ -90,7 +90,7 @@
       "erreurTitrePrix": "Titre et prix obligatoires"
     },
     "etape4": {
-      "titre": "⚡ Équipements et statut foncier",
+      "titre": "Équipements et statut foncier",
       "accesEau": "Accès à l'eau",
       "selectionnez": "Sélectionnez",
       "robinetInterieur": "Robinet intérieur",
@@ -142,16 +142,16 @@
   },
   "profil": {
     "header": {
-      "proprietaire": "🏠 Propriétaire",
-      "locataire": "🔍 Locataire",
-      "proprietaireEtLocataire": "🔄 Propriétaire & Locataire"
+      "proprietaire": "Propriétaire",
+      "locataire": "Locataire",
+      "proprietaireEtLocataire": "Propriétaire & Locataire"
     },
     "onglets": {
-      "infos": "👤 Mes informations",
-      "motDePasse": "🔐 Mot de passe"
+      "infos": "Mes informations",
+      "motDePasse": "Mot de passe"
     },
     "infos": {
-      "titre": "👤 Mes informations",
+      "titre": "Mes informations",
       "prenom": "Prénom",
       "nom": "Nom",
       "telephone": "Téléphone",
@@ -159,11 +159,11 @@
       "email": "Email",
       "emailNonModifiable": "L'email ne peut pas être modifié",
       "sauvegarde": "Sauvegarde...",
-      "sauvegarder": "💾 Sauvegarder",
-      "toastSucces": "✅ Profil mis à jour !"
+      "sauvegarder": "Sauvegarder",
+      "toastSucces": "Profil mis à jour !"
     },
     "motDePasse": {
-      "titre": "🔐 Changer le mot de passe",
+      "titre": "Changer le mot de passe",
       "actuel": "Mot de passe actuel *",
       "actuelPlaceholder": "Votre mot de passe actuel",
       "nouveau": "Nouveau mot de passe *",
@@ -171,8 +171,8 @@
       "confirmation": "Confirmer le nouveau mot de passe *",
       "confirmationPlaceholder": "Répétez le nouveau mot de passe",
       "miseAJour": "Mise à jour...",
-      "changer": "🔐 Changer le mot de passe",
-      "toastSucces": "✅ Mot de passe mis à jour !",
+      "changer": "Changer le mot de passe",
+      "toastSucces": "Mot de passe mis à jour !",
       "erreurCorrespondance": "Les mots de passe ne correspondent pas",
       "erreurMinimum": "Minimum 6 caractères"
     },
@@ -192,8 +192,8 @@
       "membreDepuis": "Membre depuis"
     },
     "scoreConfiance": "Score de confiance",
-    "email": "✉️ Email",
-    "appeler": "📞 Appeler",
+    "email": "Email",
+    "appeler": "Appeler",
     "logementsTitre": "Logements ({{count}})",
     "occupe": "Occupé",
     "disponible": "Disponible",
@@ -212,7 +212,7 @@
       "dragTextBold": "cliquez pour choisir",
       "formats": "JPG, PNG, WEBP — 5MB max — 10 photos max"
     },
-    "badgePrincipale": "⭐ Principale",
+    "badgePrincipale": "Principale",
     "actions": {
       "definirPrincipale": "Définir comme principale",
       "supprimer": "Supprimer"
@@ -220,16 +220,16 @@
     "altLogement": "Logement {{index}}",
     "noPhotos": "Aucune photo pour le moment. Ajoutez des photos pour attirer plus de locataires !",
     "toasts": {
-      "ajoutees": "✅ {{count}} photo(s) ajoutée(s) !",
+      "ajoutees": "{{count}} photo(s) ajoutée(s) !",
       "erreurUpload": "Erreur upload",
       "supprimee": "Photo supprimée",
       "erreurSuppression": "Erreur suppression",
-      "principaleDefinie": "✅ Photo principale définie !",
+      "principaleDefinie": "Photo principale définie !",
       "erreur": "Erreur"
     }
   },
   "gestionPhotos": {
-    "titre": "📷 Photos du logement ({{count}}/10)",
+    "titre": "Photos du logement ({{count}}/10)",
     "photoPrincipale": "Photo principale",
     "altPhoto": "Photo {{index}}",
     "upload": "Upload...",

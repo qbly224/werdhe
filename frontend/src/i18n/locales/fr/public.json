@@ -311,7 +311,7 @@
       "moyen": "Moyen",
       "fort": "Fort"
     },
-    "compteCreeSucces": "Compte créé avec succès ! 🎉",
+    "compteCreeSucces": "Compte créé avec succès !",
     "erreurCreation": "Erreur lors de la création du compte",
     "etapes": {
       "role": "Votre rôle",
@@ -410,14 +410,14 @@
   },
   "login2fa": {
     "entrezChiffres": "Entrez les 6 chiffres",
-    "connexionReussie": "Connexion admin réussie 🔐",
+    "connexionReussie": "Connexion admin réussie",
     "codeInvalide": "Code invalide",
     "titre": "Vérification en 2 étapes",
     "codeEnvoyeA": "Code envoyé à",
     "codeValideEncore": "Code valide encore",
     "codeExpire": "Code expiré — reconnectez-vous",
-    "verificationEnCours": "⏳ Vérification...",
-    "confirmer": "🔐 Confirmer",
+    "verificationEnCours": "Vérification...",
+    "confirmer": "Confirmer",
     "retourConnexion": "Retour à la connexion"
   },
   "loginTelephone": {
@@ -447,12 +447,12 @@
     "quelquesInfos": "Quelques informations pour finir",
     "numeroDeTelephone": "Numéro de téléphone",
     "placeholderTelephone": "Ex: 621 41 42 85",
-    "envoiEnCours": "⏳ Envoi...",
+    "envoiEnCours": "Envoi...",
     "recevoirCode": "Recevoir le code →",
     "ou": "Ou",
     "connexionParEmail": "connexion par email",
-    "verificationEnCours": "⏳ Vérification...",
-    "confirmerCode": "✅ Confirmer le code",
+    "verificationEnCours": "Vérification...",
+    "confirmerCode": "Confirmer le code",
     "renvoyerDans": "Renvoyer dans",
     "renvoyerCode": "Renvoyer le code",
     "changerNumero": "Changer de numéro",
@@ -460,12 +460,12 @@
     "champPrenom": "Prénom",
     "champNom": "Nom *",
     "jeSuis": "Je suis *",
-    "roleLocataire": "🏠 Locataire",
+    "roleLocataire": "Locataire",
     "roleLocataireDesc": "Je cherche un logement",
-    "roleProprietaire": "🔑 Propriétaire",
+    "roleProprietaire": "Propriétaire",
     "roleProprietaireDesc": "Je loue des biens",
-    "creationEnCours": "⏳ Création...",
-    "creerMonCompte": "🚀 Créer mon compte"
+    "creationEnCours": "Création...",
+    "creerMonCompte": "Créer mon compte"
   },
   "otp": {
     "retour": "Retour",
@@ -492,7 +492,7 @@
   },
   "authCallback": {
     "connexionEchouee": "Connexion Google échouée. Réessayez.",
-    "bienvenue": "Bienvenue {{prenom}} ! 🎉",
+    "bienvenue": "Bienvenue {{prenom}} !",
     "erreurConnexion": "Erreur de connexion",
     "connexionEnCours": "Connexion avec Google en cours..."
   },
@@ -628,7 +628,7 @@
     },
     "champMessage": "Message *",
     "placeholderMessage": "Décrivez votre question ou problème en détail...",
-    "envoiEnCours": "⏳ Envoi...",
+    "envoiEnCours": "Envoi...",
     "envoyerMessage": "Envoyer le message",
     "delaiReponse": "Nous répondons généralement sous 24h les jours ouvrables",
     "erreurChampsObligatoires": "Remplissez tous les champs obligatoires",

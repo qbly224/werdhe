@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { Home, Smartphone, CheckCircle2 } from 'lucide-react';
+import { Home, Smartphone, CheckCircle2, Search, KeyRound, UserPlus } from 'lucide-react';
 
 function getIndicatifs(t) {
   return [
@@ -248,8 +248,8 @@ export default function LoginTelephone() {
             <button
               onClick={verifierOTP}
               disabled={loading || otp.join('').length !== 6}
-              style={{ width: '100%', background: otp.join('').length === 6 ? '#1B6B3A' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: otp.join('').length === 6 ? 'pointer' : 'not-allowed', marginBottom: 14 }}>
-              {loading ? t('loginTelephone.verificationEnCours') : t('loginTelephone.confirmerCode')}
+              style={{ width: '100%', background: otp.join('').length === 6 ? '#1B6B3A' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: otp.join('').length === 6 ? 'pointer' : 'not-allowed', marginBottom: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              {loading ? t('loginTelephone.verificationEnCours') : (<><CheckCircle2 size={16} strokeWidth={2} /> {t('loginTelephone.confirmerCode')}</>)}
             </button>
 
             <div style={{ textAlign: 'center', fontSize: 13, color: '#888' }}>
@@ -306,13 +306,15 @@ export default function LoginTelephone() {
               <div style={{ fontSize: 11, color: '#888', marginBottom: 8, fontWeight: 600 }}>{t('loginTelephone.jeSuis')}</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 {[
-                  { val: 'locataire',   label: t('loginTelephone.roleLocataire'),    sub: t('loginTelephone.roleLocataireDesc') },
-                  { val: 'proprietaire', label: t('loginTelephone.roleProprietaire'), sub: t('loginTelephone.roleProprietaireDesc') },
+                  { val: 'locataire',   label: t('loginTelephone.roleLocataire'),    sub: t('loginTelephone.roleLocataireDesc'), Icon: Search },
+                  { val: 'proprietaire', label: t('loginTelephone.roleProprietaire'), sub: t('loginTelephone.roleProprietaireDesc'), Icon: KeyRound },
                 ].map(function(r) {
                   return (
                     <div key={r.val} onClick={function() { setRole(r.val); }}
                       style={{ padding: 12, borderRadius: 10, border: role === r.val ? '2px solid #1B6B3A' : '1.5px solid #E0E0E0', background: role === r.val ? '#E8F5E9' : '#FAFAFA', cursor: 'pointer', textAlign: 'center' }}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: role === r.val ? '#1B5E20' : '#1B2B22' }}>{r.label}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: role === r.val ? '#1B5E20' : '#1B2B22', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                        <r.Icon size={16} strokeWidth={2} /> {r.label}
+                      </div>
                       <div style={{ fontSize: 10, color: '#888', marginTop: 3 }}>{r.sub}</div>
                     </div>
                   );
@@ -323,8 +325,8 @@ export default function LoginTelephone() {
             <button
               onClick={creerCompte}
               disabled={loading || !nom.trim()}
-              style={{ width: '100%', background: nom.trim() ? '#1B6B3A' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: nom.trim() ? 'pointer' : 'not-allowed' }}>
-              {loading ? t('loginTelephone.creationEnCours') : t('loginTelephone.creerMonCompte')}
+              style={{ width: '100%', background: nom.trim() ? '#1B6B3A' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: nom.trim() ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              {loading ? t('loginTelephone.creationEnCours') : (<><UserPlus size={16} strokeWidth={2} /> {t('loginTelephone.creerMonCompte')}</>)}
             </button>
           </div>
         )}
