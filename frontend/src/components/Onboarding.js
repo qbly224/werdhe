@@ -10,7 +10,8 @@ import {
   Search, CalendarCheck, Key, ChevronRight,
   Check, X, Zap, Building2, Star, ArrowRight,
   TrendingUp, Shield, MessageCircle, ChevronLeft,
-  BarChart3, Wallet, ClipboardList, Camera, MapPin, BedDouble
+  BarChart3, Wallet, ClipboardList, Camera, MapPin, BedDouble,
+  PartyPopper, Rocket, ListChecks
 } from 'lucide-react';
 
 // ─── ONBOARDING PROPRIÉTAIRE AVANCÉ ─────────────────────────────
@@ -112,7 +113,8 @@ function OnboardingProprioAvance({ onTermine }) {
             <div style={{ width: 90, height: 90, background: '#E8F5E9', borderRadius: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
               <Home size={48} strokeWidth={1} color="#1B6B3A" />
             </div>
-            <h2 style={{ fontSize: 24, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px', lineHeight: 1.2 }}>
+            <h2 style={{ fontSize: 24, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px', lineHeight: 1.2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              <PartyPopper size={20} strokeWidth={1.5} />
               {t('onboarding.proprio.etape0.bienvenue', { prenom: user && user.prenom })}
             </h2>
             <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, margin: '0 0 24px', maxWidth: 380, marginLeft: 'auto', marginRight: 'auto' }}>
@@ -306,7 +308,8 @@ function OnboardingProprioAvance({ onTermine }) {
             <div style={{ width: 90, height: 90, background: '#E8F5E9', borderRadius: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
               <Star size={48} strokeWidth={1} color="#F5A623" fill="#F5A623" />
             </div>
-            <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>
+            <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              <Rocket size={20} strokeWidth={1.5} />
               {t('onboarding.proprio.etape4.titre')}
             </h2>
             <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, margin: '0 0 24px' }}>
@@ -314,7 +317,10 @@ function OnboardingProprioAvance({ onTermine }) {
             </p>
 
             <div style={{ background: '#F0FBF0', border: '1px solid #A5D6A7', borderRadius: 12, padding: '14px 18px', marginBottom: 24, textAlign: 'left' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B5E20', marginBottom: 10 }}>{t('onboarding.proprio.etape4.checklist')}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B5E20', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <ListChecks size={15} strokeWidth={2} />
+                {t('onboarding.proprio.etape4.checklist')}
+              </div>
               {[
                 { label: t('onboarding.proprio.etape4.creerCompte'),         fait: true  },
                 { label: t('onboarding.proprio.etape4.choisirPlan'),         fait: true  },
@@ -336,7 +342,7 @@ function OnboardingProprioAvance({ onTermine }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <button onClick={terminer}
                 style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                {t('onboarding.proprio.etape4.ajouterMonPremierBien')} <ArrowRight size={16} strokeWidth={2.5} />
+                <Home size={16} strokeWidth={2} /> {t('onboarding.proprio.etape4.ajouterMonPremierBien')} <ArrowRight size={16} strokeWidth={2.5} />
               </button>
               <button onClick={marquerTermine}
                 style={{ width: '100%', padding: '11px', borderRadius: 12, border: 'none', background: 'transparent', color: '#888', fontSize: 13, cursor: 'pointer' }}>
@@ -467,7 +473,10 @@ export default function Onboarding({ onTermine }) {
           <div style={{ width: 96, height: 96, background: e.bg, borderRadius: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
             {e.icon}
           </div>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 12px', lineHeight: 1.2 }}>{e.titre}</h2>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 12px', lineHeight: 1.2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            {etape === 0 && <PartyPopper size={20} strokeWidth={1.5} />}
+            {e.titre}
+          </h2>
           <p style={{ fontSize: 15, color: '#555', lineHeight: 1.7, margin: '0 0 28px' }}>{e.desc}</p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginBottom: 20 }}>
             {etapes.map(function(_, i) {

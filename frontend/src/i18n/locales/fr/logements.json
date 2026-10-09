@@ -414,7 +414,7 @@
   "onboarding": {
     "locataire": {
       "etape1": {
-        "titre": "Bienvenue sur Werdhe 🎉",
+        "titre": "Bienvenue sur Werdhe",
         "desc": "Trouvez votre logement idéal en Guinée. Filtrez par ville, prix, superficie. Sans intermédiaire, sans frais cachés.",
         "cta": "Commencer"
       },
@@ -445,7 +445,7 @@
     "retour": "Retour",
     "proprio": {
       "etape0": {
-        "bienvenue": "Bienvenue sur Werdhe, {{prenom}} ! 🎉",
+        "bienvenue": "Bienvenue sur Werdhe, {{prenom}} !",
         "desc": "Gérez tous vos logements depuis un seul tableau de bord. Candidatures, paiements, documents — tout est centralisé.",
         "dashboardComplet": "Dashboard complet",
         "dashboardCompletDesc": "Tout en un seul endroit",
@@ -529,17 +529,17 @@
         "suivant": "Suivant"
       },
       "etape4": {
-        "titre": "Vous êtes prêt ! 🚀",
+        "titre": "Vous êtes prêt !",
         "desc": "Votre espace propriétaire est configuré. Ajoutez votre premier bien et commencez à recevoir des candidatures dès aujourd'hui.",
-        "checklist": "✅ Votre checklist de démarrage",
+        "checklist": "Votre checklist de démarrage",
         "creerCompte": "Créer un compte",
         "choisirPlan": "Choisir un plan",
         "ajouterLogement": "Ajouter un logement",
         "recevoirCandidature": "Recevoir une candidature",
         "signerBail": "Signer un bail",
-        "ajouterMonPremierBien": "🏠 Ajouter mon premier bien",
+        "ajouterMonPremierBien": "Ajouter mon premier bien",
         "explorerDashboard": "Explorer le dashboard d'abord",
-        "toastBienvenue": "Bienvenue sur Werdhe ! Ajoutez votre premier bien 🏠"
+        "toastBienvenue": "Bienvenue sur Werdhe ! Ajoutez votre premier bien"
       }
     },
     "jeConnaisDejaWerdhe": "Je connais déjà Werdhe — passer"
