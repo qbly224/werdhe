@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-import { Shield, RefreshCw } from 'lucide-react';
+import { Shield, RefreshCw, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function Login2FA() {
@@ -156,9 +156,13 @@ export default function Login2FA() {
             fontWeight: 800,
             cursor: otp.join('').length === 6 && timer > 0 ? 'pointer' : 'not-allowed',
             marginBottom: 12,
-            transition: 'all .2s'
+            transition: 'all .2s',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6
           }}>
-          {loading ? t('login2fa.verificationEnCours') : t('login2fa.confirmer')}
+          {loading ? t('login2fa.verificationEnCours') : (<><Lock size={16} strokeWidth={2} /> {t('login2fa.confirmer')}</>)}
         </button>
 
         <button
