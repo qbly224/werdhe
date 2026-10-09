@@ -18,7 +18,7 @@
     "sidebar": {
       "panneauAdmin": "Panneau Admin",
       "syncInfo": "Sync toutes les 30s",
-      "actualiserMaintenant": "🔄 Actualiser maintenant",
+      "actualiserMaintenant": "Actualiser maintenant",
       "retourDashboard": "← Retour dashboard"
     },
     "statutsReservation": {
@@ -31,7 +31,7 @@
       "cautionPayee": "Caution payée",
       "bailEnCours": "Bail en cours",
       "bailSigne": "Bail signé",
-      "active": "Active 🗝️",
+      "active": "Active",
       "refusee": "Refusée",
       "terminee": "Terminée"
     },
@@ -46,8 +46,8 @@
       "pause": "Pause",
       "misAJour": "· Mis à jour à {{heure}}",
       "rafraichissementDans": "· Rafraîchissement dans",
-      "boutonPause": "⏸ Pause",
-      "boutonReprendre": "▶ Reprendre",
+      "boutonPause": "Pause",
+      "boutonReprendre": "Reprendre",
       "alerteCritique": "{{count}} paiement(s) en retard depuis plus de 5 jours",
       "actionRequise": "Action requise — vérifiez les paiements en attente",
       "kpi": {
@@ -63,9 +63,9 @@
         "logement": "Logement",
         "paiement": "Paiement"
       },
-      "titre": "📊 Vue d'ensemble",
+      "titre": "Vue d'ensemble",
       "derniereMiseAJour": "Dernière mise à jour : {{heure}}",
-      "actualiser": "🔄 Actualiser",
+      "actualiser": "Actualiser",
       "kpiPrincipaux": {
         "utilisateurs": "Utilisateurs",
         "proprietaires": "Propriétaires",
@@ -85,19 +85,19 @@
       "aucuneAlerte": "Aucune alerte"
     },
     "users": {
-      "titre": "👥 Utilisateurs",
+      "titre": "Utilisateurs",
       "compteur": "{{filtres}} / {{total}} utilisateur(s)",
-      "rechercherPlaceholder": "🔍 Rechercher...",
+      "rechercherPlaceholder": "Rechercher...",
       "filtreTousRoles": "Tous les rôles",
       "filtreLocataires": "Locataires",
       "filtreProprietaires": "Propriétaires",
       "filtreAdmins": "Admins",
       "suspendu": "Suspendu",
-      "abonnementImpaye": "🔒 Abonnement impayé",
+      "abonnementImpaye": "Abonnement impayé",
       "inscritLe": "Inscrit le {{date}} · {{count}} réservation(s)",
-      "reactiver": "✅ Réactiver",
-      "suspendre": "🚫 Suspendre",
-      "debloquer": "🔓 Débloquer",
+      "reactiver": "Réactiver",
+      "suspendre": "Suspendre",
+      "debloquer": "Débloquer",
       "confirmReactiver": "Réactiver cet utilisateur ?",
       "confirmSuspendre": "Suspendre cet utilisateur ?",
       "toastReactive": "Utilisateur réactivé",
@@ -106,18 +106,18 @@
       "toastDebloque": "Accès débloqué"
     },
     "logements": {
-      "titre": "🏠 Logements",
+      "titre": "Logements",
       "compteur": "{{count}} logement(s) sur la plateforme",
-      "verifie": "✅ Vérifié",
+      "verifie": "Vérifié",
       "parMois": "/mois",
       "proprietaireLabel": "Propriétaire : {{prenom}} {{nom}} · {{count}} réservation(s)",
-      "verifier": "✅ Vérifier",
+      "verifier": "Vérifier",
       "confirmSupprimer": "Supprimer ce logement ?",
       "toastVerifie": "Logement vérifié !",
       "toastSupprime": "Logement supprimé"
     },
     "reservations": {
-      "titre": "📅 Réservations",
+      "titre": "Réservations",
       "compteur": "{{filtres}} / {{total}} réservation(s)",
       "tousLesStatuts": "Tous les statuts",
       "colLocataire": "Locataire",
@@ -128,7 +128,7 @@
       "colDate": "Date"
     },
     "revenus": {
-      "titre": "💰 Revenus Werdhe",
+      "titre": "Revenus Werdhe",
       "sousTitre": "Commissions et abonnements",
       "chargement": "Chargement des revenus...",
       "kpi": {
@@ -143,16 +143,16 @@
       "aucuneCommission": "Aucune commission pour le moment."
     },
     "alertes": {
-      "titre": "🔔 Alertes plateforme",
+      "titre": "Alertes plateforme",
       "compteur": "{{count}} alerte(s)",
-      "aucuneAlerte": "✅ Aucune alerte active"
+      "aucuneAlerte": "Aucune alerte active"
     },
     "abonnements": {
-      "titre": "💳 Abonnements",
+      "titre": "Abonnements",
       "toastMisAJour": "Plan mis à jour !"
     },
     "blog": {
-      "titre": "📝 Blog",
+      "titre": "Blog",
       "nouvelArticle": "+ Nouvel article",
       "modifierArticle": "Modifier l'article",
       "nouvelArticleTitre": "Nouvel article",
@@ -187,7 +187,7 @@
       "supprimer": "Supprimer"
     },
     "promos": {
-      "titre": "🎟️ Codes Promo",
+      "titre": "Codes Promo",
       "nouveauCode": "+ Nouveau code",
       "labelCode": "Code *",
       "placeholderCode": "PROMO2026",
@@ -204,7 +204,7 @@
       "desactiver": "Désactiver"
     },
     "logs": {
-      "titre": "📋 Logs d'audit",
+      "titre": "Logs d'audit",
       "compteur": "{{count}} entrée(s)",
       "ip": "IP: {{ip}}"
     }
