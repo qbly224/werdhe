@@ -4,7 +4,7 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { Home, CheckCircle2, Scale, Check, Send } from 'lucide-react';
+import { Home, CheckCircle2, Scale, Check, Send, ClipboardList, FileCheck, Info, MessageCircle, FileDown, AlertTriangle, CalendarDays } from 'lucide-react';
 
 const addDays = (n) => {
   var d = new Date();
@@ -75,7 +75,7 @@ function PreavisLocataire() {
 
       {/* HEADER */}
       <div style={{ background: '#37474F', borderRadius: 14, padding: '14px 18px', marginBottom: 18 }}>
-        <div style={{ color: '#fff', fontWeight: 700, fontSize: 16 }}>{t('ongletPreavis.locataire.header.titre')}</div>
+        <div style={{ color: '#fff', fontWeight: 700, fontSize: 16, display: 'flex', alignItems: 'center', gap: 6 }}><ClipboardList size={16} strokeWidth={1.75} /> {t('ongletPreavis.locataire.header.titre')}</div>
         <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 }}>
           {reservation ? reservation.logement_titre : t('ongletPreavis.locataire.header.monLogement')}
         </div>
@@ -90,7 +90,7 @@ function PreavisLocataire() {
             {t('ongletPreavis.locataire.envoye.descAvant')}<b>48h</b>{t('ongletPreavis.locataire.envoye.descApres')}
           </div>
           <div style={{ background: '#FFF8E1', borderRadius: 12, padding: 14, marginBottom: 16, textAlign: 'left' }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#7B4F00', marginBottom: 10 }}>{t('ongletPreavis.locataire.envoye.recapTitre')}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#7B4F00', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}><FileCheck size={14} strokeWidth={1.75} /> {t('ongletPreavis.locataire.envoye.recapTitre')}</div>
             {[
               [t('ongletPreavis.locataire.envoye.labels.logement'), reservation ? reservation.logement_titre : t('ongletPreavis.na')],
               [t('ongletPreavis.locataire.envoye.labels.motif'), motif],
@@ -106,20 +106,21 @@ function PreavisLocataire() {
               );
             })}
           </div>
-          <div style={{ background: '#E8F5E9', borderRadius: 10, padding: 12, marginBottom: 16, textAlign: 'left' }}>
+          <div style={{ background: '#E8F5E9', borderRadius: 10, padding: 12, marginBottom: 16, textAlign: 'left', display: 'flex', gap: 8 }}>
+            <Info size={14} strokeWidth={1.75} color="#1B5E20" style={{ flexShrink: 0, marginTop: 1 }} />
             <div style={{ fontSize: 12, color: '#1B5E20', lineHeight: 1.6 }}>
               {t('ongletPreavis.locataire.envoye.infoContinuerPaiement')}
             </div>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
-            <button style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 11, fontSize: 13, cursor: 'pointer' }}>{t('ongletPreavis.locataire.envoye.contacterProprio')}</button>
-            <button style={{ flex: 1, background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: 11, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>{t('ongletPreavis.telechargerPdf')}</button>
+            <button style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 11, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><MessageCircle size={13} strokeWidth={1.75} /> {t('ongletPreavis.locataire.envoye.contacterProprio')}</button>
+            <button style={{ flex: 1, background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: 11, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><FileDown size={13} strokeWidth={1.75} /> {t('ongletPreavis.telechargerPdf')}</button>
           </div>
         </div>
       ) : step === 'confirm' ? (
         /* ── CONFIRMATION AVANT ENVOI ── */
         <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>{t('ongletPreavis.confirmerEnvoiTitre')}</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}><AlertTriangle size={15} strokeWidth={1.75} /> {t('ongletPreavis.confirmerEnvoiTitre')}</div>
           <div style={{ background: '#FFEBEE', borderRadius: 10, padding: 14, marginBottom: 16 }}>
             <div style={{ fontSize: 13, color: '#B71C1C', fontWeight: 600, marginBottom: 4 }}>{t('ongletPreavis.locataire.confirm.actionOfficielle')}</div>
             <div style={{ fontSize: 12, color: '#C62828', lineHeight: 1.6 }}>{t('ongletPreavis.locataire.confirm.description')}</div>
@@ -144,7 +145,7 @@ function PreavisLocataire() {
             <button onClick={function() { setStep('form'); }}
               style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer' }}>{t('ongletPreavis.modifier')}</button>
             <button onClick={envoyer}
-              style={{ flex: 2, background: '#37474F', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>{t('ongletPreavis.locataire.confirm.envoyerLePreavis')}</button>
+              style={{ flex: 2, background: '#37474F', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Send size={14} strokeWidth={1.75} /> {t('ongletPreavis.locataire.confirm.envoyerLePreavis')}</button>
           </div>
         </div>
       ) : (
@@ -194,7 +195,7 @@ function PreavisLocataire() {
               </div>
               {delai && (
                 <div style={{ background: '#ECEFF1', borderRadius: 10, padding: '10px 14px', marginTop: 10, display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 12, color: '#546E7A' }}>{t('ongletPreavis.locataire.form.dateDepartEstimeeLabel')}</span>
+                  <span style={{ fontSize: 12, color: '#546E7A', display: 'flex', alignItems: 'center', gap: 4 }}><CalendarDays size={12} strokeWidth={1.75} /> {t('ongletPreavis.locataire.form.dateDepartEstimeeLabel')}</span>
                   <span style={{ fontSize: 12, fontWeight: 700, color: '#37474F' }}>{addDays(parseInt(delai) * 30)}</span>
                 </div>
               )}
@@ -209,8 +210,8 @@ function PreavisLocataire() {
             </div>
 
             <button onClick={function() { if (motif && delai) setStep('confirm'); else toast.error(t('ongletPreavis.locataire.form.erreurSelection')); }}
-              style={{ width: '100%', background: motif && delai ? '#37474F' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: motif && delai ? 'pointer' : 'not-allowed' }}>
-              {t('ongletPreavis.locataire.form.preparerBouton')}
+              style={{ width: '100%', background: motif && delai ? '#37474F' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: motif && delai ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <ClipboardList size={14} strokeWidth={1.75} /> {t('ongletPreavis.locataire.form.preparerBouton')}
             </button>
             {(!motif || !delai) && (
               <div style={{ fontSize: 11, color: '#B71C1C', textAlign: 'center', marginTop: 6 }}>{t('ongletPreavis.locataire.form.erreurSelectionContinuer')}</div>
@@ -287,7 +288,7 @@ function PreavisProprio() {
 
       {/* HEADER */}
       <div style={{ background: '#C62828', borderRadius: 14, padding: '14px 18px', marginBottom: 18 }}>
-        <div style={{ color: '#fff', fontWeight: 700, fontSize: 16 }}>{t('ongletPreavis.proprio.header.titre')}</div>
+        <div style={{ color: '#fff', fontWeight: 700, fontSize: 16, display: 'flex', alignItems: 'center', gap: 6 }}><ClipboardList size={16} strokeWidth={1.75} /> {t('ongletPreavis.proprio.header.titre')}</div>
         <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 }}>{t('ongletPreavis.proprio.header.sousTitre')}</div>
       </div>
 
@@ -300,7 +301,7 @@ function PreavisProprio() {
             <b>{bien && bien.locataire}</b> {t('ongletPreavis.proprio.envoye.descMid')}<b>48h</b>{t('ongletPreavis.proprio.envoye.descApres')}
           </div>
           <div style={{ background: '#FFF8E1', borderRadius: 12, padding: 14, marginBottom: 16, textAlign: 'left' }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#7B4F00', marginBottom: 10 }}>{t('ongletPreavis.proprio.envoye.recapTitre')}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#7B4F00', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}><FileCheck size={14} strokeWidth={1.75} /> {t('ongletPreavis.proprio.envoye.recapTitre')}</div>
             {[
               [t('ongletPreavis.proprio.envoye.labels.bien'), bien && bien.nom],
               [t('ongletPreavis.proprio.envoye.labels.locataireNotifie'), bien && bien.locataire],
@@ -318,20 +319,21 @@ function PreavisProprio() {
               );
             })}
           </div>
-          <div style={{ background: '#E8F5E9', borderRadius: 10, padding: 12, marginBottom: 16, textAlign: 'left' }}>
+          <div style={{ background: '#E8F5E9', borderRadius: 10, padding: 12, marginBottom: 16, textAlign: 'left', display: 'flex', gap: 8 }}>
+            <Info size={14} strokeWidth={1.75} color="#1B5E20" style={{ flexShrink: 0, marginTop: 1 }} />
             <div style={{ fontSize: 12, color: '#1B5E20', lineHeight: 1.6 }}>
               {t('ongletPreavis.proprio.envoye.infoAvant')}<b>{t('ongletPreavis.delaiMois', { n: delai })}</b>.
             </div>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
-            <button style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 11, fontSize: 13, cursor: 'pointer' }}>{t('ongletPreavis.proprio.envoye.contacterLocataire')}</button>
-            <button style={{ flex: 1, background: '#C62828', color: '#fff', border: 'none', borderRadius: 10, padding: 11, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>{t('ongletPreavis.telechargerPdf')}</button>
+            <button style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 11, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><MessageCircle size={13} strokeWidth={1.75} /> {t('ongletPreavis.proprio.envoye.contacterLocataire')}</button>
+            <button style={{ flex: 1, background: '#C62828', color: '#fff', border: 'none', borderRadius: 10, padding: 11, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><FileDown size={13} strokeWidth={1.75} /> {t('ongletPreavis.telechargerPdf')}</button>
           </div>
         </div>
       ) : step === 'confirm' ? (
         /* ── DOUBLE CONFIRMATION ── */
         <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>{t('ongletPreavis.confirmerEnvoiTitre')}</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}><AlertTriangle size={15} strokeWidth={1.75} /> {t('ongletPreavis.confirmerEnvoiTitre')}</div>
           <div style={{ background: '#FFEBEE', borderRadius: 10, padding: 14, marginBottom: 16 }}>
             <div style={{ fontSize: 13, color: '#B71C1C', fontWeight: 600, marginBottom: 4 }}>{t('ongletPreavis.proprio.confirm.actionOfficielleIrreversible')}</div>
             <div style={{ fontSize: 12, color: '#C62828', lineHeight: 1.6 }}>{t('ongletPreavis.proprio.confirm.descAvant')}<b>{bien && bien.locataire}</b>{t('ongletPreavis.proprio.confirm.descApres')}</div>
@@ -357,7 +359,7 @@ function PreavisProprio() {
             <button onClick={function() { setStep('form'); }}
               style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer' }}>{t('ongletPreavis.modifier')}</button>
             <button onClick={envoyer}
-              style={{ flex: 2, background: '#C62828', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>{t('ongletPreavis.proprio.confirm.envoyerOfficiel')}</button>
+              style={{ flex: 2, background: '#C62828', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Send size={14} strokeWidth={1.75} /> {t('ongletPreavis.proprio.confirm.envoyerOfficiel')}</button>
           </div>
         </div>
       ) : (
@@ -427,7 +429,7 @@ function PreavisProprio() {
               </div>
               {delai && (
                 <div style={{ background: '#FFEBEE', borderRadius: 10, padding: '10px 14px', marginTop: 10, display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 12, color: '#B71C1C' }}>{t('ongletPreavis.proprio.form.dateSortieEstimeeLabel')}</span>
+                  <span style={{ fontSize: 12, color: '#B71C1C', display: 'flex', alignItems: 'center', gap: 4 }}><CalendarDays size={12} strokeWidth={1.75} /> {t('ongletPreavis.proprio.form.dateSortieEstimeeLabel')}</span>
                   <span style={{ fontSize: 12, fontWeight: 700, color: '#C62828' }}>{addDays(parseInt(delai) * 30)}</span>
                 </div>
               )}
@@ -442,8 +444,8 @@ function PreavisProprio() {
             </div>
 
             <button onClick={function() { if (bien && motif && delai) setStep('confirm'); else toast.error(t('ongletPreavis.proprio.form.erreurChampsObligatoires')); }}
-              style={{ width: '100%', background: bien && motif && delai ? '#C62828' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: bien && motif && delai ? 'pointer' : 'not-allowed' }}>
-              {t('ongletPreavis.proprio.form.continuerBouton')}
+              style={{ width: '100%', background: bien && motif && delai ? '#C62828' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: bien && motif && delai ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <ClipboardList size={14} strokeWidth={1.75} /> {t('ongletPreavis.proprio.form.continuerBouton')}
             </button>
             {(!bien || !motif || !delai) && (
               <div style={{ fontSize: 11, color: '#C62828', textAlign: 'center', marginTop: 6 }}>{t('ongletPreavis.proprio.form.erreurSelectionComplete')}</div>
@@ -468,7 +470,7 @@ export default function OngletPreavis() {
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('ongletPreavis.dispatcher.titre')}</h1>
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}><ClipboardList size={20} strokeWidth={1.75} /> {t('ongletPreavis.dispatcher.titre')}</h1>
           <p style={{ fontSize: 13, color: '#888', margin: '4px 0 0' }}>
             {estProprietaire ? t('ongletPreavis.dispatcher.sousTitreProprio') : t('ongletPreavis.dispatcher.sousTitreLocataire')}
           </p>

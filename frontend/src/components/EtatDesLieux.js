@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { CheckCircle2, Camera } from 'lucide-react';
+import { CheckCircle2, Camera, ClipboardCheck, Scale, PenLine } from 'lucide-react';
 
 var PIECES = [
   { id: 'salon',     labelKey: 'salon' },
@@ -113,8 +113,8 @@ function SignatureCanvas({ label, onSigne }) {
               onTouchEnd={stopDraw}
             />
             {vide && (
-              <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', color: '#ccc', fontSize: 13, pointerEvents: 'none', textAlign: 'center' }}>
-                {t('etatDesLieux.signatureCanvas.signezIci')}
+              <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', color: '#ccc', fontSize: 13, pointerEvents: 'none', textAlign: 'center', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <PenLine size={14} strokeWidth={1.75} /> {t('etatDesLieux.signatureCanvas.signezIci')}
               </div>
             )}
           </div>
@@ -231,8 +231,8 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
 
       {/* HEADER */}
       <div style={{ background: type === 'entree' ? '#1B6B3A' : '#C62828', borderRadius: 14, padding: '14px 18px', marginBottom: 18 }}>
-        <div style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>
-          {type === 'entree' ? t('etatDesLieux.header.titreEntree') : t('etatDesLieux.header.titreSortie')}
+        <div style={{ color: '#fff', fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <ClipboardCheck size={15} strokeWidth={1.75} /> {type === 'entree' ? t('etatDesLieux.header.titreEntree') : t('etatDesLieux.header.titreSortie')}
         </div>
         <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 12, marginTop: 4 }}>
           {step === 'pieces' ? t('etatDesLieux.header.piecesRenseignees', { progress: progressPieces, total: totalPieces }) : t('etatDesLieux.header.signaturesDesDeuxParties')}
@@ -294,8 +294,8 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
 
       {step === 'signatures' && (
         <div>
-          <div style={{ background: '#FFF8E1', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#7B4F00' }}>
-            {t('etatDesLieux.avertissementLegal')}
+          <div style={{ background: '#FFF8E1', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#7B4F00', display: 'flex', gap: 8 }}>
+            <Scale size={14} strokeWidth={1.75} style={{ flexShrink: 0, marginTop: 1 }} /> {t('etatDesLieux.avertissementLegal')}
           </div>
 
           <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
@@ -310,8 +310,8 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
               {t('etatDesLieux.retour')}
             </button>
             <button onClick={soumettre} disabled={!sigProprio || !sigLocataire || saving}
-              style={{ flex: 1, background: sigProprio && sigLocataire ? '#1B6B3A' : '#CCC', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: sigProprio && sigLocataire ? 'pointer' : 'not-allowed' }}>
-              {saving ? t('etatDesLieux.enregistrementEnCours') : t('etatDesLieux.validerEtatDesLieux')}
+              style={{ flex: 1, background: sigProprio && sigLocataire ? '#1B6B3A' : '#CCC', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: sigProprio && sigLocataire ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              {saving ? t('etatDesLieux.enregistrementEnCours') : (<><CheckCircle2 size={14} strokeWidth={1.75} /> {t('etatDesLieux.validerEtatDesLieux')}</>)}
             </button>
           </div>
         </div>
