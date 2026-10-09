@@ -90,7 +90,7 @@
       "erreurTitrePrix": "Title and price are required"
     },
     "etape4": {
-      "titre": "⚡ Amenities and land status",
+      "titre": "Amenities and land status",
       "accesEau": "Water access",
       "selectionnez": "Select",
       "robinetInterieur": "Indoor tap",
@@ -142,16 +142,16 @@
   },
   "profil": {
     "header": {
-      "proprietaire": "🏠 Landlord",
-      "locataire": "🔍 Tenant",
-      "proprietaireEtLocataire": "🔄 Landlord & Tenant"
+      "proprietaire": "Landlord",
+      "locataire": "Tenant",
+      "proprietaireEtLocataire": "Landlord & Tenant"
     },
     "onglets": {
-      "infos": "👤 My information",
-      "motDePasse": "🔐 Password"
+      "infos": "My information",
+      "motDePasse": "Password"
     },
     "infos": {
-      "titre": "👤 My information",
+      "titre": "My information",
       "prenom": "First name",
       "nom": "Last name",
       "telephone": "Phone number",
@@ -159,11 +159,11 @@
       "email": "Email",
       "emailNonModifiable": "Email cannot be changed",
       "sauvegarde": "Saving...",
-      "sauvegarder": "💾 Save",
-      "toastSucces": "✅ Profile updated!"
+      "sauvegarder": "Save",
+      "toastSucces": "Profile updated!"
     },
     "motDePasse": {
-      "titre": "🔐 Change password",
+      "titre": "Change password",
       "actuel": "Current password *",
       "actuelPlaceholder": "Your current password",
       "nouveau": "New password *",
@@ -171,8 +171,8 @@
       "confirmation": "Confirm new password *",
       "confirmationPlaceholder": "Repeat the new password",
       "miseAJour": "Updating...",
-      "changer": "🔐 Change password",
-      "toastSucces": "✅ Password updated!",
+      "changer": "Change password",
+      "toastSucces": "Password updated!",
       "erreurCorrespondance": "Passwords do not match",
       "erreurMinimum": "Minimum 6 characters"
     },
@@ -192,8 +192,8 @@
       "membreDepuis": "Member since"
     },
     "scoreConfiance": "Trust score",
-    "email": "✉️ Email",
-    "appeler": "📞 Call",
+    "email": "Email",
+    "appeler": "Call",
     "logementsTitre": "Listings ({{count}})",
     "occupe": "Occupied",
     "disponible": "Available",
@@ -212,7 +212,7 @@
       "dragTextBold": "click to choose",
       "formats": "JPG, PNG, WEBP — 5MB max — 10 photos max"
     },
-    "badgePrincipale": "⭐ Main",
+    "badgePrincipale": "Main",
     "actions": {
       "definirPrincipale": "Set as main photo",
       "supprimer": "Delete"
@@ -220,16 +220,16 @@
     "altLogement": "Property {{index}}",
     "noPhotos": "No photos yet. Add photos to attract more tenants!",
     "toasts": {
-      "ajoutees": "✅ {{count}} photo(s) added!",
+      "ajoutees": "{{count}} photo(s) added!",
       "erreurUpload": "Upload error",
       "supprimee": "Photo deleted",
       "erreurSuppression": "Deletion error",
-      "principaleDefinie": "✅ Main photo set!",
+      "principaleDefinie": "Main photo set!",
       "erreur": "Error"
     }
   },
   "gestionPhotos": {
-    "titre": "📷 Property photos ({{count}}/10)",
+    "titre": "Property photos ({{count}}/10)",
     "photoPrincipale": "Main photo",
     "altPhoto": "Photo {{index}}",
     "upload": "Uploading...",

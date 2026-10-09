@@ -4,6 +4,7 @@ import api from '../services/api';
 import Navbar from '../components/Navbar';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { Home, Search, Repeat, User, Lock, Save, CheckCircle2 } from 'lucide-react';
 import './Profil.css';
 
 const Profil = () => {
@@ -57,7 +58,7 @@ const Profil = () => {
       const res = await api.put('/auth/profil', formInfos);
       // Mettre à jour le context avec les nouvelles infos
       login(res.data.user, token);
-      toast.success(t('profil.infos.toastSucces'));
+      toast.success(t('profil.infos.toastSucces'), { icon: <CheckCircle2 size={16} strokeWidth={1.8} /> });
     } catch (err) {
       setErreur(err.response?.data?.erreur || t('profil.erreurServeur'));
     } finally {
@@ -85,7 +86,7 @@ const Profil = () => {
         ancien_mot_de_passe: formMdp.ancien_mot_de_passe,
         nouveau_mot_de_passe: formMdp.nouveau_mot_de_passe
       });
-      toast.success(t('profil.motDePasse.toastSucces'));
+      toast.success(t('profil.motDePasse.toastSucces'), { icon: <CheckCircle2 size={16} strokeWidth={1.8} /> });
       setFormMdp({
         ancien_mot_de_passe: '',
         nouveau_mot_de_passe: '',
@@ -112,10 +113,16 @@ const Profil = () => {
             <div>
               <h1>{user?.prenom} {user?.nom}</h1>
               <p>{user?.email}</p>
-              <span className="profil-role">
-                {user?.role === 'proprietaire' && t('profil.header.proprietaire')}
-                {user?.role === 'locataire' && t('profil.header.locataire')}
-                {user?.role === 'les_deux' && t('profil.header.proprietaireEtLocataire')}
+              <span className="profil-role" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                {user?.role === 'proprietaire' && (
+                  <><Home size={14} strokeWidth={1.8} />{t('profil.header.proprietaire')}</>
+                )}
+                {user?.role === 'locataire' && (
+                  <><Search size={14} strokeWidth={1.8} />{t('profil.header.locataire')}</>
+                )}
+                {user?.role === 'les_deux' && (
+                  <><Repeat size={14} strokeWidth={1.8} />{t('profil.header.proprietaireEtLocataire')}</>
+                )}
               </span>
             </div>
           </div>
@@ -126,13 +133,19 @@ const Profil = () => {
               className={`onglet ${onglet === 'infos' ? 'active' : ''}`}
               onClick={() => { setOnglet('infos'); setErreur(''); }}
             >
-              {t('profil.onglets.infos')}
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <User size={14} strokeWidth={1.8} />
+                {t('profil.onglets.infos')}
+              </span>
             </button>
             <button
               className={`onglet ${onglet === 'mdp' ? 'active' : ''}`}
               onClick={() => { setOnglet('mdp'); setErreur(''); }}
             >
-              {t('profil.onglets.motDePasse')}
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <Lock size={14} strokeWidth={1.8} />
+                {t('profil.onglets.motDePasse')}
+              </span>
             </button>
           </div>
 
@@ -143,7 +156,10 @@ const Profil = () => {
             {/* Onglet infos */}
             {onglet === 'infos' && (
               <form onSubmit={handleInfosSubmit}>
-                <h2>{t('profil.infos.titre')}</h2>
+                <h2 style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <User size={16} strokeWidth={1.8} />
+                  {t('profil.infos.titre')}
+                </h2>
 
                 <div className="form-row">
                   <div>
@@ -195,7 +211,12 @@ const Profil = () => {
                   style={{ marginTop: '16px' }}
                   disabled={loading}
                 >
-                  {loading ? t('profil.infos.sauvegarde') : t('profil.infos.sauvegarder')}
+                  {loading ? t('profil.infos.sauvegarde') : (
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, justifyContent: 'center' }}>
+                      <Save size={14} strokeWidth={1.8} />
+                      {t('profil.infos.sauvegarder')}
+                    </span>
+                  )}
                 </button>
               </form>
             )}
@@ -203,7 +224,10 @@ const Profil = () => {
             {/* Onglet mot de passe */}
             {onglet === 'mdp' && (
               <form onSubmit={handleMdpSubmit}>
-                <h2>{t('profil.motDePasse.titre')}</h2>
+                <h2 style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Lock size={16} strokeWidth={1.8} />
+                  {t('profil.motDePasse.titre')}
+                </h2>
 
                 <label>{t('profil.motDePasse.actuel')}</label>
                 <input
@@ -244,7 +268,12 @@ const Profil = () => {
                   style={{ marginTop: '8px' }}
                   disabled={loading}
                 >
-                  {loading ? t('profil.motDePasse.miseAJour') : t('profil.motDePasse.changer')}
+                  {loading ? t('profil.motDePasse.miseAJour') : (
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, justifyContent: 'center' }}>
+                      <Lock size={14} strokeWidth={1.8} />
+                      {t('profil.motDePasse.changer')}
+                    </span>
+                  )}
                 </button>
               </form>
             )}

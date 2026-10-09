@@ -6,7 +6,7 @@ import Navbar from '../components/Navbar';
 import PhotoUpload from '../components/PhotoUpload';
 import toast from 'react-hot-toast';
 import './AjouterLogement.css';
-import { MapPin, Home, Building2, Building, Warehouse, Store, BedDouble, DoorOpen, Landmark, Hotel, ShoppingBag, Sparkles, Camera, AlertTriangle, Crown, Castle, Tent, Construction, Fence, Layers, TriangleAlert, Briefcase } from 'lucide-react';
+import { MapPin, Home, Building2, Building, Warehouse, Store, BedDouble, DoorOpen, Landmark, Hotel, ShoppingBag, Sparkles, Camera, AlertTriangle, Crown, Castle, Tent, Construction, Fence, Layers, TriangleAlert, Briefcase, Zap } from 'lucide-react';
 
 // NOTE : label/description sont traduits à l'affichage via t('ajouterLogement.categories.types.<value>.*'),
 // et groupe via t('ajouterLogement.categories.groupes.<groupe>'). value/groupe restent des identifiants stables.
@@ -483,7 +483,10 @@ const AjouterLogement = () => {
           {/* ÉTAPE 4 — Équipements */}
           {etape === 4 && (
             <div className="etape-card">
-              <h2>{t('ajouterLogement.etape4.titre')}</h2>
+              <h2 style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Zap size={16} strokeWidth={1.8} />
+                {t('ajouterLogement.etape4.titre')}
+              </h2>
               {erreur && <div className="error">{erreur}</div>}
 
               <form onSubmit={handleSubmit}>
