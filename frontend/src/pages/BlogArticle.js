@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
 import api from '../services/api';
-import { Home, Calendar, Eye, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Calendar, Eye, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import Logo from '../components/Logo';
 
 export default function BlogArticle() {
   var t = useTranslation('admin').t;
@@ -52,11 +53,8 @@ export default function BlogArticle() {
       />
 
       <nav style={{ background: '#fff', borderBottom: '0.5px solid #E0E0E0', padding: '0 24px', height: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
-          <div style={{ width: 30, height: 30, background: '#1B6B3A', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Home size={15} color="#fff" strokeWidth={2} />
-          </div>
-          <span style={{ fontWeight: 800, fontSize: 16, color: '#1B2B22' }}>Werdhe</span>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+          <Logo size={28} showText={true} />
         </Link>
         <button onClick={function() { navigate('/blog'); }} style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', background: 'transparent', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
           <ArrowLeft size={14} strokeWidth={2} /> {t('blogArticle.blog')}
