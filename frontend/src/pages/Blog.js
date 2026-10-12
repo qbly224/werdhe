@@ -5,6 +5,7 @@ import SEO from '../components/SEO';
 import api from '../services/api';
 import { Home, Calendar, Eye, ArrowRight, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import Logo from '../components/Logo';
 
 export default function Blog() {
   var t = useTranslation('admin').t;
@@ -48,11 +49,8 @@ export default function Blog() {
       />
 
       <nav style={{ background: '#fff', borderBottom: '0.5px solid #E0E0E0', padding: '0 24px', height: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
-          <div style={{ width: 30, height: 30, background: '#1B6B3A', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Home size={15} color="#fff" strokeWidth={2} />
-          </div>
-          <span style={{ fontWeight: 800, fontSize: 16, color: '#1B2B22' }}>Werdhe</span>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+          <Logo size={28} showText={true} />
         </Link>
         <div style={{ display: 'flex', gap: 10 }}>
           <Link to="/logements" style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>{t('blogPage.voirLogements')}</Link>

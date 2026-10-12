@@ -3,8 +3,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import api from '../services/api';
-import { Home, Sparkles, ArrowRight, MapPin } from 'lucide-react';
+import { Sparkles, ArrowRight, MapPin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import Logo from '../components/Logo';
 
 var VILLES = ['Conakry', 'Kindia', 'Labé', 'Kankan', 'Boké', 'Mamou', 'Faranah', 'N\'Zérékoré'];
 var COMMUNES_CONAKRY = ['Kaloum', 'Dixinn', 'Matam', 'Ratoma', 'Matoto'];
@@ -54,11 +55,8 @@ export default function Estimation() {
       />
 
       <nav style={{ background: '#fff', borderBottom: '0.5px solid #E0E0E0', padding: '0 24px', height: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
-          <div style={{ width: 30, height: 30, background: '#1B6B3A', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Home size={15} color="#fff" strokeWidth={2} />
-          </div>
-          <span style={{ fontWeight: 800, fontSize: 16, color: '#1B2B22' }}>Werdhe</span>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+          <Logo size={28} showText={true} />
         </Link>
         <Link to="/logements/ajouter" style={{ padding: '8px 16px', borderRadius: 8, background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>
           {t('estimation.publierLogement')}
