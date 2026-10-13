@@ -56,6 +56,7 @@ const abonnementRoutes = require('./routes/abonnements');
 const notationsRoutes = require('./routes/notations');
 const blogRoutes = require('./routes/blog');
 const estimationRoutes = require('./routes/estimation');
+const statsRoutes = require('./routes/stats');
 
 // ── Vérifier les variables d'environnement obligatoires ──────────
 var ENV_REQUISES = ['JWT_SECRET', 'DATABASE_URL'];
@@ -182,6 +183,7 @@ app.use('/abonnements', abonnementRoutes);
 app.use('/notations', notationsRoutes);
 app.use('/blog', blogRoutes);
 app.use('/estimation', estimationRoutes);
+app.use('/stats', statsRoutes);
 
 // ── Routes de test ───────────────────────────────────────────────
 app.get('/', (req, res) => {
