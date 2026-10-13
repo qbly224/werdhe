@@ -11,7 +11,6 @@ import OngletPaiementsComponent from '../components/OngletPaiements';
 import ModalPaiementMobile from '../components/ModalPaiementMobile';
 import ModalSignatureBail from '../components/ModalSignatureBail';
 import useDarkMode from '../hooks/useDarkMode';
-import { t, changerLangue, getLangue } from '../services/i18n';
 import RechercheGlobale from '../components/dashboard/RechercheGlobale';
 import './Dashboard.css';
 import {
@@ -40,7 +39,7 @@ import { SkeletonKPI, SkeletonListe, SkeletonCard } from '../components/Skeleton
 import TourTooltip from '../components/TourTooltip';
 import useOnboarding from '../hooks/useOnboarding';
 import { useTranslation } from 'react-i18next';
-import i18n from '../i18n';
+import i18n, { changerLangue } from '../i18n';
 
 // ================================================
 // UTILITAIRE - Formater les montants en GNF
@@ -337,7 +336,7 @@ function OngletOverview(props) {
   return (
     <div>
       {/* ─── KPIs ──────────────────────────────────────────────── */}
-      <div className="stats-grid-4" style={{ marginBottom: 20 }}>
+      <div className="stats-grid-4" data-tour="kpis" style={{ marginBottom: 20 }}>
         {[
           {
             label: t('ongletOverview.kpi.revenusDuMois'),
@@ -1025,9 +1024,11 @@ function OngletLocataires(props) {
       }).catch(function() { toast.error(t('ongletLocataires.toastErreur')); });
   }
 
+  var [ficheId, setFicheId] = useState(null);
+
   var locatairesReservations = stats.reservations.reduce(function(acc, r) {
     if (r.locataire_nom && !acc.find(function(l) { return l.email === r.locataire_email; })) {
-      acc.push({ nom: r.locataire_nom, prenom: r.locataire_prenom, telephone: r.locataire_telephone, email: r.locataire_email, logement: r.logement_titre, loyer: r.montant_total, statut: r.statut });
+      acc.push({ id: r.id, nom: r.locataire_nom, prenom: r.locataire_prenom, telephone: r.locataire_telephone, email: r.locataire_email, logement: r.logement_titre, loyer: r.montant_total, statut: r.statut });
     }
     return acc;
   }, []);
@@ -1089,7 +1090,7 @@ function OngletLocataires(props) {
                   <div>
                     <div className="locataire-loyer">{GNF(l.loyer)}/mois</div>
                   </div>
-                  <button className="btn-outline-green">{t('ongletLocataires.voirFiche')}</button>
+                  <button className="btn-outline-green" onClick={function() { setFicheId(l.id); }}>{t('ongletLocataires.voirFiche')}</button>
                 </div>
               </div>
             );
@@ -1135,6 +1136,125 @@ function OngletLocataires(props) {
           </div>
         );
       })}
+
+      {ficheId && <FicheLocataireModal reservationId={ficheId} onClose={function() { setFicheId(null); }} />}
+    </div>
+  );
+}
+
+// ================================================
+// MODAL : Fiche locataire complète
+// ================================================
+function FicheLocataireModal(props) {
+  var t = useTranslation('dashboard').t;
+  var reservationId = props.reservationId;
+  var onClose = props.onClose;
+  var [r, setR] = useState(null);
+  var [loading, setLoading] = useState(true);
+  var [erreur, setErreur] = useState(false);
+
+  useEffect(function() {
+    setLoading(true);
+    setErreur(false);
+    api.get('/reservations/' + reservationId + '/detail')
+      .then(function(res) { setR(res.data.reservation); })
+      .catch(function() { setErreur(true); toast.error(t('ongletLocataires.fiche.toastErreurChargement')); })
+      .finally(function() { setLoading(false); });
+  }, [reservationId]);
+
+  var initiales = r ? ((r.locataire_prenom || '').charAt(0) + (r.locataire_nom || '').charAt(0)).toUpperCase() : '';
+  var statutLabels = {
+    en_attente: t('ongletReservationsProprio.statuts.enAttente'),
+    en_examen:  t('ongletReservationsProprio.statuts.enExamen'),
+    confirmee:  t('ongletReservationsProprio.statuts.confirmee'),
+    refusee:    t('ongletReservationsProprio.statuts.refusee'),
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-box" style={{ maxWidth: 560, maxHeight: '85vh', overflowY: 'auto', textAlign: 'left' }} onClick={function(e) { e.stopPropagation(); }}>
+        {loading && <p style={{ textAlign: 'center', color: '#888' }}>{t('dashboardMain.chargement')}</p>}
+        {!loading && erreur && <p style={{ textAlign: 'center', color: '#B71C1C' }}>{t('ongletLocataires.toastErreur')}</p>}
+        {!loading && !erreur && r && (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+              <div className="locataire-avatar-proto" style={{ width: 52, height: 52, fontSize: 18, flexShrink: 0 }}>{initiales}</div>
+              <div>
+                <h3 style={{ margin: 0 }}>{r.locataire_prenom} {r.locataire_nom}</h3>
+                <div style={{ fontSize: 12, color: '#888' }}>{r.logement_titre}</div>
+              </div>
+            </div>
+
+            {/* Coordonnées et infos */}
+            <div style={{ background: '#F8F8F8', borderRadius: 10, padding: 12, marginBottom: 16 }}>
+              <div style={{ fontSize: 12, color: '#888', marginBottom: 8, fontWeight: 600 }}>{t('ongletReservationsProprio.infosCandidat.titre')}</div>
+              {[
+                [t('ongletReservationsProprio.demandeRecue.labels.email'), r.locataire_email || t('ongletReservationsProprio.na')],
+                [t('ongletReservationsProprio.infosCandidat.telephone'), r.locataire_telephone || t('ongletReservationsProprio.na')],
+                [t('ongletLocataires.form.logement'), r.logement_titre || t('ongletReservationsProprio.na')],
+                [t('ongletReservationsProprio.infosCandidat.loyer'), GNF(r.montant_total) + '/mois'],
+                [t('ongletLocataires.fiche.dateDebut'), r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : t('ongletReservationsProprio.na')],
+                [t('ongletLocataires.fiche.duree'), r.duree_mois ? t('ongletReservationsProprio.nMois', { n: r.duree_mois }) : t('ongletReservationsProprio.na')],
+                [t('ongletLocataires.fiche.statut'), statutLabels[r.statut] || r.statut],
+              ].map(function(row) {
+                return (
+                  <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '4px 0', borderBottom: '0.5px solid #EFEFEF' }}>
+                    <span style={{ color: '#888' }}>{row[0]}</span>
+                    <span style={{ fontWeight: 600, color: '#1B2B22' }}>{row[1]}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Bail */}
+            <div style={{ background: r.bail_signe ? '#E8F5E9' : '#FFF8E1', borderRadius: 10, padding: 12, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <FileSignature size={16} strokeWidth={1.5} color={r.bail_signe ? '#1B6B3A' : '#E65100'} />
+              <span style={{ fontSize: 13, fontWeight: 600, color: r.bail_signe ? '#1B6B3A' : '#E65100' }}>
+                {r.bail_signe
+                  ? t('ongletLocataires.fiche.bailSigne', { date: r.date_signature_bail ? new Date(r.date_signature_bail).toLocaleDateString('fr-FR') : '' })
+                  : t('ongletLocataires.fiche.bailNonSigne')}
+              </span>
+            </div>
+
+            {/* Documents du dossier */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 12, color: '#888', marginBottom: 8, fontWeight: 600 }}>{t('ongletLocataires.fiche.documents')}</div>
+              {[
+                { label: t('ongletReservationsProprio.docs.cni'),    key: 'cni',    url: r.doc_cni_url },
+                { label: t('ongletReservationsProprio.docs.emploi'), key: 'emploi', url: r.doc_emploi_url },
+                { label: t('ongletReservationsProprio.docs.paie'),   key: 'paie',   url: r.doc_paie_url },
+                { label: t('ongletReservationsProprio.docs.garant'), key: 'garant', url: r.doc_garant_url },
+              ].map(function(d) {
+                return (
+                  <div key={d.key} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #F5F5F5' }}>
+                    <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+                      {d.url ? <CheckCircle size={16} strokeWidth={1.5} color="#1B6B3A" /> : <Clock size={16} strokeWidth={1.5} color="#ccc" />}
+                    </span>
+                    <span style={{ fontSize: 13, color: d.url ? '#1B2B22' : '#aaa', flex: 1 }}>{d.label}</span>
+                    {d.url && (
+                      <a href={'https://werdhe-backend.onrender.com/reservations/' + r.id + '/document/' + d.key + '?token=' + localStorage.getItem('token')}
+                        target="_blank" rel="noreferrer"
+                        style={{ padding: '4px 12px', borderRadius: 8, background: '#E8F5E9', color: '#1B6B3A', textDecoration: 'none', fontSize: 12, fontWeight: 600, border: '0.5px solid #A5D6A7' }}>
+                        {t('ongletReservationsProprio.voir')}
+                      </a>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Message du locataire */}
+            {r.message_locataire && (
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ fontSize: 12, color: '#888', marginBottom: 6, fontWeight: 600 }}>{t('ongletLocataires.fiche.message')}</div>
+                <p style={{ fontSize: 13, color: '#555', background: '#F8F8F8', borderRadius: 10, padding: 12, margin: 0, lineHeight: 1.6 }}>{r.message_locataire}</p>
+              </div>
+            )}
+
+            <button className="btn-outline-green" style={{ width: '100%' }} onClick={onClose}>{t('ongletLocataires.fiche.fermer')}</button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -3439,33 +3559,33 @@ function BoutonNotifPush() {
   var [loading, setLoading]   = useState(true);
 
   useEffect(function() {
-    import('../services/pushService').then(function(m) {
-      m.estAbonne().then(function(val) {
-        setAbonne(val);
-        setLoading(false);
-      });
+    estAbonne().then(function(val) {
+      setAbonne(val);
+      setLoading(false);
     });
   }, []);
 
   function toggleNotifs() {
     setLoading(true);
-    import('../services/pushService').then(function(m) {
-      if (abonne) {
-        m.desactiverNotifications().then(function() {
-          setAbonne(false);
-          toast.success(t('pushToggle.toastDesactivees'));
-        }).catch(function() {
-          toast.error(t('boutonNotifPush.toastErreurDesactivation'));
-        }).finally(function() { setLoading(false); });
-      } else {
-        m.activerNotificationsPush().then(function() {
+    if (abonne) {
+      desactiverNotifications().then(function() {
+        setAbonne(false);
+        toast.success(t('pushToggle.toastDesactivees'));
+      }).catch(function() {
+        toast.error(t('boutonNotifPush.toastErreurDesactivation'));
+      }).finally(function() { setLoading(false); });
+    } else {
+      activerNotificationsPush().then(function(ok) {
+        if (ok) {
           setAbonne(true);
           toast.success(t('boutonNotifPush.toastActivees'));
-        }).catch(function() {
+        } else {
           toast.error(t('boutonNotifPush.toastAutorisez'));
-        }).finally(function() { setLoading(false); });
-      }
-    });
+        }
+      }).catch(function() {
+        toast.error(t('boutonNotifPush.toastAutorisez'));
+      }).finally(function() { setLoading(false); });
+    }
   }
 
   return (
@@ -4164,13 +4284,14 @@ function SupprimerCompte({ onRetour, user }) {
 function OngletParametres(props) {
   var t = useTranslation('dashboard').t;
   var user = props.user;
+  var tour = props.tour;
   var auth = useAuth();
   var navigate = useNavigate();
   var [section, setSection] = useState(null);
   var [formProfil, setFormProfil] = useState({ prenom: user ? user.prenom : '', nom: user ? user.nom : '', email: user ? user.email : '', telephone: user ? user.telephone || '' : '' });
   var [formMdp, setFormMdp] = useState({ ancien: '', nouveau: '', confirmer: '' });
   var [notifs, setNotifs] = useState({ email: true, sms: true, loyers: true, bails: true, pannes: false });
-  var [langue, setLangue] = useState('fr');
+  var [langue, setLangue] = useState(i18n.language === 'en' ? 'en' : 'fr');
   var [saving, setSaving] = useState(false);
   var [scoreData, setScoreData] = useState(null);
   var [monAbonnement, setMonAbonnement] = useState(null);
@@ -4236,7 +4357,6 @@ function OngletParametres(props) {
     { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.notifs.titre'), desc: t('ongletParametres.menu.notifs.desc') },
     { id: 'langue', icon: <Globe size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.langue.titre'), desc: t('ongletParametres.menu.langue.desc') },
     { id: 'score', icon: <Star size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.score.titre'), desc: t('ongletParametres.menu.score.desc') },
-    { id: 'notifs', icon: <Bell size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.notifs.titre'), desc: t('ongletParametres.menu.notifs.desc') },
     { id: 'supprimer', icon: <Trash2 size={22} strokeWidth={1.5} color="#E53935" />, titre: t('ongletParametres.menu.supprimer.titre'), desc: t('ongletParametres.menu.supprimer.desc'), danger: true },
     { id: 'tour', icon: <HelpCircle size={22} strokeWidth={1.5} />, titre: t('ongletParametres.menu.tour.titre'), desc: t('ongletParametres.menu.tour.desc') },
   ];
@@ -4468,7 +4588,11 @@ function OngletParametres(props) {
             );
           })}
           <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-            <button className="btn-green" onClick={function() { toast.success(t('ongletParametres.toastLangueSauvegardee')); setSection(null); }}>{t('ongletLocataires.form.sauvegarder')}</button>
+            <button className="btn-green" onClick={function() {
+              changerLangue(langue === 'fr-fr' ? 'fr' : langue);
+              toast.success(t('ongletParametres.toastLangueSauvegardee'));
+              setSection(null);
+            }}>{t('ongletLocataires.form.sauvegarder')}</button>
             <button className="btn-outline-green" onClick={function() { setSection(null); }}>{t('ongletLocataires.form.annuler')}</button>
           </div>
         </div>
@@ -4870,7 +4994,7 @@ function chargerDonnees() {
     if (onglet === '/dashboard/alertes') return <OngletAlertes />;
     if (onglet === '/dashboard/messages') return <OngletMessages />;
     if (onglet === '/dashboard/reclamations') return <OngletReclamations />;
-    if (onglet === '/dashboard/parametres') return <OngletParametres user={user} />;
+    if (onglet === '/dashboard/parametres') return <OngletParametres user={user} tour={tour} />;
     if (onglet === '/dashboard/mes-locations') return <OngletMesLocations stats={stats} setOnglet={setOnglet} />;
     if (onglet === '/dashboard/rapports') return <OngletRapports user={user} />;
     if (onglet === '/dashboard/historique') return <OngletHistorique user={user} />;
@@ -4900,6 +5024,15 @@ function chargerDonnees() {
 {showOnboarding && (
   <Onboarding onTermine={function() { setShowOnboarding(false); }} />
 )}
+<TourTooltip
+  actif={tour.actif}
+  etapeActuelle={tour.etapeActuelle}
+  etape={tour.etape}
+  totalEtapes={tour.totalEtapes}
+  suivant={tour.suivant}
+  passer={tour.passer}
+  terminer={tour.terminer}
+/>
 {/* Bannière installation PWA */}
 {showInstall && (
   <div style={{ position: 'fixed', bottom: isMobile ? 70 : 20, left: '50%', transform: 'translateX(-50%)', background: '#1B2B22', color: '#fff', borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.25)', zIndex: 9999, maxWidth: 380, width: 'calc(100% - 32px)' }}>
@@ -4945,7 +5078,7 @@ function chargerDonnees() {
 
           {/* ── CENTRE : onglets navigation ── */}
           {!isMobile && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 2, background: '#F5F6FA', borderRadius: 12, padding: '3px' }}>
+            <div data-tour="header-tabs" style={{ display: 'flex', alignItems: 'center', gap: 2, background: '#F5F6FA', borderRadius: 12, padding: '3px' }}>
               {(user && (user.role === 'proprietaire' || user.role === 'les_deux') ? [
                 { path: '/dashboard',              label: t('dashboardMain.nav.accueil')      },
                 { path: '/dashboard/biens',        label: t('sidebar.nav.mesBiens')    },
@@ -4975,7 +5108,7 @@ function chargerDonnees() {
 
           {/* ── DROITE : recherche, notifs, avatar ── */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-            {!isMobile && <RechercheGlobale stats={stats} onNavigate={setOnglet} />}
+            {!isMobile && <div data-tour="recherche"><RechercheGlobale stats={stats} onNavigate={setOnglet} /></div>}
 
             {!enLigne && (
               <div style={{ background: '#E53935', color: '#fff', fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20 }}>
@@ -4984,7 +5117,7 @@ function chargerDonnees() {
             )}
 
             {/* Cloche */}
-            <button className="dash-notif-btn" type="button"
+            <button className="dash-notif-btn" type="button" data-tour="notifications"
               onClick={function() {
                 var nouvelEtat = !showNotif;
                 setShowNotif(nouvelEtat);
