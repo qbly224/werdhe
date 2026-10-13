@@ -6,6 +6,7 @@ import {
   Warehouse, Building, ShoppingBag, MapPin, Bath, Maximize2, Sparkles,
   Wrench, Image as ImageIcon, CheckCircle2, Lock
 } from 'lucide-react';
+import { urlPremierePhoto } from '../utils/photos';
 import './CarteLogement.css';
 
 // Mapping catégorie -> icône lucide-react (vocabulaire canonique réutilisé
@@ -46,7 +47,7 @@ const CarteLogement = ({ logement }) => {
         ? JSON.parse(logement.photos)
         : logement.photos)
     : [];
-  const photoUrl = photos.length > 0 ? photos[0].url : null;
+  const photoUrl = urlPremierePhoto(photos);
 
   return (
     <div className="carte-logement">
