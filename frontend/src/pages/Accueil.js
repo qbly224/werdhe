@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
@@ -12,6 +12,20 @@ export default function Accueil() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [essaiEnCours, setEssaiEnCours] = useState(null);
+  const [stats, setStats] = useState({ proprietaires: 0, locataires: 0, logements: 0, villes: 0 });
+
+  useEffect(function() {
+    api.get('/stats/public')
+      .then(function(res) {
+        setStats({
+          proprietaires: res.data.proprietaires_actifs || 0,
+          locataires:    res.data.locataires_actifs || 0,
+          logements:     res.data.logements_disponibles || 0,
+          villes:        res.data.villes_couvertes || 0,
+        });
+      })
+      .catch(function() { /* stats indisponibles : restent à 0 */ });
+  }, []);
 
   function choisirPlan(plan) {
     if (!user) {
@@ -119,19 +133,19 @@ export default function Accueil() {
 
       <div className="accueil-stats">
         <div className="accueil-stat">
-          <div className="accueil-stat-val accueil-green">500+</div>
+          <div className="accueil-stat-val accueil-green">{stats.proprietaires.toLocaleString('fr-FR')}+</div>
           <div className="accueil-stat-lbl">{t('accueil.stats.proprietaires')}</div>
         </div>
         <div className="accueil-stat">
-          <div className="accueil-stat-val accueil-blue">3 200+</div>
+          <div className="accueil-stat-val accueil-blue">{stats.locataires.toLocaleString('fr-FR')}+</div>
           <div className="accueil-stat-lbl">{t('accueil.stats.locatairesActifs')}</div>
         </div>
         <div className="accueil-stat">
-          <div className="accueil-stat-val accueil-green">2 400+</div>
+          <div className="accueil-stat-val accueil-green">{stats.logements.toLocaleString('fr-FR')}+</div>
           <div className="accueil-stat-lbl">{t('accueil.stats.logementsPublies')}</div>
         </div>
         <div className="accueil-stat">
-          <div className="accueil-stat-val accueil-green">8</div>
+          <div className="accueil-stat-val accueil-green">{stats.villes}</div>
           <div className="accueil-stat-lbl">{t('accueil.stats.regionsCouvertes')}</div>
         </div>
       </div>

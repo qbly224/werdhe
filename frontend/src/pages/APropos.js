@@ -1,6 +1,8 @@
 /* eslint-disable */
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import SEO from '../components/SEO';
+import api from '../services/api';
 import {
   ChevronLeft, Home, Users, Shield, TrendingUp,
   MapPin, Heart, Star, ArrowRight, CheckCircle
@@ -37,11 +39,11 @@ function getValeurs(t) {
   ];
 }
 
-function getStats(t) {
+function getStats(t, stats) {
   return [
-    { val: '1 200+', label: t('apropos.stats.logementsPublies') },
-    { val: '4 800+', label: t('apropos.stats.utilisateursActifs') },
-    { val: '8',      label: t('apropos.stats.villesCouvertes')   },
+    { val: stats.logements.toLocaleString('fr-FR') + '+', label: t('apropos.stats.logementsPublies') },
+    { val: stats.utilisateurs.toLocaleString('fr-FR') + '+', label: t('apropos.stats.utilisateursActifs') },
+    { val: String(stats.villes), label: t('apropos.stats.villesCouvertes')   },
     { val: '2026',   label: t('apropos.stats.anneeCreation')  },
   ];
 }
@@ -70,10 +72,23 @@ function getEtapes(t) {
 export default function APropos() {
   var t = useTranslation('public').t;
   var VALEURS = getValeurs(t);
-  var STATS = getStats(t);
+  var [stats, setStats] = useState({ logements: 0, utilisateurs: 0, villes: 0 });
+  var STATS = getStats(t, stats);
   var EQUIPE = getEquipe(t);
   var ETAPES = getEtapes(t);
   var navigate = useNavigate();
+
+  useEffect(function() {
+    api.get('/stats/public')
+      .then(function(res) {
+        setStats({
+          logements:    res.data.logements_disponibles || 0,
+          utilisateurs: res.data.utilisateurs_actifs || 0,
+          villes:       res.data.villes_couvertes || 0,
+        });
+      })
+      .catch(function() { /* stats indisponibles : restent à 0 */ });
+  }, []);
 
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
