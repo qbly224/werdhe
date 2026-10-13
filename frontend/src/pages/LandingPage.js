@@ -299,20 +299,32 @@ useEffect(function() {
 }, []);
 
   useEffect(function() {
-    var start = Date.now();
-    var duration = 2000;
-    var targets = { logements: 1200, utilisateurs: 4800 };
-    var raf = requestAnimationFrame(function step() {
-      var elapsed = Date.now() - start;
-      var pct     = Math.min(elapsed / duration, 1);
-      var ease    = 1 - Math.pow(1 - pct, 3); // easeOutCubic
-      setCompteurs({
-        logements:    Math.round(targets.logements * ease),
-        utilisateurs: Math.round(targets.utilisateurs * ease),
-      });
-      if (pct < 1) requestAnimationFrame(step);
-    });
-    return function() { cancelAnimationFrame(raf); };
+    var annule = false;
+    var raf = null;
+
+    api.get('/stats/public')
+      .then(function(res) {
+        if (annule) return;
+        var targets = {
+          logements:    res.data.logements_disponibles || 0,
+          utilisateurs: res.data.utilisateurs_actifs || 0,
+        };
+        var start = Date.now();
+        var duration = 2000;
+        raf = requestAnimationFrame(function step() {
+          var elapsed = Date.now() - start;
+          var pct     = Math.min(elapsed / duration, 1);
+          var ease    = 1 - Math.pow(1 - pct, 3); // easeOutCubic
+          setCompteurs({
+            logements:    Math.round(targets.logements * ease),
+            utilisateurs: Math.round(targets.utilisateurs * ease),
+          });
+          if (pct < 1) raf = requestAnimationFrame(step);
+        });
+      })
+      .catch(function() { /* stats indisponibles : compteurs restent à 0 */ });
+
+    return function() { annule = true; if (raf) cancelAnimationFrame(raf); };
   }, []);
   useEffect(function() {
     var handler = function(e) {
