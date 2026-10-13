@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { urlPremierePhoto } from '../utils/photos';
 
 // Icônes inline (lucide-react) pour les popups Leaflet, qui attendent du HTML brut
 var ICONES_SVG = {
@@ -135,8 +136,9 @@ export default function MapView({ logements, onSelectLogement }) {
         var marker = L.marker([lat, lng], { icon: icon });
 
         // Popup
-        var photoHtml = l.photos && l.photos.length > 0
-          ? `<img src="${l.photos[0]}" style="width:100%;height:90px;object-fit:cover;border-radius:8px;margin-bottom:8px;" />`
+        var photoUrl = urlPremierePhoto(l.photos);
+        var photoHtml = photoUrl
+          ? `<img src="${photoUrl}" style="width:100%;height:90px;object-fit:cover;border-radius:8px;margin-bottom:8px;" />`
           : `<div style="height:90px;background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;color:#1B6B3A;">${svgInline('maison', 32)}</div>`;
 
         marker.bindPopup(`

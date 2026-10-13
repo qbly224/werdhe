@@ -4,6 +4,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Star, Home, MapPin, BedDouble, Maximize2, Award, ChevronLeft, Calendar, Building2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import api from '../services/api';
+import { urlPremierePhoto } from '../utils/photos';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
 
@@ -160,6 +161,7 @@ export default function ProfilPublic() {
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 14 }}>
               {data.logements.map(function(l) {
+                var photoUrl = urlPremierePhoto(l.photos);
                 return (
                   <Link key={l.id} to={'/logements/' + l.id}
                     style={{ textDecoration: 'none', display: 'block', background: '#fff', borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', transition: 'all 0.2s' }}
@@ -168,8 +170,8 @@ export default function ProfilPublic() {
 
                     {/* Photo */}
                     <div style={{ height: 150, background: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
-                      {l.photos && l.photos.length > 0 ? (
-                        <img src={l.photos[0]} alt={l.titre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      {photoUrl ? (
+                        <img src={photoUrl} alt={l.titre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
                         <Home size={40} strokeWidth={1} color="#A5D6A7" />
                       )}

@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { urlPremierePhoto } from '../utils/photos';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
@@ -223,7 +224,7 @@ function OngletOverviewLocataire(props) {
       {/* Location active */}
       {locationsActives.length > 0 ? (
         locationsActives.map(function(r) {
-          var photo = r.photos && r.photos.length > 0 ? r.photos[0] : null;
+          var photo = urlPremierePhoto(r.photos);
           var dateDebut = r.date_debut ? new Date(r.date_debut) : null;
           var moisEcoules = dateDebut ? Math.floor((new Date() - dateDebut) / (1000 * 60 * 60 * 24 * 30)) : 0;
           var duree = r.duree_mois || 12;
@@ -480,7 +481,7 @@ function OngletOverview(props) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {overview.biens.map(function(b, i) {
             var estLoue = b.statut === 'loue';
-            var photo   = b.photos && b.photos.length > 0 ? b.photos[0] : null;
+            var photo   = urlPremierePhoto(b.photos);
             return (
               <div key={b.id} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '10px 12px', borderRadius: 12, background: '#F7F8F7' }}>
                 <div style={{ width: 46, height: 46, borderRadius: 10, overflow: 'hidden', background: '#E8F5E9', flexShrink: 0 }}>
@@ -492,7 +493,7 @@ function OngletOverview(props) {
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{b.titre}</div>
                   <div style={{ fontSize: 11, color: '#888', marginTop: 1 }}>
-                    {GNF(b.prix_mensuel)} GNF/mois · {b.ville}
+                    {GNF(b.prix_mensuel)}/mois · {b.ville}
                   </div>
                   {estLoue && b.loc_prenom && (
                     <div style={{ fontSize: 11, color: '#1B6B3A', marginTop: 1 }}>
@@ -537,7 +538,7 @@ function OngletOverview(props) {
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>{r.loc_prenom} {r.loc_nom}</div>
-                    <div style={{ fontSize: 11, color: '#888' }}>{r.logement_titre} · {GNF(r.prix_mensuel)} GNF/mois</div>
+                    <div style={{ fontSize: 11, color: '#888' }}>{r.logement_titre} · {GNF(r.prix_mensuel)}/mois</div>
                   </div>
                   <div style={{ textAlign: 'right', flexShrink: 0 }}>
                     <span style={{ background: cfg.bg, color: cfg.color, borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, display: 'block', marginBottom: 4 }}>
@@ -3718,7 +3719,7 @@ function OngletHistorique(props) {
             </div>
           )}
           {data.locations.map(function(r) {
-            var photo = r.photos && r.photos.length > 0 ? r.photos[0] : null;
+            var photo = urlPremierePhoto(r.photos);
             var statuts = {
               confirmee:  { label: t('ongletHistorique.locations.statuts.active'),      color: '#1B6B3A', bg: '#E8F5E9' },
               terminee:   { label: t('ongletHistorique.locations.statuts.terminee'),    color: '#888',    bg: '#F5F5F5' },
@@ -4031,7 +4032,7 @@ function OngletRapports(props) {
               <div key={b.id} style={{ marginBottom: 12 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, fontSize: 12 }}>
                   <span style={{ color: '#555', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' }}>{b.titre}</span>
-                  <span style={{ fontWeight: 700, color: '#1B6B3A', flexShrink: 0 }}>{GNF(b.total_encaisse)} GNF</span>
+                  <span style={{ fontWeight: 700, color: '#1B6B3A', flexShrink: 0 }}>{GNF(b.total_encaisse)}</span>
                 </div>
                 <div style={{ background: '#F0F0F0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
                   <div style={{ background: 'linear-gradient(90deg, #1B6B3A, #34A853)', width: pct + '%', height: '100%', borderRadius: 4, transition: 'width .5s' }} />
@@ -4081,7 +4082,7 @@ function OngletRapports(props) {
             {data.meilleur_mois && (
               <div style={{ marginTop: 10, fontSize: 12, color: '#888', display: 'flex', alignItems: 'center', gap: 6 }}>
                 <Award size={14} strokeWidth={1.5} color="#F5A623" />
-                <span>{t('ongletRapports.meilleurMoisAvant')}<strong style={{ color: '#1B6B3A' }}>{data.meilleur_mois.mois}</strong> - {GNF(data.meilleur_mois.total)} GNF</span>
+                <span>{t('ongletRapports.meilleurMoisAvant')}<strong style={{ color: '#1B6B3A' }}>{data.meilleur_mois.mois}</strong> - {GNF(data.meilleur_mois.total)}</span>
               </div>
             )}
           </div>
@@ -4145,7 +4146,7 @@ function OngletRapports(props) {
                   </div>
                 </div>
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: cfg.color }}>{GNF(p.montant)} GNF</div>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: cfg.color }}>{GNF(p.montant)}</div>
                   <span style={{ background: cfg.bg, color: cfg.color, borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{cfg.label}</span>
                 </div>
               </div>
