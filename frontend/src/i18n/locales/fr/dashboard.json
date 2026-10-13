@@ -199,6 +199,18 @@
       "titre": "Aucun locataire manuel",
       "description": "Ajoutez des locataires sans compte Werdhe"
     },
+    "fiche": {
+      "titre": "Fiche locataire",
+      "dateDebut": "Date d'entrée",
+      "duree": "Durée",
+      "statut": "Statut",
+      "bailSigne": "Bail signé le {{date}}",
+      "bailNonSigne": "Bail non signé",
+      "documents": "Documents du dossier",
+      "message": "Message du locataire",
+      "fermer": "Fermer",
+      "toastErreurChargement": "Impossible de charger la fiche du locataire"
+    },
     "form": {
       "modifierTitre": "Modifier le locataire",
       "nouveauTitre": "Nouveau locataire",

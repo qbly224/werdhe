@@ -199,6 +199,18 @@
       "titre": "No manual tenant",
       "description": "Add tenants without a Werdhe account"
     },
+    "fiche": {
+      "titre": "Tenant profile",
+      "dateDebut": "Move-in date",
+      "duree": "Duration",
+      "statut": "Status",
+      "bailSigne": "Lease signed on {{date}}",
+      "bailNonSigne": "Lease not signed",
+      "documents": "Application documents",
+      "message": "Message from tenant",
+      "fermer": "Close",
+      "toastErreurChargement": "Unable to load the tenant profile"
+    },
     "form": {
       "modifierTitre": "Edit tenant",
       "nouveauTitre": "New tenant",

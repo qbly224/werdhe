@@ -45,7 +45,7 @@ export default function Sidebar({ ongletActif, setOnglet, open, alertes }) {
   var initiales = user ? ((user.prenom || '').charAt(0) + (user.nom || '').charAt(0)).toUpperCase() : 'U';
 
   return (
-        <div className={'sidebar-desktop' + (open ? ' open' : '')} style={{
+        <div className={'sidebar-desktop' + (open ? ' open' : '')} data-tour="sidebar" style={{
     }}>
 
       {/* Logo */}
