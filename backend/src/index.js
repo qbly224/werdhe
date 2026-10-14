@@ -108,13 +108,19 @@ app.use(cors({
     var allowed = [
       'https://werdhe.com',
       'https://www.werdhe.com',
+      'https://werdhe.vercel.app',
       'http://localhost:3000',
       'http://localhost:3001'
     ];
     if (!origin || allowed.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Origine non autorisée par CORS'));
+      console.warn('[CORS] Origine refusée :', origin);
+      // Ne jamais passer d'Error au callback : cors() la ferait remonter
+      // comme une exception non gérée (500 au lieu d'un simple refus),
+      // ce qui provoque un échec de preflight OPTIONS illisible côté
+      // client au lieu d'un refus CORS propre.
+      callback(null, false);
     }
   },
   methods:      ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
