@@ -4299,6 +4299,7 @@ function OngletParametres(props) {
   var [essaiEnCours, setEssaiEnCours] = useState(null);
   var [cycleChoisi, setCycleChoisi] = useState('mensuel');
   var [showPaiementAbo, setShowPaiementAbo] = useState(null);
+  var [factures, setFactures] = useState([]);
 
   var PRIX_ABONNEMENT = { pro: 120000, agence: 300000 };
   var CYCLES_ABONNEMENT = {
@@ -4310,6 +4311,9 @@ function OngletParametres(props) {
   function chargerAbonnement() {
     api.get('/abonnements/mon-plan')
       .then(function(res) { setMonAbonnement(res.data); })
+      .catch(console.error);
+    api.get('/abonnements/factures')
+      .then(function(res) { setFactures(res.data.factures || []); })
       .catch(console.error);
   }
 
@@ -4416,6 +4420,12 @@ function OngletParametres(props) {
     </div>
   )}
 
+  {monAbonnement && monAbonnement.abonnement && monAbonnement.abonnement.date_fin && (
+    <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>
+      {t('ongletParametres.dateFin')} : {new Date(monAbonnement.abonnement.date_fin).toLocaleDateString('fr-FR')}
+    </div>
+  )}
+
   {user && user.role !== 'locataire' && monAbonnement && monAbonnement.plan === 'gratuit' && (
     <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
       <button onClick={function() { demarrerEssai('pro'); }} disabled={essaiEnCours === 'pro'}
@@ -4444,9 +4454,30 @@ function OngletParametres(props) {
         })}
       </div>
       <button onClick={function() { setShowPaiementAbo(monAbonnement.plan); }}
-        style={{ width: '100%', background: '#1B2B22', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-        <Smartphone size={14} strokeWidth={1.75} /> {t('ongletParametres.payerMobileMoney')}
+        style={{ width: '100%', background: monAbonnement.jours_restants !== null && monAbonnement.jours_restants <= 7 ? '#E65100' : '#1B2B22', color: '#fff', border: 'none', borderRadius: 10, padding: '10px', fontSize: 12, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+        <Smartphone size={14} strokeWidth={1.75} />
+        {monAbonnement.jours_restants !== null && monAbonnement.jours_restants <= 7 ? t('ongletParametres.renouveler') : t('ongletParametres.payerMobileMoney')}
       </button>
+    </div>
+  )}
+
+  {factures.length > 0 && (
+    <div style={{ marginTop: 12, paddingTop: 12, borderTop: '0.5px solid #F0F0F0' }}>
+      <div style={{ fontSize: 11, color: '#888', fontWeight: 600, marginBottom: 6 }}>{t('ongletParametres.historiqueFactures')}</div>
+      {factures.map(function(f) {
+        var couleurStatut = f.statut === 'payee' ? '#1B6B3A' : f.statut === 'echec' ? '#B71C1C' : '#888';
+        return (
+          <div key={f.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, padding: '6px 0', borderBottom: '0.5px solid #F5F5F5' }}>
+            <div>
+              <div style={{ color: '#1B2B22', fontWeight: 600, textTransform: 'capitalize' }}>{f.plan} · {new Date(f.created_at).toLocaleDateString('fr-FR')}</div>
+              <div style={{ color: '#aaa', fontSize: 11 }}>{GNF(f.montant)}</div>
+            </div>
+            <span style={{ color: couleurStatut, fontWeight: 700, fontSize: 11 }}>
+              {t('ongletParametres.factureStatut.' + f.statut)}
+            </span>
+          </div>
+        );
+      })}
     </div>
   )}
 </div>
@@ -5062,7 +5093,8 @@ function chargerDonnees() {
 <Sidebar
     ongletActif={onglet}
     setOnglet={function(o) { setOnglet(o); if (isMobile) setSidebarOpen(false); }}
-    open={sidebarOpen} />
+    open={sidebarOpen}
+    monPlan={monPlan} />
                   <div className={'dashboard-main' + (sidebarOpen && !isMobile ? ' sidebar-open' : '')}>
         <div className="dash-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', height: 62, background: '#fff', borderBottom: '1px solid #EBEBEB', position: 'sticky', top: 0, zIndex: 100 }}>
 
@@ -5156,6 +5188,44 @@ function chargerDonnees() {
           </div>
         )}
         <div className="dash-scroll">
+          {user && (user.role === 'proprietaire' || user.role === 'les_deux') && monPlan && monPlan.abonnement && (
+            <>
+              {monPlan.abonnement.statut === 'impaye' && (
+                <div style={{ background: '#FFEBEE', border: '1px solid #FFCDD2', borderRadius: 12, padding: '12px 16px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                  <AlertTriangle size={18} strokeWidth={1.75} color="#B71C1C" style={{ flexShrink: 0 }} />
+                  <span style={{ fontSize: 13, color: '#B71C1C', fontWeight: 600, flex: 1 }}>{t('ongletParametres.abonnementImpaye')}</span>
+                  <button onClick={function() { setOnglet('/dashboard/parametres'); }}
+                    style={{ background: '#B71C1C', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>
+                    {t('ongletParametres.bannerRenouveler')}
+                  </button>
+                </div>
+              )}
+              {monPlan.abonnement.statut !== 'impaye' && monPlan.jours_restants !== null && monPlan.jours_restants <= 7 && (
+                <div style={{ background: monPlan.jours_restants <= 0 ? '#FFEBEE' : '#FFF8E1', border: '1px solid ' + (monPlan.jours_restants <= 0 ? '#FFCDD2' : '#FFE082'), borderRadius: 12, padding: '12px 16px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                  <AlertTriangle size={18} strokeWidth={1.75} color={monPlan.jours_restants <= 0 ? '#B71C1C' : '#E65100'} style={{ flexShrink: 0 }} />
+                  <span style={{ fontSize: 13, color: monPlan.jours_restants <= 0 ? '#B71C1C' : '#E65100', fontWeight: 600, flex: 1 }}>
+                    {monPlan.jours_restants > 0
+                      ? t('ongletParametres.joursRestants', { type: monPlan.abonnement.statut === 'essai' ? t('ongletParametres.essaiGratuit') : t('ongletParametres.abonnement'), n: monPlan.jours_restants })
+                      : t('ongletParametres.abonnementExpire')}
+                  </span>
+                  <button onClick={function() { setOnglet('/dashboard/parametres'); }}
+                    style={{ background: monPlan.jours_restants <= 0 ? '#B71C1C' : '#E65100', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>
+                    {t('ongletParametres.bannerRenouveler')}
+                  </button>
+                </div>
+              )}
+              {monPlan.biens_masques > 0 && (
+                <div style={{ background: '#F5F5F5', border: '1px solid #E0E0E0', borderRadius: 12, padding: '12px 16px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                  <Home size={18} strokeWidth={1.75} color="#888" style={{ flexShrink: 0 }} />
+                  <span style={{ fontSize: 13, color: '#555', flex: 1 }}>{t('ongletParametres.biensMasques', { n: monPlan.biens_masques })}</span>
+                  <button onClick={function() { setOnglet('/dashboard/parametres'); }}
+                    style={{ background: '#1B2B22', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>
+                    {t('ongletParametres.bannerRenouveler')}
+                  </button>
+                </div>
+              )}
+            </>
+          )}
           {renderOnglet}
         </div>
         {/* Bouton + flottant mobile (proprio) */}  

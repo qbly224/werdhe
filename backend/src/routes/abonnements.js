@@ -4,6 +4,27 @@ const db      = require('../database');
 const verifierToken = require('../middleware/auth');
 const { getPlan, FONCTIONNALITES } = require('../middleware/verifierPlan');
 
+// Remettre en ligne les biens masqués automatiquement lors d'une précédente
+// expiration, dans la limite autorisée par le nouveau plan.
+async function remettreEnLigneBiens(userId, plan) {
+  try {
+    var limite = FONCTIONNALITES[plan] ? FONCTIONNALITES[plan].max_biens : 0;
+    if (!limite) return;
+    await db.query(
+      `UPDATE logements SET statut = 'disponible', masque_limite_plan = FALSE
+       WHERE id IN (
+         SELECT id FROM logements
+         WHERE proprietaire_id = $1 AND masque_limite_plan = TRUE
+         ORDER BY created_at DESC
+         LIMIT $2
+       )`,
+      [userId, limite === Infinity ? 100000 : limite]
+    );
+  } catch (err) {
+    console.warn('[Abonnement] Remise en ligne biens:', err.message);
+  }
+}
+
 // Prix de base (GNF / mois) et cycles de facturation disponibles
 var PRIX_MENSUEL = { pro: 120000, agence: 300000 };
 var CYCLES = {
@@ -88,10 +109,16 @@ router.get('/mon-plan', verifierToken, async (req, res) => {
       joursRestants = Math.ceil((new Date(abo.date_fin) - new Date()) / (1000 * 60 * 60 * 24));
     }
 
+    var biensMasques = await db.query(
+      'SELECT COUNT(*) FROM logements WHERE proprietaire_id = $1 AND masque_limite_plan = TRUE',
+      [req.user.id]
+    );
+
     res.json({
       plan:            plan,
       droits:          droits,
       nb_biens:        parseInt(nbBiens.rows[0].count),
+      biens_masques:   parseInt(biensMasques.rows[0].count),
       abonnement:      abo,
       jours_restants:  joursRestants,
       prix:            PRIX_MENSUEL,
@@ -99,6 +126,25 @@ router.get('/mon-plan', verifierToken, async (req, res) => {
     });
   } catch (err) {
     console.error('[GET /mon-plan]', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+});
+
+// ─── HISTORIQUE DES FACTURES ──────────────────────────────────────
+router.get('/factures', verifierToken, async (req, res) => {
+  try {
+    var result = await db.query(
+      `SELECT id, plan, montant, cycle, periode_debut, periode_fin, statut,
+              operateur, reference_externe, created_at
+       FROM factures_abonnements
+       WHERE user_id = $1
+       ORDER BY created_at DESC
+       LIMIT 50`,
+      [req.user.id]
+    );
+    res.json({ factures: result.rows });
+  } catch (err) {
+    console.error('[GET /factures]', err.message);
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 });
@@ -131,7 +177,8 @@ router.post('/essai', verifierToken, async (req, res) => {
     var maj = await db.query(
       `UPDATE abonnements
        SET plan = $1, statut = 'essai', date_fin = $2, essai_termine = TRUE,
-           rappel_j3_envoye = FALSE, rappel_j5_envoye = FALSE
+           rappel_j3_envoye = FALSE, rappel_j5_envoye = FALSE,
+           rappel_j7_avant_envoye = FALSE, rappel_j3_avant_envoye = FALSE, rappel_j1_avant_envoye = FALSE
        WHERE user_id = $3`,
       [plan, dateFin, req.user.id]
     );
@@ -145,6 +192,7 @@ router.post('/essai', verifierToken, async (req, res) => {
     }
 
     await db.query('UPDATE users SET plan = $1, abonnement_bloque = FALSE WHERE id = $2', [plan, req.user.id]);
+    await remettreEnLigneBiens(req.user.id, plan);
 
     res.json({
       message:  'Essai ' + plan + ' démarré ! 30 jours gratuits.',
@@ -292,7 +340,8 @@ router.patch('/confirmer/:facture_id', verifierToken, async (req, res) => {
     var maj = await db.query(
       `UPDATE abonnements
        SET plan = $1, statut = 'actif', date_fin = $2, cycle = $3,
-           essai_termine = TRUE, rappel_j3_envoye = FALSE, rappel_j5_envoye = FALSE
+           essai_termine = TRUE, rappel_j3_envoye = FALSE, rappel_j5_envoye = FALSE,
+           rappel_j7_avant_envoye = FALSE, rappel_j3_avant_envoye = FALSE, rappel_j1_avant_envoye = FALSE
        WHERE user_id = $4`,
       [f.plan, f.periode_fin, f.cycle, req.user.id]
     );
@@ -306,6 +355,7 @@ router.patch('/confirmer/:facture_id', verifierToken, async (req, res) => {
     }
 
     await db.query('UPDATE users SET plan = $1, abonnement_bloque = FALSE WHERE id = $2', [f.plan, req.user.id]);
+    await remettreEnLigneBiens(req.user.id, f.plan);
 
     envoyerFactureParEmail(req.user.id, f.plan, f.montant, f.cycle, f.periode_debut, f.periode_fin).catch(console.warn);
 
@@ -342,7 +392,9 @@ router.post('/webhook/confirmer', async (req, res) => {
       );
       var maj = await db.query(
         `UPDATE abonnements SET plan = $1, statut = 'actif', date_fin = $2, cycle = $3,
-         essai_termine = TRUE WHERE user_id = $4`,
+         essai_termine = TRUE, rappel_j3_envoye = FALSE, rappel_j5_envoye = FALSE,
+         rappel_j7_avant_envoye = FALSE, rappel_j3_avant_envoye = FALSE, rappel_j1_avant_envoye = FALSE
+         WHERE user_id = $4`,
         [f.plan, f.periode_fin, f.cycle, f.user_id]
       );
       if (maj.rowCount === 0) {
@@ -356,6 +408,7 @@ router.post('/webhook/confirmer', async (req, res) => {
         'UPDATE users SET plan = $1, abonnement_bloque = FALSE WHERE id = $2',
         [f.plan, f.user_id]
       );
+      await remettreEnLigneBiens(f.user_id, f.plan);
       envoyerFactureParEmail(f.user_id, f.plan, f.montant, f.cycle, f.periode_debut, f.periode_fin).catch(console.warn);
     } else {
       await db.query(

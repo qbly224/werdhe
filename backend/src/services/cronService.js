@@ -2,6 +2,7 @@ const cron      = require('node-cron');
 const db        = require('../database');
 const { Resend } = require('resend');
 const emailService = require('./emailService');
+const { FONCTIONNALITES } = require('../middleware/verifierPlan');
 
 var resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -484,7 +485,7 @@ cron.schedule('30 8 * * *', async function() {
 
       await db.query(
         `INSERT INTO alertes (proprietaire_id, destinataire_id, type, titre, description, priorite)
-         VALUES ($1, $1, 'abonnement_impaye', $2, $3, 'haute')`,
+         VALUES ($1, $1, 'autre', $2, $3, 'haute')`,
         [r3.user_id, '⏰ Abonnement expiré depuis 3 jours', 'Plan ' + r3.plan + ' — réglez pour éviter le blocage']
       ).catch(console.warn);
     }
@@ -535,9 +536,27 @@ cron.schedule('30 8 * * *', async function() {
         [r5.user_id]
       );
 
+      // Masquer automatiquement les biens excédant la limite du plan gratuit
+      // (les plus récents restent visibles)
+      try {
+        var limiteGratuit = FONCTIONNALITES.gratuit.max_biens;
+        await db.query(
+          `UPDATE logements SET statut = 'suspendu', masque_limite_plan = TRUE
+           WHERE id IN (
+             SELECT id FROM logements
+             WHERE proprietaire_id = $1 AND statut != 'suspendu'
+             ORDER BY created_at DESC
+             OFFSET $2
+           )`,
+          [r5.user_id, limiteGratuit]
+        );
+      } catch (maskErr) {
+        console.warn('[CRON Abonnement J+5] Masquage biens:', maskErr.message);
+      }
+
       await db.query(
         `INSERT INTO alertes (proprietaire_id, destinataire_id, type, titre, description, priorite)
-         VALUES ($1, $1, 'abonnement_impaye', $2, $3, 'haute')`,
+         VALUES ($1, $1, 'autre', $2, $3, 'haute')`,
         [r5.user_id, '🔒 Accès bloqué — abonnement impayé', 'Plan ' + r5.plan + ' — contactez le support pour réactiver']
       ).catch(console.warn);
     }
@@ -545,6 +564,79 @@ cron.schedule('30 8 * * *', async function() {
     console.log('[CRON Abonnements] ' + rappelsJ3.rows.length + ' relance(s) J+3, ' + blocagesJ5.rows.length + ' blocage(s) J+5');
   } catch (err) {
     console.error('[CRON Abonnements] Erreur:', err.message);
+  }
+});
+
+// ════════════════════════════════════════════════════════
+// CRON 8 — Alertes avant expiration de l'abonnement : J-7, J-3, J-1
+// Tourne tous les jours à 8h15
+// ════════════════════════════════════════════════════════
+cron.schedule('15 8 * * *', async function() {
+  console.log('[CRON] Alertes expiration abonnement — ' + new Date().toLocaleDateString('fr-FR'));
+  try {
+    var paliers = [
+      { jours: 7, colonne: 'rappel_j7_avant_envoye', priorite: 'normale' },
+      { jours: 3, colonne: 'rappel_j3_avant_envoye', priorite: 'haute' },
+      { jours: 1, colonne: 'rappel_j1_avant_envoye', priorite: 'haute' },
+    ];
+
+    for (var palier of paliers) {
+      var result = await db.query(
+        `SELECT a.id, a.user_id, a.plan, a.date_fin, u.nom, u.prenom, u.email
+         FROM abonnements a
+         JOIN users u ON a.user_id = u.id
+         WHERE a.statut IN ('actif', 'essai')
+           AND a.date_fin::date = (CURRENT_DATE + INTERVAL '${palier.jours} days')::date
+           AND a.${palier.colonne} IS NOT TRUE`
+      );
+
+      for (var r of result.rows) {
+        var dateFin = new Date(r.date_fin).toLocaleDateString('fr-FR');
+        var libelleJours = palier.jours + ' jour' + (palier.jours > 1 ? 's' : '');
+
+        try {
+          await resend.emails.send({
+            from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
+            to:      r.email,
+            subject: 'Votre abonnement Werdhe expire dans ' + libelleJours,
+            html: `
+              <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
+                <div style="background:#F5A623;padding:20px;border-radius:10px 10px 0 0">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#fff;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#1B2B22;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#1B2B22;">Werdhe</td></tr></table>
+                </div>
+                <div style="background:#fff;padding:24px;border-radius:0 0 10px 10px;border:1px solid #e0e0e0">
+                  <p>Bonjour <b>${r.prenom}</b>,</p>
+                  <p>Votre abonnement <b>${r.plan}</b> expire le <b>${dateFin}</b> (dans <b>${libelleJours}</b>).</p>
+                  <p>Renouvelez dès maintenant pour ne pas perdre l'accès à vos fonctionnalités et éviter le masquage automatique de vos biens au-delà de la limite du plan gratuit.</p>
+                  <a href="https://werdhe.com/dashboard/parametres" style="display:inline-block;background:#1B6B3A;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700">Renouveler mon abonnement →</a>
+                </div>
+              </div>
+            `
+          });
+        } catch (emailErr) {
+          console.warn('[CRON Expiration J-' + palier.jours + '] Email non envoyé:', emailErr.message);
+        }
+
+        await db.query('UPDATE abonnements SET ' + palier.colonne + ' = TRUE WHERE id = $1', [r.id]);
+
+        await db.query(
+          `INSERT INTO alertes (proprietaire_id, destinataire_id, type, titre, description, priorite)
+           VALUES ($1, $1, 'autre', $2, $3, $4)`,
+          [
+            r.user_id,
+            'Abonnement expire dans ' + libelleJours,
+            'Plan ' + r.plan + ' — expire le ' + dateFin + '. Renouvelez pour ne pas perdre l\'accès.',
+            palier.priorite
+          ]
+        ).catch(console.warn);
+      }
+
+      if (result.rows.length > 0) {
+        console.log('[CRON Expiration J-' + palier.jours + ']', result.rows.length, 'alerte(s) envoyée(s)');
+      }
+    }
+  } catch (err) {
+    console.error('[CRON Expiration abonnement] Erreur:', err.message);
   }
 });
 

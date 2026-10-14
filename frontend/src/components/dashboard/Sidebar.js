@@ -2,7 +2,7 @@
 import {
   LayoutDashboard, Home, Users, CalendarCheck,
   CreditCard, FileText, Bell, MessageCircle,
-  Wrench, Send, Settings, TrendingUp, Clock, Zap, LogOut
+  Wrench, Send, Settings, TrendingUp, Clock, Zap, LogOut, Hourglass
 } from 'lucide-react';
 import Logo from '../Logo';
 import { useAuth } from '../../context/AuthContext';
@@ -36,7 +36,7 @@ var NAV_LOCATAIRE = [
   { path: '/dashboard/parametres',    icon: Settings,        labelKey: 'parametres'     },
 ];
 
-export default function Sidebar({ ongletActif, setOnglet, open, alertes }) {
+export default function Sidebar({ ongletActif, setOnglet, open, alertes, monPlan }) {
   var auth = useAuth();
   var user = auth.user;
   var t    = useTranslation('dashboard').t;
@@ -125,6 +125,16 @@ export default function Sidebar({ ongletActif, setOnglet, open, alertes }) {
           <Zap size={12} strokeWidth={2} color={user.plan === 'agence' ? '#7B1FA2' : '#1B6B3A'} />
           <span style={{ fontSize: 11, color: user.plan === 'agence' ? '#7B1FA2' : '#1B6B3A', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
             {t('sidebar.plan', { plan: user.plan })}
+          </span>
+        </div>
+      )}
+
+      {/* Badge essai : jours restants */}
+      {open && monPlan && monPlan.abonnement && monPlan.abonnement.statut === 'essai' && monPlan.jours_restants !== null && monPlan.jours_restants >= 0 && (
+        <div style={{ margin: '0 8px 8px', background: monPlan.jours_restants <= 5 ? '#FFF3E0' : '#F5F6FA', borderRadius: 10, padding: '7px 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Hourglass size={12} strokeWidth={2} color={monPlan.jours_restants <= 5 ? '#E65100' : '#888'} />
+          <span style={{ fontSize: 11, color: monPlan.jours_restants <= 5 ? '#E65100' : '#888', fontWeight: 700 }}>
+            {t('sidebar.essaiJoursRestants', { n: monPlan.jours_restants })}
           </span>
         </div>
       )}
