@@ -465,13 +465,13 @@ router.get('/signalements', verifierToken, verifierAdmin, async (req, res) => {
 
     var result = await db.query(
       `SELECT s.*,
-         u_sig.nom as signaleteur_nom, u_sig.prenom as signaleteur_prenom,
-         u_sig.email as signaleteur_email,
-         u_cib.nom as cible_nom, u_cib.prenom as cible_prenom,
-         u_cib.role as cible_role
+         u_loc.nom as loc_nom, u_loc.prenom as loc_prenom, u_loc.email as loc_email,
+         u_prop.nom as prop_nom, u_prop.prenom as prop_prenom, u_prop.email as prop_email,
+         l.titre as logement_titre, l.ville as logement_ville
        FROM signalements s
-       LEFT JOIN users u_sig ON s.signaleteur_id = u_sig.id
-       LEFT JOIN users u_cib ON s.cible_id = u_cib.id
+       LEFT JOIN users u_loc  ON s.locataire_id    = u_loc.id
+       LEFT JOIN users u_prop ON s.proprietaire_id = u_prop.id
+       LEFT JOIN logements l  ON s.logement_id     = l.id
        WHERE ${conditions}
        ORDER BY s.created_at DESC`,
       params
@@ -483,27 +483,24 @@ router.get('/signalements', verifierToken, verifierAdmin, async (req, res) => {
   }
 });
 
-// Traiter un signalement
+// Traiter un signalement (panne / réclamation locataire)
 router.patch('/signalements/:id/traiter', verifierToken, verifierAdmin, async (req, res) => {
   try {
-    var { action, note } = req.body;
-    // action: 'fermer' | 'suspendre_cible' | 'supprimer_annonce'
+    var { statut, suspendre_proprietaire } = req.body;
+    // statut: 'en_cours' | 'resolu'
     var sig = await db.query('SELECT * FROM signalements WHERE id = $1', [req.params.id]);
     if (sig.rows.length === 0) return res.status(404).json({ erreur: 'Signalement non trouvé' });
 
     await db.query(
-      'UPDATE signalements SET statut = $1, note_admin = $2, traite_at = NOW() WHERE id = $3',
-      ['ferme', note || 'Traité par l\'admin', req.params.id]
+      'UPDATE signalements SET statut = $1 WHERE id = $2',
+      [statut || 'resolu', req.params.id]
     );
 
-    if (action === 'suspendre_cible' && sig.rows[0].cible_id) {
-      await db.query('UPDATE users SET suspendu = TRUE WHERE id = $1', [sig.rows[0].cible_id]);
-    }
-    if (action === 'supprimer_annonce' && sig.rows[0].logement_id) {
-      await db.query('DELETE FROM logements WHERE id = $1', [sig.rows[0].logement_id]);
+    if (suspendre_proprietaire && sig.rows[0].proprietaire_id) {
+      await db.query('UPDATE users SET suspendu = TRUE WHERE id = $1', [sig.rows[0].proprietaire_id]);
     }
 
-    res.json({ message: 'Signalement traité' });
+    res.json({ message: 'Signalement mis à jour' });
   } catch (err) {
     res.status(500).json({ erreur: 'Erreur serveur' });
   }

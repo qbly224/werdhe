@@ -167,7 +167,7 @@ const getLogement = async (req, res) => {
       [id]
     );
 
-    if (result.rows.length === 0) {
+    if (result.rows.length === 0 || result.rows[0].masque) {
       return res.status(404).json({ erreur: 'Logement non trouvé' });
     }
 

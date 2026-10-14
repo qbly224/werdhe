@@ -9,7 +9,10 @@
       "users": "Utilisateurs",
       "logements": "Logements",
       "reservations": "Réservations",
+      "revenus": "Revenus",
       "abonnements": "Abonnements",
+      "documents": "Documents",
+      "signalements": "Signalements",
       "promos": "Codes Promo",
       "blog": "Blog",
       "logs": "Logs Audit",
@@ -109,12 +112,17 @@
       "titre": "Logements",
       "compteur": "{{count}} logement(s) sur la plateforme",
       "verifie": "Vérifié",
+      "masque": "Masqué",
       "parMois": "/mois",
       "proprietaireLabel": "Propriétaire : {{prenom}} {{nom}} · {{count}} réservation(s)",
       "verifier": "Vérifier",
+      "masquer": "Masquer",
+      "demasquer": "Afficher",
       "confirmSupprimer": "Supprimer ce logement ?",
       "toastVerifie": "Logement vérifié !",
-      "toastSupprime": "Logement supprimé"
+      "toastSupprime": "Logement supprimé",
+      "toastMasque": "Annonce masquée — invisible du public",
+      "toastDemasque": "Annonce de nouveau visible"
     },
     "reservations": {
       "titre": "Réservations",
@@ -150,6 +158,29 @@
     "abonnements": {
       "titre": "Abonnements",
       "toastMisAJour": "Plan mis à jour !"
+    },
+    "documents": {
+      "titre": "Documents",
+      "compteur": "{{count}} document(s) générés sur la plateforme",
+      "aucunDocument": "Aucun document pour le moment.",
+      "partiesLabel": "Locataire : {{loc}} · Propriétaire : {{prop}}",
+      "inconnu": "—",
+      "telecharger": "Télécharger"
+    },
+    "signalements": {
+      "titre": "Signalements & pannes",
+      "compteur": "{{filtres}} / {{total}} signalement(s)",
+      "tousLesStatuts": "Tous les statuts",
+      "statutOuvert": "Ouvert",
+      "statutEnCours": "En cours",
+      "statutResolu": "Résolu",
+      "aucunSignalement": "Aucun signalement",
+      "infosLabel": "{{logement}} · Locataire : {{loc}} · Propriétaire : {{prop}}",
+      "marquerEnCours": "Marquer en cours",
+      "marquerResolu": "Marquer résolu",
+      "suspendreProprietaire": "Suspendre le propriétaire",
+      "confirmSuspendre": "Suspendre ce propriétaire pour défaut de réponse ?",
+      "toastMisAJour": "Signalement mis à jour"
     },
     "blog": {
       "titre": "Blog",

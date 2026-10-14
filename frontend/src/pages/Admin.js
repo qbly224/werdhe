@@ -9,7 +9,7 @@ import {
   BarChart3, Users, Home, CalendarCheck, CreditCard, Ticket, Newspaper, ScrollText, Bell,
   UserPlus, Wallet, HelpCircle, KeyRound, Building2, CheckCircle2, DoorOpen, Clock,
   ClipboardList, Star, Zap, AlertTriangle, Trash2, RefreshCw, LayoutDashboard, Search,
-  Lock, Ban, Unlock, Pause, Play,
+  Lock, Ban, Unlock, Pause, Play, FileText, Flag, Download, EyeOff, Eye,
 } from 'lucide-react';
 import Logo from '../components/Logo';
 
@@ -47,6 +47,9 @@ export default function Admin() {
   var [editingArticleId, setEditingArticleId] = useState(null);
   var ARTICLE_VIDE = { titre: '', extrait: '', contenu: '', image_couverture: '', categorie: '', meta_description: '', publie: false };
   var [articleForm, setArticleForm] = useState(ARTICLE_VIDE);
+  var [documents, setDocuments]     = useState([]);
+  var [signalements, setSignalements] = useState([]);
+  var [filterSignalement, setFilterSignalement] = useState('en_attente');
 
   useEffect(function() {
     if (user && user.role !== 'admin') {
@@ -101,6 +104,8 @@ export default function Admin() {
       api.get('/admin/codes-promo').catch(function() { return { data: { codes: [] } }; }),
       api.get('/admin/logs').catch(function() { return { data: { logs: [] } }; }),
       api.get('/blog/admin/tous').catch(function() { return { data: { articles: [] } }; }),
+      api.get('/admin/documents').catch(function() { return { data: { documents: [] } }; }),
+      api.get('/admin/signalements').catch(function() { return { data: { signalements: [] } }; }),
     ]).then(function(results) {
       setStats(results[0].data);
       setUsers(results[1].data.users || []);
@@ -108,10 +113,12 @@ export default function Admin() {
       setReservations(results[3].data.reservations || []);
       setPreavis(results[4].data.preavis || []);
       setRevenus(results[5].data || null);
-      setAlertes(results[5].data.alertes || []);
-      setCodesPromo(results[6].data.codes || []);
-      setLogsAudit(results[7].data.logs   || []);
-      setArticlesBlog(results[8].data.articles || []);
+      setAlertes(results[6].data.alertes || []);
+      setCodesPromo(results[7].data.codes || []);
+      setLogsAudit(results[8].data.logs   || []);
+      setArticlesBlog(results[9].data.articles || []);
+      setDocuments(results[10].data.documents || []);
+      setSignalements(results[11].data.signalements || []);
     }).catch(function(err) {
       console.error('[Admin] Erreur chargement:', err.message);
     }).finally(function() { setLoading(false); });
@@ -149,6 +156,30 @@ export default function Admin() {
       .then(function() { toast.success(t('admin.logements.toastSupprime')); charger(); })
       .catch(function() { toast.error(t('admin.erreurs.generique')); });
   }
+
+  function masquerLogement(id) {
+    api.patch('/admin/logements/' + id + '/masquer')
+      .then(function(res) {
+        toast.success(res.data.masque ? t('admin.logements.toastMasque') : t('admin.logements.toastDemasque'));
+        charger();
+      })
+      .catch(function() { toast.error(t('admin.erreurs.generique')); });
+  }
+
+  function telechargerDocument(id) {
+    window.open((api.defaults.baseURL || '') + '/admin/documents/' + id + '/telecharger?token=' + localStorage.getItem('token'), '_blank');
+  }
+
+  function traiterSignalement(id, statut, suspendreProprietaire) {
+    if (suspendreProprietaire && !window.confirm(t('admin.signalements.confirmSuspendre'))) return;
+    api.patch('/admin/signalements/' + id + '/traiter', { statut: statut, suspendre_proprietaire: suspendreProprietaire || false })
+      .then(function() { toast.success(t('admin.signalements.toastMisAJour')); charger(); })
+      .catch(function() { toast.error(t('admin.erreurs.generique')); });
+  }
+
+  var signalementsFiltres = signalements.filter(function(s) {
+    return filterSignalement === 'tous' || s.statut === filterSignalement;
+  });
 
   function editerArticle(a) {
     setEditingArticleId(a.id);
@@ -210,7 +241,10 @@ var NAV = [
   { id: 'users',        label: t('admin.nav.users'),        icon: Users },
   { id: 'logements',    label: t('admin.nav.logements'),    icon: Home },
   { id: 'reservations', label: t('admin.nav.reservations'), icon: CalendarCheck },
+  { id: 'revenus',      label: t('admin.nav.revenus'),      icon: Wallet },
   { id: 'abonnements',  label: t('admin.nav.abonnements'),  icon: CreditCard },
+  { id: 'documents',    label: t('admin.nav.documents'),    icon: FileText },
+  { id: 'signalements', label: t('admin.nav.signalements'), icon: Flag },
   { id: 'promos',       label: t('admin.nav.promos'),       icon: Ticket },
   { id: 'blog',         label: t('admin.nav.blog'),         icon: Newspaper },
   { id: 'logs',         label: t('admin.nav.logs'),         icon: ScrollText },
@@ -633,6 +667,7 @@ var NAV = [
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                         <span style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{l.titre}</span>
                         {l.verifie && <span style={{ background: '#E8F5E9', color: '#1B5E20', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}><CheckCircle2 size={11} strokeWidth={2} /> {t('admin.logements.verifie')}</span>}
+                        {l.masque && <span style={{ background: '#FFEBEE', color: '#B71C1C', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}><EyeOff size={11} strokeWidth={2} /> {t('admin.logements.masque')}</span>}
                       </div>
                       <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{l.adresse}, {l.ville} · {GNF(l.prix_mensuel)}{t('admin.logements.parMois')}</div>
                       <div style={{ fontSize: 11, color: '#aaa', marginTop: 2 }}>
@@ -649,6 +684,11 @@ var NAV = [
                           <CheckCircle2 size={12} strokeWidth={2} /> {t('admin.logements.verifier')}
                         </button>
                       )}
+                      <button onClick={function() { masquerLogement(l.id); }}
+                        style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: '#fff', fontSize: 11, cursor: 'pointer', fontWeight: 600, color: l.masque ? '#1B6B3A' : '#E65100', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        {l.masque ? <Eye size={12} strokeWidth={2} /> : <EyeOff size={12} strokeWidth={2} />}
+                        {l.masque ? t('admin.logements.demasquer') : t('admin.logements.masquer')}
+                      </button>
                       <button onClick={function() { supprimerLogement(l.id); }}
                         style={{ padding: '6px 12px', borderRadius: 8, background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
                         <Trash2 size={14} strokeWidth={1.8} />
@@ -1091,6 +1131,129 @@ var NAV = [
             <div style={{ fontSize: 11, color: '#aaa', flexShrink: 0, textAlign: 'right' }}>
               {new Date(l.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}<br/>
               {new Date(l.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)}
+
+{/* ═══ DOCUMENTS ═══════════════════════════════════════════ */}
+{onglet === 'documents' && (
+  <div>
+    <div style={{ marginBottom: 20 }}>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <FileText size={18} strokeWidth={1.8} /> {t('admin.documents.titre')}
+      </h1>
+      <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.documents.compteur', { count: documents.length })}</p>
+    </div>
+
+    {documents.length === 0 && (
+      <div style={{ textAlign: 'center', padding: 40, color: '#888', background: '#fff', borderRadius: 14 }}>{t('admin.documents.aucunDocument')}</div>
+    )}
+
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {documents.map(function(d) {
+        return (
+          <div key={d.id} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+            <div style={{ width: 40, height: 40, background: '#E3F2FD', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <FileText size={18} strokeWidth={1.5} color="#1565C0" />
+            </div>
+            <div style={{ flex: 1, minWidth: 200 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{d.titre}</div>
+              <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
+                {d.type} {d.logement_titre ? '· ' + d.logement_titre : ''}
+              </div>
+              <div style={{ fontSize: 11, color: '#aaa', marginTop: 2 }}>
+                {t('admin.documents.partiesLabel', {
+                  loc: (d.loc_prenom || d.loc_nom) ? (d.loc_prenom + ' ' + d.loc_nom) : t('admin.documents.inconnu'),
+                  prop: (d.prop_prenom || d.prop_nom) ? (d.prop_prenom + ' ' + d.prop_nom) : t('admin.documents.inconnu'),
+                })}
+                {' · '}{new Date(d.created_at).toLocaleDateString('fr-FR')}
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ background: '#F5F5F5', color: '#555', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
+                {d.statut}
+              </span>
+              <button onClick={function() { telechargerDocument(d.id); }}
+                style={{ padding: '6px 12px', borderRadius: 8, background: '#1B6B3A', color: '#fff', border: 'none', fontSize: 11, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                <Download size={12} strokeWidth={2} /> {t('admin.documents.telecharger')}
+              </button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)}
+
+{/* ═══ SIGNALEMENTS (pannes / réclamations) ════════════════ */}
+{onglet === 'signalements' && (
+  <div>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 10 }}>
+      <div>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Flag size={18} strokeWidth={1.8} /> {t('admin.signalements.titre')}
+        </h1>
+        <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.signalements.compteur', { filtres: signalementsFiltres.length, total: signalements.length })}</p>
+      </div>
+      <select value={filterSignalement} onChange={function(e) { setFilterSignalement(e.target.value); }}
+        style={{ padding: '9px 14px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: '#fff' }}>
+        <option value="tous">{t('admin.signalements.tousLesStatuts')}</option>
+        <option value="ouvert">{t('admin.signalements.statutOuvert')}</option>
+        <option value="en_cours">{t('admin.signalements.statutEnCours')}</option>
+        <option value="resolu">{t('admin.signalements.statutResolu')}</option>
+      </select>
+    </div>
+
+    {signalementsFiltres.length === 0 && (
+      <div style={{ textAlign: 'center', padding: 40, color: '#888', background: '#fff', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+        <CheckCircle2 size={16} strokeWidth={1.8} /> {t('admin.signalements.aucunSignalement')}
+      </div>
+    )}
+
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {signalementsFiltres.map(function(s) {
+        var couleur = s.statut === 'resolu' ? '#1B6B3A' : s.statut === 'en_cours' ? '#1565C0' : '#E53935';
+        return (
+          <div key={s.id} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderLeft: '4px solid ' + couleur, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+            <span style={{ flexShrink: 0 }}><Flag size={18} strokeWidth={1.5} color={couleur} /></span>
+            <div style={{ flex: 1, minWidth: 220 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{s.titre}</div>
+              <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{s.description}</div>
+              <div style={{ fontSize: 11, color: '#aaa', marginTop: 4 }}>
+                {t('admin.signalements.infosLabel', {
+                  logement: s.logement_titre || t('admin.documents.inconnu'),
+                  loc: (s.loc_prenom || s.loc_nom) ? (s.loc_prenom + ' ' + s.loc_nom) : t('admin.documents.inconnu'),
+                  prop: (s.prop_prenom || s.prop_nom) ? (s.prop_prenom + ' ' + s.prop_nom) : t('admin.documents.inconnu'),
+                })}
+                {' · '}{new Date(s.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit' })}
+              </div>
+            </div>
+            <span style={{ background: couleur + '20', color: couleur, borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
+              {s.statut}
+            </span>
+            <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+              {s.statut !== 'en_cours' && s.statut !== 'resolu' && (
+                <button onClick={function() { traiterSignalement(s.id, 'en_cours'); }}
+                  style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: '#fff', fontSize: 11, cursor: 'pointer', fontWeight: 600, color: '#1565C0' }}>
+                  {t('admin.signalements.marquerEnCours')}
+                </button>
+              )}
+              {s.statut !== 'resolu' && (
+                <button onClick={function() { traiterSignalement(s.id, 'resolu'); }}
+                  style={{ padding: '6px 12px', borderRadius: 8, background: '#1B6B3A', color: '#fff', border: 'none', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
+                  {t('admin.signalements.marquerResolu')}
+                </button>
+              )}
+              {s.proprietaire_id && (
+                <button onClick={function() { traiterSignalement(s.id, s.statut, true); }}
+                  style={{ padding: '6px 12px', borderRadius: 8, background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
+                  {t('admin.signalements.suspendreProprietaire')}
+                </button>
+              )}
             </div>
           </div>
         );
