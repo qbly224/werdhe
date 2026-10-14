@@ -77,12 +77,10 @@ async function connexionHandler(req, res) {
       return res.status(403).json({ erreur: 'Compte suspendu. Contactez le support.' });
     }
 
-    if (user.abonnement_bloque) {
-      return res.status(403).json({
-        erreur: 'Abonnement impayé. Réglez votre abonnement ou contactez contact@werdhe.com pour retrouver l\'accès.',
-        code:   'ABONNEMENT_BLOQUE'
-      });
-    }
+    // Abonnement impayé : la connexion reste autorisée (accès en lecture
+    // seule — voir middleware/auth.js), seules les nouvelles actions sont
+    // bloquées. Ne pas empêcher la connexion ici, sinon le compte ne
+    // pourrait plus jamais être consulté ni renouvelé.
 
     var valid = await bcrypt.compare(mot_de_passe, user.mot_de_passe);
     if (!valid) {
