@@ -339,6 +339,17 @@
     "essaiAgenceBouton": "Agency trial - 1 month free",
     "cycleFacturation": "Billing cycle",
     "payerMobileMoney": "Pay with Mobile Money",
+    "renouveler": "Renew",
+    "dateFin": "End date",
+    "historiqueFactures": "Invoice history",
+    "aucuneFacture": "No invoices yet",
+    "factureStatut": {
+      "payee": "Paid",
+      "en_attente": "Pending",
+      "echec": "Failed"
+    },
+    "biensMasques": "{{n}} listing(s) hidden from search because your free plan limit is exceeded. Renew to republish them.",
+    "bannerRenouveler": "Renew now",
     "abonnementTitre": "{{plan}} Subscription - {{cycle}}",
     "infosCompte": "Account information",
     "emailLabel": "Email:",
@@ -1298,6 +1309,7 @@
       "historique": "History"
     },
     "plan": "{{plan}} plan",
+    "essaiJoursRestants": "Trial: D+{{n}}",
     "deconnexion": "Log out"
   },
   "rechercheGlobale": {

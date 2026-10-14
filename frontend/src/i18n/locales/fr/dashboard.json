@@ -339,6 +339,17 @@
     "essaiAgenceBouton": "Essai Agence - 1 mois gratuit",
     "cycleFacturation": "Cycle de facturation",
     "payerMobileMoney": "Payer par Mobile Money",
+    "renouveler": "Renouveler",
+    "dateFin": "Date de fin",
+    "historiqueFactures": "Historique des factures",
+    "aucuneFacture": "Aucune facture pour le moment",
+    "factureStatut": {
+      "payee": "Payée",
+      "en_attente": "En attente",
+      "echec": "Échec"
+    },
+    "biensMasques": "{{n}} bien(s) masqué(s) de la recherche car la limite de votre plan gratuit est dépassée. Renouvelez pour les republier.",
+    "bannerRenouveler": "Renouveler maintenant",
     "abonnementTitre": "Abonnement {{plan}} - {{cycle}}",
     "infosCompte": "Informations du compte",
     "emailLabel": "Email :",
@@ -1298,6 +1309,7 @@
       "historique": "Historique"
     },
     "plan": "Plan {{plan}}",
+    "essaiJoursRestants": "Essai : J+{{n}}",
     "deconnexion": "Déconnexion"
   },
   "rechercheGlobale": {
