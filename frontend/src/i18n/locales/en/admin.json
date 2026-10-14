@@ -9,7 +9,10 @@
       "users": "Users",
       "logements": "Listings",
       "reservations": "Bookings",
+      "revenus": "Revenue",
       "abonnements": "Subscriptions",
+      "documents": "Documents",
+      "signalements": "Reports",
       "promos": "Promo Codes",
       "blog": "Blog",
       "logs": "Audit Logs",
@@ -109,12 +112,17 @@
       "titre": "Listings",
       "compteur": "{{count}} listing(s) on the platform",
       "verifie": "Verified",
+      "masque": "Hidden",
       "parMois": "/month",
       "proprietaireLabel": "Landlord: {{prenom}} {{nom}} · {{count}} booking(s)",
       "verifier": "Verify",
+      "masquer": "Hide",
+      "demasquer": "Show",
       "confirmSupprimer": "Delete this listing?",
       "toastVerifie": "Listing verified!",
-      "toastSupprime": "Listing deleted"
+      "toastSupprime": "Listing deleted",
+      "toastMasque": "Listing hidden — no longer public",
+      "toastDemasque": "Listing visible again"
     },
     "reservations": {
       "titre": "Bookings",
@@ -150,6 +158,29 @@
     "abonnements": {
       "titre": "Subscriptions",
       "toastMisAJour": "Plan updated!"
+    },
+    "documents": {
+      "titre": "Documents",
+      "compteur": "{{count}} document(s) generated on the platform",
+      "aucunDocument": "No documents yet.",
+      "partiesLabel": "Tenant: {{loc}} · Landlord: {{prop}}",
+      "inconnu": "—",
+      "telecharger": "Download"
+    },
+    "signalements": {
+      "titre": "Reports & maintenance issues",
+      "compteur": "{{filtres}} / {{total}} report(s)",
+      "tousLesStatuts": "All statuses",
+      "statutOuvert": "Open",
+      "statutEnCours": "In progress",
+      "statutResolu": "Resolved",
+      "aucunSignalement": "No reports",
+      "infosLabel": "{{logement}} · Tenant: {{loc}} · Landlord: {{prop}}",
+      "marquerEnCours": "Mark in progress",
+      "marquerResolu": "Mark resolved",
+      "suspendreProprietaire": "Suspend landlord",
+      "confirmSuspendre": "Suspend this landlord for unresponsiveness?",
+      "toastMisAJour": "Report updated"
     },
     "blog": {
       "titre": "Blog",

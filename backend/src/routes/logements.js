@@ -54,7 +54,7 @@ router.get('/', async (req, res) => {
       return res.json(cached);
     }  
 
-    var conditions = ['l.statut = $1'];
+    var conditions = ['l.statut = $1', 'l.masque IS NOT TRUE'];
     var params     = ['disponible'];
     var idx        = 2;
 
