@@ -1,4 +1,16 @@
 {
+  "rejoindreEquipe": {
+    "chargement": "Loading...",
+    "titreErreur": "Invitation not found",
+    "lienInvalide": "This invitation link is invalid or has expired.",
+    "titre": "Team invitation",
+    "description": "{{prenom}} {{nom}} invites you to join their team on Werdhe. You'll have access to the same properties, bookings and payments as the main account.",
+    "rejoindre": "Join the team",
+    "enCours": "Joining...",
+    "bienvenue": "Welcome to the team!",
+    "toastBienvenue": "You've joined the team!",
+    "erreurGenerique": "Something went wrong"
+  },
   "upgradeBanner": {
     "titre": "Feature reserved for the {{plan}} plan",
     "voirLesPlans": "View plans →",
@@ -8,6 +20,7 @@
       "annuaire": "Visibility in the Werdhe directory is available starting with the Pro plan.",
       "rapports": "Financial reports are available starting with the Pro plan.",
       "maxBiens": "You've reached the 2-property limit of the Free plan. Upgrade to Pro for up to 25 properties.",
+      "multiUsers": "Multi-user accounts (up to 5 team members) are available with the Agency plan.",
       "defaut": "Upgrade to a higher plan to access this feature."
     }
   },
@@ -350,6 +363,19 @@
     },
     "biensMasques": "{{n}} listing(s) hidden from search because your free plan limit is exceeded. Renew to republish them.",
     "bannerRenouveler": "Renew now",
+    "equipe": {
+      "titre": "My team",
+      "compteur": "{{n}}/{{max}} member(s)",
+      "placeholderEmail": "email@example.com",
+      "inviter": "Invite",
+      "statutActif": "Active",
+      "statutInvite": "Invitation sent",
+      "retirer": "Remove",
+      "vousEtesMembre": "You're part of an Agency team — you have access to the main account's properties, bookings and payments.",
+      "confirmRevoquer": "Remove this member from the team?",
+      "toastInvitationEnvoyee": "Invitation sent by email!",
+      "toastMembreRetire": "Member removed from the team"
+    },
     "abonnementTitre": "{{plan}} Subscription - {{cycle}}",
     "infosCompte": "Account information",
     "emailLabel": "Email:",

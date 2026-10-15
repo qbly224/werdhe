@@ -53,7 +53,7 @@ const ajouterLogement = async (req, res) => {
                $16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,'[]')
        RETURNING *`,
       [
-        req.user.id, titre, description, adresse, ville, quartier || null,
+        req.proprietaireEffectifId || req.user.id, titre, description, adresse, ville, quartier || null,
         pays || 'Guinée', prix_mensuel,
         nb_chambres !== undefined ? nb_chambres : 1,
         nb_salles_bain !== undefined ? nb_salles_bain : 1,
@@ -188,7 +188,7 @@ const getMesLogements = async (req, res) => {
       `SELECT * FROM logements
        WHERE proprietaire_id = $1
        ORDER BY created_at DESC`,
-      [req.user.id]
+      [req.proprietaireEffectifId || req.user.id]
     );
 
     res.json({
@@ -216,7 +216,7 @@ const modifierLogement = async (req, res) => {
 
     const logement = await db.query(
       'SELECT * FROM logements WHERE id = $1 AND proprietaire_id = $2',
-      [id, req.user.id]
+      [id, req.proprietaireEffectifId || req.user.id]
     );
 
     if (logement.rows.length === 0) {
@@ -265,7 +265,7 @@ const supprimerLogement = async (req, res) => {
 
     const result = await db.query(
       'DELETE FROM logements WHERE id = $1 AND proprietaire_id = $2 RETURNING *',
-      [id, req.user.id]
+      [id, req.proprietaireEffectifId || req.user.id]
     );
 
     if (result.rows.length === 0) {

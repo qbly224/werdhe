@@ -2,6 +2,7 @@ const express = require('express');
 const router  = require('express').Router();
 const db      = require('../database');
 const verifierToken = require('../middleware/auth');
+const resoudreProprietaireEffectif = require('../middleware/equipe');
 const {
   effectuerPaiement,
   confirmerPaiementEspeces,
@@ -37,7 +38,7 @@ router.get('/mes-paiements', verifierToken, async (req, res) => {
 
 
 // Propriétaire
-router.get('/proprietaire', verifierToken, getPaiementsProprietaire);
+router.get('/proprietaire', verifierToken, resoudreProprietaireEffectif, getPaiementsProprietaire);
 router.patch('/:id/confirmer-especes', verifierToken, confirmerPaiementEspeces);
 
 // Facture (accessible aux deux parties)

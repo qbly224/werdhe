@@ -75,6 +75,7 @@ function UpgradeBanner({ fonctionnalite, planRequis }) {
     annuaire:      t('upgradeBanner.messages.annuaire'),
     rapports:      t('upgradeBanner.messages.rapports'),
     max_biens:     t('upgradeBanner.messages.maxBiens'),
+    multi_users:   t('upgradeBanner.messages.multiUsers'),
   };
   return (
     <div style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', borderRadius: 14, padding: 18, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
@@ -4311,6 +4312,9 @@ function OngletParametres(props) {
   var [cycleChoisi, setCycleChoisi] = useState('mensuel');
   var [showPaiementAbo, setShowPaiementAbo] = useState(null);
   var [factures, setFactures] = useState([]);
+  var [equipeMembres, setEquipeMembres] = useState([]);
+  var [emailInvite, setEmailInvite] = useState('');
+  var [invitingLoading, setInvitingLoading] = useState(false);
 
   var PRIX_ABONNEMENT = { pro: 120000, agence: 300000 };
   var CYCLES_ABONNEMENT = {
@@ -4328,11 +4332,39 @@ function OngletParametres(props) {
       .catch(console.error);
   }
 
+  function chargerEquipe() {
+    api.get('/equipe')
+      .then(function(res) { setEquipeMembres(res.data.membres || []); })
+      .catch(console.error);
+  }
+
+  function inviterMembre(e) {
+    e.preventDefault();
+    if (!emailInvite) return;
+    setInvitingLoading(true);
+    api.post('/equipe/inviter', { email: emailInvite })
+      .then(function() {
+        toast.success(t('ongletParametres.equipe.toastInvitationEnvoyee'));
+        setEmailInvite('');
+        chargerEquipe();
+      })
+      .catch(function(err) { toast.error(err.response && err.response.data ? err.response.data.erreur : t('ongletParametres.erreur')); })
+      .finally(function() { setInvitingLoading(false); });
+  }
+
+  function revoquerMembre(id) {
+    if (!window.confirm(t('ongletParametres.equipe.confirmRevoquer'))) return;
+    api.delete('/equipe/' + id)
+      .then(function() { toast.success(t('ongletParametres.equipe.toastMembreRetire')); chargerEquipe(); })
+      .catch(function() { toast.error(t('ongletParametres.erreur')); });
+  }
+
   useEffect(function() {
     api.get('/auth/mon-score')
       .then(function(res) { setScoreData(res.data); })
       .catch(console.error);
     chargerAbonnement();
+    chargerEquipe();
   }, []);
 
   function demarrerEssai(plan) {
@@ -4506,6 +4538,58 @@ function OngletParametres(props) {
     onClose={function() { setShowPaiementAbo(null); }}
     onSuccess={function() { chargerAbonnement(); }}
   />
+)}
+
+{user && user.role !== 'locataire' && monAbonnement && monAbonnement.est_membre_equipe && (
+  <div style={{ background: '#E3F2FD', borderRadius: 14, padding: 16, marginBottom: 12, fontSize: 12, color: '#0D47A1' }}>
+    {t('ongletParametres.equipe.vousEtesMembre')}
+  </div>
+)}
+
+{user && user.role !== 'locataire' && monAbonnement && !monAbonnement.est_membre_equipe && (
+  <div style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginBottom: 12 }}>
+    <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 4 }}>{t('ongletParametres.equipe.titre')}</div>
+
+    {monAbonnement.plan !== 'agence' ? (
+      <UpgradeBanner fonctionnalite="multi_users" planRequis="Agence" />
+    ) : (
+      <div>
+        <div style={{ fontSize: 12, color: '#888', marginBottom: 12 }}>
+          {t('ongletParametres.equipe.compteur', { n: equipeMembres.filter(function(m) { return m.statut !== 'revoque'; }).length, max: monAbonnement.droits.max_membres })}
+        </div>
+
+        <form onSubmit={inviterMembre} style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
+          <input type="email" required placeholder={t('ongletParametres.equipe.placeholderEmail')} value={emailInvite}
+            onChange={function(e) { setEmailInvite(e.target.value); }}
+            style={{ flex: 1, padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13 }} />
+          <button type="submit" disabled={invitingLoading || equipeMembres.filter(function(m) { return m.statut !== 'revoque'; }).length >= monAbonnement.droits.max_membres}
+            style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 8, padding: '0 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', opacity: invitingLoading ? 0.6 : 1 }}>
+            {t('ongletParametres.equipe.inviter')}
+          </button>
+        </form>
+
+        {equipeMembres.filter(function(m) { return m.statut !== 'revoque'; }).map(function(m) {
+          return (
+            <div key={m.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '0.5px solid #F5F5F5' }}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>{m.prenom ? m.prenom + ' ' + m.nom : m.email}</div>
+                <div style={{ fontSize: 11, color: '#888' }}>{m.email}</div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ background: m.statut === 'actif' ? '#E8F5E9' : '#FFF3E0', color: m.statut === 'actif' ? '#1B6B3A' : '#E65100', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>
+                  {m.statut === 'actif' ? t('ongletParametres.equipe.statutActif') : t('ongletParametres.equipe.statutInvite')}
+                </span>
+                <button onClick={function() { revoquerMembre(m.id); }}
+                  style={{ background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', borderRadius: 8, padding: '4px 10px', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
+                  {t('ongletParametres.equipe.retirer')}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    )}
+  </div>
 )}
           <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <div style={{ fontSize: 12, color: '#888', marginBottom: 10, fontWeight: 600 }}>{t('ongletParametres.infosCompte')}</div>

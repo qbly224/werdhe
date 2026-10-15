@@ -2,13 +2,14 @@ const express = require('express');
 const router  = express.Router();
 const db      = require('../database');
 const verifierToken = require('../middleware/auth');
+const resoudreProprietaireEffectif = require('../middleware/equipe');
 const { verifierFonctionnalite } = require('../middleware/verifierPlan');
 const PDFDocument = require('pdfkit');
 
 // ─── TABLEAU FINANCIER COMPLET ────────────────────────────────────
-router.get('/financier', verifierToken, verifierFonctionnalite('rapports'), async (req, res) => {
+router.get('/financier', verifierToken, resoudreProprietaireEffectif, verifierFonctionnalite('rapports'), async (req, res) => {
   try {
-    var userId = req.user.id;
+    var userId = req.proprietaireEffectifId;
     var periode    = req.query.periode || '12mois';
 var intervalDB = {
   '3mois':  '3 months',
@@ -124,7 +125,7 @@ db.query(`
   FROM reservations r
   JOIN logements l ON r.logement_id = l.id
   WHERE l.proprietaire_id = $1
-`, [req.user.id]),
+`, [userId]),
 
 // Meilleur mois
 db.query(`
@@ -138,7 +139,7 @@ db.query(`
   GROUP BY DATE_TRUNC('month', p.created_at)
   ORDER BY total DESC
   LIMIT 1
-`, [req.user.id]),
+`, [userId]),
     ]);
 
     // Calculer le total annuel
@@ -163,9 +164,9 @@ db.query(`
   }
 });
 // ─── EXPORT PDF RAPPORT FINANCIER ────────────────────────────────
-router.get('/financier/pdf', verifierToken, verifierFonctionnalite('rapports'), async (req, res) => {
+router.get('/financier/pdf', verifierToken, resoudreProprietaireEffectif, verifierFonctionnalite('rapports'), async (req, res) => {
   try {
-    var userId = req.user.id;
+    var userId = req.proprietaireEffectifId;
 
     // Récupérer les données
     var [user, resume, evolution, parBien, paiements] = await Promise.all([
@@ -432,9 +433,9 @@ router.get('/sitemap', async (req, res) => {
   }
 });
 // ─── OVERVIEW PROPRIÉTAIRE ────────────────────────────────────────
-router.get('/overview', verifierToken, async (req, res) => {
+router.get('/overview', verifierToken, resoudreProprietaireEffectif, async (req, res) => {
   try {
-    var userId = req.user.id;
+    var userId = req.proprietaireEffectifId;
 
     var [kpis, biens, candidatures, alertes, evenements, revenus6mois] = await Promise.all([
 

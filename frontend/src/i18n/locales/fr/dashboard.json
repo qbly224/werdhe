@@ -1,4 +1,16 @@
 {
+  "rejoindreEquipe": {
+    "chargement": "Chargement...",
+    "titreErreur": "Invitation introuvable",
+    "lienInvalide": "Ce lien d'invitation est invalide ou a expiré.",
+    "titre": "Invitation à une équipe",
+    "description": "{{prenom}} {{nom}} vous invite à rejoindre son équipe sur Werdhe. Vous aurez accès aux mêmes biens, réservations et paiements que le compte principal.",
+    "rejoindre": "Rejoindre l'équipe",
+    "enCours": "Connexion en cours...",
+    "bienvenue": "Bienvenue dans l'équipe !",
+    "toastBienvenue": "Vous avez rejoint l'équipe !",
+    "erreurGenerique": "Une erreur est survenue"
+  },
   "upgradeBanner": {
     "titre": "Fonctionnalité réservée au plan {{plan}}",
     "voirLesPlans": "Voir les plans →",
@@ -8,6 +20,7 @@
       "annuaire": "La visibilité dans l'annuaire Werdhe est disponible à partir du plan Pro.",
       "rapports": "Les rapports financiers sont disponibles à partir du plan Pro.",
       "maxBiens": "Vous avez atteint la limite de 2 biens du plan Gratuit. Passez au plan Pro pour jusqu'à 25 biens.",
+      "multiUsers": "Les comptes multi-utilisateurs (jusqu'à 5 membres d'équipe) sont disponibles avec le plan Agence.",
       "defaut": "Passez au plan supérieur pour accéder à cette fonctionnalité."
     }
   },
@@ -350,6 +363,19 @@
     },
     "biensMasques": "{{n}} bien(s) masqué(s) de la recherche car la limite de votre plan gratuit est dépassée. Renouvelez pour les republier.",
     "bannerRenouveler": "Renouveler maintenant",
+    "equipe": {
+      "titre": "Mon équipe",
+      "compteur": "{{n}}/{{max}} membre(s)",
+      "placeholderEmail": "email@exemple.com",
+      "inviter": "Inviter",
+      "statutActif": "Actif",
+      "statutInvite": "Invitation envoyée",
+      "retirer": "Retirer",
+      "vousEtesMembre": "Vous faites partie d'une équipe Agence — vous avez accès aux biens, réservations et paiements du compte principal.",
+      "confirmRevoquer": "Retirer ce membre de l'équipe ?",
+      "toastInvitationEnvoyee": "Invitation envoyée par email !",
+      "toastMembreRetire": "Membre retiré de l'équipe"
+    },
     "abonnementTitre": "Abonnement {{plan}} - {{cycle}}",
     "infosCompte": "Informations du compte",
     "emailLabel": "Email :",

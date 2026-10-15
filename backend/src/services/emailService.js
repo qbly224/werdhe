@@ -357,6 +357,39 @@ const emailPaiementEnregistre = async (locataire, logement, paiement) => {
     </div>`, 'Paiement confirmé'));
 };
 
+// ─── INVITATION À UNE ÉQUIPE AGENCE ─────────────────────────────────
+const emailInvitationEquipe = async (email, agence, lienInvitation) => {
+  return envoyer(email, agence.prenom + ' ' + agence.nom + ' vous invite sur Werdhe', templateBase(`
+    ${hdr('linear-gradient(135deg,#1B2B22,#1B6B3A)', '', 'Invitation à une équipe Werdhe', agence.prenom + ' ' + agence.nom)}
+    <div style="padding:24px;">
+      <p style="font-size:14px;color:#555;line-height:1.7;"><strong>${agence.prenom} ${agence.nom}</strong> vous invite à rejoindre son équipe sur Werdhe (plan Agence). Vous aurez accès aux mêmes biens, réservations et paiements que le compte principal.</p>
+      <p style="font-size:13px;color:#888;">Si vous n'avez pas encore de compte Werdhe avec l'adresse <strong>${email}</strong>, créez-en un d'abord, puis cliquez sur le lien ci-dessous pour rejoindre l'équipe.</p>
+      ${btn('Rejoindre l\'équipe', lienInvitation, '#1B6B3A')}
+    </div>`, 'Invitation équipe'));
+};
+
+// ─── RAPPORT FINANCIER MENSUEL (plan Agence) ────────────────────────
+const emailRapportMensuel = async (proprietaire, periode, pdfBuffer) => {
+  try {
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
+      to: [proprietaire.email],
+      subject: 'Votre rapport financier Werdhe — ' + periode,
+      html: templateBase(`
+        ${hdr('linear-gradient(135deg,#1B2B22,#1B6B3A)', '', 'Rapport financier mensuel', periode)}
+        <div style="padding:24px;">
+          <p style="font-size:14px;color:#555;line-height:1.7;">Bonjour <strong>${proprietaire.prenom}</strong>, voici votre rapport financier automatique du mois, en pièce jointe (PDF).</p>
+          ${btn('Voir mon dashboard', 'https://werdhe.com/dashboard', '#1B6B3A')}
+        </div>`, 'Rapport financier mensuel'),
+      attachments: [{
+        filename: 'werdhe-rapport-' + periode + '.pdf',
+        content: pdfBuffer.toString('base64'),
+      }],
+    });
+    return true;
+  } catch (err) { console.warn('[Email rapport mensuel]', err.message); return false; }
+};
+
 module.exports = {
   envoyerEmailReset,
   envoyerEmailDocument,
@@ -371,4 +404,6 @@ module.exports = {
   emailBailExpirant,
   emailPreavisRecu,
   emailPaiementEnregistre,
+  emailInvitationEquipe,
+  emailRapportMensuel,
 };
