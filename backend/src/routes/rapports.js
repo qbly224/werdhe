@@ -2,10 +2,11 @@ const express = require('express');
 const router  = express.Router();
 const db      = require('../database');
 const verifierToken = require('../middleware/auth');
+const { verifierFonctionnalite } = require('../middleware/verifierPlan');
 const PDFDocument = require('pdfkit');
 
 // ─── TABLEAU FINANCIER COMPLET ────────────────────────────────────
-router.get('/financier', verifierToken, async (req, res) => {
+router.get('/financier', verifierToken, verifierFonctionnalite('rapports'), async (req, res) => {
   try {
     var userId = req.user.id;
     var periode    = req.query.periode || '12mois';
@@ -162,7 +163,7 @@ db.query(`
   }
 });
 // ─── EXPORT PDF RAPPORT FINANCIER ────────────────────────────────
-router.get('/financier/pdf', verifierToken, async (req, res) => {
+router.get('/financier/pdf', verifierToken, verifierFonctionnalite('rapports'), async (req, res) => {
   try {
     var userId = req.user.id;
 

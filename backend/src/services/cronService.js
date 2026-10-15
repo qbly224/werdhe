@@ -31,8 +31,10 @@ cron.schedule('0 8 * * *', async function() {
        JOIN users u_prop ON l.proprietaire_id = u_prop.id
        WHERE r.statut = 'confirmee'
          AND r.bail_signe = TRUE
-         AND EXTRACT(DAY FROM NOW()) = 28`
+         AND EXTRACT(DAY FROM NOW()) = 28
+         AND u_prop.plan IN ('pro', 'agence')`
       // Le 28 de chaque mois = 3 jours avant le 1er du mois suivant
+      // Alertes automatiques réservées aux plans Pro/Agence
     );
 
     for (var r of result.rows) {
@@ -109,7 +111,8 @@ cron.schedule('0 9 * * *', async function() {
        WHERE r.statut = 'confirmee'
          AND r.date_fin IS NOT NULL
          AND r.date_fin BETWEEN NOW() AND NOW() + INTERVAL '30 days'
-         AND r.renouvellement_notifie IS DISTINCT FROM TRUE`
+         AND r.renouvellement_notifie IS DISTINCT FROM TRUE
+         AND u_prop.plan IN ('pro', 'agence')`
     );
 
     for (var r of result.rows) {
@@ -207,7 +210,8 @@ cron.schedule('0 10 * * *', async function() {
        JOIN users u_prop ON l.proprietaire_id = u_prop.id
        WHERE p.statut = 'envoye'
          AND p.date_sortie_estimee IS NOT NULL
-         AND p.date_sortie_estimee::date = (CURRENT_DATE + INTERVAL '5 days')::date`
+         AND p.date_sortie_estimee::date = (CURRENT_DATE + INTERVAL '5 days')::date
+         AND u_prop.plan IN ('pro', 'agence')`
     );
 
     for (var p of result.rows) {
@@ -314,6 +318,7 @@ cron.schedule('0 7 * * *', async function() {
        JOIN users u_prop ON l.proprietaire_id = u_prop.id
        WHERE r.statut = 'confirmee'
          AND r.bail_signe = TRUE
+         AND u_prop.plan IN ('pro', 'agence')
          AND NOT EXISTS (
            SELECT 1 FROM paiements p
            WHERE p.reservation_id = r.id
