@@ -1,9 +1,9 @@
 /* eslint-disable */
 // Service Worker Werdhe — Mode hors-ligne + Cache
 
-var CACHE_NAME    = 'werdhe-v1';
-var CACHE_STATIC  = 'werdhe-static-v1';
-var CACHE_DYNAMIC = 'werdhe-dynamic-v1';
+var CACHE_NAME    = 'werdhe-v2';
+var CACHE_STATIC  = 'werdhe-static-v2';
+var CACHE_DYNAMIC = 'werdhe-dynamic-v2';
 
 // Ressources à mettre en cache immédiatement
 var STATIC_ASSETS = [

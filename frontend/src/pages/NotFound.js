@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Home, Search, SearchX, ArrowLeft, RefreshCw, CreditCard, Phone } from 'lucide-react';
 import SEO from '../components/SEO';
+import Logo from '../components/Logo';
 import { useTranslation } from 'react-i18next';
 
 function getSuggestions(t) {
@@ -51,11 +52,8 @@ export default function NotFound() {
       <div style={{ position: 'absolute', bottom: -150, left: -100, width: 500, height: 500, borderRadius: '50%', background: 'rgba(245,166,35,0.08)', pointerEvents: 'none' }} />
 
       {/* Logo */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 40, position: 'relative', zIndex: 1 }}>
-        <div style={{ width: 40, height: 40, background: '#1B6B3A', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Home size={20} color="#fff" strokeWidth={2} />
-        </div>
-        <span style={{ fontWeight: 900, fontSize: 20, color: '#fff', letterSpacing: -0.5 }}>Werdhe</span>
+      <div style={{ marginBottom: 40, position: 'relative', zIndex: 1 }}>
+        <Logo size={40} showText={true} darkBg={true} variant="gold" />
       </div>
 
       {/* 404 géant */}

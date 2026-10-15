@@ -22,6 +22,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import NotFound from './pages/NotFound';
 import React, { lazy, Suspense } from 'react';
 import CookieBanner from './components/CookieBanner';
+import Logo from './components/Logo';
 import i18n from './i18n';
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -34,13 +35,8 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui', background: '#F7F8F7', padding: 24, textAlign: 'center' }}>
-          <div style={{ width: 64, height: 64, background: '#1B6B3A', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
-            <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
-              <path d="M18 14 L24 9 L30 14 L30 20 L18 20 Z" fill="#F5A623"/>
-              <rect x="22.5" y="20" width="3" height="16" rx="1" fill="#F5A623"/>
-              <rect x="22.5" y="28" width="7" height="3" rx="1" fill="#F5A623"/>
-              <rect x="22.5" y="33" width="5" height="3" rx="1" fill="#F5A623"/>
-            </svg>
+          <div style={{ marginBottom: 20 }}>
+            <Logo size={64} showText={false} />
           </div>
           <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>{i18n.t('erreurBoundary.titre', { ns: 'common' })}</h2>
           <p style={{ fontSize: 14, color: '#888', margin: '0 0 24px' }}>{i18n.t('erreurBoundary.texte', { ns: 'common' })}</p>

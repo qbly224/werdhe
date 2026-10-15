@@ -83,7 +83,7 @@ router.post('/', verifierToken, async (req, res) => {
           html: `
             <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
               <div style="background:#1565C0;padding:20px;border-radius:12px 12px 0 0">
-                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe — Renouvellement</td></tr></table>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;"><img src="https://werdhe.com/logo192.png" width="34" height="34" alt="Werdhe" style="display:block;border-radius:9px;width:34px;height:34px;" /></td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe — Renouvellement</td></tr></table>
               </div>
               <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
                 <p>Bonjour <b>${r.loc_prenom}</b>,</p>
@@ -192,7 +192,7 @@ router.patch('/:id/repondre', verifierToken, async (req, res) => {
             subject: 'Renouvellement accepté — ' + rn.logement_titre,
             html: `<div style="font-family:sans-serif;max-width:500px;margin:0 auto">
               <div style="background:#1B6B3A;padding:20px;border-radius:12px 12px 0 0">
-                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe</td></tr></table>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;"><img src="https://werdhe.com/logo192.png" width="34" height="34" alt="Werdhe" style="display:block;border-radius:9px;width:34px;height:34px;" /></td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe</td></tr></table>
               </div>
               <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
                 <p>Bonjour <b>${rn.prop_prenom}</b>,</p>

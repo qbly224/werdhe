@@ -10,9 +10,9 @@
   "background_color": "#F7F8F7",
   "categories": ["lifestyle", "utilities"],
   "icons": [
-    { "src": "/logo192.png", "type": "image/png", "sizes": "192x192", "purpose": "any maskable" },
-    { "src": "/logo512.png", "type": "image/png", "sizes": "512x512", "purpose": "any maskable" },
-    { "src": "/favicon.ico", "type": "image/x-icon", "sizes": "64x64 32x32 24x24 16x16" }
+    { "src": "/logo192.png?v=3", "type": "image/png", "sizes": "192x192", "purpose": "any maskable" },
+    { "src": "/logo512.png?v=3", "type": "image/png", "sizes": "512x512", "purpose": "any maskable" },
+    { "src": "/favicon.ico?v=3", "type": "image/x-icon", "sizes": "64x64 32x32 24x24 16x16" }
   ],
   "shortcuts": [
     { "name": "Chercher un logement", "short_name": "Logements", "url": "/logements", "description": "Voir les logements disponibles" },

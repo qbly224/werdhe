@@ -46,7 +46,7 @@ cron.schedule('0 8 * * *', async function() {
         html: `
           <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
             <div style="background:#1B6B3A;padding:20px;border-radius:10px 10px 0 0">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe</td></tr></table>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;"><img src="https://werdhe.com/logo192.png" width="34" height="34" alt="Werdhe" style="display:block;border-radius:9px;width:34px;height:34px;" /></td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe</td></tr></table>
             </div>
             <div style="background:#fff;padding:24px;border-radius:0 0 10px 10px;border:1px solid #e0e0e0">
               <p>Bonjour <b>${r.loc_prenom}</b>,</p>
@@ -126,7 +126,7 @@ cron.schedule('0 9 * * *', async function() {
         html: `
           <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
             <div style="background:#1B6B3A;padding:20px;border-radius:10px 10px 0 0">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe</td></tr></table>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;"><img src="https://werdhe.com/logo192.png" width="34" height="34" alt="Werdhe" style="display:block;border-radius:9px;width:34px;height:34px;" /></td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe</td></tr></table>
             </div>
             <div style="background:#fff;padding:24px;border-radius:0 0 10px 10px;border:1px solid #e0e0e0">
               <p>Bonjour <b>${r.prop_prenom}</b>,</p>
@@ -146,7 +146,7 @@ cron.schedule('0 9 * * *', async function() {
         html: `
           <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
             <div style="background:#1B6B3A;padding:20px;border-radius:10px 10px 0 0">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe</td></tr></table>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;"><img src="https://werdhe.com/logo192.png" width="34" height="34" alt="Werdhe" style="display:block;border-radius:9px;width:34px;height:34px;" /></td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe</td></tr></table>
             </div>
             <div style="background:#fff;padding:24px;border-radius:0 0 10px 10px;border:1px solid #e0e0e0">
               <p>Bonjour <b>${r.loc_prenom}</b>,</p>
@@ -228,7 +228,7 @@ cron.schedule('0 10 * * *', async function() {
           html: `
             <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
               <div style="background:#C62828;padding:20px;border-radius:12px 12px 0 0">
-                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe — Rappel important</td></tr></table>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;"><img src="https://werdhe.com/logo192.png" width="34" height="34" alt="Werdhe" style="display:block;border-radius:9px;width:34px;height:34px;" /></td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe — Rappel important</td></tr></table>
               </div>
               <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
                 <p>Bonjour <b>${p.loc_prenom}</b>,</p>
@@ -343,7 +343,7 @@ cron.schedule('0 7 * * *', async function() {
               <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
                 <div style="background:#B71C1C;padding:20px;border-radius:12px 12px 0 0">
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;"><tr>
-                    <td style="width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,0.2);text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:14px;color:#fff;">W</td>
+                    <td style="width:30px;height:30px;"><img src="https://werdhe.com/logo192.png" width="30" height="30" alt="Werdhe" style="display:block;border-radius:8px;width:30px;height:30px;" /></td>
                     <td style="padding-left:8px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:700;font-size:14px;color:rgba(255,255,255,0.85);">Werdhe</td>
                   </tr></table>
                   <h2 style="color:#fff;margin:0;font-size:19px;">Mise en demeure</h2>
@@ -375,7 +375,7 @@ cron.schedule('0 7 * * *', async function() {
             html: `
               <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
                 <div style="background:#E65100;padding:20px;border-radius:12px 12px 0 0">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe — Alerte loyer</td></tr></table>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;"><img src="https://werdhe.com/logo192.png" width="34" height="34" alt="Werdhe" style="display:block;border-radius:9px;width:34px;height:34px;" /></td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe — Alerte loyer</td></tr></table>
                 </div>
                 <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
                   <p>Bonjour <b>${loc.prop_prenom}</b>,</p>
@@ -470,7 +470,7 @@ cron.schedule('30 8 * * *', async function() {
           html: `
             <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
               <div style="background:#F5A623;padding:20px;border-radius:10px 10px 0 0">
-                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#14251A;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#1B2B22;">Werdhe</td></tr></table>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;"><img src="https://werdhe.com/logo192.png" width="34" height="34" alt="Werdhe" style="display:block;border-radius:9px;width:34px;height:34px;" /></td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#1B2B22;">Werdhe</td></tr></table>
               </div>
               <div style="background:#fff;padding:24px;border-radius:0 0 10px 10px;border:1px solid #e0e0e0">
                 <p>Bonjour <b>${r3.prenom}</b>,</p>
@@ -515,7 +515,7 @@ cron.schedule('30 8 * * *', async function() {
             <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
               <div style="background:#B71C1C;padding:20px;border-radius:10px 10px 0 0">
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 8px;"><tr>
-                  <td style="width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,0.2);text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:14px;color:#fff;">W</td>
+                  <td style="width:30px;height:30px;"><img src="https://werdhe.com/logo192.png" width="30" height="30" alt="Werdhe" style="display:block;border-radius:8px;width:30px;height:30px;" /></td>
                   <td style="padding-left:8px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:700;font-size:14px;color:rgba(255,255,255,0.85);">Werdhe</td>
                 </tr></table>
                 <h2 style="color:#fff;margin:0;font-size:19px;">Accès bloqué</h2>
@@ -607,7 +607,7 @@ cron.schedule('15 8 * * *', async function() {
             html: `
               <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
                 <div style="background:#F5A623;padding:20px;border-radius:10px 10px 0 0">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;border-radius:9px;background:#fff;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:16px;color:#1B2B22;">W</td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#1B2B22;">Werdhe</td></tr></table>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;"><img src="https://werdhe.com/logo192.png" width="34" height="34" alt="Werdhe" style="display:block;border-radius:9px;width:34px;height:34px;" /></td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#1B2B22;">Werdhe</td></tr></table>
                 </div>
                 <div style="background:#fff;padding:24px;border-radius:0 0 10px 10px;border:1px solid #e0e0e0">
                   <p>Bonjour <b>${r.prenom}</b>,</p>

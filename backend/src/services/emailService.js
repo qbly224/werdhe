@@ -5,7 +5,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // ─── BADGE DE MARQUE (table-based, fiable dans tous les clients mail) ──
 function logoBadge() {
   return `<table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;"><tr>
-    <td style="width:40px;height:40px;border-radius:11px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:19px;color:#14251A;">W</td>
+    <td style="width:40px;height:40px;"><img src="https://werdhe.com/logo192.png" width="40" height="40" alt="Werdhe" style="display:block;border-radius:11px;width:40px;height:40px;" /></td>
     <td style="padding-left:10px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:19px;color:#fff;letter-spacing:-0.3px;">Werdhe</td>
   </tr></table>`;
 }
