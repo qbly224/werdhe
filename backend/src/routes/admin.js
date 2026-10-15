@@ -173,7 +173,7 @@ router.get('/users', verifierToken, verifierAdmin, async (req, res) => {
     var result = await db.query(
       `SELECT
          u.id, u.nom, u.prenom, u.email, u.telephone, u.role,
-         u.suspendu, u.abonnement_bloque, u.verifie, u.locataire_verifie, u.plan,
+         u.suspendu, u.abonnement_bloque, u.locataire_verifie, u.plan,
          u.note_moyenne, u.nb_notations, u.created_at,
          COUNT(DISTINCT l.id) as nb_logements,
          COUNT(DISTINCT r.id) as nb_reservations
@@ -291,7 +291,6 @@ router.get('/logements', verifierToken, verifierAdmin, async (req, res) => {
       `SELECT l.*,
          u.nom as prop_nom, u.prenom as prop_prenom,
          u.email as prop_email, u.telephone as prop_tel,
-         u.verifie as prop_verifie,
          COUNT(DISTINCT r.id) as nb_reservations
        FROM logements l
        JOIN users u ON l.proprietaire_id = u.id
@@ -585,7 +584,7 @@ router.get('/revenus', verifierToken, verifierAdmin, async (req, res) => {
       db.query(`
         SELECT
           DATE_TRUNC('month', created_at) as mois,
-          COALESCE(SUM(montant_commission), 0) as commissions,
+          COALESCE(SUM(montant), 0) as commissions,
           COUNT(*) as nb_paiements
         FROM paiements
         WHERE created_at >= NOW() - INTERVAL '6 months'
