@@ -94,10 +94,10 @@ export default function Admin() {
 
   function charger() {
     Promise.all([
-      api.get('/admin/stats'),
-      api.get('/admin/users'),
-      api.get('/admin/logements'),
-      api.get('/admin/reservations'),
+      api.get('/admin/stats').catch(function(err) { console.error('[Admin] /admin/stats:', err.message); return { data: null }; }),
+      api.get('/admin/users').catch(function(err) { console.error('[Admin] /admin/users:', err.message); return { data: { users: [] } }; }),
+      api.get('/admin/logements').catch(function(err) { console.error('[Admin] /admin/logements:', err.message); return { data: { logements: [] } }; }),
+      api.get('/admin/reservations').catch(function(err) { console.error('[Admin] /admin/reservations:', err.message); return { data: { reservations: [] } }; }),
       api.get('/admin/preavis').catch(function() { return { data: { preavis: [] } }; }),
       api.get('/admin/revenus').catch(function() { return { data: null }; }),
       api.get('/alertes').catch(function() { return { data: { alertes: [] } }; }),
