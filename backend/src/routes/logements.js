@@ -4,6 +4,7 @@ const express = require('express');
 const db = require('../database');
 const router = express.Router();
 const verifierToken = require('../middleware/auth');
+const resoudreProprietaireEffectif = require('../middleware/equipe');
 const {
   ajouterLogement,
   getLogements,
@@ -132,7 +133,7 @@ router.get('/:id', getLogement);
 
 // Routes protégées (token JWT obligatoire)
 // Seuls les utilisateurs connectés peuvent faire ces actions
-router.get('/proprietaire/mes-logements', verifierToken, async (req, res) => {
+router.get('/proprietaire/mes-logements', verifierToken, resoudreProprietaireEffectif, async (req, res) => {
   try {
     var result = await db.query(
       `SELECT l.*,
@@ -153,7 +154,7 @@ router.get('/proprietaire/mes-logements', verifierToken, async (req, res) => {
        LEFT JOIN users u ON r.locataire_id = u.id
        WHERE l.proprietaire_id = $1
        ORDER BY l.created_at DESC`,
-      [req.user.id]
+      [req.proprietaireEffectifId]
     );
     res.json({ logements: result.rows });
   } catch (err) {
@@ -163,14 +164,14 @@ router.get('/proprietaire/mes-logements', verifierToken, async (req, res) => {
 });
 
 // Libérer un bien immédiatement (sans préavis)
-router.patch('/:id/liberer', verifierToken, async (req, res) => {
+router.patch('/:id/liberer', verifierToken, resoudreProprietaireEffectif, async (req, res) => {
   try {
     const { id } = req.params;
 
     // Vérifier que c'est bien le proprio
     const check = await db.query(
       'SELECT id FROM logements WHERE id = $1 AND proprietaire_id = $2',
-      [id, req.user.id]
+      [id, req.proprietaireEffectifId]
     );
     if (check.rows.length === 0) {
       return res.status(403).json({ erreur: 'Non autorisé' });
@@ -205,25 +206,22 @@ router.patch('/:id/liberer', verifierToken, async (req, res) => {
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 });
-router.post('/', verifierToken, ajouterLogement);
 const { verifierLimiteBiens, verifierFonctionnalite } = require('../middleware/verifierPlan');
 
 // Ajouter un bien — vérifier la limite du plan
-router.post('/', verifierToken, verifierLimiteBiens, valider('logement'), async (req, res) => {
-  // ... code existant ...
-});
-router.put('/:id', verifierToken, modifierLogement);
-router.delete('/:id', verifierToken, supprimerLogement);
+router.post('/', verifierToken, resoudreProprietaireEffectif, verifierLimiteBiens, valider('logement'), ajouterLogement);
+router.put('/:id', verifierToken, resoudreProprietaireEffectif, modifierLogement);
+router.delete('/:id', verifierToken, resoudreProprietaireEffectif, supprimerLogement);
 
 // ─── UPLOAD PHOTOS D'UN LOGEMENT ─────────────────────────────────
-router.post('/:id/photos', verifierToken, upload.array('photos', 10), async (req, res) => {
+router.post('/:id/photos', verifierToken, resoudreProprietaireEffectif, upload.array('photos', 10), async (req, res) => {
   try {
     const { id } = req.params;
 
     // Vérifier que c'est bien le proprio
     var check = await db.query(
       'SELECT id FROM logements WHERE id = $1 AND proprietaire_id = $2',
-      [id, req.user.id]
+      [id, req.proprietaireEffectifId]
     );
     if (check.rows.length === 0) {
       return res.status(403).json({ erreur: 'Non autorisé' });
@@ -258,14 +256,14 @@ router.post('/:id/photos', verifierToken, upload.array('photos', 10), async (req
 });
 
 // ─── SUPPRIMER UNE PHOTO ─────────────────────────────────────────
-router.delete('/:id/photos', verifierToken, async (req, res) => {
+router.delete('/:id/photos', verifierToken, resoudreProprietaireEffectif, async (req, res) => {
   try {
     const { id }      = req.params;
     const { photoUrl } = req.body;
 
     var check = await db.query(
       'SELECT id, photos FROM logements WHERE id = $1 AND proprietaire_id = $2',
-      [id, req.user.id]
+      [id, req.proprietaireEffectifId]
     );
     if (check.rows.length === 0) {
       return res.status(403).json({ erreur: 'Non autorisé' });

@@ -274,7 +274,7 @@ const getPaiementsProprietaire = async (req, res) => {
        JOIN users u ON p.locataire_id = u.id
        WHERE p.proprietaire_id = $1
        ORDER BY p.created_at DESC`,
-      [req.user.id]
+      [req.proprietaireEffectifId || req.user.id]
     );
 
     res.json({

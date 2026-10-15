@@ -2,6 +2,7 @@ const express = require('express');
 const router  = express.Router();
 const db      = require('../database');
 const verifierToken = require('../middleware/auth');
+const resoudreProprietaireEffectif = require('../middleware/equipe');
 const { getPlan, FONCTIONNALITES } = require('../middleware/verifierPlan');
 
 // Remettre en ligne les biens masqués automatiquement lors d'une précédente
@@ -87,20 +88,21 @@ async function envoyerFactureParEmail(userId, plan, montant, cycle, debut, fin) 
 }
 
 // ─── MON ABONNEMENT ACTUEL ───────────────────────────────────────
-router.get('/mon-plan', verifierToken, async (req, res) => {
+router.get('/mon-plan', verifierToken, resoudreProprietaireEffectif, async (req, res) => {
   try {
-    var plan   = await getPlan(req.user.id);
+    var proprietaireId = req.proprietaireEffectifId;
+    var plan   = await getPlan(proprietaireId);
     var droits = FONCTIONNALITES[plan] || FONCTIONNALITES.gratuit;
 
     var nbBiens = await db.query(
       'SELECT COUNT(*) FROM logements WHERE proprietaire_id = $1',
-      [req.user.id]
+      [proprietaireId]
     );
 
     var abonnement = await db.query(
       `SELECT * FROM abonnements WHERE user_id = $1
        ORDER BY created_at DESC LIMIT 1`,
-      [req.user.id]
+      [proprietaireId]
     );
 
     var abo = abonnement.rows[0] || null;
@@ -111,7 +113,7 @@ router.get('/mon-plan', verifierToken, async (req, res) => {
 
     var biensMasques = await db.query(
       'SELECT COUNT(*) FROM logements WHERE proprietaire_id = $1 AND masque_limite_plan = TRUE',
-      [req.user.id]
+      [proprietaireId]
     );
 
     res.json({
@@ -123,6 +125,7 @@ router.get('/mon-plan', verifierToken, async (req, res) => {
       jours_restants:  joursRestants,
       prix:            PRIX_MENSUEL,
       cycles:          CYCLES,
+      est_membre_equipe: proprietaireId !== req.user.id,
     });
   } catch (err) {
     console.error('[GET /mon-plan]', err.message);
@@ -131,7 +134,7 @@ router.get('/mon-plan', verifierToken, async (req, res) => {
 });
 
 // ─── HISTORIQUE DES FACTURES ──────────────────────────────────────
-router.get('/factures', verifierToken, async (req, res) => {
+router.get('/factures', verifierToken, resoudreProprietaireEffectif, async (req, res) => {
   try {
     var result = await db.query(
       `SELECT id, plan, montant, cycle, periode_debut, periode_fin, statut,
@@ -140,7 +143,7 @@ router.get('/factures', verifierToken, async (req, res) => {
        WHERE user_id = $1
        ORDER BY created_at DESC
        LIMIT 50`,
-      [req.user.id]
+      [req.proprietaireEffectifId]
     );
     res.json({ factures: result.rows });
   } catch (err) {

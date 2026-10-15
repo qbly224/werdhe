@@ -63,7 +63,7 @@ async function obtenirDroits(userId) {
 function verifierFonctionnalite(fonctionnalite) {
   return async function(req, res, next) {
     try {
-      var plan = await getPlan(req.user.id);
+      var plan = await getPlan(req.proprietaireEffectifId || req.user.id);
       var droits = FONCTIONNALITES[plan] || FONCTIONNALITES.gratuit;
 
       if (!droits[fonctionnalite]) {
@@ -84,12 +84,13 @@ function verifierFonctionnalite(fonctionnalite) {
 // Middleware : vérifier la limite de biens
 async function verifierLimiteBiens(req, res, next) {
   try {
-    var plan = await getPlan(req.user.id);
+    var proprietaireId = req.proprietaireEffectifId || req.user.id;
+    var plan = await getPlan(proprietaireId);
     var droits = FONCTIONNALITES[plan] || FONCTIONNALITES.gratuit;
 
     var result = await db.query(
       'SELECT COUNT(*) FROM logements WHERE proprietaire_id = $1',
-      [req.user.id]
+      [proprietaireId]
     );
     var nbBiens = parseInt(result.rows[0].count);
 
