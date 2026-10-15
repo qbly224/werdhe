@@ -390,6 +390,28 @@ const emailRapportMensuel = async (proprietaire, periode, pdfBuffer) => {
   } catch (err) { console.warn('[Email rapport mensuel]', err.message); return false; }
 };
 
+// ─── CONTACT SUPPORT PRIORITAIRE (plan Agence) ──────────────────────
+function echapperHtml(texte) {
+  return String(texte)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+const envoyerEmailSupport = async (compte, sujet, message) => {
+  var supportEmail = process.env.SUPPORT_EMAIL || 'contact@werdhe.com';
+  return envoyer(supportEmail, '[Support Agence] ' + echapperHtml(sujet), templateBase(`
+    ${hdr('#1565C0', '', 'Demande de support prioritaire', 'Compte Agence')}
+    <div style="padding:24px;">
+      <div style="background:#F7F8F7;border-radius:10px;padding:14px 18px;margin-bottom:16px;">
+        ${ligne('Nom', echapperHtml(compte.prenom + ' ' + compte.nom))}${ligne('Email', echapperHtml(compte.email))}${ligne('Téléphone', echapperHtml(compte.telephone || '—'))}${ligne('Plan', echapperHtml(compte.plan))}
+      </div>
+      <p style="font-size:13px;color:#888;margin:0 0 4px;font-weight:700;">Sujet</p>
+      <p style="font-size:14px;color:#1B2B22;margin:0 0 16px;">${echapperHtml(sujet)}</p>
+      <p style="font-size:13px;color:#888;margin:0 0 4px;font-weight:700;">Message</p>
+      <p style="font-size:14px;color:#555;line-height:1.7;white-space:pre-wrap;">${echapperHtml(message)}</p>
+    </div>`, 'Support Agence'));
+};
+
 module.exports = {
   envoyerEmailReset,
   envoyerEmailDocument,
@@ -406,4 +428,5 @@ module.exports = {
   emailPaiementEnregistre,
   emailInvitationEquipe,
   emailRapportMensuel,
+  envoyerEmailSupport,
 };

@@ -376,6 +376,15 @@
       "toastInvitationEnvoyee": "Invitation sent by email!",
       "toastMembreRetire": "Member removed from the team"
     },
+    "support": {
+      "titre": "Priority support",
+      "sousTitre": "Contact the Werdhe team directly (Agency plan)",
+      "placeholderSujet": "Subject of your request",
+      "placeholderMessage": "Describe your request...",
+      "envoyer": "Send",
+      "envoiEnCours": "Sending...",
+      "toastEnvoye": "Message sent to the Werdhe team!"
+    },
     "abonnementTitre": "{{plan}} Subscription - {{cycle}}",
     "infosCompte": "Account information",
     "emailLabel": "Email:",

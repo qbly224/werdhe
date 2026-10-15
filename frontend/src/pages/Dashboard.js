@@ -4315,6 +4315,8 @@ function OngletParametres(props) {
   var [equipeMembres, setEquipeMembres] = useState([]);
   var [emailInvite, setEmailInvite] = useState('');
   var [invitingLoading, setInvitingLoading] = useState(false);
+  var [formSupport, setFormSupport] = useState({ sujet: '', message: '' });
+  var [envoiSupportLoading, setEnvoiSupportLoading] = useState(false);
 
   var PRIX_ABONNEMENT = { pro: 120000, agence: 300000 };
   var CYCLES_ABONNEMENT = {
@@ -4357,6 +4359,18 @@ function OngletParametres(props) {
     api.delete('/equipe/' + id)
       .then(function() { toast.success(t('ongletParametres.equipe.toastMembreRetire')); chargerEquipe(); })
       .catch(function() { toast.error(t('ongletParametres.erreur')); });
+  }
+
+  function envoyerSupport(e) {
+    e.preventDefault();
+    setEnvoiSupportLoading(true);
+    api.post('/support/contacter', formSupport)
+      .then(function() {
+        toast.success(t('ongletParametres.support.toastEnvoye'));
+        setFormSupport({ sujet: '', message: '' });
+      })
+      .catch(function(err) { toast.error(err.response && err.response.data ? err.response.data.erreur : t('ongletParametres.erreur')); })
+      .finally(function() { setEnvoiSupportLoading(false); });
   }
 
   useEffect(function() {
@@ -4589,6 +4603,25 @@ function OngletParametres(props) {
         })}
       </div>
     )}
+  </div>
+)}
+
+{user && user.role !== 'locataire' && monAbonnement && monAbonnement.plan === 'agence' && !monAbonnement.est_membre_equipe && (
+  <div style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginBottom: 12 }}>
+    <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 4 }}>{t('ongletParametres.support.titre')}</div>
+    <div style={{ fontSize: 12, color: '#888', marginBottom: 12 }}>{t('ongletParametres.support.sousTitre')}</div>
+    <form onSubmit={envoyerSupport}>
+      <input type="text" required placeholder={t('ongletParametres.support.placeholderSujet')} value={formSupport.sujet}
+        onChange={function(e) { setFormSupport(Object.assign({}, formSupport, { sujet: e.target.value })); }}
+        style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, marginBottom: 10, boxSizing: 'border-box' }} />
+      <textarea required rows={4} placeholder={t('ongletParametres.support.placeholderMessage')} value={formSupport.message}
+        onChange={function(e) { setFormSupport(Object.assign({}, formSupport, { message: e.target.value })); }}
+        style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, marginBottom: 10, boxSizing: 'border-box', fontFamily: 'inherit', resize: 'vertical' }} />
+      <button type="submit" disabled={envoiSupportLoading}
+        style={{ background: envoiSupportLoading ? '#aaa' : '#1565C0', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 18px', fontSize: 13, fontWeight: 700, cursor: envoiSupportLoading ? 'not-allowed' : 'pointer' }}>
+        {envoiSupportLoading ? t('ongletParametres.support.envoiEnCours') : t('ongletParametres.support.envoyer')}
+      </button>
+    </form>
   </div>
 )}
           <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
