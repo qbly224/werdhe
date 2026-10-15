@@ -645,4 +645,35 @@ cron.schedule('15 8 * * *', async function() {
   }
 });
 
+// ════════════════════════════════════════════════════════
+// CRON 9 — Rapport financier mensuel automatique (plan Agence)
+// Tourne le 1er de chaque mois à 8h15
+// ════════════════════════════════════════════════════════
+cron.schedule('15 8 1 * *', async function() {
+  console.log('[CRON] Rapport financier mensuel — ' + new Date().toLocaleDateString('fr-FR'));
+  try {
+    var { genererRapportFinancierPDF } = require('./rapportService');
+    var result = await db.query(
+      `SELECT id, prenom, email FROM users WHERE plan = 'agence'`
+    );
+
+    var periode = new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+    var nbEnvoyes = 0;
+
+    for (var u of result.rows) {
+      try {
+        var pdfBuffer = await genererRapportFinancierPDF(u.id);
+        var ok = await emailService.emailRapportMensuel(u, periode, pdfBuffer);
+        if (ok) nbEnvoyes++;
+      } catch (err) {
+        console.warn('[CRON Rapport mensuel] Échec pour ' + u.email + ':', err.message);
+      }
+    }
+
+    console.log('[CRON Rapport mensuel]', nbEnvoyes, '/', result.rows.length, 'rapport(s) envoyé(s)');
+  } catch (err) {
+    console.error('[CRON Rapport mensuel] Erreur:', err.message);
+  }
+});
+
 module.exports = {};
