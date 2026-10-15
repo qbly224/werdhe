@@ -127,7 +127,7 @@ if (user.role === 'admin') {
               <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
                 <div style="background:#14251A;padding:28px 24px;text-align:center;">
                   <table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;"><tr>
-                    <td style="width:38px;height:38px;border-radius:10px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:18px;color:#14251A;">W</td>
+                    <td style="width:38px;height:38px;"><img src="https://werdhe.com/logo192.png" width="38" height="38" alt="Werdhe" style="display:block;border-radius:10px;width:38px;height:38px;" /></td>
                     <td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:18px;color:#fff;">Werdhe Admin</td>
                   </tr></table>
                 </div>
@@ -261,7 +261,7 @@ if (userExistant.rows.length > 0 && userExistant.rows[0].email && process.env.RE
             <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
               <div style="background:#14251A;padding:28px 24px;text-align:center;">
                 <table role="presentation" align="center" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;"><tr>
-                  <td style="width:38px;height:38px;border-radius:10px;background:#F5A623;text-align:center;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:900;font-size:18px;color:#14251A;">W</td>
+                  <td style="width:38px;height:38px;"><img src="https://werdhe.com/logo192.png" width="38" height="38" alt="Werdhe" style="display:block;border-radius:10px;width:38px;height:38px;" /></td>
                   <td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:18px;color:#fff;">Werdhe</td>
                 </tr></table>
               </div>
