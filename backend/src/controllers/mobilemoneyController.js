@@ -1,4 +1,5 @@
 const db = require('../database');
+const { obtenirDroits } = require('../middleware/verifierPlan');
 
 // ================================================
 // CONFIGURATION APIs Mobile Money
@@ -54,12 +55,23 @@ async function initierOrangeMoney(req, res) {
 
     // Vérifier que la réservation existe
     var resaResult = await db.query(
-      'SELECT * FROM reservations WHERE id = $1 AND locataire_id = $2',
+      `SELECT r.*, l.proprietaire_id
+       FROM reservations r
+       JOIN logements l ON r.logement_id = l.id
+       WHERE r.id = $1 AND r.locataire_id = $2`,
       [reservation_id, req.user.id]
     );
 
     if (resaResult.rows.length === 0) {
       return res.status(404).json({ erreur: 'Reservation non trouvee' });
+    }
+
+    var droitsProprio = await obtenirDroits(resaResult.rows[0].proprietaire_id);
+    if (!droitsProprio.mobile_money) {
+      return res.status(403).json({
+        erreur: 'Le paiement par Orange Money n\'est pas disponible pour ce logement (le propriétaire n\'a pas le plan Pro ou Agence).',
+        code: 'MOBILE_MONEY_INDISPONIBLE'
+      });
     }
 
     // Enregistrer la tentative de paiement
@@ -157,12 +169,23 @@ async function initierMTNMomo(req, res) {
     var reference = genererReference();
 
     var resaResult = await db.query(
-      'SELECT * FROM reservations WHERE id = $1 AND locataire_id = $2',
+      `SELECT r.*, l.proprietaire_id
+       FROM reservations r
+       JOIN logements l ON r.logement_id = l.id
+       WHERE r.id = $1 AND r.locataire_id = $2`,
       [reservation_id, req.user.id]
     );
 
     if (resaResult.rows.length === 0) {
       return res.status(404).json({ erreur: 'Reservation non trouvee' });
+    }
+
+    var droitsProprio = await obtenirDroits(resaResult.rows[0].proprietaire_id);
+    if (!droitsProprio.mobile_money) {
+      return res.status(403).json({
+        erreur: 'Le paiement par MTN MoMo n\'est pas disponible pour ce logement (le propriétaire n\'a pas le plan Pro ou Agence).',
+        code: 'MOBILE_MONEY_INDISPONIBLE'
+      });
     }
 
     var paiementResult = await db.query(

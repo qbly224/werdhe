@@ -1,6 +1,7 @@
 const db = require('../database');
 const { genererDocument, genererPdfDepuisHtml, genererHTMLCertificatSignature } = require('../services/documentService');
 const { envoyerEmailDocument } = require('../services/emailService');
+const { obtenirDroits } = require('../middleware/verifierPlan');
 const multer = require('multer');
 
 // ================================================
@@ -76,6 +77,19 @@ const genererDocumentManuel = async (req, res) => {
     // Vérifier que l'utilisateur est proprio ou locataire de cette réservation
     if (r.proprietaire_id !== req.user.id && r.locataire_id !== req.user.id) {
       return res.status(403).json({ erreur: 'Non autorise' });
+    }
+
+    // La génération manuelle de documents (bail, quittance, etc.) par le
+    // propriétaire est réservée aux plans Pro/Agence — le locataire peut
+    // toujours générer les siens (quittance, état des lieux, préavis).
+    if (req.user.role !== 'locataire') {
+      var droitsProprio = await obtenirDroits(r.proprietaire_id);
+      if (!droitsProprio.documents_pdf) {
+        return res.status(403).json({
+          erreur: 'Les baux et quittances PDF ne sont disponibles qu\'avec les plans Pro ou Agence.',
+          code: 'DOCUMENTS_PDF_INDISPONIBLE'
+        });
+      }
     }
 
     // Construire les données pour la génération
@@ -171,7 +185,8 @@ const genererQuittancesMensuelles = async (req, res) => {
        JOIN users u_loc ON r.locataire_id = u_loc.id
        WHERE r.statut = 'confirmee'
        AND r.bail_signe = TRUE
-       AND (r.date_fin IS NULL OR r.date_fin > NOW())`
+       AND (r.date_fin IS NULL OR r.date_fin > NOW())
+       AND u_prop.plan IN ('pro', 'agence')`
     );
 
     var moisActuel = new Date().getMonth() + 1;

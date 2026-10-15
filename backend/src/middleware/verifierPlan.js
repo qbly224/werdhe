@@ -3,28 +3,40 @@ const db = require('../database');
 // Fonctionnalités par plan
 var FONCTIONNALITES = {
   gratuit: {
-    max_biens:        2,
-    mobile_money:     false,
-    documents_pdf:    false,
-    annuaire:         false,
-    rapports:         false,
-    multi_users:      false,
+    max_biens:            2,
+    mobile_money:         false,
+    documents_pdf:        false,
+    annuaire:             false,
+    rapports:             false,
+    alertes_auto:         false,
+    multi_users:          false,
+    max_membres:          0,
+    rapport_mensuel:      false,
+    support_prioritaire:  false,
   },
   pro: {
-    max_biens:        25,
-    mobile_money:     true,
-    documents_pdf:    true,
-    annuaire:         true,
-    rapports:         true,
-    multi_users:      false,
+    max_biens:            25,
+    mobile_money:         true,
+    documents_pdf:        true,
+    annuaire:             true,
+    rapports:             true,
+    alertes_auto:         true,
+    multi_users:          false,
+    max_membres:          0,
+    rapport_mensuel:      false,
+    support_prioritaire:  false,
   },
   agence: {
-    max_biens:        Infinity,
-    mobile_money:     true,
-    documents_pdf:    true,
-    annuaire:         true,
-    rapports:         true,
-    multi_users:      true,
+    max_biens:            Infinity,
+    mobile_money:         true,
+    documents_pdf:        true,
+    annuaire:             true,
+    rapports:             true,
+    alertes_auto:         true,
+    multi_users:          true,
+    max_membres:          5,
+    rapport_mensuel:      true,
+    support_prioritaire:  true,
   }
 };
 
@@ -39,6 +51,12 @@ async function getPlan(userId) {
   } catch (err) {
     return 'gratuit';
   }
+}
+
+// Récupérer les droits (fonctionnalités) d'un utilisateur, par son id
+async function obtenirDroits(userId) {
+  var plan = await getPlan(userId);
+  return FONCTIONNALITES[plan] || FONCTIONNALITES.gratuit;
 }
 
 // Middleware : vérifier une fonctionnalité
@@ -90,4 +108,4 @@ async function verifierLimiteBiens(req, res, next) {
   }
 }
 
-module.exports = { verifierFonctionnalite, verifierLimiteBiens, getPlan, FONCTIONNALITES };
+module.exports = { verifierFonctionnalite, verifierLimiteBiens, getPlan, obtenirDroits, FONCTIONNALITES };

@@ -3864,16 +3864,27 @@ function OngletHistorique(props) {
 function OngletRapports(props) {
   var t = useTranslation('dashboard').t;
   var user = props.user;
+  var plan = props.plan || { plan: 'gratuit', droits: { rapports: false } };
   var [data, setData]         = useState(null);
   var [loading, setLoading]   = useState(true);
   var [periode, setPeriode]   = useState('12mois');
 
   useEffect(function() {
+    if (!plan.droits.rapports) { setLoading(false); return; }
     api.get('/rapports/financier?periode=' + periode)
       .then(function(res) { setData(res.data); })
       .catch(function(err) { console.error('[Rapports]', err.message); })
       .finally(function() { setLoading(false); });
-  }, [periode]);
+  }, [periode, plan.droits.rapports]);
+
+  if (!plan.droits.rapports) {
+    return (
+      <div>
+        <div className="dash-page-header"><div><h1>{t('ongletRapports.titre')}</h1></div></div>
+        <UpgradeBanner fonctionnalite="rapports" planRequis="Pro" />
+      </div>
+    );
+  }
 
   function exportCSV() {
     if (!data) return;
@@ -5028,7 +5039,7 @@ function chargerDonnees() {
     if (onglet === '/dashboard/reclamations') return <OngletReclamations />;
     if (onglet === '/dashboard/parametres') return <OngletParametres user={user} tour={tour} />;
     if (onglet === '/dashboard/mes-locations') return <OngletMesLocations stats={stats} setOnglet={setOnglet} />;
-    if (onglet === '/dashboard/rapports') return <OngletRapports user={user} />;
+    if (onglet === '/dashboard/rapports') return <OngletRapports user={user} plan={monPlan} />;
     if (onglet === '/dashboard/historique') return <OngletHistorique user={user} />;
     return <OngletOverview stats={stats} user={user} alertes={alertes} setOnglet={setOnglet} />;
   }, [onglet, stats, user, alertes, monPlan]);
