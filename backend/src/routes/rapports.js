@@ -351,7 +351,6 @@ router.get('/overview', verifierToken, resoudreProprietaireEffectif, async (req,
       alertes:      alertes.rows,
       evenements:   evenements.rows,
       revenus6mois: revenus6mois.rows,
-      candidatures:  candidatures.rows[0],
       meilleur_mois: null,
     });
 
