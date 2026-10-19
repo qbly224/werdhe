@@ -369,12 +369,13 @@ export default function Pricing() {
       {/* Tableau comparatif */}
       <div style={{ maxWidth: 900, margin: '0 auto 48px', padding: '0 20px' }}>
         <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', textAlign: 'center', margin: '0 0 20px' }}>{t('pricing.comparaison')}</h2>
-        <div style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', overflowX: 'auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', background: '#1B2B22', padding: '16px 20px', gap: 8, minWidth: 560 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.5)' }}>{t('pricing.table.fonctionnalite')}</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#90CAF9', textAlign: 'center' }}>{t('pricing.plans.gratuit.nom')}</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#F5A623', textAlign: 'center' }}>{t('pricing.plans.pro.nom')}</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#CE93D8', textAlign: 'center' }}>{t('pricing.plans.agence.nom')}</div>
+        <div style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', overflowX: 'auto', border: '1px solid rgba(245,166,35,0.12)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', background: '#1B2B22', padding: '16px 20px', gap: 8, minWidth: 560, position: 'relative', overflow: 'hidden' }}>
+            <BlueprintPattern opacity={0.05} color="#F5A623" size={36} />
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.5)', position: 'relative' }}>{t('pricing.table.fonctionnalite')}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#90CAF9', textAlign: 'center', position: 'relative' }}>{t('pricing.plans.gratuit.nom')}</div>
+            <div style={{ fontSize: 13, fontWeight: 900, textAlign: 'center', position: 'relative', ...gradientOr }}>{t('pricing.plans.pro.nom')}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#CE93D8', textAlign: 'center', position: 'relative' }}>{t('pricing.plans.agence.nom')}</div>
           </div>
           {[
             { label: t('pricing.table.logementsGeres'),            vals: ['-', '20', t('pricing.table.illimites')]    },
@@ -393,7 +394,7 @@ export default function Pricing() {
                 <div style={{ fontSize: 13, color: '#555' }}>{row.label}</div>
                 {row.vals.map(function(v, vi) {
                   return (
-                    <div key={vi} style={{ textAlign: 'center' }}>
+                    <div key={vi} style={{ textAlign: 'center', background: vi === 1 ? 'rgba(245,166,35,0.05)' : 'transparent', borderRadius: 6, padding: '2px 0' }}>
                       {v === true
                         ? <Check size={16} strokeWidth={2.5} color={colors[vi]} />
                         : v === false
@@ -416,7 +417,7 @@ export default function Pricing() {
           {FAQ_ITEMS.map(function(item, i) {
             var open = openFaq === i;
             return (
-              <div key={i} style={{ background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 6px rgba(0,0,0,0.05)', border: open ? '1px solid #A5D6A7' : '1px solid transparent' }}>
+              <div key={i} style={{ background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: open ? '0 6px 20px rgba(27,107,58,0.12)' : '0 2px 6px rgba(0,0,0,0.05)', border: '1px solid transparent', borderLeft: open ? '3px solid #F5A623' : '3px solid transparent', transition: 'box-shadow .2s, border-color .2s' }}>
                 <button onClick={function() { setOpenFaq(open ? null : i); }}
                   style={{ width: '100%', padding: '16px 18px', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', textAlign: 'left', gap: 12 }}>
                   <span style={{ fontSize: 14, fontWeight: 600, color: '#1B2B22' }}>{item.q}</span>
@@ -434,11 +435,14 @@ export default function Pricing() {
       </div>
 
       {/* CTA */}
-      <div style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', padding: 'clamp(40px, 6vw, 64px) 24px', textAlign: 'center' }}>
-        <h2 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 900, color: '#fff', margin: '0 0 12px' }}>{t('pricing.pretACommencer')}</h2>
-        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', margin: '0 0 28px' }}>{t('pricing.ctaSousTitre')}</p>
+      <div style={{ background: 'linear-gradient(160deg, #0F1E14 0%, #1B2B22 55%, #16321F 100%)', padding: 'clamp(40px, 6vw, 64px) 24px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+        <BlueprintPattern opacity={0.05} color="#F5A623" size={56} />
+        <PlanMasseMotif opacity={0.1} color="#F5A623" width={200} height={170} style={{ position: 'absolute', top: -10, left: -10, display: window.innerWidth < 640 ? 'none' : 'block' }} />
+        <PlanMasseMotif opacity={0.1} color="#F5A623" width={200} height={170} style={{ position: 'absolute', bottom: -10, right: -10, transform: 'scaleX(-1)', display: window.innerWidth < 640 ? 'none' : 'block' }} />
+        <h2 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 900, margin: '0 0 12px', position: 'relative', ...gradientOr }}>{t('pricing.pretACommencer')}</h2>
+        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', margin: '0 0 28px', position: 'relative' }}>{t('pricing.ctaSousTitre')}</p>
         <button onClick={function() { choisirPlan('pro'); }}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, border: 'none', background: '#F5A623', color: '#1B2B22', fontWeight: 800, fontSize: 15, cursor: 'pointer' }}>
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, border: 'none', background: '#F5A623', color: '#1B2B22', fontWeight: 800, fontSize: 15, cursor: 'pointer', position: 'relative', boxShadow: '0 8px 24px rgba(245,166,35,0.3)' }}>
           {t('pricing.demarrerEssai')} <ArrowRight size={16} strokeWidth={2.5} />
         </button>
       </div>
