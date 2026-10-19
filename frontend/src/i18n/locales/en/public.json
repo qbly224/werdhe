@@ -30,6 +30,11 @@
       "studios": "Studios",
       "colocations": "Shared housing"
     },
+    "annotations": {
+      "visite": "Visited on site",
+      "mesures": "Measurements verified",
+      "sansFrais": "No hidden fees"
+    },
     "trust": {
       "label": "Accepted payments",
       "especes": "Cash",
@@ -821,6 +826,9 @@
     "valider": "Apply",
     "codeValideReduction": "Valid code! -{{pct}}% on the {{plan}} plan",
     "comparaison": "Comparison",
+    "registreOverline": "Pricing ledger",
+    "abonnement": "Subscription",
+    "tampon": "Recommended by 7 out of 10 agencies",
     "table": {
       "fonctionnalite": "Feature",
       "logementsGeres": "Properties managed",
