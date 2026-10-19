@@ -13,9 +13,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import { PlanMasseMotif } from '../components/BlueprintPattern';
-
-var gradientOr = { background: 'linear-gradient(135deg, #F5A623 0%, #FFD98E 55%, #F5A623 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' };
+import OdometerNumber from '../components/OdometerNumber';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
 
@@ -395,104 +393,77 @@ useEffect(function() {
           </button>
         </div>
       )}
-      {/* ─── FOND ANIMÉ GUINÉE ──────────────────────────────── */}
-      <div style={{ position: 'absolute', top: 60, left: 0, right: 0, height: 600, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
-        <svg viewBox="0 0 1440 600" style={{ width: '100%', height: '100%', opacity: 0.07 }} xmlns="http://www.w3.org/2000/svg">
-          {/* Maisons guinéennes stylisées */}
-          <g transform="translate(100, 200)">
-            <polygon points="60,0 120,60 0,60" fill="#1B6B3A" />
-            <rect x="20" y="60" width="80" height="80" fill="#1B6B3A" />
-            <rect x="45" y="100" width="30" height="40" fill="#F5A623" />
-          </g>
-          <g transform="translate(300, 220)">
-            <polygon points="50,0 100,50 0,50" fill="#1B6B3A" />
-            <rect x="15" y="50" width="70" height="70" fill="#1B6B3A" />
-            <rect x="35" y="85" width="25" height="35" fill="#F5A623" />
-          </g>
-          <g transform="translate(1100, 180)">
-            <polygon points="70,0 140,70 0,70" fill="#1B6B3A" />
-            <rect x="25" y="70" width="90" height="90" fill="#1B6B3A" />
-            <rect x="50" y="110" width="35" height="50" fill="#F5A623" />
-          </g>
-          <g transform="translate(1280, 210)">
-            <polygon points="50,0 100,50 0,50" fill="#1B6B3A" />
-            <rect x="15" y="50" width="70" height="70" fill="#1B6B3A" />
-          </g>
-          {/* Collines guinéennes */}
-          <ellipse cx="200" cy="520" rx="300" ry="120" fill="#1B6B3A" />
-          <ellipse cx="800" cy="550" rx="400" ry="100" fill="#1B6B3A" />
-          <ellipse cx="1300" cy="530" rx="280" ry="110" fill="#1B6B3A" />
-          {/* Soleil */}
-          <circle cx="1350" cy="120" r="60" fill="#F5A623" opacity="0.5" />
-          {/* Palmiers */}
-          <line x1="550" y1="500" x2="550" y2="350" stroke="#1B6B3A" strokeWidth="8" />
-          <ellipse cx="550" cy="340" rx="40" ry="20" fill="#1B6B3A" transform="rotate(-20, 550, 340)" />
-          <ellipse cx="550" cy="340" rx="40" ry="20" fill="#1B6B3A" transform="rotate(20, 550, 340)" />
-          <ellipse cx="550" cy="340" rx="40" ry="20" fill="#1B6B3A" transform="rotate(60, 550, 340)" />
-          <line x1="900" y1="490" x2="900" y2="370" stroke="#1B6B3A" strokeWidth="6" />
-          <ellipse cx="900" cy="360" rx="30" ry="15" fill="#1B6B3A" transform="rotate(-20, 900, 360)" />
-          <ellipse cx="900" cy="360" rx="30" ry="15" fill="#1B6B3A" transform="rotate(30, 900, 360)" />
-        </svg>
+      {/* ─── HERO « CARNET D'ARCHITECTE » ──────────────────────── */}
+      <section ref={heroRef} className="hero-split">
 
-        {/* Motifs architecturaux */}
-        <PlanMasseMotif opacity={0.09} color="#1B6B3A" width={220} height={190} style={{ position: 'absolute', bottom: 40, left: '6%' }} />
-        <PlanMasseMotif opacity={0.09} color="#1B6B3A" width={220} height={190} style={{ position: 'absolute', bottom: 40, right: '6%', transform: 'scaleX(-1)' }} />
-      </div>
-      {/* ─── HERO PLEIN ÉCRAN ────────────────────────────────── */}
-      <section ref={heroRef} style={{ position: 'relative', height: '100vh', minHeight: 600, maxHeight: 900, overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        {/* Panneau photo — duotone + annotations techniques */}
+        <div className="hero-photo-panel">
+          {SLIDES.map(function(slide, i) {
+            return (
+              <div key={i} style={{ position: 'absolute', inset: 0, opacity: slideActif === i ? 1 : 0, transition: 'opacity 1.4s ease' }}>
+                <img src={slide.img} alt="" className="hero-duotone-img"
+                  style={{ transform: 'translate(' + (souris.x * -0.3) + 'px, ' + (souris.y * -0.3) + 'px)' }} />
+              </div>
+            );
+          })}
+          <div className="hero-photo-fade" />
 
-        {/* Photos slides */}
-        {SLIDES.map(function(slide, i) {
-          return (
-            <div key={i} style={{ position: 'absolute', inset: 0, opacity: slideActif === i ? 1 : 0, transition: 'opacity 1.4s ease', zIndex: 0 }}>
-            <img src={slide.img} alt="" style={{ width: '105%', height: '105%', objectFit: 'cover', objectPosition: 'center', transform: 'translate(' + (souris.x * -0.5) + 'px, ' + (souris.y * -0.5) + 'px)', transition: 'transform 0.15s ease-out', marginLeft: '-2.5%', marginTop: '-2.5%' }} />
-            </div>
-          );
-        })}
+          <svg className="hero-annot-svg" viewBox="0 0 800 900" preserveAspectRatio="none">
+            <path className="hero-annot-line l1" d="M 560 170 L 650 130 L 740 130" />
+            <circle className="hero-annot-dot l1" cx="560" cy="170" r="4" />
+            <path className="hero-annot-line l2" d="M 160 430 L 70 470 L -10 470" />
+            <circle className="hero-annot-dot l2" cx="160" cy="430" r="4" />
+            <path className="hero-annot-line l3" d="M 470 700 L 560 750 L 650 750" />
+            <circle className="hero-annot-dot l3" cx="470" cy="700" r="4" />
+          </svg>
+          <div className="hero-annot-label l1" style={{ top: '11%', right: '7%' }}>{t('landingPage.annotations.visite')}</div>
+          <div className="hero-annot-label l2" style={{ top: '49%', left: '4%' }}>{t('landingPage.annotations.mesures')}</div>
+          <div className="hero-annot-label l3" style={{ top: '81%', right: '19%' }}>{t('landingPage.annotations.sansFrais')}</div>
 
-        {/* Overlay dégradé */}
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%)', zIndex: 1 }} />
+          <div className="hero-slide-dots">
+            {SLIDES.map(function(_, i) {
+              return (
+                <button key={i} onClick={function() { setSlideActif(i); }}
+                  style={{ width: slideActif === i ? 26 : 7, height: 7, borderRadius: 4, border: 'none', background: slideActif === i ? '#F5A623' : 'rgba(255,255,255,0.5)', cursor: 'pointer', transition: 'all .4s', padding: 0 }} />
+              );
+            })}
+          </div>
+        </div>
 
-        {/* Contenu hero */}
-        <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 960, margin: '0 auto', padding: '0 24px', textAlign: 'center', transform: 'translate(' + (souris.x * 0.3) + 'px, ' + (souris.y * 0.3) + 'px)', transition: 'transform 0.1s ease-out' }}>
-
-          {/* Badge */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 20, padding: '6px 16px', marginBottom: 24 }}>
-            <div style={{ width: 7, height: 7, background: '#F5A623', borderRadius: '50%' }} />
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.95)', fontWeight: 600 }}>{SLIDES[slideActif].tag}</span>
+        {/* Panneau de texte — carnet / registre */}
+        <div className="hero-copy-panel">
+          <div className="hero-tape" />
+          <div className="hero-kicker">
+            <span className="hero-kicker-line" />
+            <span>{SLIDES[slideActif].tag}</span>
           </div>
 
-          {/* Titre */}
-          <h1 style={{ fontSize: 'clamp(32px, 6vw, 68px)', fontWeight: 900, color: '#fff', margin: '0 0 14px', letterSpacing: -1.5, lineHeight: 1.08, textShadow: '0 2px 24px rgba(0,0,0,0.4)' }}>
-            {SLIDES[slideActif].titre}
-          </h1>
-          <p style={{ fontSize: 'clamp(15px, 2vw, 19px)', color: 'rgba(255,255,255,0.85)', margin: '0 auto 36px', lineHeight: 1.6, maxWidth: 580 }}>
-            {SLIDES[slideActif].sous}
-          </p>
+          <h1 className="hero-display">{SLIDES[slideActif].titre}</h1>
+          <p className="hero-sub">{SLIDES[slideActif].sous}</p>
 
-          {/* Barre de recherche */}
-          <div style={{ background: '#fff', borderRadius: 16, padding: 8, display: 'flex', gap: 8, maxWidth: 720, margin: '0 auto 28px', boxShadow: '0 8px 40px rgba(0,0,0,0.25)', flexWrap: 'wrap' }}>
-            <div style={{ flex: 1, minWidth: 140, display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, background: '#F7F8F7' }}>
-              <MapPin size={16} strokeWidth={1.5} color="#1B6B3A" />
-              <select defaultValue="" style={{ border: 'none', background: 'transparent', fontSize: 14, color: '#1B2B22', outline: 'none', width: '100%', cursor: 'pointer' }}>
+          {/* Recherche — registre ligné */}
+          <div className="hero-search-ledger">
+            <div className="hero-search-field">
+              <span className="hero-search-label"><MapPin size={12} strokeWidth={2} /> {t('landingPage.search.toutesLesVilles')}</span>
+              <select defaultValue="">
                 <option value="">{t('landingPage.search.toutesLesVilles')}</option>
                 {['Conakry', 'Kindia', 'Labé', 'Kankan', 'Mamou', 'Boké', 'Faranah', 'N\'Zérékoré'].map(function(v) {
                   return <option key={v} value={v}>{v}</option>;
                 })}
               </select>
             </div>
-            <div style={{ flex: 1, minWidth: 130, display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, background: '#F7F8F7' }}>
-              <Home size={16} strokeWidth={1.5} color="#1B6B3A" />
-              <select defaultValue="" style={{ border: 'none', background: 'transparent', fontSize: 14, color: '#1B2B22', outline: 'none', width: '100%', cursor: 'pointer' }}>
+            <div className="hero-search-field">
+              <span className="hero-search-label"><Home size={12} strokeWidth={2} /> {t('landingPage.search.typeDeBien')}</span>
+              <select defaultValue="">
                 <option value="">{t('landingPage.search.typeDeBien')}</option>
                 {['Appartement', 'Villa', 'Studio', 'Duplex', 'Bureau'].map(function(c) {
                   return <option key={c} value={c.toLowerCase()}>{c}</option>;
                 })}
               </select>
             </div>
-            <div style={{ flex: 1, minWidth: 130, display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, background: '#F7F8F7' }}>
-              <Banknote size={16} strokeWidth={1.5} color="#1B6B3A" />
-              <select defaultValue="" style={{ border: 'none', background: 'transparent', fontSize: 14, color: '#1B2B22', outline: 'none', width: '100%', cursor: 'pointer' }}>
+            <div className="hero-search-field">
+              <span className="hero-search-label"><Banknote size={12} strokeWidth={2} /> {t('landingPage.search.budget')}</span>
+              <select defaultValue="">
                 <option value="">{t('landingPage.search.budget')}</option>
                 <option value="0-500000">{t('landingPage.search.moins500')}</option>
                 <option value="500000-1000000">{t('landingPage.search.500a1M')}</option>
@@ -500,47 +471,30 @@ useEffect(function() {
                 <option value="3000000+">{t('landingPage.search.plus3M')}</option>
               </select>
             </div>
-            <button
-              onClick={function() { navigate('/logements'); }}
-              style={{ padding: '12px 22px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, whiteSpace: 'nowrap' }}>
-              <Search size={16} strokeWidth={2} /> {t('landingPage.search.rechercher')}
+            <button className="hero-search-btn" onClick={function() { navigate('/logements'); }}>
+              <Search size={15} strokeWidth={2.25} /> {t('landingPage.search.rechercher')}
             </button>
           </div>
 
           {/* Badges rapides */}
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 16 }}>
             {[
-              { icon: <Building2 size={13} strokeWidth={1.5} />, label: t('landingPage.quickBadges.appartements') },
-              { icon: <Home size={13} strokeWidth={1.5} />,      label: t('landingPage.quickBadges.villas')       },
-              { icon: <Key size={13} strokeWidth={1.5} />,       label: t('landingPage.quickBadges.studios')      },
-              { icon: <Users size={13} strokeWidth={1.5} />,     label: t('landingPage.quickBadges.colocations')  },
+              { icon: <Building2 size={12} strokeWidth={1.75} />, label: t('landingPage.quickBadges.appartements') },
+              { icon: <Home size={12} strokeWidth={1.75} />,      label: t('landingPage.quickBadges.villas')       },
+              { icon: <Key size={12} strokeWidth={1.75} />,       label: t('landingPage.quickBadges.studios')      },
+              { icon: <Users size={12} strokeWidth={1.75} />,     label: t('landingPage.quickBadges.colocations')  },
             ].map(function(b, i) {
               return (
-                <button key={i} onClick={function() { navigate('/logements'); }}
-                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                <button key={i} onClick={function() { navigate('/logements'); }} className="hero-quick-badge">
                   {b.icon} {b.label}
                 </button>
               );
             })}
           </div>
-        </div>
 
-        {/* Slides nav points */}
-        <div style={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8, zIndex: 2 }}>
-          {SLIDES.map(function(_, i) {
-            return (
-              <button key={i} onClick={function() { setSlideActif(i); }}
-                style={{ width: slideActif === i ? 28 : 8, height: 8, borderRadius: 4, border: 'none', background: slideActif === i ? '#F5A623' : 'rgba(255,255,255,0.5)', cursor: 'pointer', transition: 'all .4s', padding: 0 }} />
-            );
-          })}
-        </div>
-
-        {/* Scroll indicator */}
-        <div style={{ position: 'absolute', bottom: 28, right: 28, zIndex: 2 }}>
-          <div style={{ width: 40, height: 40, borderRadius: '50%', border: '1.5px solid rgba(255,255,255,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', animation: 'flottement 2s ease-in-out infinite' }}
-            onClick={function() { document.getElementById('comment') && document.getElementById('comment').scrollIntoView({ behavior: 'smooth' }); }}>
-            <ChevronRight size={18} color="rgba(255,255,255,0.8)" strokeWidth={2} style={{ transform: 'rotate(90deg)' }} />
-          </div>
+          <button className="hero-ghost-link" onClick={function() { document.getElementById('comment') && document.getElementById('comment').scrollIntoView({ behavior: 'smooth' }); }}>
+            {t('landingPage.nav.commentCaMarche')} <ChevronRight size={14} strokeWidth={2.5} />
+          </button>
         </div>
       </section>
       {/* ─── CONFIANCE ─────────────────────────────────────────── */}
@@ -564,11 +518,12 @@ useEffect(function() {
       <section style={{ background: '#1B2B22', padding: 'clamp(32px, 5vw, 56px) 24px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 8, maxWidth: 900, margin: '0 auto' }}>
           {STATS.map(function(s, i) {
+            var val    = i === 0 ? compteurs.logements : i === 1 ? compteurs.utilisateurs : i === 2 ? 99 : 0;
+            var suffix = i === 0 || i === 1 ? '+' : i === 2 ? '%' : 'GNF';
             return (
               <div key={i} style={{ textAlign: 'center', padding: '20px 12px' }}>
-                <div style={i <= 1 ? { fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 900, letterSpacing: -1, ...gradientOr } : { fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 900, color: '#fff', letterSpacing: -1 }}>
-          {i === 0 ? compteurs.logements.toLocaleString('fr-FR') + '+' : i === 1 ? compteurs.utilisateurs.toLocaleString('fr-FR') + '+' : s.valeur}
-        </div>
+                <OdometerNumber value={val} suffix={suffix}
+                  style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 900, letterSpacing: -1, fontFamily: "'Fraunces', serif", color: i <= 1 ? '#F5A623' : '#fff', justifyContent: 'center' }} />
                 <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', marginTop: 6 }}>{s.label}</div>
               </div>
             );
@@ -580,7 +535,7 @@ useEffect(function() {
       <section id="comment" style={{ padding: 'clamp(50px, 8vw, 90px) 24px', maxWidth: 1000, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
           <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.howItWorks.overline')}</div>
-          <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.howItWorks.title')}</h2>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 650, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.howItWorks.title')}</h2>
         </div>
 
         {/* Toggle proprio / locataire */}
@@ -628,7 +583,7 @@ useEffect(function() {
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <div style={{ fontSize: 12, color: '#F5A623', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.featuresSection.overline')}</div>
-            <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, margin: 0, color: '#fff', letterSpacing: -0.5 }}>{t('landingPage.featuresSection.title')}</h2>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 650, margin: 0, color: '#fff', letterSpacing: -0.5 }}>{t('landingPage.featuresSection.title')}</h2>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
@@ -651,7 +606,7 @@ useEffect(function() {
       <section id="tarifs" style={{ padding: 'clamp(50px, 8vw, 90px) 24px', maxWidth: 1000, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
           <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.pricingSection.overline')}</div>
-          <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, margin: '0 0 12px', color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.pricingSection.title')}</h2>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 650, margin: '0 0 12px', color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.pricingSection.title')}</h2>
           <p style={{ color: '#666', fontSize: 16, margin: 0 }}>{t('landingPage.pricingSection.subtitle')}</p>
         </div>
 
@@ -708,7 +663,7 @@ useEffect(function() {
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
             <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.testimonialsSection.overline')}</div>
-            <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 800, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.testimonialsSection.title')}</h2>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 650, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.testimonialsSection.title')}</h2>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
@@ -738,14 +693,14 @@ useEffect(function() {
       <section id="faq" style={{ padding: 'clamp(50px, 8vw, 80px) 24px', maxWidth: 700, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
           <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.faqSection.overline')}</div>
-          <h2 style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: 800, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.faqSection.title')}</h2>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 34px)', fontWeight: 650, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.faqSection.title')}</h2>
         </div>
         <FaqLanding />
       </section>
       {/* ─── CTA FINAL ───────────────────────────────────────────── */}
       <section style={{ background: '#1B6B3A', padding: 'clamp(50px, 8vw, 80px) 24px', textAlign: 'center' }}>
         <div style={{ maxWidth: 600, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 'clamp(26px, 4vw, 40px)', fontWeight: 900, color: '#fff', margin: '0 0 16px', letterSpacing: -1 }}>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(26px, 4vw, 42px)', fontWeight: 650, color: '#fff', margin: '0 0 16px', letterSpacing: -0.5 }}>
             {t('landingPage.ctaFinal.title')}
           </h2>
           <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.75)', margin: '0 0 32px', lineHeight: 1.6 }}>
@@ -967,6 +922,67 @@ useEffect(function() {
         @keyframes flottement {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-10px); }
+        }
+
+        /* ─── Hero « Carnet d'architecte » ─────────────────────── */
+        .hero-split { display: grid; grid-template-columns: 1.15fr 1fr; min-height: 100vh; background: #F7F5EF; }
+        .hero-photo-panel { position: relative; overflow: hidden; background: #16261a; min-height: 460px; }
+        .hero-duotone-img {
+          width: 105%; height: 105%; object-fit: cover; object-position: center;
+          margin-left: -2.5%; margin-top: -2.5%; transition: transform 0.15s ease-out;
+          filter: grayscale(0.35) sepia(0.12) saturate(1.1) brightness(0.9) hue-rotate(48deg);
+        }
+        .hero-photo-fade { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(15,30,20,.6), rgba(15,30,20,.05) 48%); }
+        .hero-annot-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+        .hero-annot-line { stroke: #E8B45C; stroke-width: 1.2; fill: none; stroke-dasharray: 260; stroke-dashoffset: 260; animation: heroDraw 1.6s .6s ease forwards; }
+        .hero-annot-line.l2 { animation-delay: 1.3s; }
+        .hero-annot-line.l3 { animation-delay: 2s; }
+        @keyframes heroDraw { to { stroke-dashoffset: 0; } }
+        .hero-annot-dot { fill: #E8B45C; opacity: 0; animation: heroDotPop .3s 2.2s ease forwards; }
+        .hero-annot-dot.l2 { animation-delay: 1.9s; }
+        .hero-annot-dot.l3 { animation-delay: 2.6s; }
+        @keyframes heroDotPop { to { opacity: 1; } }
+        .hero-annot-label {
+          position: absolute; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; font-weight: 600;
+          color: #fff; background: rgba(15,30,20,.55); backdrop-filter: blur(3px);
+          padding: 4px 9px; border: 1px solid rgba(232,180,92,.5); opacity: 0; animation: heroLabelIn .4s 2.4s ease forwards;
+        }
+        .hero-annot-label.l2 { animation-delay: 2.1s; }
+        .hero-annot-label.l3 { animation-delay: 2.8s; }
+        @keyframes heroLabelIn { to { opacity: 1; } }
+        .hero-slide-dots { position: absolute; bottom: 24px; left: 24px; display: flex; gap: 8px; z-index: 2; }
+
+        .hero-copy-panel { position: relative; display: flex; flex-direction: column; justify-content: center; padding: clamp(32px, 5vw, 64px) clamp(24px, 4vw, 56px); }
+        .hero-tape { position: absolute; top: 26px; right: 36px; width: 86px; height: 24px; background: rgba(201,138,43,.16); border: 1px solid rgba(201,138,43,.32); transform: rotate(4deg); }
+        .hero-kicker { display: flex; align-items: center; gap: 8px; color: #1B6B3A; margin-bottom: 16px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }
+        .hero-kicker-line { width: 26px; height: 1px; background: #1B6B3A; display: inline-block; }
+        .hero-display { font-family: 'Fraunces', Georgia, serif; font-weight: 650; font-size: clamp(34px, 4vw, 54px); line-height: 1.02; letter-spacing: -0.01em; margin: 0 0 14px; color: #1B2B22; }
+        .hero-sub { font-size: 15.5px; color: #555; max-width: 440px; line-height: 1.65; margin: 0 0 26px; }
+
+        .hero-search-ledger { display: flex; flex-wrap: wrap; gap: 0; border-top: 1px solid #ddd6c5; border-bottom: 1px solid #ddd6c5; }
+        .hero-search-field { flex: 1; min-width: 140px; padding: 12px 14px 12px 0; border-right: 1px solid #ddd6c5; }
+        .hero-search-field:last-of-type { border-right: none; }
+        .hero-search-label { display: flex; align-items: center; gap: 5px; font-size: 10px; letter-spacing: .05em; text-transform: uppercase; font-weight: 700; color: #1B6B3A; margin-bottom: 4px; }
+        .hero-search-field select { border: none; background: transparent; font-size: 13.5px; color: #1B2B22; outline: none; width: 100%; cursor: pointer; padding: 0; }
+        .hero-search-btn {
+          flex-shrink: 0; margin: 8px 0; padding: 12px 22px; border-radius: 0; border: none; background: #0F1E14;
+          color: #fff; font-size: 13.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;
+        }
+        .hero-quick-badge {
+          display: flex; align-items: center; gap: 6px; padding: 6px 13px; border-radius: 20px;
+          border: 1px solid #ddd6c5; background: #fff; color: #444; font-size: 11.5px; font-weight: 600; cursor: pointer;
+        }
+        .hero-ghost-link {
+          background: none; border: none; border-bottom: 1.5px solid #1B2B22; padding: 4px 0; margin-top: 28px;
+          font-weight: 600; font-size: 13px; color: #1B2B22; cursor: pointer; display: inline-flex; align-items: center;
+          gap: 4px; width: fit-content;
+        }
+
+        @media (max-width: 900px) {
+          .hero-split { grid-template-columns: 1fr; min-height: auto; }
+          .hero-photo-panel { min-height: 320px; }
+          .hero-annot-label { display: none; }
+          .hero-tape { display: none; }
         }
       `}</style>
     </div>

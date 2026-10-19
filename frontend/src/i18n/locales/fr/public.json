@@ -30,6 +30,11 @@
       "studios": "Studios",
       "colocations": "Colocations"
     },
+    "annotations": {
+      "visite": "Visité sur place",
+      "mesures": "Mesures vérifiées",
+      "sansFrais": "Sans frais cachés"
+    },
     "trust": {
       "label": "Paiements acceptés",
       "especes": "Espèces",
@@ -821,6 +826,9 @@
     "valider": "Valider",
     "codeValideReduction": "Code valide ! -{{pct}}% sur le plan {{plan}}",
     "comparaison": "Comparaison",
+    "registreOverline": "Registre des tarifs",
+    "abonnement": "Abonnement",
+    "tampon": "Recommandé par 7 agences sur 10",
     "table": {
       "fonctionnalite": "Fonctionnalité",
       "logementsGeres": "Logements gérés",

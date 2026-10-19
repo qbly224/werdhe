@@ -10,7 +10,7 @@ import { Check, X, ChevronDown, ChevronUp, Zap, Building2, Users, ArrowRight, Ho
 import Logo from '../components/Logo';
 import { useTranslation } from 'react-i18next';
 import BlueprintPattern, { PlanMasseMotif } from '../components/BlueprintPattern';
-import useCompteurAnime from '../hooks/useCompteurAnime';
+import OdometerNumber from '../components/OdometerNumber';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
 var gradientOr = { background: 'linear-gradient(135deg, #F5A623 0%, #FFD98E 55%, #F5A623 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' };
@@ -101,104 +101,6 @@ function getFaqItems(t) {
     { q: t('pricing.faq.4.q'), r: t('pricing.faq.4.r') },
     { q: t('pricing.faq.5.q'), r: t('pricing.faq.5.r') },
   ];
-}
-
-function PlanCard(props) {
-  var plan = props.plan;
-  var prixCible = props.prix;
-  var prix = useCompteurAnime(prixCible, 600);
-  var t = props.t;
-  var CYCLES = props.CYCLES;
-  var cycle = props.cycle;
-  var essaiEnCours = props.essaiEnCours;
-
-  return (
-    <div style={{
-      background: '#fff', borderRadius: 20, overflow: 'hidden',
-      boxShadow: plan.recommande ? '0 16px 44px rgba(27,107,58,0.22)' : '0 2px 12px rgba(0,0,0,0.06)',
-      border: plan.recommande ? '2px solid ' + plan.couleur : '1px solid #E8E8E8',
-      position: 'relative',
-      transform: plan.recommande ? 'translateY(-10px)' : 'none',
-      transition: 'transform .25s, box-shadow .25s',
-    }}>
-      <BlueprintPattern opacity={0.035} color={plan.couleur} size={40} />
-      {plan.recommande && (
-        <div style={{ background: 'linear-gradient(135deg, ' + plan.couleur + ', #2D9E5F)', color: '#fff', textAlign: 'center', padding: '7px', fontSize: 12, fontWeight: 700, position: 'relative' }}>
-          {t('pricing.recommande')} - {plan.badge}
-        </div>
-      )}
-      <div style={{ padding: '24px 22px', position: 'relative' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-          <div style={{ width: 44, height: 44, background: plan.bg, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: plan.couleur }}>
-            {plan.id === 'gratuit' ? <Users size={24} strokeWidth={1.5} /> : plan.id === 'pro' ? <Zap size={24} strokeWidth={1.5} /> : <Building2 size={24} strokeWidth={1.5} />}
-          </div>
-          <div>
-            <div style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22' }}>{plan.nom}</div>
-            <div style={{ fontSize: 12, color: '#888' }}>{plan.sous_titre}</div>
-          </div>
-        </div>
-
-        <div style={{ marginBottom: 20 }}>
-          {plan.prix_mois === 0 ? (
-            <div style={{ fontSize: 36, fontWeight: 900, color: '#1B2B22' }}>{t('pricing.gratuit')}</div>
-          ) : (
-            <>
-              <div style={{ fontSize: 36, fontWeight: 900, letterSpacing: -1, ...gradientOr }}>
-                {GNF(prix)} <span style={{ fontSize: 14, fontWeight: 400, WebkitTextFillColor: '#888', color: '#888' }}>GNF</span>
-              </div>
-              <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{CYCLES[cycle].label.toLowerCase()}</div>
-              {CYCLES[cycle].reduction > 0 && (
-                <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 600, marginTop: 4 }}>
-                  {t('pricing.economie', { montant: GNF(Math.round(plan.prix_mois * CYCLES[cycle].mois * CYCLES[cycle].reduction)) })}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-
-        {/* CTA intelligent */}
-        <button onClick={function() { props.choisirPlan(plan.id); }} disabled={essaiEnCours === plan.id}
-          style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: essaiEnCours === plan.id ? '#aaa' : plan.couleur, color: '#fff', fontSize: 14, fontWeight: 700, cursor: essaiEnCours === plan.id ? 'not-allowed' : 'pointer', marginBottom: plan.id === 'gratuit' ? 20 : 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-          {essaiEnCours === plan.id
-            ? t('pricing.demarrage')
-            : <>{plan.id === 'gratuit' ? t('pricing.creerCompteGratuit') : t('pricing.essaiGratuit1Mois')} <ArrowRight size={15} strokeWidth={2.5} /></>
-          }
-        </button>
-
-        {plan.id !== 'gratuit' && (
-          <div style={{ textAlign: 'center', marginBottom: 16 }}>
-            <button onClick={function() { props.setShowPaiement(plan.id); }}
-              style={{ background: 'none', border: 'none', color: '#888', fontSize: 11, cursor: 'pointer', textDecoration: 'underline' }}>
-              {t('pricing.dejaUtiliseEssai')}
-            </button>
-          </div>
-        )}
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
-          {plan.features.map(function(f, i) {
-            return (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#1B2B22' }}>
-                <div style={{ width: 18, height: 18, borderRadius: '50%', background: plan.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Check size={11} strokeWidth={3} color={plan.couleur} />
-                </div>
-                {f}
-              </div>
-            );
-          })}
-          {plan.nonInclus && plan.nonInclus.map(function(f, i) {
-            return (
-              <div key={'non' + i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#ccc' }}>
-                <div style={{ width: 18, height: 18, borderRadius: '50%', background: '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <X size={11} strokeWidth={2.5} color="#ccc" />
-                </div>
-                {f}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
 }
 
 export default function Pricing() {
@@ -334,14 +236,112 @@ export default function Pricing() {
         />
       )}
 
-      {/* Cards plans */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 18, maxWidth: 1000, margin: '0 auto 48px', padding: '0 20px' }}>
-        {PLANS.map(function(plan) {
-          return (
-            <PlanCard key={plan.id} plan={plan} prix={montantCycle(plan.prix_mois)} t={t} CYCLES={CYCLES} cycle={cycle}
-              essaiEnCours={essaiEnCours} choisirPlan={choisirPlan} setShowPaiement={setShowPaiement} />
-          );
-        })}
+      {/* Registre des tarifs — un document unique, pas trois cartes identiques */}
+      <div style={{ maxWidth: 1000, margin: '0 auto 40px', padding: '0 20px' }}>
+        <div style={{ textAlign: 'center', marginBottom: 30 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: '#1B6B3A', marginBottom: 8 }}>{t('pricing.registreOverline')}</div>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 'clamp(24px, 3.4vw, 36px)', color: '#1B2B22', margin: 0 }}>{t('pricing.comparaison')}</h2>
+        </div>
+
+        <div className="pricing-ledger" style={{ background: '#fff', border: '1px solid #1B2B22', position: 'relative', overflowX: 'auto' }}>
+          <div className="pricing-stamp">{t('pricing.tampon')}</div>
+
+          {/* En-tête */}
+          <div className="ledger-row ledger-head">
+            <div className="ledger-cell ledger-label-col" />
+            {PLANS.map(function(plan) {
+              return (
+                <div key={plan.id} className="ledger-cell" style={{ textAlign: 'center' }}>
+                  <div style={plan.id === 'pro' ? { fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 18, ...gradientOr } : { fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 18, color: plan.couleur }}>
+                    {plan.nom}
+                  </div>
+                  <div style={{ fontSize: 11, color: '#999', marginTop: 2 }}>{plan.sous_titre}</div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Prix */}
+          <div className="ledger-row ledger-price-row">
+            <div className="ledger-cell ledger-label-col">{t('pricing.abonnement')}</div>
+            {PLANS.map(function(plan) {
+              var prixCible = montantCycle(plan.prix_mois);
+              return (
+                <div key={plan.id} className="ledger-cell" style={{ textAlign: 'center' }}>
+                  {plan.prix_mois === 0 ? (
+                    <div style={{ fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 28, color: '#1B2B22' }}>{t('pricing.gratuit')}</div>
+                  ) : (
+                    <>
+                      <OdometerNumber value={prixCible} suffix="GNF"
+                        style={{ fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 28, color: '#1B2B22', justifyContent: 'center' }} />
+                      <div style={{ fontSize: 11, color: '#999', marginTop: 2 }}>{CYCLES[cycle].label.toLowerCase()}</div>
+                      {CYCLES[cycle].reduction > 0 && (
+                        <div style={{ fontSize: 10.5, color: '#1B6B3A', fontWeight: 700, marginTop: 3 }}>
+                          {t('pricing.economie', { montant: GNF(Math.round(plan.prix_mois * CYCLES[cycle].mois * CYCLES[cycle].reduction)) })}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* CTA */}
+          <div className="ledger-row ledger-cta-row">
+            <div className="ledger-cell ledger-label-col" />
+            {PLANS.map(function(plan) {
+              return (
+                <div key={plan.id} className="ledger-cell" style={{ textAlign: 'center' }}>
+                  <button onClick={function() { choisirPlan(plan.id); }} disabled={essaiEnCours === plan.id}
+                    className="ledger-cta-btn" style={{ background: essaiEnCours === plan.id ? '#aaa' : plan.couleur }}>
+                    {essaiEnCours === plan.id
+                      ? t('pricing.demarrage')
+                      : <>{plan.id === 'gratuit' ? t('pricing.creerCompteGratuit') : t('pricing.essaiGratuit1Mois')} <ArrowRight size={13} strokeWidth={2.5} /></>
+                    }
+                  </button>
+                  {plan.id !== 'gratuit' && (
+                    <button onClick={function() { setShowPaiement(plan.id); }} className="ledger-already-link">
+                      {t('pricing.dejaUtiliseEssai')}
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Fonctionnalités */}
+          {[
+            { label: t('pricing.table.logementsGeres'),         vals: ['-', '20', t('pricing.table.illimites')]    },
+            { label: t('pricing.table.paiementMobileMoney'),    vals: [false, true,  true]        },
+            { label: t('pricing.table.candidaturesDossiers'),   vals: [true,  true,  true]        },
+            { label: t('pricing.table.documentsPdfAuto'),       vals: [false, true,  true]        },
+            { label: t('pricing.table.alertesLoyersAuto'),      vals: [false, true,  true]        },
+            { label: t('pricing.table.rapportsFinanciers'),     vals: [false, true,  true]        },
+            { label: t('pricing.table.scoreConfiance'),         vals: [true,  true,  true]        },
+            { label: t('pricing.table.multiUtilisateurs'),      vals: [false, false, t('pricing.table.cinqComptes')] },
+            { label: t('pricing.table.support'),                vals: ['-', t('pricing.table.email'), t('pricing.table.mailMessage')] },
+          ].map(function(row, i) {
+            var colors = ['#1565C0', '#1B6B3A', '#7B1FA2'];
+            return (
+              <div key={i} className="ledger-row">
+                <div className="ledger-cell ledger-label-col" style={{ color: '#555' }}>{row.label}</div>
+                {row.vals.map(function(v, vi) {
+                  return (
+                    <div key={vi} className="ledger-cell" style={{ textAlign: 'center' }}>
+                      {v === true
+                        ? <Check size={16} strokeWidth={2.5} color={colors[vi]} />
+                        : v === false
+                        ? <X size={16} strokeWidth={2} color="#DDD" />
+                        : <span style={{ fontSize: 13, fontWeight: 700, color: colors[vi] }}>{v}</span>
+                      }
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Code promo */}
@@ -363,50 +363,6 @@ export default function Pricing() {
               {t('pricing.codeValideReduction', { pct: codeOk.reduction_pct, plan: codeOk.plan_cible })}
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Tableau comparatif */}
-      <div style={{ maxWidth: 900, margin: '0 auto 48px', padding: '0 20px' }}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', textAlign: 'center', margin: '0 0 20px' }}>{t('pricing.comparaison')}</h2>
-        <div style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', overflowX: 'auto', border: '1px solid rgba(245,166,35,0.12)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', background: '#1B2B22', padding: '16px 20px', gap: 8, minWidth: 560, position: 'relative', overflow: 'hidden' }}>
-            <BlueprintPattern opacity={0.05} color="#F5A623" size={36} />
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.5)', position: 'relative' }}>{t('pricing.table.fonctionnalite')}</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#90CAF9', textAlign: 'center', position: 'relative' }}>{t('pricing.plans.gratuit.nom')}</div>
-            <div style={{ fontSize: 13, fontWeight: 900, textAlign: 'center', position: 'relative', ...gradientOr }}>{t('pricing.plans.pro.nom')}</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#CE93D8', textAlign: 'center', position: 'relative' }}>{t('pricing.plans.agence.nom')}</div>
-          </div>
-          {[
-            { label: t('pricing.table.logementsGeres'),            vals: ['-', '20', t('pricing.table.illimites')]    },
-            { label: t('pricing.table.paiementMobileMoney'),       vals: [false, true,  true]        },
-            { label: t('pricing.table.candidaturesDossiers'),    vals: [true,  true,  true]        },
-            { label: t('pricing.table.documentsPdfAuto'),          vals: [false, true,  true]        },
-            { label: t('pricing.table.alertesLoyersAuto'),         vals: [false, true,  true]        },
-            { label: t('pricing.table.rapportsFinanciers'),         vals: [false, true,  true]        },
-            { label: t('pricing.table.scoreConfiance'),             vals: [true,  true,  true]        },
-            { label: t('pricing.table.multiUtilisateurs'),          vals: [false, false, t('pricing.table.cinqComptes')] },
-            { label: t('pricing.table.support'),                     vals: ['-', t('pricing.table.email'), t('pricing.table.mailMessage')] },
-          ].map(function(row, i) {
-            var colors = ['#1565C0', '#1B6B3A', '#7B1FA2'];
-            return (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', padding: '13px 20px', background: i % 2 === 0 ? '#fff' : '#FAFAFA', borderBottom: '0.5px solid #F0F0F0', gap: 8, alignItems: 'center', minWidth: 560 }}>
-                <div style={{ fontSize: 13, color: '#555' }}>{row.label}</div>
-                {row.vals.map(function(v, vi) {
-                  return (
-                    <div key={vi} style={{ textAlign: 'center', background: vi === 1 ? 'rgba(245,166,35,0.05)' : 'transparent', borderRadius: 6, padding: '2px 0' }}>
-                      {v === true
-                        ? <Check size={16} strokeWidth={2.5} color={colors[vi]} />
-                        : v === false
-                        ? <X size={16} strokeWidth={2} color="#DDD" />
-                        : <span style={{ fontSize: 13, fontWeight: 700, color: colors[vi] }}>{v}</span>
-                      }
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
         </div>
       </div>
 
@@ -453,7 +409,37 @@ export default function Pricing() {
         </p>
       </div>
 
-      <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
+      <style>{`
+        @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+        .pricing-ledger { min-width: 620px; }
+        .ledger-row { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; }
+        .ledger-row + .ledger-row { border-top: 1px solid #ECE8D9; }
+        .ledger-cell { padding: 14px 18px; display: flex; flex-direction: column; justify-content: center; font-size: 13px; }
+        .ledger-label-col { color: #1B2B22; font-weight: 500; }
+        .ledger-head { background: #0F1E14; border-bottom: 2px solid #1B2B22; }
+        .ledger-head .ledger-cell { padding: 20px 18px 16px; }
+        .ledger-price-row .ledger-cell { padding: 22px 18px; }
+        .ledger-cta-row .ledger-cell { padding: 10px 14px 20px; align-items: center; }
+        .ledger-cta-btn {
+          width: 100%; max-width: 180px; padding: 10px 14px; border: none; color: #fff;
+          font-size: 12.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center;
+          justify-content: center; gap: 6px;
+        }
+        .ledger-already-link { background: none; border: none; color: #999; font-size: 10.5px; cursor: pointer; text-decoration: underline; margin-top: 6px; }
+
+        .pricing-stamp {
+          position: absolute; top: -46px; left: 61%; width: 108px; height: 108px; border-radius: 50%;
+          border: 2px solid #B5401F; color: #B5401F; display: flex; align-items: center; justify-content: center;
+          text-align: center; transform: rotate(-10deg); font-family: 'Fraunces', serif; font-weight: 700;
+          font-size: 12.5px; line-height: 1.15; opacity: .85; mix-blend-mode: multiply; pointer-events: none; z-index: 2;
+        }
+        .pricing-stamp::before { content: ''; position: absolute; inset: 6px; border: 1px solid #B5401F; border-radius: 50%; }
+
+        @media (max-width: 640px) {
+          .pricing-stamp { display: none; }
+        }
+      `}</style>
     </div>
   );
 }

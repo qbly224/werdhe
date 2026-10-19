@@ -49,6 +49,33 @@ body {
   color: #333;
 }
 
+/* Police éditoriale pour les grands titres (identité "carnet d'architecte") */
+.font-serif-display {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+/* Chiffres "odomètre" (composants OdometerNumber) : chaque chiffre
+   roule verticalement dans une piste de 10 positions au lieu d'un
+   simple fade/compte. */
+.odo-digit {
+  display: inline-block;
+  overflow: hidden;
+  height: 1em;
+  line-height: 1em;
+  vertical-align: top;
+  width: 0.62em;
+  text-align: center;
+}
+.odo-track {
+  display: block;
+  transition: transform 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.odo-cell {
+  display: block;
+  height: 1em;
+  line-height: 1em;
+}
+
 /* Couleurs principales Werdhè */
 :root {
   --primary: #2E7D32;      /* Vert Werdhè */
