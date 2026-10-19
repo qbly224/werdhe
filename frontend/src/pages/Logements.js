@@ -9,6 +9,10 @@ import MapView from '../components/MapView';
 import SEO from '../components/SEO';
 import { SkeletonLogement } from '../components/Skeleton';
 import { useTranslation } from 'react-i18next';
+import BlueprintPattern from '../components/BlueprintPattern';
+import useCompteurAnime from '../hooks/useCompteurAnime';
+
+var gradientOr = { background: 'linear-gradient(135deg, #F5A623 0%, #FFD98E 55%, #F5A623 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' };
 
 var GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 
@@ -46,6 +50,7 @@ export default function Logements() {
   var [tri, setTri] = useState('recent');
 
   var nbFiltresActifs = [ville, categorie, prixMin, prixMax, nbChambres, superficieMin].filter(Boolean).length;
+  var compteurTotal = useCompteurAnime(total, 900);
 
   var charger = useCallback(function() {
     setLoading(true);
@@ -94,70 +99,61 @@ export default function Logements() {
         </div>
       </nav>
 
-      {/* HEADER */}
-      <div style={{ background: 'linear-gradient(135deg, #1B2B22 0%, #1B6B3A 100%)', padding: '28px 24px 20px', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
-  <div style={{ maxWidth: 900, margin: '0 auto' }}>
-    <h1 style={{ color: '#fff', fontSize: 'clamp(22px,4vw,30px)', fontWeight: 900, margin: '0 0 6px', letterSpacing: -0.5 }}>
-      {t('logements.header.titre')}
-    </h1>
-    <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 14, margin: 0 }}>
-      {t('logements.header.sousTitre', { total: total })}
-    </p>
-  </div>
-</div>
-      {/* Sélecteur de tri */}
-<select value={tri} onChange={function(e) { setTri(e.target.value); }}
-  style={{ padding: '8px 14px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', fontSize: 13, color: '#555', cursor: 'pointer', outline: 'none' }}>
-  <option value="recent">{t('logements.tri.recent')}</option>
-  <option value="prix_asc">{t('logements.tri.prixAsc')}</option>
-  <option value="prix_desc">{t('logements.tri.prixDesc')}</option>
-</select>
-      {/* Toggle vue liste / carte */}
-<div style={{ display: 'flex', gap: 6, background: '#F0F0F0', borderRadius: 10, padding: 4 }}>
-  <button
-    onClick={function() { setVueMode('liste'); }}
-    style={{ padding: '7px 14px', borderRadius: 7, border: 'none', background: vueMode === 'liste' ? '#1B6B3A' : 'transparent', color: vueMode === 'liste' ? '#fff' : '#888', fontSize: 13, fontWeight: vueMode === 'liste' ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, transition: 'all .2s' }}>
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-    {t('logements.vue.liste')}
-  </button>
-  <button
-    onClick={function() { setVueMode('carte'); }}
-    style={{ padding: '7px 14px', borderRadius: 7, border: 'none', background: vueMode === 'carte' ? '#1B6B3A' : 'transparent', color: vueMode === 'carte' ? '#fff' : '#888', fontSize: 13, fontWeight: vueMode === 'carte' ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, transition: 'all .2s' }}>
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
-    {t('logements.vue.carte')}
-  </button>
-</div>
+      {/* HERO PHOTOGRAPHIQUE */}
+      <div style={{ position: 'relative', overflow: 'hidden', padding: '40px 24px 76px' }}>
+        <img src="/img/residences/villa-conakry.jpg" alt="" aria-hidden="true"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(15,30,20,0.92) 0%, rgba(27,107,58,0.82) 65%, rgba(27,107,58,0.55) 100%)' }} />
+        <BlueprintPattern opacity={0.08} color="#F5A623" size={56} />
 
-      {/* BARRE DE RECHERCHE */}
-      <div style={{ background: '#fff', padding: '14px 16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-        <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
-          <div style={{ flex: 1, position: 'relative' }}>
-             <Search size={15} strokeWidth={1.5} color="#aaa" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-            <input
-              type="text"
-              placeholder={t('logements.recherche.placeholder')}
-              value={search}
-              onChange={function(e) { setSearch(e.target.value); setPage(1); }}
-              style={{ width: '100%', padding: '10px 12px 10px 36px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box', background: '#F8F8F8' }} />
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: 900, margin: '0 auto' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(245,166,35,0.14)', border: '1px solid rgba(245,166,35,0.35)', borderRadius: 20, padding: '5px 14px', marginBottom: 16 }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#F5A623', animation: 'pulseLive 1.8s ease-in-out infinite' }} />
+            <span style={{ fontSize: 12, fontWeight: 700, ...gradientOr }}>
+              {compteurTotal.toLocaleString('fr-FR')} {t('logements.header.badgeDisponibles')}
+            </span>
           </div>
-          <button
-            onClick={function() { setShowFiltres(!showFiltres); }}
-            style={{ padding: '10px 16px', borderRadius: 10, border: nbFiltresActifs > 0 ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: nbFiltresActifs > 0 ? '#E8F5E9' : '#F8F8F8', color: nbFiltresActifs > 0 ? '#1B6B3A' : '#555', fontSize: 13, fontWeight: nbFiltresActifs > 0 ? 700 : 400, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-              <SlidersHorizontal size={15} strokeWidth={1.5} /> {t('logements.recherche.filtres')} {nbFiltresActifs > 0 && <span style={{ background: '#1B6B3A', color: '#fff', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>{nbFiltresActifs}</span>}
-          </button>
+          <h1 style={{ color: '#fff', fontSize: 'clamp(24px,4.5vw,36px)', fontWeight: 900, margin: '0 0 8px', letterSpacing: -0.8, textShadow: '0 2px 20px rgba(0,0,0,0.35)' }}>
+            {t('logements.header.titre')}
+          </h1>
+          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 14, margin: 0 }}>
+            {t('logements.header.sousTitre', { total: total })}
+          </p>
         </div>
+      </div>
 
-        {/* FILTRES RAPIDES — villes */}
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
-          {['Toutes', ...VILLES_GN.slice(0, 6)].map(function(v) {
-            var actif = v === 'Toutes' ? !ville : ville === v;
-            return (
-              <button key={v} onClick={function() { setVille(v === 'Toutes' ? '' : v); setPage(1); }}
-                style={{ padding: '5px 14px', borderRadius: 20, border: actif ? '1.5px solid #1B6B3A' : '0.5px solid #E0E0E0', background: actif ? '#1B6B3A' : '#fff', color: actif ? '#fff' : '#555', fontSize: 12, fontWeight: actif ? 700 : 400, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}>
-                {v === 'Toutes' ? t('logements.villes.toutes') : v}
-              </button>
-            );
-          })}
+      {/* CARTE DE RECHERCHE FLOTTANTE */}
+      <div style={{ maxWidth: 900, margin: '-52px auto 0', padding: '0 20px', position: 'relative', zIndex: 2 }}>
+        <div style={{ background: '#fff', borderRadius: 16, padding: '14px 16px', boxShadow: '0 16px 40px rgba(15,30,20,0.18)', border: '1px solid rgba(245,166,35,0.15)' }}>
+          <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
+            <div style={{ flex: 1, position: 'relative' }}>
+               <Search size={15} strokeWidth={1.5} color="#aaa" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+              <input
+                type="text"
+                placeholder={t('logements.recherche.placeholder')}
+                value={search}
+                onChange={function(e) { setSearch(e.target.value); setPage(1); }}
+                style={{ width: '100%', padding: '10px 12px 10px 36px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box', background: '#F8F8F8' }} />
+            </div>
+            <button
+              onClick={function() { setShowFiltres(!showFiltres); }}
+              style={{ padding: '10px 16px', borderRadius: 10, border: nbFiltresActifs > 0 ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: nbFiltresActifs > 0 ? '#E8F5E9' : '#F8F8F8', color: nbFiltresActifs > 0 ? '#1B6B3A' : '#555', fontSize: 13, fontWeight: nbFiltresActifs > 0 ? 700 : 400, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                <SlidersHorizontal size={15} strokeWidth={1.5} /> {t('logements.recherche.filtres')} {nbFiltresActifs > 0 && <span style={{ background: '#1B6B3A', color: '#fff', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>{nbFiltresActifs}</span>}
+            </button>
+          </div>
+
+          {/* FILTRES RAPIDES — villes */}
+          <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
+            {['Toutes', ...VILLES_GN.slice(0, 6)].map(function(v) {
+              var actif = v === 'Toutes' ? !ville : ville === v;
+              return (
+                <button key={v} onClick={function() { setVille(v === 'Toutes' ? '' : v); setPage(1); }}
+                  style={{ padding: '5px 14px', borderRadius: 20, border: actif ? '1.5px solid #1B6B3A' : '0.5px solid #E0E0E0', background: actif ? '#1B6B3A' : '#fff', color: actif ? '#fff' : '#555', fontSize: 12, fontWeight: actif ? 700 : 400, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                  {v === 'Toutes' ? t('logements.villes.toutes') : v}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -241,6 +237,37 @@ export default function Logements() {
 
       {/* LISTE DES LOGEMENTS */}
       <div style={{ padding: '16px', maxWidth: 900, margin: '0 auto' }}>
+        {/* Barre d'outils résultats */}
+        {!loading && logements.length > 0 && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, marginBottom: 14 }}>
+            <div style={{ fontSize: 14, color: '#555' }}>
+              <span style={{ fontSize: 20, fontWeight: 900, ...gradientOr }}>{compteurTotal.toLocaleString('fr-FR')}</span>
+              {' '}{t('logements.resultatsToolbar.resultats')}
+            </div>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+              <select value={tri} onChange={function(e) { setTri(e.target.value); }}
+                style={{ padding: '8px 14px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', fontSize: 13, color: '#555', cursor: 'pointer', outline: 'none' }}>
+                <option value="recent">{t('logements.tri.recent')}</option>
+                <option value="prix_asc">{t('logements.tri.prixAsc')}</option>
+                <option value="prix_desc">{t('logements.tri.prixDesc')}</option>
+              </select>
+              <div style={{ display: 'flex', gap: 6, background: '#F0F0F0', borderRadius: 10, padding: 4 }}>
+                <button
+                  onClick={function() { setVueMode('liste'); }}
+                  style={{ padding: '7px 14px', borderRadius: 7, border: 'none', background: vueMode === 'liste' ? '#1B6B3A' : 'transparent', color: vueMode === 'liste' ? '#fff' : '#888', fontSize: 13, fontWeight: vueMode === 'liste' ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, transition: 'all .2s' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                  {t('logements.vue.liste')}
+                </button>
+                <button
+                  onClick={function() { setVueMode('carte'); }}
+                  style={{ padding: '7px 14px', borderRadius: 7, border: 'none', background: vueMode === 'carte' ? '#1B6B3A' : 'transparent', color: vueMode === 'carte' ? '#fff' : '#888', fontSize: 13, fontWeight: vueMode === 'carte' ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, transition: 'all .2s' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                  {t('logements.vue.carte')}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         {loading && (
           <div style={{ textAlign: 'center', padding: '40px 0', color: '#888' }}>
             <div style={{ marginBottom: 10, display: 'flex', justifyContent: 'center' }}><Search size={36} strokeWidth={1.5} color="#aaa" /></div>
@@ -286,9 +313,9 @@ export default function Logements() {
             return (
               <div key={l.id}
                 onClick={function() { navigate('/logements/' + l.id); }}
-                style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.07)', cursor: 'pointer', transition: 'transform .2s, box-shadow .2s' }}
-                onMouseEnter={function(e) { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.12)'; }}
-                onMouseLeave={function(e) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.07)'; }}>
+                style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.07)', cursor: 'pointer', transition: 'transform .2s, box-shadow .2s, border-color .2s', border: '1px solid transparent' }}
+                onMouseEnter={function(e) { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 14px 34px rgba(15,30,20,0.16)'; e.currentTarget.style.borderColor = 'rgba(245,166,35,0.45)'; }}
+                onMouseLeave={function(e) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.07)'; e.currentTarget.style.borderColor = 'transparent'; }}>
 
                 {/* Photo / placeholder */}
                  <div style={{ height: 180, position: 'relative', background: '#E8F5E9', overflow: 'hidden',display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48, position: 'relative' }}>
@@ -304,7 +331,7 @@ export default function Logements() {
     </div>
   </div>
 )}
-                  <div style={{ position: 'absolute', top: 10, right: 10, background: '#1B6B3A', color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
+                  <div style={{ position: 'absolute', top: 10, right: 10, background: 'linear-gradient(135deg, #1B6B3A, #2D9E5F)', color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
                     {t('logements.carte.disponible')}
                   </div>
                   {estNouveau && (
@@ -379,6 +406,12 @@ export default function Logements() {
           </div>
         )}
       </div>
+      <style>{`
+        @keyframes pulseLive {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.4; transform: scale(1.4); }
+        }
+      `}</style>
     </div>
   );
 }

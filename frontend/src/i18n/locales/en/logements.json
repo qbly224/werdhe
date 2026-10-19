@@ -6,7 +6,11 @@
     },
     "header": {
       "titre": "Available properties in Guinea",
-      "sousTitre": "{{total}} listing(s) found · No middleman"
+      "sousTitre": "{{total}} listing(s) found · No middleman",
+      "badgeDisponibles": "properties available right now"
+    },
+    "resultatsToolbar": {
+      "resultats": "result(s)"
     },
     "tri": {
       "recent": "Most recent",

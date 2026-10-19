@@ -9,8 +9,11 @@ import { useAuth } from '../context/AuthContext';
 import { Check, X, ChevronDown, ChevronUp, Zap, Building2, Users, ArrowRight, Home, Info } from 'lucide-react';
 import Logo from '../components/Logo';
 import { useTranslation } from 'react-i18next';
+import BlueprintPattern, { PlanMasseMotif } from '../components/BlueprintPattern';
+import useCompteurAnime from '../hooks/useCompteurAnime';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
+var gradientOr = { background: 'linear-gradient(135deg, #F5A623 0%, #FFD98E 55%, #F5A623 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' };
 
 function getCycles(t) {
   return {
@@ -100,6 +103,104 @@ function getFaqItems(t) {
   ];
 }
 
+function PlanCard(props) {
+  var plan = props.plan;
+  var prixCible = props.prix;
+  var prix = useCompteurAnime(prixCible, 600);
+  var t = props.t;
+  var CYCLES = props.CYCLES;
+  var cycle = props.cycle;
+  var essaiEnCours = props.essaiEnCours;
+
+  return (
+    <div style={{
+      background: '#fff', borderRadius: 20, overflow: 'hidden',
+      boxShadow: plan.recommande ? '0 16px 44px rgba(27,107,58,0.22)' : '0 2px 12px rgba(0,0,0,0.06)',
+      border: plan.recommande ? '2px solid ' + plan.couleur : '1px solid #E8E8E8',
+      position: 'relative',
+      transform: plan.recommande ? 'translateY(-10px)' : 'none',
+      transition: 'transform .25s, box-shadow .25s',
+    }}>
+      <BlueprintPattern opacity={0.035} color={plan.couleur} size={40} />
+      {plan.recommande && (
+        <div style={{ background: 'linear-gradient(135deg, ' + plan.couleur + ', #2D9E5F)', color: '#fff', textAlign: 'center', padding: '7px', fontSize: 12, fontWeight: 700, position: 'relative' }}>
+          {t('pricing.recommande')} - {plan.badge}
+        </div>
+      )}
+      <div style={{ padding: '24px 22px', position: 'relative' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+          <div style={{ width: 44, height: 44, background: plan.bg, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: plan.couleur }}>
+            {plan.id === 'gratuit' ? <Users size={24} strokeWidth={1.5} /> : plan.id === 'pro' ? <Zap size={24} strokeWidth={1.5} /> : <Building2 size={24} strokeWidth={1.5} />}
+          </div>
+          <div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22' }}>{plan.nom}</div>
+            <div style={{ fontSize: 12, color: '#888' }}>{plan.sous_titre}</div>
+          </div>
+        </div>
+
+        <div style={{ marginBottom: 20 }}>
+          {plan.prix_mois === 0 ? (
+            <div style={{ fontSize: 36, fontWeight: 900, color: '#1B2B22' }}>{t('pricing.gratuit')}</div>
+          ) : (
+            <>
+              <div style={{ fontSize: 36, fontWeight: 900, letterSpacing: -1, ...gradientOr }}>
+                {GNF(prix)} <span style={{ fontSize: 14, fontWeight: 400, WebkitTextFillColor: '#888', color: '#888' }}>GNF</span>
+              </div>
+              <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{CYCLES[cycle].label.toLowerCase()}</div>
+              {CYCLES[cycle].reduction > 0 && (
+                <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 600, marginTop: 4 }}>
+                  {t('pricing.economie', { montant: GNF(Math.round(plan.prix_mois * CYCLES[cycle].mois * CYCLES[cycle].reduction)) })}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* CTA intelligent */}
+        <button onClick={function() { props.choisirPlan(plan.id); }} disabled={essaiEnCours === plan.id}
+          style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: essaiEnCours === plan.id ? '#aaa' : plan.couleur, color: '#fff', fontSize: 14, fontWeight: 700, cursor: essaiEnCours === plan.id ? 'not-allowed' : 'pointer', marginBottom: plan.id === 'gratuit' ? 20 : 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+          {essaiEnCours === plan.id
+            ? t('pricing.demarrage')
+            : <>{plan.id === 'gratuit' ? t('pricing.creerCompteGratuit') : t('pricing.essaiGratuit1Mois')} <ArrowRight size={15} strokeWidth={2.5} /></>
+          }
+        </button>
+
+        {plan.id !== 'gratuit' && (
+          <div style={{ textAlign: 'center', marginBottom: 16 }}>
+            <button onClick={function() { props.setShowPaiement(plan.id); }}
+              style={{ background: 'none', border: 'none', color: '#888', fontSize: 11, cursor: 'pointer', textDecoration: 'underline' }}>
+              {t('pricing.dejaUtiliseEssai')}
+            </button>
+          </div>
+        )}
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+          {plan.features.map(function(f, i) {
+            return (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#1B2B22' }}>
+                <div style={{ width: 18, height: 18, borderRadius: '50%', background: plan.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Check size={11} strokeWidth={3} color={plan.couleur} />
+                </div>
+                {f}
+              </div>
+            );
+          })}
+          {plan.nonInclus && plan.nonInclus.map(function(f, i) {
+            return (
+              <div key={'non' + i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#ccc' }}>
+                <div style={{ width: 18, height: 18, borderRadius: '50%', background: '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <X size={11} strokeWidth={2.5} color="#ccc" />
+                </div>
+                {f}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Pricing() {
   var t                   = useTranslation('public').t;
   var CYCLES              = getCycles(t);
@@ -177,33 +278,43 @@ export default function Pricing() {
       </nav>
 
       {/* Hero */}
-      <div style={{ textAlign: 'center', padding: 'clamp(40px, 6vw, 64px) 24px 32px' }}>
-        <h1 style={{ fontSize: 'clamp(26px, 5vw, 44px)', fontWeight: 900, color: '#1B2B22', margin: '0 0 12px', letterSpacing: -1 }}>
-          {t('pricing.titre')}
-        </h1>
-        <p style={{ fontSize: 15, color: '#888', margin: '0 0 6px' }}>
-          {t('pricing.sousTitre')}
-        </p>
-        <p style={{ fontSize: 13, color: '#1B6B3A', fontWeight: 600, margin: '0 0 28px' }}>
-          {t('pricing.paiementMobileMoney')}
-        </p>
+      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(160deg, #0F1E14 0%, #1B2B22 55%, #16321F 100%)', textAlign: 'center', padding: 'clamp(48px, 7vw, 76px) 24px 40px' }}>
+        <BlueprintPattern opacity={0.055} color="#F5A623" size={60} />
+        <PlanMasseMotif opacity={0.08} width={300} height={260} style={{ position: 'absolute', top: -20, left: -40, display: window.innerWidth < 640 ? 'none' : 'block' }} />
+        <PlanMasseMotif opacity={0.08} width={300} height={260} style={{ position: 'absolute', bottom: -40, right: -40, transform: 'scaleX(-1)', display: window.innerWidth < 640 ? 'none' : 'block' }} />
 
-        {/* Toggle cycle de facturation */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#fff', borderRadius: 30, padding: '6px 8px', boxShadow: '0 2px 10px rgba(0,0,0,0.08)', flexWrap: 'wrap', justifyContent: 'center' }}>
-          {Object.keys(CYCLES).map(function(c) {
-            var actif = cycle === c;
-            return (
-              <button key={c} onClick={function() { setCycle(c); }}
-                style={{ padding: '8px 16px', borderRadius: 22, border: 'none', background: actif ? '#1B6B3A' : 'transparent', color: actif ? '#fff' : '#888', fontSize: 13, fontWeight: actif ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-                {CYCLES[c].label}
-                {CYCLES[c].reduction > 0 && (
-                  <span style={{ background: '#F5A623', color: '#1B2B22', borderRadius: 20, padding: '2px 7px', fontSize: 10, fontWeight: 800 }}>
-                    -{Math.round(CYCLES[c].reduction * 100)}%
-                  </span>
-                )}
-              </button>
-            );
-          })}
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(245,166,35,0.12)', border: '1px solid rgba(245,166,35,0.3)', borderRadius: 20, padding: '5px 14px', marginBottom: 18 }}>
+            <Home size={13} strokeWidth={2} color="#F5A623" />
+            <span style={{ fontSize: 12, fontWeight: 700, color: '#F5A623' }}>{t('pricing.badgeOverline')}</span>
+          </div>
+          <h1 style={{ fontSize: 'clamp(26px, 5vw, 46px)', fontWeight: 900, color: '#fff', margin: '0 0 12px', letterSpacing: -1 }}>
+            {t('pricing.titre')}
+          </h1>
+          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.65)', margin: '0 0 6px' }}>
+            {t('pricing.sousTitre')}
+          </p>
+          <p style={{ fontSize: 13, ...gradientOr, fontWeight: 700, margin: '0 0 28px' }}>
+            {t('pricing.paiementMobileMoney')}
+          </p>
+
+          {/* Toggle cycle de facturation */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#fff', borderRadius: 30, padding: '6px 8px', boxShadow: '0 12px 32px rgba(0,0,0,0.35)', flexWrap: 'wrap', justifyContent: 'center' }}>
+            {Object.keys(CYCLES).map(function(c) {
+              var actif = cycle === c;
+              return (
+                <button key={c} onClick={function() { setCycle(c); }}
+                  style={{ padding: '8px 16px', borderRadius: 22, border: 'none', background: actif ? '#1B6B3A' : 'transparent', color: actif ? '#fff' : '#888', fontSize: 13, fontWeight: actif ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, transition: 'all .2s' }}>
+                  {CYCLES[c].label}
+                  {CYCLES[c].reduction > 0 && (
+                    <span style={{ background: '#F5A623', color: '#1B2B22', borderRadius: 20, padding: '2px 7px', fontSize: 10, fontWeight: 800 }}>
+                      -{Math.round(CYCLES[c].reduction * 100)}%
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -226,85 +337,9 @@ export default function Pricing() {
       {/* Cards plans */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 18, maxWidth: 1000, margin: '0 auto 48px', padding: '0 20px' }}>
         {PLANS.map(function(plan) {
-          var prix = montantCycle(plan.prix_mois);
           return (
-            <div key={plan.id} style={{ background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: plan.recommande ? '0 8px 32px rgba(27,107,58,0.15)' : '0 2px 12px rgba(0,0,0,0.06)', border: plan.recommande ? '2px solid ' + plan.couleur : '1px solid #E8E8E8', position: 'relative' }}>
-              {plan.recommande && (
-                <div style={{ background: plan.couleur, color: '#fff', textAlign: 'center', padding: '6px', fontSize: 12, fontWeight: 700 }}>
-                  {t('pricing.recommande')} - {plan.badge}
-                </div>
-              )}
-              <div style={{ padding: '24px 22px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                  <div style={{ width: 44, height: 44, background: plan.bg, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: plan.couleur }}>
-                    {plan.id === 'gratuit' ? <Users size={24} strokeWidth={1.5} /> : plan.id === 'pro' ? <Zap size={24} strokeWidth={1.5} /> : <Building2 size={24} strokeWidth={1.5} />}
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22' }}>{plan.nom}</div>
-                    <div style={{ fontSize: 12, color: '#888' }}>{plan.sous_titre}</div>
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: 20 }}>
-                  {prix === 0 ? (
-                    <div style={{ fontSize: 36, fontWeight: 900, color: '#1B2B22' }}>{t('pricing.gratuit')}</div>
-                  ) : (
-                    <>
-                      <div style={{ fontSize: 36, fontWeight: 900, color: '#1B2B22', letterSpacing: -1 }}>
-                        {GNF(prix)} <span style={{ fontSize: 14, fontWeight: 400, color: '#888' }}>GNF</span>
-                      </div>
-                      <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{CYCLES[cycle].label.toLowerCase()}</div>
-                      {CYCLES[cycle].reduction > 0 && (
-                        <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 600, marginTop: 4 }}>
-                          {t('pricing.economie', { montant: GNF(Math.round(plan.prix_mois * CYCLES[cycle].mois * CYCLES[cycle].reduction)) })}
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-
-                {/* CTA intelligent */}
-                <button onClick={function() { choisirPlan(plan.id); }} disabled={essaiEnCours === plan.id}
-                  style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: essaiEnCours === plan.id ? '#aaa' : plan.couleur, color: '#fff', fontSize: 14, fontWeight: 700, cursor: essaiEnCours === plan.id ? 'not-allowed' : 'pointer', marginBottom: plan.id === 'gratuit' ? 20 : 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                  {essaiEnCours === plan.id
-                    ? t('pricing.demarrage')
-                    : <>{plan.id === 'gratuit' ? t('pricing.creerCompteGratuit') : t('pricing.essaiGratuit1Mois')} <ArrowRight size={15} strokeWidth={2.5} /></>
-                  }
-                </button>
-
-                {plan.id !== 'gratuit' && (
-                  <div style={{ textAlign: 'center', marginBottom: 16 }}>
-                    <button onClick={function() { setShowPaiement(plan.id); }}
-                      style={{ background: 'none', border: 'none', color: '#888', fontSize: 11, cursor: 'pointer', textDecoration: 'underline' }}>
-                      {t('pricing.dejaUtiliseEssai')}
-                    </button>
-                  </div>
-                )}
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
-                  {plan.features.map(function(f, i) {
-                    return (
-                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#1B2B22' }}>
-                        <div style={{ width: 18, height: 18, borderRadius: '50%', background: plan.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                          <Check size={11} strokeWidth={3} color={plan.couleur} />
-                        </div>
-                        {f}
-                      </div>
-                    );
-                  })}
-                  {plan.nonInclus && plan.nonInclus.map(function(f, i) {
-                    return (
-                      <div key={'non' + i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#ccc' }}>
-                        <div style={{ width: 18, height: 18, borderRadius: '50%', background: '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                          <X size={11} strokeWidth={2.5} color="#ccc" />
-                        </div>
-                        {f}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+            <PlanCard key={plan.id} plan={plan} prix={montantCycle(plan.prix_mois)} t={t} CYCLES={CYCLES} cycle={cycle}
+              essaiEnCours={essaiEnCours} choisirPlan={choisirPlan} setShowPaiement={setShowPaiement} />
           );
         })}
       </div>

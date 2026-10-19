@@ -13,6 +13,9 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import { PlanMasseMotif } from '../components/BlueprintPattern';
+
+var gradientOr = { background: 'linear-gradient(135deg, #F5A623 0%, #FFD98E 55%, #F5A623 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' };
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
 
@@ -431,32 +434,9 @@ useEffect(function() {
           <ellipse cx="900" cy="360" rx="30" ry="15" fill="#1B6B3A" transform="rotate(30, 900, 360)" />
         </svg>
 
-        {/* Personnages animés */}
-        <div style={{ position: 'absolute', bottom: 60, left: '15%', animation: 'flottement 4s ease-in-out infinite' }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 48 }}>👨‍💼</div>
-            <div style={{ fontSize: 10, color: '#1B6B3A', fontWeight: 700, marginTop: 4 }}>Propriétaire</div>
-          </div>
-        </div>
-        <div style={{ position: 'absolute', bottom: 60, right: '15%', animation: 'flottement 4s ease-in-out infinite 1s' }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 48 }}>👩</div>
-            <div style={{ fontSize: 10, color: '#1B6B3A', fontWeight: 700, marginTop: 4 }}>Locataire</div>
-          </div>
-        </div>
-        <div style={{ position: 'absolute', bottom: 80, left: '50%', transform: 'translateX(-50%)', animation: 'flottement 3s ease-in-out infinite 0.5s' }}>
-          <div style={{ fontSize: 56 }}>🏠</div>
-        </div>
-
-        {/* Flèches de connexion animées */}
-        <svg style={{ position: 'absolute', bottom: 70, left: '20%', width: '60%', height: 60 }} viewBox="0 0 400 60">
-          <path d="M30 30 Q200 10 370 30" stroke="#1B6B3A" strokeWidth="2" fill="none" strokeDasharray="8 4" opacity="0.4">
-            <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="1.5s" repeatCount="indefinite" />
-          </path>
-          <path d="M370 30 Q200 50 30 30" stroke="#F5A623" strokeWidth="2" fill="none" strokeDasharray="8 4" opacity="0.4">
-            <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="1.5s" repeatCount="indefinite" />
-          </path>
-        </svg>
+        {/* Motifs architecturaux */}
+        <PlanMasseMotif opacity={0.09} color="#1B6B3A" width={220} height={190} style={{ position: 'absolute', bottom: 40, left: '6%' }} />
+        <PlanMasseMotif opacity={0.09} color="#1B6B3A" width={220} height={190} style={{ position: 'absolute', bottom: 40, right: '6%', transform: 'scaleX(-1)' }} />
       </div>
       {/* ─── HERO PLEIN ÉCRAN ────────────────────────────────── */}
       <section ref={heroRef} style={{ position: 'relative', height: '100vh', minHeight: 600, maxHeight: 900, overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -586,7 +566,7 @@ useEffect(function() {
           {STATS.map(function(s, i) {
             return (
               <div key={i} style={{ textAlign: 'center', padding: '20px 12px' }}>
-                <div style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 900, color: i === 0 ? '#F5A623' : '#fff', letterSpacing: -1 }}>
+                <div style={i <= 1 ? { fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 900, letterSpacing: -1, ...gradientOr } : { fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 900, color: '#fff', letterSpacing: -1 }}>
           {i === 0 ? compteurs.logements.toLocaleString('fr-FR') + '+' : i === 1 ? compteurs.utilisateurs.toLocaleString('fr-FR') + '+' : s.valeur}
         </div>
                 <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', marginTop: 6 }}>{s.label}</div>
