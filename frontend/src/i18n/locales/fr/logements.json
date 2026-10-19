@@ -6,7 +6,11 @@
     },
     "header": {
       "titre": "Logements disponibles en Guinée",
-      "sousTitre": "{{total}} logement(s) trouvé(s) · Sans intermédiaire"
+      "sousTitre": "{{total}} logement(s) trouvé(s) · Sans intermédiaire",
+      "badgeDisponibles": "biens disponibles en ce moment"
+    },
+    "resultatsToolbar": {
+      "resultats": "résultat(s)"
     },
     "tri": {
       "recent": "Plus récent",
