@@ -107,6 +107,9 @@
     "equipementsSection": {
       "titre": "Amenities"
     },
+    "localisation": {
+      "titre": "Location"
+    },
     "similaires": {
       "titre": "Similar properties in {{ville}}",
       "voirTout": "See all →"
@@ -266,7 +269,8 @@
       "disponible": "Available",
       "occupe": "Occupied",
       "nbLogements": "{{count}} listing(s)"
-    }
+    },
+    "tokenManquant": "Map unavailable right now."
   },
   "onboardingLocataire": {
     "equipements": {

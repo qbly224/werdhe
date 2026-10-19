@@ -107,6 +107,9 @@
     "equipementsSection": {
       "titre": "Équipements"
     },
+    "localisation": {
+      "titre": "Localisation"
+    },
     "similaires": {
       "titre": "Logements similaires à {{ville}}",
       "voirTout": "Voir tout →"
@@ -266,7 +269,8 @@
       "disponible": "Disponible",
       "occupe": "Occupé",
       "nbLogements": "{{count}} logement(s)"
-    }
+    },
+    "tokenManquant": "Carte indisponible pour le moment."
   },
   "onboardingLocataire": {
     "equipements": {
