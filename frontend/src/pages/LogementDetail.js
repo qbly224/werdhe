@@ -10,6 +10,7 @@ import {
   Copy, Check, Phone, Star, Home, Share2, ImageOff, CheckCircle2, Lock
 } from 'lucide-react';
 import Logo from '../components/Logo';
+import MiniCarteLogement from '../components/MiniCarteLogement';
 import { useTranslation } from 'react-i18next';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(Number(n)); };
@@ -247,6 +248,17 @@ export default function LogementDetail() {
                     );
                   })}
                 </div>
+              </div>
+            )}
+
+            {/* Localisation */}
+            {logement.latitude != null && logement.longitude != null && (
+              <div style={{ background: '#fff', borderRadius: 16, padding: '20px 22px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+                <h2 style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', margin: '0 0 6px' }}>{t('logementDetail.localisation.titre')}</h2>
+                <div style={{ fontSize: 13, color: '#888', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <MapPin size={13} strokeWidth={1.5} /> {logement.adresse}, {logement.ville}
+                </div>
+                <MiniCarteLogement latitude={logement.latitude} longitude={logement.longitude} hauteur={240} />
               </div>
             )}
 
