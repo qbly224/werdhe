@@ -333,7 +333,12 @@ function OngletOverview(props) {
 
   if (!overview) return null;
 
-  var k = overview.kpis;
+  var k = overview.kpis || { revenus_mois: 0, revenus_mois_precedent: 0, tendance_revenus: 0, total_biens: 0, biens_loues: 0, taux_occupation: 0, candidatures_attente: 0, nouvelles_candidatures_7j: 0 };
+  overview.biens        = overview.biens        || [];
+  overview.candidatures = overview.candidatures || [];
+  overview.alertes      = overview.alertes      || [];
+  overview.evenements   = overview.evenements   || [];
+  overview.revenus6mois = overview.revenus6mois || [];
 
   return (
     <div>
@@ -342,7 +347,7 @@ function OngletOverview(props) {
         {[
           {
             label: t('ongletOverview.kpi.revenusDuMois'),
-            val:   GNF(k.revenus_mois) + ' GNF',
+            val:   GNF(k.revenus_mois),
             sub:   k.tendance_revenus > 0 ? t('ongletOverview.kpi.tendanceHausse', { pct: k.tendance_revenus })
                  : k.tendance_revenus < 0 ? t('ongletOverview.kpi.tendanceBaisse', { pct: k.tendance_revenus })
                  : t('ongletOverview.kpi.tendanceStable'),
