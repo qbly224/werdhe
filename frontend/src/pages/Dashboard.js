@@ -235,7 +235,7 @@ function OngletOverviewLocataire(props) {
             <div key={r.id} style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginBottom: 16, border: '1.5px solid #A5D6A7' }}>
               <div style={{ height: 100, background: photo ? 'none' : 'linear-gradient(135deg,#1B6B3A,#2D9E5F)', overflow: 'hidden', position: 'relative' }}>
                 {photo
-                  ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
                   : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}><Home size={36} strokeWidth={1.5} color="#fff" /></div>
                 }
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.55))', display: 'flex', alignItems: 'flex-end', padding: '10px 14px' }}>
@@ -492,7 +492,7 @@ function OngletOverview(props) {
               <div key={b.id} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '10px 12px', borderRadius: 12, background: '#F7F8F7' }}>
                 <div style={{ width: 46, height: 46, borderRadius: 10, overflow: 'hidden', background: '#E8F5E9', flexShrink: 0 }}>
                   {photo
-                    ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
                     : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Home size={20} strokeWidth={1.5} color="#A5D6A7" /></div>
                   }
                 </div>
@@ -3740,7 +3740,7 @@ function OngletHistorique(props) {
                   {/* Photo */}
                   <div style={{ width: 100, height: 100, background: photo ? 'none' : 'linear-gradient(135deg,#E8F5E9,#C8E6C9)', flexShrink: 0, overflow: 'hidden' }}>
                     {photo
-                      ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
                       : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Home size={28} strokeWidth={1.5} color="#A5D6A7" /></div>
                     }
                   </div>

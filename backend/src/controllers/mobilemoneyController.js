@@ -74,21 +74,58 @@ async function initierOrangeMoney(req, res) {
       });
     }
 
-    // Enregistrer la tentative de paiement
-    var paiementResult = await db.query(
-      `INSERT INTO paiements
-        (reservation_id, locataire_id, logement_id, montant, mode_paiement, statut, reference_externe, metadata)
-       VALUES ($1, $2, $3, $4, 'mobile_money', 'en_attente', $5, $6)
-       RETURNING *`,
-      [
-        reservation_id,
-        req.user.id,
-        resaResult.rows[0].logement_id,
-        montant,
-        reference,
-        JSON.stringify({ operateur: 'orange', telephone: telFormate })
-      ]
+    // Un paiement est déjà en attente pour cette réservation (double clic,
+    // double onglet, requête rejouée) : on renvoie celui-ci au lieu d'en
+    // recréer un deuxième.
+    var paiementEnAttente = await db.query(
+      `SELECT * FROM paiements WHERE reservation_id = $1 AND statut = 'en_attente'`,
+      [reservation_id]
     );
+    if (paiementEnAttente.rows.length > 0) {
+      return res.json({
+        success: true,
+        reference: paiementEnAttente.rows[0].reference_externe,
+        paiement_id: paiementEnAttente.rows[0].id,
+        message: 'Un paiement est deja en cours pour cette reservation',
+        simulation: CONFIG.orange.mode === 'simulation',
+        deja_en_cours: true
+      });
+    }
+
+    // Enregistrer la tentative de paiement
+    var paiementResult;
+    try {
+      paiementResult = await db.query(
+        `INSERT INTO paiements
+          (reservation_id, locataire_id, logement_id, montant, mode_paiement, statut, reference_externe, metadata)
+         VALUES ($1, $2, $3, $4, 'orange_money', 'en_attente', $5, $6)
+         RETURNING *`,
+        [
+          reservation_id,
+          req.user.id,
+          resaResult.rows[0].logement_id,
+          montant,
+          reference,
+          JSON.stringify({ operateur: 'orange', telephone: telFormate })
+        ]
+      );
+    } catch (insertErr) {
+      if (insertErr.code === '23505') {
+        var existant = await db.query(
+          `SELECT * FROM paiements WHERE reservation_id = $1 AND statut = 'en_attente'`,
+          [reservation_id]
+        );
+        return res.json({
+          success: true,
+          reference: existant.rows[0].reference_externe,
+          paiement_id: existant.rows[0].id,
+          message: 'Un paiement est deja en cours pour cette reservation',
+          simulation: CONFIG.orange.mode === 'simulation',
+          deja_en_cours: true
+        });
+      }
+      throw insertErr;
+    }
 
     if (CONFIG.orange.mode === 'simulation') {
       // MODE SIMULATION
@@ -188,20 +225,57 @@ async function initierMTNMomo(req, res) {
       });
     }
 
-    var paiementResult = await db.query(
-      `INSERT INTO paiements
-        (reservation_id, locataire_id, logement_id, montant, mode_paiement, statut, reference_externe, metadata)
-       VALUES ($1, $2, $3, $4, 'mobile_money', 'en_attente', $5, $6)
-       RETURNING *`,
-      [
-        reservation_id,
-        req.user.id,
-        resaResult.rows[0].logement_id,
-        montant,
-        reference,
-        JSON.stringify({ operateur: 'mtn', telephone: telFormate })
-      ]
+    // Un paiement est déjà en attente pour cette réservation (double clic,
+    // double onglet, requête rejouée) : on renvoie celui-ci au lieu d'en
+    // recréer un deuxième.
+    var paiementEnAttenteMtn = await db.query(
+      `SELECT * FROM paiements WHERE reservation_id = $1 AND statut = 'en_attente'`,
+      [reservation_id]
     );
+    if (paiementEnAttenteMtn.rows.length > 0) {
+      return res.json({
+        success: true,
+        reference: paiementEnAttenteMtn.rows[0].reference_externe,
+        paiement_id: paiementEnAttenteMtn.rows[0].id,
+        message: 'Un paiement est deja en cours pour cette reservation',
+        simulation: CONFIG.mtn.mode === 'simulation',
+        deja_en_cours: true
+      });
+    }
+
+    var paiementResult;
+    try {
+      paiementResult = await db.query(
+        `INSERT INTO paiements
+          (reservation_id, locataire_id, logement_id, montant, mode_paiement, statut, reference_externe, metadata)
+         VALUES ($1, $2, $3, $4, 'mtn_momo', 'en_attente', $5, $6)
+         RETURNING *`,
+        [
+          reservation_id,
+          req.user.id,
+          resaResult.rows[0].logement_id,
+          montant,
+          reference,
+          JSON.stringify({ operateur: 'mtn', telephone: telFormate })
+        ]
+      );
+    } catch (insertErr) {
+      if (insertErr.code === '23505') {
+        var existantMtn = await db.query(
+          `SELECT * FROM paiements WHERE reservation_id = $1 AND statut = 'en_attente'`,
+          [reservation_id]
+        );
+        return res.json({
+          success: true,
+          reference: existantMtn.rows[0].reference_externe,
+          paiement_id: existantMtn.rows[0].id,
+          message: 'Un paiement est deja en cours pour cette reservation',
+          simulation: CONFIG.mtn.mode === 'simulation',
+          deja_en_cours: true
+        });
+      }
+      throw insertErr;
+    }
 
     if (CONFIG.mtn.mode === 'simulation') {
       res.json({
