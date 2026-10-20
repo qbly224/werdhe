@@ -9,6 +9,7 @@ import MapView from '../components/MapView';
 import SEO from '../components/SEO';
 import { SkeletonLogement } from '../components/Skeleton';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../context/AuthContext';
 import BlueprintPattern from '../components/BlueprintPattern';
 import useCompteurAnime from '../hooks/useCompteurAnime';
 
@@ -32,6 +33,7 @@ function optimiserImage(url, width, quality) {
 export default function Logements() {
   var navigate = useNavigate();
   var t = useTranslation('logements').t;
+  var { user } = useAuth();
   var [logements, setLogements]   = useState([]);
   var [loading, setLoading]       = useState(true);
   var [total, setTotal]           = useState(0);
@@ -93,9 +95,23 @@ export default function Logements() {
                 <Link to="/" style={{ textDecoration: 'none' }}>
           <Logo size={34} showText={true} darkBg={false} />
         </Link>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <Link to="/login" style={{ padding: '7px 14px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>{t('logements.nav.connexion')}</Link>
-          <Link to="/dashboard" style={{ padding: '7px 14px', borderRadius: 8, background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>{t('logements.nav.dashboard')}</Link>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          {user ? (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 12px', background: '#fff', borderRadius: 20, fontSize: 13 }}>
+                <div style={{ width: 24, height: 24, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
+                  {((user.prenom || '').charAt(0) + (user.nom || '').charAt(0)).toUpperCase()}
+                </div>
+                <span style={{ color: '#1B2B22', fontWeight: 600 }}>{user.prenom}</span>
+              </div>
+              <Link to="/dashboard" style={{ padding: '7px 14px', borderRadius: 8, background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>{t('logements.nav.dashboard')}</Link>
+            </>
+          ) : (
+            <>
+              <Link to="/login" style={{ padding: '7px 14px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>{t('logements.nav.connexion')}</Link>
+              <Link to="/dashboard" style={{ padding: '7px 14px', borderRadius: 8, background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>{t('logements.nav.dashboard')}</Link>
+            </>
+          )}
         </div>
       </nav>
 
