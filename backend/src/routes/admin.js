@@ -666,11 +666,27 @@ router.patch('/users/:id/plan', verifierToken, verifierAdmin, async (req, res) =
       return res.status(400).json({ erreur: 'Plan invalide' });
     }
     await db.query('UPDATE users SET plan = $1 WHERE id = $2', [plan, req.params.id]);
-    await db.query(`
-      INSERT INTO abonnements (user_id, plan, statut)
-      VALUES ($1, $2, 'actif')
-      ON CONFLICT (user_id) DO UPDATE SET plan = $2, statut = 'actif'
-    `, [req.params.id, plan]).catch(console.warn);
+
+    // Pas de contrainte unique sur abonnements.user_id (un utilisateur peut
+    // avoir plusieurs lignes au fil du temps) : on met à jour la plus
+    // récente si elle existe, sinon on en crée une. Un plan attribué par
+    // l'admin n'a pas de date d'expiration suivie automatiquement.
+    var dernier = await db.query(
+      `SELECT id FROM abonnements WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1`,
+      [req.params.id]
+    );
+    if (dernier.rows.length > 0) {
+      await db.query(
+        `UPDATE abonnements SET plan = $1, statut = 'actif', date_fin = NULL WHERE id = $2`,
+        [plan, dernier.rows[0].id]
+      );
+    } else {
+      await db.query(
+        `INSERT INTO abonnements (user_id, plan, statut) VALUES ($1, $2, 'actif')`,
+        [req.params.id, plan]
+      );
+    }
+
     res.json({ message: 'Plan mis à jour !' });
   } catch (err) {
     res.status(500).json({ erreur: err.message });
