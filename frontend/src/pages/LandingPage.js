@@ -252,6 +252,7 @@ export default function LandingPage() {
   var [compteurs, setCompteurs] = useState({ logements: 0, utilisateurs: 0 });
   var [slideActif, setSlideActif] = useState(0);
   var [souris, setSouris] = useState({ x: 0, y: 0 });
+  var [recherche, setRecherche] = useState('');
   var SLIDES              = getSlides(t);
   var STATS                = getStats(t);
   var TEMOIGNAGES          = getTemoignages(t);
@@ -413,7 +414,6 @@ useEffect(function() {
 
           {/* Badge */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 20, padding: '6px 16px', marginBottom: 24 }}>
-            <div style={{ width: 7, height: 7, background: '#F5A623', borderRadius: '50%' }} />
             <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.95)', fontWeight: 600 }}>{SLIDES[slideActif].tag}</span>
           </div>
 
@@ -425,41 +425,30 @@ useEffect(function() {
             {SLIDES[slideActif].sous}
           </p>
 
-          {/* Barre de recherche */}
-          <div style={{ background: '#fff', borderRadius: 16, padding: 8, display: 'flex', gap: 8, maxWidth: 720, margin: '0 auto 28px', boxShadow: '0 8px 40px rgba(0,0,0,0.25)', flexWrap: 'wrap' }}>
-            <div style={{ flex: 1, minWidth: 140, display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, background: '#F7F8F7' }}>
-              <MapPin size={16} strokeWidth={1.5} color="#1B6B3A" />
-              <select defaultValue="" style={{ border: 'none', background: 'transparent', fontSize: 14, color: '#1B2B22', outline: 'none', width: '100%', cursor: 'pointer' }}>
-                <option value="">{t('landingPage.search.toutesLesVilles')}</option>
-                {['Conakry', 'Kindia', 'Labé', 'Kankan', 'Mamou', 'Boké', 'Faranah', 'N\'Zérékoré'].map(function(v) {
-                  return <option key={v} value={v}>{v}</option>;
-                })}
-              </select>
+          {/* Barre de recherche unique */}
+          <form onSubmit={function(e) {
+              e.preventDefault();
+              navigate(recherche.trim() ? '/logements?search=' + encodeURIComponent(recherche.trim()) : '/logements');
+            }}
+            style={{ maxWidth: 560, margin: '0 auto 10px' }}>
+            <div style={{ background: '#fff', borderRadius: 30, padding: '6px 6px 6px 22px', display: 'flex', alignItems: 'center', gap: 10, boxShadow: '0 8px 40px rgba(0,0,0,0.25)' }}>
+              <Search size={17} strokeWidth={1.5} color="#8A8370" style={{ flexShrink: 0 }} />
+              <input
+                type="text"
+                value={recherche}
+                onChange={function(e) { setRecherche(e.target.value); }}
+                placeholder={t('landingPage.search.placeholderUnique')}
+                style={{ flex: 1, minWidth: 0, border: 'none', background: 'transparent', outline: 'none', fontFamily: "'Fraunces', serif", fontStyle: 'italic', fontSize: 15, color: '#1B2B22' }} />
+              <button type="submit"
+                style={{ flexShrink: 0, padding: '12px 22px', borderRadius: 24, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                {t('landingPage.search.rechercher')}
+              </button>
             </div>
-            <div style={{ flex: 1, minWidth: 130, display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, background: '#F7F8F7' }}>
-              <Home size={16} strokeWidth={1.5} color="#1B6B3A" />
-              <select defaultValue="" style={{ border: 'none', background: 'transparent', fontSize: 14, color: '#1B2B22', outline: 'none', width: '100%', cursor: 'pointer' }}>
-                <option value="">{t('landingPage.search.typeDeBien')}</option>
-                {['Appartement', 'Villa', 'Studio', 'Duplex', 'Bureau'].map(function(c) {
-                  return <option key={c} value={c.toLowerCase()}>{c}</option>;
-                })}
-              </select>
-            </div>
-            <div style={{ flex: 1, minWidth: 130, display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, background: '#F7F8F7' }}>
-              <Banknote size={16} strokeWidth={1.5} color="#1B6B3A" />
-              <select defaultValue="" style={{ border: 'none', background: 'transparent', fontSize: 14, color: '#1B2B22', outline: 'none', width: '100%', cursor: 'pointer' }}>
-                <option value="">{t('landingPage.search.budget')}</option>
-                <option value="0-500000">{t('landingPage.search.moins500')}</option>
-                <option value="500000-1000000">{t('landingPage.search.500a1M')}</option>
-                <option value="1000000-3000000">{t('landingPage.search.1Ma3M')}</option>
-                <option value="3000000+">{t('landingPage.search.plus3M')}</option>
-              </select>
-            </div>
-            <button
-              onClick={function() { navigate('/logements'); }}
-              style={{ padding: '12px 22px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, whiteSpace: 'nowrap' }}>
-              <Search size={16} strokeWidth={2} /> {t('landingPage.search.rechercher')}
-            </button>
+          </form>
+          <div style={{ textAlign: 'center', marginBottom: 28 }}>
+            <span style={{ display: 'inline-block', fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: '0.02em', color: 'rgba(255,255,255,0.65)', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.16)', borderRadius: 16, padding: '5px 14px' }}>
+              {t('landingPage.search.exemple')}
+            </span>
           </div>
 
           {/* Badges rapides */}

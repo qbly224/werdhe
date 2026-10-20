@@ -22,7 +22,9 @@
       "500a1M": "500K – 1M GNF",
       "1Ma3M": "1M – 3M GNF",
       "plus3M": "Over 3M GNF",
-      "rechercher": "Search"
+      "rechercher": "Search",
+      "placeholderUnique": "Villa in Kipé, around 3M GNF…",
+      "exemple": "try: \"studio in Matam under 1.5M\""
     },
     "quickBadges": {
       "appartements": "Apartments",
