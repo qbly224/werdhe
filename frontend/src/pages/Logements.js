@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { BedDouble, Bath, Maximize2, ArrowRight, MapPin, Search, SlidersHorizontal, X, Home, Building2 } from 'lucide-react';
 import Logo from '../components/Logo';
 import { CATEGORIE_INFO, CATEGORIE_DEFAUT } from '../components/CarteLogement';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import MapView from '../components/MapView';
 import SEO from '../components/SEO';
@@ -34,6 +34,7 @@ export default function Logements() {
   var navigate = useNavigate();
   var t = useTranslation('logements').t;
   var { user } = useAuth();
+  var [searchParams] = useSearchParams();
   var [logements, setLogements]   = useState([]);
   var [loading, setLoading]       = useState(true);
   var [total, setTotal]           = useState(0);
@@ -42,7 +43,7 @@ export default function Logements() {
   var [vueMode, setVueMode] = useState('liste'); // 'liste' ou 'carte'
 
   // Filtres
-  var [search, setSearch]         = useState('');
+  var [search, setSearch]         = useState(function() { return searchParams.get('search') || ''; });
   var [ville, setVille]           = useState('');
   var [categorie, setCategorie]   = useState('');
   var [prixMin, setPrixMin]       = useState('');
