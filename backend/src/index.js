@@ -99,6 +99,8 @@ app.use(function(req, res, next) {
     res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 an
   } else if (req.path.startsWith('/logements') && req.method === 'GET') {
     res.setHeader('Cache-Control', 'public, max-age=120'); // 2 minutes
+  } else if (req.path.startsWith('/localisation') && req.method === 'GET') {
+    res.setHeader('Cache-Control', 'public, max-age=86400'); // régions/préfectures/communes de Guinée : quasi statiques
   } else {
     res.setHeader('Cache-Control', 'no-cache');
   }

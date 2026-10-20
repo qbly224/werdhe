@@ -52,6 +52,23 @@ const creerReservation = async (req, res) => {
       });
     }
 
+    // 4bis. Empêcher une deuxième réservation active sur le même logement
+    // (double clic, double onglet, requête rejouée) — un index unique
+    // partiel en base sert de filet en cas de requêtes simultanées.
+    const resaExistante = await db.query(
+      `SELECT * FROM reservations
+       WHERE logement_id = $1 AND locataire_id = $2
+         AND statut NOT IN ('refusee', 'annulee', 'terminee')
+       LIMIT 1`,
+      [logement_id, req.user.id]
+    );
+    if (resaExistante.rows.length > 0) {
+      return res.status(409).json({
+        erreur: 'Vous avez déjà une réservation en cours pour ce logement',
+        reservation: resaExistante.rows[0]
+      });
+    }
+
     // 5. Calculer le montant total
     // montant_total = loyer mensuel (pas multiplié par la durée)
     // La durée est stockée séparément dans duree_mois
@@ -100,6 +117,11 @@ const creerReservation = async (req, res) => {
     });
 
   } catch (err) {
+    // 23505 = violation de l'index unique partiel (requêtes simultanées
+    // ayant toutes deux passé la vérification 4bis avant l'insertion).
+    if (err.code === '23505') {
+      return res.status(409).json({ erreur: 'Vous avez déjà une réservation en cours pour ce logement' });
+    }
     console.error('Erreur création réservation:', err.message);
     res.status(500).json({ erreur: 'Erreur serveur' });
   }

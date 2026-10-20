@@ -7,11 +7,21 @@ const geocoderAdresse = async (adresse, ville, pays = 'Guinée') => {
     const query = encodeURIComponent(`${adresse}, ${ville}, ${pays}`);
     const url = `https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=1`;
 
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'Werdhe-App/1.0 (werdhe@gmail.com)'
-      }
-    });
+    // Si Nominatim ne répond pas, on bascule sur les coordonnées par
+    // défaut de la ville plutôt que de bloquer la publication du logement.
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    let response;
+    try {
+      response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Werdhe-App/1.0 (werdhe@gmail.com)'
+        },
+        signal: controller.signal
+      });
+    } finally {
+      clearTimeout(timeoutId);
+    }
 
     const data = await response.json();
 

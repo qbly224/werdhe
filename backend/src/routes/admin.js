@@ -152,6 +152,9 @@ router.get('/stats', verifierToken, verifierAdmin, async (req, res) => {
 router.get('/users', verifierToken, verifierAdmin, async (req, res) => {
   try {
     var { role, statut, search } = req.query;
+    var page  = Math.max(1, parseInt(req.query.page, 10) || 1);
+    var limit = Math.min(500, Math.max(1, parseInt(req.query.limit, 10) || 500));
+    var offset = (page - 1) * limit;
     var conditions = ['1=1'];
     var params = [];
     var idx = 1;
@@ -170,6 +173,11 @@ router.get('/users', verifierToken, verifierAdmin, async (req, res) => {
       params.push('%' + search + '%'); idx++;
     }
 
+    var countResult = await db.query(
+      `SELECT COUNT(*) FROM users u WHERE ${conditions.join(' AND ')}`,
+      params
+    );
+
     var result = await db.query(
       `SELECT
          u.id, u.nom, u.prenom, u.email, u.telephone, u.role,
@@ -182,11 +190,12 @@ router.get('/users', verifierToken, verifierAdmin, async (req, res) => {
        LEFT JOIN reservations r ON r.locataire_id = u.id
        WHERE ${conditions.join(' AND ')}
        GROUP BY u.id
-       ORDER BY u.created_at DESC`,
-      params
+       ORDER BY u.created_at DESC
+       LIMIT $${idx} OFFSET $${idx + 1}`,
+      params.concat([limit, offset])
     );
 
-    res.json({ users: result.rows, total: result.rows.length });
+    res.json({ users: result.rows, total: parseInt(countResult.rows[0].count, 10), page: page, limit: limit });
   } catch (err) {
     console.error('Admin users:', err.message);
     res.status(500).json({ erreur: 'Erreur serveur' });
@@ -266,6 +275,9 @@ router.get('/users/:id', verifierToken, verifierAdmin, async (req, res) => {
 router.get('/logements', verifierToken, verifierAdmin, async (req, res) => {
   try {
     var { statut, search, ville } = req.query;
+    var page  = Math.max(1, parseInt(req.query.page, 10) || 1);
+    var limit = Math.min(500, Math.max(1, parseInt(req.query.limit, 10) || 500));
+    var offset = (page - 1) * limit;
     var conditions = ['1=1'];
     var params = [];
     var idx = 1;
@@ -287,6 +299,11 @@ router.get('/logements', verifierToken, verifierAdmin, async (req, res) => {
       params.push('%' + search + '%'); idx++;
     }
 
+    var countResult = await db.query(
+      `SELECT COUNT(*) FROM logements l WHERE ${conditions.join(' AND ')}`,
+      params
+    );
+
     var result = await db.query(
       `SELECT l.*,
          u.nom as prop_nom, u.prenom as prop_prenom,
@@ -297,11 +314,12 @@ router.get('/logements', verifierToken, verifierAdmin, async (req, res) => {
        LEFT JOIN reservations r ON r.logement_id = l.id
        WHERE ${conditions.join(' AND ')}
        GROUP BY l.id, u.id
-       ORDER BY l.created_at DESC`,
-      params
+       ORDER BY l.created_at DESC
+       LIMIT $${idx} OFFSET $${idx + 1}`,
+      params.concat([limit, offset])
     );
 
-    res.json({ logements: result.rows, total: result.rows.length });
+    res.json({ logements: result.rows, total: parseInt(countResult.rows[0].count, 10), page: page, limit: limit });
   } catch (err) {
     console.error('Admin logements:', err.message);
     res.status(500).json({ erreur: 'Erreur serveur' });
