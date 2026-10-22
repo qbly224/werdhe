@@ -15,7 +15,15 @@
     "erreur": "Une erreur est survenue. Réessayez.",
     "voirLogement": "Voir le logement",
     "parMois": "/ mois",
-    "fermer": "Fermer"
+    "fermer": "Fermer",
+    "messageImage": "Voici une photo.",
+    "historique": "Historique",
+    "retour": "Retour",
+    "nouvelleConversation": "Nouvelle conversation",
+    "aucunHistorique": "Aucune conversation enregistrée pour le moment.",
+    "sansTitre": "Conversation",
+    "imagePrete": "Image prête à être envoyée",
+    "joindreImage": "Joindre une photo"
   },
   "landingPage": {
     "seo": {

@@ -40,6 +40,35 @@ const upload = multer({
   }
 });
 
+// Upload dédié aux images envoyées dans le chatbot : en mémoire (pas sur
+// disque/Cloudinary directement) pour que le controller puisse à la fois
+// envoyer les octets à Gemini (analyse de l'image) et les pousser vers
+// Cloudinary (URL persistante pour l'historique), sans double aller-retour
+// réseau.
+const uploadChatbot = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024, files: 1 },
+  fileFilter: (req, file, cb) => {
+    const typesAutorises = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (typesAutorises.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Format non supporté. Utilisez JPG, PNG ou WEBP'), false);
+    }
+  }
+});
+
+// Pousse un buffer image vers Cloudinary (dossier dédié chatbot) et
+// renvoie son URL publique.
+async function uploaderImageChatbot(buffer, mimeType) {
+  var dataUri = 'data:' + mimeType + ';base64,' + buffer.toString('base64');
+  var result = await cloudinary.uploader.upload(dataUri, {
+    folder: 'werdhe/chatbot',
+    transformation: [{ width: 1200, height: 1200, crop: 'limit', quality: 'auto' }]
+  });
+  return result.secure_url;
+}
+
 // Supprimer une photo de Cloudinary
 const supprimerPhoto = async (publicId) => {
   try {
@@ -51,4 +80,4 @@ const supprimerPhoto = async (publicId) => {
   }
 };
 
-module.exports = { upload, supprimerPhoto, cloudinary };
+module.exports = { upload, uploadChatbot, uploaderImageChatbot, supprimerPhoto, cloudinary };
