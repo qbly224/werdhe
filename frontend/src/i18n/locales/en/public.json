@@ -15,7 +15,15 @@
     "erreur": "Something went wrong. Please try again.",
     "voirLogement": "View listing",
     "parMois": "/ month",
-    "fermer": "Close"
+    "fermer": "Close",
+    "messageImage": "Here's a photo.",
+    "historique": "History",
+    "retour": "Back",
+    "nouvelleConversation": "New conversation",
+    "aucunHistorique": "No saved conversations yet.",
+    "sansTitre": "Conversation",
+    "imagePrete": "Image ready to send",
+    "joindreImage": "Attach a photo"
   },
   "landingPage": {
     "seo": {

@@ -14,6 +14,8 @@ Ce que tu dois savoir sur Werdhe :
 - Un locataire peut : chercher un logement, candidater, échanger par messagerie avec le propriétaire, signer son bail électroniquement, payer en ligne.
 - Un propriétaire peut : publier un logement (photos, prix, équipements, statut foncier), gérer ses candidatures, générer quittances et rapports.
 
+Si l'utilisateur envoie une photo (par exemple d'un logement), décris ce que tu vois et réponds à sa question à propos de cette image — type de bien, état apparent, équipements visibles. Ne donne jamais d'estimation de prix ferme à partir d'une photo seule, oriente plutôt vers l'outil d'estimation de Werdhe si on te demande un prix.
+
 Ta mission :
 - Répondre aux questions sur le fonctionnement de Werdhe en te basant uniquement sur ce que tu sais ci-dessus — n'invente jamais une fonctionnalité qui n'existe pas.
 - Quand on te demande de trouver un logement (ville, type de bien, budget, nombre de chambres...), utilise l'outil rechercher_logements pour interroger la vraie base de données. Ne propose JAMAIS un logement que tu n'as pas obtenu via cet outil — ne jamais inventer d'annonce, de prix ou d'adresse.
@@ -97,7 +99,9 @@ async function genererAvecRetry(client, params) {
 }
 
 // messages : [{ role: 'user'|'assistant', content: string }, ...]
-async function repondre(messages, locale) {
+// image (optionnel) : { buffer: Buffer, mimeType: string } — rattachée au
+// dernier message (forcément un message 'user', celui qu'on vient de recevoir)
+async function repondre(messages, locale, image) {
   var client = getClient();
   if (!client) {
     return {
@@ -109,8 +113,19 @@ async function repondre(messages, locale) {
   }
 
   var system = SYSTEM_PROMPT + (locale === 'en' ? '\n\nRespond in English.' : '\n\nRéponds en français.');
-  var contents = messages.map(function(m) {
-    return m.role === 'assistant' ? createModelContent(m.content) : createUserContent(m.content);
+  var contents = messages.map(function(m, i) {
+    if (m.role === 'assistant') return createModelContent(m.content);
+    var estDernier = i === messages.length - 1;
+    if (estDernier && image) {
+      return {
+        role: 'user',
+        parts: [
+          { text: m.content },
+          { inlineData: { mimeType: image.mimeType, data: image.buffer.toString('base64') } }
+        ]
+      };
+    }
+    return createUserContent(m.content);
   });
 
   var dernierResultat = null;
