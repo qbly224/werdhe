@@ -22,6 +22,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import NotFound from './pages/NotFound';
 import React, { lazy, Suspense } from 'react';
 import CookieBanner from './components/CookieBanner';
+import ChatbotWidget from './components/ChatbotWidget';
 import Logo from './components/Logo';
 import i18n from './i18n';
 class ErrorBoundary extends React.Component {
@@ -79,6 +80,7 @@ function App() {
         <BrowserRouter>
           <Toaster position="top-right" />
           <CookieBanner />
+          <ChatbotWidget />
   <Suspense fallback={
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: 'system-ui' }}>
      <div style={{ textAlign: 'center' }}>
