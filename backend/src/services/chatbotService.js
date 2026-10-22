@@ -1,7 +1,7 @@
-const Anthropic = require('@anthropic-ai/sdk');
+const { GoogleGenAI, createUserContent, createModelContent } = require('@google/genai');
 const db = require('../database');
 
-var MODEL = 'claude-haiku-5-5';
+var MODEL = 'gemini-flash-latest';
 var MAX_TOURS_OUTIL = 2; // évite une boucle d'appels d'outil infinie
 
 var SYSTEM_PROMPT = `Tu es l'assistant de Werdhe, une plateforme de location immobilière en Guinée (Conakry et les principales villes du pays).
@@ -24,7 +24,7 @@ Ta mission :
 var OUTIL_RECHERCHE = {
   name: 'rechercher_logements',
   description: 'Cherche des logements disponibles dans la vraie base de données Werdhe, selon des critères optionnels.',
-  input_schema: {
+  parametersJsonSchema: {
     type: 'object',
     properties: {
       ville:       { type: 'string', description: 'Ville ou quartier recherché (ex: Conakry, Kipé, Kindia)' },
@@ -74,8 +74,8 @@ async function rechercherLogements(criteres) {
 }
 
 function getClient() {
-  if (!process.env.ANTHROPIC_API_KEY) return null;
-  return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  if (!process.env.GEMINI_API_KEY) return null;
+  return new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 }
 
 // messages : [{ role: 'user'|'assistant', content: string }, ...]
@@ -91,43 +91,38 @@ async function repondre(messages, locale) {
   }
 
   var system = SYSTEM_PROMPT + (locale === 'en' ? '\n\nRespond in English.' : '\n\nRéponds en français.');
-  var conversation = messages.map(function(m) {
-    return { role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content };
+  var contents = messages.map(function(m) {
+    return m.role === 'assistant' ? createModelContent(m.content) : createUserContent(m.content);
   });
 
   var dernierResultat = null;
 
   for (var tour = 0; tour <= MAX_TOURS_OUTIL; tour++) {
-    var response = await client.messages.create({
+    var response = await client.models.generateContent({
       model: MODEL,
-      max_tokens: 700,
-      system: system,
-      tools: [OUTIL_RECHERCHE],
-      messages: conversation
+      contents: contents,
+      config: {
+        systemInstruction: system,
+        tools: [{ functionDeclarations: [OUTIL_RECHERCHE] }]
+      }
     });
 
-    var appelOutil = response.content.find(function(bloc) { return bloc.type === 'tool_use'; });
+    var appels = response.functionCalls;
 
-    if (!appelOutil) {
-      var texte = response.content
-        .filter(function(bloc) { return bloc.type === 'text'; })
-        .map(function(bloc) { return bloc.text; })
-        .join('\n')
-        .trim();
+    if (!appels || appels.length === 0) {
+      var texte = (response.text || '').trim();
       return { reply: texte, logements: dernierResultat };
     }
 
-    var resultats = await rechercherLogements(appelOutil.input || {});
+    var appel = appels[0];
+    var resultats = await rechercherLogements(appel.args || {});
     dernierResultat = resultats;
 
-    conversation.push({ role: 'assistant', content: response.content });
-    conversation.push({
+    var contenuModele = response.candidates && response.candidates[0] && response.candidates[0].content;
+    if (contenuModele) contents.push(contenuModele);
+    contents.push({
       role: 'user',
-      content: [{
-        type: 'tool_result',
-        tool_use_id: appelOutil.id,
-        content: JSON.stringify(resultats)
-      }]
+      parts: [{ functionResponse: { name: appel.name, response: { result: resultats } } }]
     });
   }
 
