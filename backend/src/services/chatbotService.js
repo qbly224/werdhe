@@ -78,6 +78,24 @@ function getClient() {
   return new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 }
 
+function attendre(ms) {
+  return new Promise(function(resolve) { setTimeout(resolve, ms); });
+}
+
+// Le modèle gratuit renvoie parfois un 503 "high demand, try again later" —
+// transitoire la plupart du temps, donc on retente une fois avant d'abandonner.
+async function genererAvecRetry(client, params) {
+  try {
+    return await client.models.generateContent(params);
+  } catch (err) {
+    if (err && err.status === 503) {
+      await attendre(900);
+      return await client.models.generateContent(params);
+    }
+    throw err;
+  }
+}
+
 // messages : [{ role: 'user'|'assistant', content: string }, ...]
 async function repondre(messages, locale) {
   var client = getClient();
@@ -96,34 +114,42 @@ async function repondre(messages, locale) {
   });
 
   var dernierResultat = null;
+  var messageIndisponible = locale === 'en'
+    ? 'The assistant is momentarily overloaded. Please try again in a moment.'
+    : 'L\'assistant est momentanément surchargé. Réessayez dans un instant.';
 
-  for (var tour = 0; tour <= MAX_TOURS_OUTIL; tour++) {
-    var response = await client.models.generateContent({
-      model: MODEL,
-      contents: contents,
-      config: {
-        systemInstruction: system,
-        tools: [{ functionDeclarations: [OUTIL_RECHERCHE] }]
+  try {
+    for (var tour = 0; tour <= MAX_TOURS_OUTIL; tour++) {
+      var response = await genererAvecRetry(client, {
+        model: MODEL,
+        contents: contents,
+        config: {
+          systemInstruction: system,
+          tools: [{ functionDeclarations: [OUTIL_RECHERCHE] }]
+        }
+      });
+
+      var appels = response.functionCalls;
+
+      if (!appels || appels.length === 0) {
+        var texte = (response.text || '').trim();
+        return { reply: texte || messageIndisponible, logements: dernierResultat };
       }
-    });
 
-    var appels = response.functionCalls;
+      var appel = appels[0];
+      var resultats = await rechercherLogements(appel.args || {});
+      dernierResultat = resultats;
 
-    if (!appels || appels.length === 0) {
-      var texte = (response.text || '').trim();
-      return { reply: texte, logements: dernierResultat };
+      var contenuModele = response.candidates && response.candidates[0] && response.candidates[0].content;
+      if (contenuModele) contents.push(contenuModele);
+      contents.push({
+        role: 'user',
+        parts: [{ functionResponse: { name: appel.name, response: { result: resultats } } }]
+      });
     }
-
-    var appel = appels[0];
-    var resultats = await rechercherLogements(appel.args || {});
-    dernierResultat = resultats;
-
-    var contenuModele = response.candidates && response.candidates[0] && response.candidates[0].content;
-    if (contenuModele) contents.push(contenuModele);
-    contents.push({
-      role: 'user',
-      parts: [{ functionResponse: { name: appel.name, response: { result: resultats } } }]
-    });
+  } catch (err) {
+    console.error('[chatbotService.repondre]', err.message);
+    return { reply: messageIndisponible, logements: null };
   }
 
   return {
