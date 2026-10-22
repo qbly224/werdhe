@@ -1,4 +1,22 @@
 {
+  "chatbot": {
+    "bulle": "Need help?",
+    "titre": "Werdhe Assistant",
+    "statut": "Replies in a few seconds",
+    "accueil": "Hi! I can answer questions about Werdhe or search for a place for you. What are you looking for?",
+    "suggestions": {
+      "0": "How do I list a property?",
+      "1": "Find me a villa in Conakry",
+      "2": "Which payment methods?"
+    },
+    "placeholder": "Type your message…",
+    "envoyer": "Send",
+    "enTrainDecrire": "Assistant is typing…",
+    "erreur": "Something went wrong. Please try again.",
+    "voirLogement": "View listing",
+    "parMois": "/ month",
+    "fermer": "Close"
+  },
   "landingPage": {
     "seo": {
       "titre": "Rental housing in Guinea, no middleman",

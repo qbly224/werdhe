@@ -1,4 +1,22 @@
 {
+  "chatbot": {
+    "bulle": "Besoin d'aide ?",
+    "titre": "Assistant Werdhe",
+    "statut": "Répond en quelques secondes",
+    "accueil": "Bonjour ! Je peux répondre à vos questions sur Werdhe ou chercher un logement pour vous. Que cherchez-vous ?",
+    "suggestions": {
+      "0": "Comment publier un logement ?",
+      "1": "Trouve-moi une villa à Conakry",
+      "2": "Quels modes de paiement ?"
+    },
+    "placeholder": "Écrivez votre message…",
+    "envoyer": "Envoyer",
+    "enTrainDecrire": "L'assistant écrit…",
+    "erreur": "Une erreur est survenue. Réessayez.",
+    "voirLogement": "Voir le logement",
+    "parMois": "/ mois",
+    "fermer": "Fermer"
+  },
   "landingPage": {
     "seo": {
       "titre": "Location immobilière en Guinée sans intermédiaire",
