@@ -751,10 +751,11 @@ useEffect(function() {
     ),
   },
   {
-    label: 'X (Twitter)',
+    label: 'TikTok',
+    href: 'https://www.tiktok.com/@qbelytech',
     svg: (
       <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        <path d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6c0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64c0 3.33 2.76 5.7 5.69 5.7c3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z"/>
       </svg>
     ),
   },
@@ -768,7 +769,7 @@ useEffect(function() {
   },
 ].map(function(s) {
   return (
-    <a key={s.label} href="#" title={s.label} style={{
+    <a key={s.label} href={s.href || '#'} target={s.href ? '_blank' : undefined} rel={s.href ? 'noopener noreferrer' : undefined} title={s.label} style={{
       width: 36, height: 36, borderRadius: 8,
       border: '1px solid rgba(255,255,255,0.15)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
