@@ -9,6 +9,9 @@ import { CATEGORIE_INFO, CATEGORIE_DEFAUT } from './CarteLogement';
 var MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 if (MAPBOX_TOKEN) mapboxgl.accessToken = MAPBOX_TOKEN;
 
+var STYLE_PLAN      = 'mapbox://styles/mapbox/dark-v11';
+var STYLE_SATELLITE = 'mapbox://styles/mapbox/satellite-streets-v12';
+
 // Icônes inline (lucide-react) pour les popups Mapbox, qui attendent du HTML brut
 var ICONES_SVG = {
   maison:       '<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
@@ -50,6 +53,7 @@ export default function MapView({ logements, onSelectLogement }) {
   var popupOuvert  = useRef(null);
   var debounceRef  = useRef(null);
   var [mapReady, setMapReady] = useState(false);
+  var [satellite, setSatellite] = useState(false);
 
   // Logements réellement géolocalisés (coordonnées enregistrées au moment de la publication)
   var pointsGeolocalises = (logements || []).filter(function(l) {
@@ -62,11 +66,13 @@ export default function MapView({ logements, onSelectLogement }) {
 
     var map = new mapboxgl.Map({
       container: mapRef.current,
-      style:     'mapbox://styles/mapbox/dark-v11',
+      style:     STYLE_PLAN,
       center:    [-12.0, 10.5],
       zoom:      6.5,
+      attributionControl: false,
     });
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
+    map.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-right');
     map.on('load', function() { setMapReady(true); });
     mapInstance.current = map;
 
@@ -233,9 +239,20 @@ export default function MapView({ logements, onSelectLogement }) {
     );
   }
 
+  function basculerSatellite() {
+    if (!mapInstance.current) return;
+    var actif = !satellite;
+    setSatellite(actif);
+    mapInstance.current.setStyle(actif ? STYLE_SATELLITE : STYLE_PLAN);
+  }
+
   return (
     <div style={{ position: 'relative' }}>
       <div ref={mapRef} style={{ height: 460, borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
+      <button onClick={basculerSatellite} type="button"
+        style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(21,36,29,0.85)', color: '#F3EEE2', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
+        {satellite ? t('mapView.vuePlan') : t('mapView.vueSatellite')}
+      </button>
       <div style={{ position: 'absolute', bottom: 12, left: 12, background: 'rgba(21,36,29,0.85)', borderRadius: 10, padding: '8px 14px', fontSize: 12, color: '#D8D8D8', boxShadow: '0 2px 8px rgba(0,0,0,0.2)', display: 'flex', gap: 14 }}>
         <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
           <div style={{ width: 10, height: 10, background: '#36D278', borderRadius: '50%' }} /> {t('mapView.legende.disponible')}
