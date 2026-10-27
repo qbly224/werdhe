@@ -371,7 +371,7 @@
       "statutActif": "Actif",
       "statutInvite": "Invitation envoyée",
       "retirer": "Retirer",
-      "vousEtesMembre": "Vous faites partie d'une équipe Agence — vous avez accès aux biens, réservations et paiements du compte principal.",
+      "vousEtesMembre": "Vous faites partie d'une équipe Agence, vous avez donc accès aux biens, réservations et paiements du compte principal.",
       "confirmRevoquer": "Retirer ce membre de l'équipe ?",
       "toastInvitationEnvoyee": "Invitation envoyée par email !",
       "toastMembreRetire": "Membre retiré de l'équipe"
@@ -1236,13 +1236,13 @@
       "relancer": "Relancer",
       "modal": {
         "titre": "Enregistrer un paiement",
-        "montantLoyer": "Montant du loyer — {{mois}}",
+        "montantLoyer": "Montant du loyer de {{mois}}",
         "enRetardDe": "En retard de {{jours}} jours",
         "impayeDepuis": "Impayé depuis {{jours}} jours",
         "modePaiement": "Mode de paiement",
         "infoEspeces": "Le locataire reçoit une quittance PDF par email dès que vous confirmez le paiement en espèces.",
         "traitementEnCours": "Traitement en cours...",
-        "confirmerPaiement": "Confirmer le paiement — {{montant}}",
+        "confirmerPaiement": "Confirmer le paiement de {{montant}}",
         "paiementToast": "Paiement enregistré ! Quittance envoyée.",
         "succes": {
           "titre": "Paiement enregistré !",
@@ -1278,7 +1278,7 @@
       "succes": {
         "titre": "Paiement confirmé !",
         "ligne1Avant": "{{montant}} payés pour ",
-        "periodeCouverte": "Période couverte : {{debut}} — {{fin}}",
+        "periodeCouverte": "Période couverte : {{debut}} à {{fin}}",
         "ligne2": "Une quittance PDF a été générée.",
         "recapTitre": "Récapitulatif"
       },
@@ -1299,13 +1299,13 @@
         "periode": "Période",
         "modifier": "← Modifier",
         "traitementEnCours": "Traitement...",
-        "confirmer": "Confirmer — {{montant}}"
+        "confirmer": "Confirmer {{montant}}"
       },
       "fiche": {
         "debutBail": "Début bail",
         "finBail": "Fin bail",
         "caution": "Caution",
-        "statutLoyer": "Statut loyer — {{mois}}",
+        "statutLoyer": "Statut du loyer de {{mois}}",
         "enAttenteDePaiement": "En attente de paiement"
       },
       "historique": {
@@ -1318,10 +1318,10 @@
       "choixMois": {
         "titre": "Combien de mois payer ?",
         "periodeCouverte": "Période couverte",
-        "paiementAvance": "Paiement de {{n}} mois en avance — Merci pour votre sérieux !"
+        "paiementAvance": "Paiement de {{n}} mois en avance, merci pour votre sérieux !"
       },
       "selectionne": "Sélectionné",
-      "payerBouton": "Payer {{montant}} — {{n}} mois →"
+      "payerBouton": "Payer {{montant}} pour {{n}} mois →"
     }
   },
   "sidebar": {
@@ -1418,7 +1418,7 @@
     "expireDans": "Expire dans {{temps}}",
     "instructions": "Instructions :",
     "reference": "Ref : {{ref}}",
-    "modeDemonstration": "Mode demonstration — cliquez pour simuler la confirmation",
+    "modeDemonstration": "Mode démonstration : cliquez pour simuler la confirmation",
     "confirmationEnCours": "Confirmation...",
     "simulerConfirmation": "Simuler la confirmation du paiement",
     "paiementConfirme": "Paiement confirme !",
@@ -1603,7 +1603,7 @@
         "messageLabel": "Message au locataire (optionnel)",
         "messagePlaceholder": "Ajoutez un message pour expliquer la situation au locataire...",
         "erreurChampsObligatoires": "Remplissez tous les champs obligatoires",
-        "continuerBouton": "Continuer — Préparer le préavis officiel",
+        "continuerBouton": "Continuer : préparer le préavis officiel",
         "erreurSelectionComplete": "Sélectionnez un bien, un motif et un délai"
       }
     }

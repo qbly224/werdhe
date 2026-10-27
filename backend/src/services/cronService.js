@@ -67,7 +67,7 @@ cron.schedule('0 8 * * *', async function() {
         `INSERT INTO alertes (proprietaire_id, logement_id, type, titre, description, priorite)
          SELECT l.proprietaire_id, r.logement_id, 'loyer_retard',
            'Rappel loyer J-3',
-           '${r.loc_prenom} ${r.loc_nom} — loyer de ${new Intl.NumberFormat('fr-FR').format(r.loyer)} GNF dû dans 3 jours',
+           '${r.loc_prenom} ${r.loc_nom} : loyer de ${new Intl.NumberFormat('fr-FR').format(r.loyer)} GNF dû dans 3 jours',
            'normale'
          FROM reservations r
          JOIN logements l ON r.logement_id = l.id
@@ -122,7 +122,7 @@ cron.schedule('0 9 * * *', async function() {
       await resend.emails.send({
         from: process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
         to: r.prop_email,
-        subject: 'Bail expirant dans 30 jours — ' + r.logement_titre,
+        subject: 'Bail expirant dans 30 jours pour ' + r.logement_titre,
         html: `
           <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
             <div style="background:#1B6B3A;padding:20px;border-radius:10px 10px 0 0">
@@ -170,7 +170,7 @@ cron.schedule('0 9 * * *', async function() {
          VALUES ($1, (SELECT logement_id FROM reservations WHERE id = $2), 'bail_bientot',
            'Bail expirant dans 30 jours',
            $3, 'haute')`,
-        [r.proprietaire_id, r.id, r.logement_titre + ' — ' + r.loc_prenom + ' ' + r.loc_nom + ' · Expire le ' + dateFin]
+        [r.proprietaire_id, r.id, r.logement_titre + ', ' + r.loc_prenom + ' ' + r.loc_nom + ' · Expire le ' + dateFin]
       );
     }
 
@@ -224,11 +224,11 @@ cron.schedule('0 10 * * *', async function() {
         await resend.emails.send({
           from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
           to:      p.loc_email,
-          subject: 'Rappel — Votre départ est dans 5 jours',
+          subject: 'Rappel : votre départ est dans 5 jours',
           html: `
             <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
               <div style="background:#C62828;padding:20px;border-radius:12px 12px 0 0">
-                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;"><img src="https://werdhe.com/logo192.png" width="34" height="34" alt="Werdhe" style="display:block;border-radius:9px;width:34px;height:34px;" /></td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe — Rappel important</td></tr></table>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;"><img src="https://werdhe.com/logo192.png" width="34" height="34" alt="Werdhe" style="display:block;border-radius:9px;width:34px;height:34px;" /></td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe · Rappel important</td></tr></table>
               </div>
               <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
                 <p>Bonjour <b>${p.loc_prenom}</b>,</p>
@@ -263,7 +263,7 @@ cron.schedule('0 10 * * *', async function() {
         [
           p.proprietaire_id,
           (await db.query('SELECT logement_id FROM reservations WHERE id = $1', [p.reservation_id])).rows[0].logement_id,
-          '⚠️ Départ imminent J-5 — ' + p.logement_titre,
+          '⚠️ Départ imminent J-5 pour ' + p.logement_titre,
           p.loc_prenom + ' ' + p.loc_nom + ' · Sortie prévue le ' + dateSortie
         ]
       );
@@ -338,7 +338,7 @@ cron.schedule('0 7 * * *', async function() {
           await resend.emails.send({
             from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
             to:      loc.loc_email,
-            subject: 'Mise en demeure — Loyer impayé',
+            subject: 'Mise en demeure : loyer impayé',
             html: `
               <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
                 <div style="background:#B71C1C;padding:20px;border-radius:12px 12px 0 0">
@@ -371,11 +371,11 @@ cron.schedule('0 7 * * *', async function() {
           await resend.emails.send({
             from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
             to:      loc.prop_email,
-            subject: 'Loyer impayé — ' + loc.logement_titre,
+            subject: 'Loyer impayé pour ' + loc.logement_titre,
             html: `
               <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
                 <div style="background:#E65100;padding:20px;border-radius:12px 12px 0 0">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;"><img src="https://werdhe.com/logo192.png" width="34" height="34" alt="Werdhe" style="display:block;border-radius:9px;width:34px;height:34px;" /></td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe — Alerte loyer</td></tr></table>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;"><img src="https://werdhe.com/logo192.png" width="34" height="34" alt="Werdhe" style="display:block;border-radius:9px;width:34px;height:34px;" /></td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe · Alerte loyer</td></tr></table>
                 </div>
                 <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
                   <p>Bonjour <b>${loc.prop_prenom}</b>,</p>
@@ -402,7 +402,7 @@ cron.schedule('0 7 * * *', async function() {
         [
           loc.proprietaire_id,
           (await db.query('SELECT logement_id FROM reservations WHERE id = $1', [loc.reservation_id])).rows[0].logement_id,
-          '⚠️ Loyer impayé J+5 — ' + loc.logement_titre,
+          '⚠️ Loyer impayé J+5 pour ' + loc.logement_titre,
           loc.loc_prenom + ' ' + loc.loc_nom + ' · Mise en demeure envoyée automatiquement'
         ]
       ).catch(console.warn);
@@ -491,7 +491,7 @@ cron.schedule('30 8 * * *', async function() {
       await db.query(
         `INSERT INTO alertes (proprietaire_id, destinataire_id, type, titre, description, priorite)
          VALUES ($1, $1, 'autre', $2, $3, 'haute')`,
-        [r3.user_id, '⏰ Abonnement expiré depuis 3 jours', 'Plan ' + r3.plan + ' — réglez pour éviter le blocage']
+        [r3.user_id, '⏰ Abonnement expiré depuis 3 jours', 'Plan ' + r3.plan + ', réglez pour éviter le blocage']
       ).catch(console.warn);
     }
 
@@ -510,7 +510,7 @@ cron.schedule('30 8 * * *', async function() {
         await resend.emails.send({
           from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
           to:      r5.email,
-          subject: 'Accès Werdhe bloqué — abonnement impayé',
+          subject: 'Accès Werdhe bloqué : abonnement impayé',
           html: `
             <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
               <div style="background:#B71C1C;padding:20px;border-radius:10px 10px 0 0">
@@ -562,7 +562,7 @@ cron.schedule('30 8 * * *', async function() {
       await db.query(
         `INSERT INTO alertes (proprietaire_id, destinataire_id, type, titre, description, priorite)
          VALUES ($1, $1, 'autre', $2, $3, 'haute')`,
-        [r5.user_id, '🔒 Accès bloqué — abonnement impayé', 'Plan ' + r5.plan + ' — contactez le support pour réactiver']
+        [r5.user_id, '🔒 Accès bloqué : abonnement impayé', 'Plan ' + r5.plan + ', contactez le support pour réactiver']
       ).catch(console.warn);
     }
 
@@ -630,7 +630,7 @@ cron.schedule('15 8 * * *', async function() {
           [
             r.user_id,
             'Abonnement expire dans ' + libelleJours,
-            'Plan ' + r.plan + ' — expire le ' + dateFin + '. Renouvelez pour ne pas perdre l\'accès.',
+            'Plan ' + r.plan + ', expire le ' + dateFin + '. Renouvelez pour ne pas perdre l\'accès.',
             palier.priorite
           ]
         ).catch(console.warn);

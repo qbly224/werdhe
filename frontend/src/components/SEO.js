@@ -12,7 +12,7 @@ export default function SEO({
 }) {
   var t = useTranslation('admin').t;
   var titreFinal = titre
-    ? titre + ' — Werdhe'
+    ? titre + ' · Werdhe'
     : t('seo.titreParDefaut');
 
   var descFinal = description || t('seo.descriptionParDefaut');

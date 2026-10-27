@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Werdhe — Hors ligne</title>
+  <title>Werdhe · Hors ligne</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -84,7 +84,7 @@
     function checkOnline() {
       var status = document.getElementById('status');
       if (navigator.onLine) {
-        status.innerHTML = '✅ Connexion rétablie — <a href="/" style="color:#F5A623;text-decoration:none;font-weight:700;">Retourner sur Werdhe</a>';
+        status.innerHTML = '✅ Connexion rétablie, <a href="/" style="color:#F5A623;text-decoration:none;font-weight:700;">retournez sur Werdhe</a>';
         status.style.background = 'rgba(27,107,58,0.3)';
         status.style.color = '#A5D6A7';
         setTimeout(function() { window.location.href = '/'; }, 2000);

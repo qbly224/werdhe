@@ -75,8 +75,8 @@ router.post('/', verifierToken, async (req, res) => {
           from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
           to:      destEmail,
           subject: estLocataire
-            ? 'Préavis de départ — ' + r.logement_titre
-            : 'Préavis de résiliation — ' + r.logement_titre,
+            ? 'Préavis de départ pour ' + r.logement_titre
+            : 'Préavis de résiliation pour ' + r.logement_titre,
           html: `
             <div style="font-family:sans-serif;max-width:540px;margin:0 auto">
               <div style="background:#1B6B3A;padding:20px;border-radius:12px 12px 0 0">
@@ -134,7 +134,7 @@ router.post('/', verifierToken, async (req, res) => {
           r.proprietaire_id,
           r.logement_id,
           estLocataire
-            ? 'Préavis reçu — ' + r.logement_titre
+            ? 'Préavis reçu pour ' + r.logement_titre
             : 'Préavis envoyé à ' + r.loc_prenom + ' ' + r.loc_nom,
           'Date de sortie : ' + dateSortie
         ]
@@ -153,8 +153,8 @@ router.post('/', verifierToken, async (req, res) => {
             destinataireId,
             r.logement_id,
             estLocataire
-              ? '📤 Préavis reçu — ' + r.logement_titre
-              : '📋 Préavis de votre propriétaire — ' + r.logement_titre,
+              ? '📤 Préavis reçu pour ' + r.logement_titre
+              : '📋 Préavis de votre propriétaire pour ' + r.logement_titre,
             'Date de sortie estimée : ' + dateSortie + ' · Motif : ' + motif
           ]
         );
@@ -279,7 +279,7 @@ router.patch('/:id/repondre', verifierToken, async (req, res) => {
           await resend.emails.send({
             from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
             to:      destEmail,
-            subject: 'Préavis accepté — ' + p.logement_titre,
+            subject: 'Préavis accepté pour ' + p.logement_titre,
             html: `
               <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
                 <div style="background:#1B6B3A;padding:20px;border-radius:12px 12px 0 0">
@@ -323,7 +323,7 @@ router.patch('/:id/repondre', verifierToken, async (req, res) => {
           p.proprietaire_id,
           p.auteur_id,
           p.reservation_id,
-          '🔄 Demande de renouvellement — ' + p.logement_titre,
+          '🔄 Demande de renouvellement pour ' + p.logement_titre,
           (p.type === 'locataire' ? p.prop_prenom + ' ' + p.prop_nom : p.loc_prenom + ' ' + p.loc_nom) +
             ' souhaite renouveler le bail' + (message ? ' : "' + message + '"' : '')
         ]

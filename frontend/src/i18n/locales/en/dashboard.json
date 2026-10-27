@@ -371,7 +371,7 @@
       "statutActif": "Active",
       "statutInvite": "Invitation sent",
       "retirer": "Remove",
-      "vousEtesMembre": "You're part of an Agency team — you have access to the main account's properties, bookings and payments.",
+      "vousEtesMembre": "You're part of an Agency team, so you have access to the main account's properties, bookings and payments.",
       "confirmRevoquer": "Remove this member from the team?",
       "toastInvitationEnvoyee": "Invitation sent by email!",
       "toastMembreRetire": "Member removed from the team"
@@ -1236,13 +1236,13 @@
       "relancer": "Send reminder",
       "modal": {
         "titre": "Record a payment",
-        "montantLoyer": "Rent amount — {{mois}}",
+        "montantLoyer": "Rent amount for {{mois}}",
         "enRetardDe": "Overdue by {{jours}} days",
         "impayeDepuis": "Unpaid for {{jours}} days",
         "modePaiement": "Payment method",
         "infoEspeces": "The tenant receives a PDF receipt by email as soon as you confirm the cash payment.",
         "traitementEnCours": "Processing...",
-        "confirmerPaiement": "Confirm payment — {{montant}}",
+        "confirmerPaiement": "Confirm payment of {{montant}}",
         "paiementToast": "Payment recorded! Receipt sent.",
         "succes": {
           "titre": "Payment recorded!",
@@ -1278,7 +1278,7 @@
       "succes": {
         "titre": "Payment confirmed!",
         "ligne1Avant": "{{montant}} paid for ",
-        "periodeCouverte": "Period covered: {{debut}} — {{fin}}",
+        "periodeCouverte": "Period covered: {{debut}} to {{fin}}",
         "ligne2": "A PDF receipt has been generated.",
         "recapTitre": "Summary"
       },
@@ -1299,13 +1299,13 @@
         "periode": "Period",
         "modifier": "← Edit",
         "traitementEnCours": "Processing...",
-        "confirmer": "Confirm — {{montant}}"
+        "confirmer": "Confirm {{montant}}"
       },
       "fiche": {
         "debutBail": "Lease start",
         "finBail": "Lease end",
         "caution": "Deposit",
-        "statutLoyer": "Rent status — {{mois}}",
+        "statutLoyer": "Rent status for {{mois}}",
         "enAttenteDePaiement": "Payment pending"
       },
       "historique": {
@@ -1318,10 +1318,10 @@
       "choixMois": {
         "titre": "How many months would you like to pay?",
         "periodeCouverte": "Period covered",
-        "paiementAvance": "Payment of {{n}} months in advance — Thank you for your reliability!"
+        "paiementAvance": "Payment of {{n}} months in advance, thank you for your reliability!"
       },
       "selectionne": "Selected",
-      "payerBouton": "Pay {{montant}} — {{n}} month(s) →"
+      "payerBouton": "Pay {{montant}} for {{n}} month(s) →"
     }
   },
   "sidebar": {
@@ -1418,7 +1418,7 @@
     "expireDans": "Expires in {{temps}}",
     "instructions": "Instructions:",
     "reference": "Ref: {{ref}}",
-    "modeDemonstration": "Demo mode — click to simulate the confirmation",
+    "modeDemonstration": "Demo mode: click to simulate the confirmation",
     "confirmationEnCours": "Confirming...",
     "simulerConfirmation": "Simulate payment confirmation",
     "paiementConfirme": "Payment confirmed!",
@@ -1603,7 +1603,7 @@
         "messageLabel": "Message to the tenant (optional)",
         "messagePlaceholder": "Add a message to explain the situation to the tenant...",
         "erreurChampsObligatoires": "Fill in all required fields",
-        "continuerBouton": "Continue — Prepare the official notice",
+        "continuerBouton": "Continue: prepare the official notice",
         "erreurSelectionComplete": "Select a property, a reason and a notice period"
       }
     }

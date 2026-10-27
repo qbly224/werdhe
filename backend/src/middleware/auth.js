@@ -38,7 +38,7 @@ module.exports = function verifierToken(req, res, next) {
         .then(function(result) {
           if (result.rows[0] && result.rows[0].abonnement_bloque) {
             return res.status(403).json({
-              erreur: 'Votre abonnement est impayé — votre compte est en lecture seule. Renouvelez votre abonnement pour continuer.',
+              erreur: 'Votre abonnement est impayé, votre compte est en lecture seule. Renouvelez votre abonnement pour continuer.',
               code:   'ABONNEMENT_BLOQUE'
             });
           }

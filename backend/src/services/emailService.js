@@ -43,7 +43,7 @@ const envoyerEmailReset = async (email, prenom, lienReset) => {
                 </table>
                 <div style="background:#FFF8E1;border-left:3px solid #F5A623;border-radius:6px;padding:12px 16px;font-size:13px;color:#7A5B00;">Ce lien expire dans <strong>1 heure</strong>. Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.</div>
               </div>
-              <div style="background:#FAFAFA;padding:20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #F0F0F0;">© 2026 Werdhe — Guinée</div>
+              <div style="background:#FAFAFA;padding:20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #F0F0F0;">© 2026 Werdhe · Guinée</div>
             </div>
           </div>
         </body>
@@ -129,7 +129,7 @@ const envoyerEmailDocument = async ({
                 <div style="background:#FAFAFA;border-radius:8px;padding:14px;font-size:12px;color:#999;">Ce document est généré automatiquement par Werdhe et constitue une preuve officielle.</div>
               </div>
               <div style="background:#FAFAFA;padding:20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #F0F0F0;">
-                © 2026 Werdhe — Plateforme de location immobilière en Guinée<br>
+                © 2026 Werdhe · Plateforme de location immobilière en Guinée<br>
                 Transparence · Sécurité · Simplicité
               </div>
             </div>
@@ -185,7 +185,7 @@ const envoyerEmailReservation = async ({ email, prenom, logement, dateDebut, mon
                 </div>
                 <p style="margin:0;color:#444;font-size:14px;line-height:1.7;">Connectez-vous à votre espace Werdhe pour effectuer votre paiement.</p>
               </div>
-              <div style="background:#FAFAFA;padding:20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #F0F0F0;">© 2026 Werdhe — Guinée</div>
+              <div style="background:#FAFAFA;padding:20px;text-align:center;font-size:12px;color:#999;border-top:1px solid #F0F0F0;">© 2026 Werdhe · Guinée</div>
             </div>
           </div>
         </body>
@@ -208,7 +208,7 @@ function templateBase(contenu, titre) {
   </div>
   <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">${contenu}</div>
   <div style="text-align:center;margin-top:24px;">
-    <p style="font-size:12px;color:#aaa;margin:0 0 8px;">Werdhe — Plateforme Immobilière Guinée</p>
+    <p style="font-size:12px;color:#aaa;margin:0 0 8px;">Werdhe · Plateforme immobilière Guinée</p>
     <p style="font-size:12px;color:#aaa;margin:0;">
       <a href="https://werdhe.com" style="color:#1B6B3A;text-decoration:none;">werdhe.com</a> &nbsp;·&nbsp;
       <a href="mailto:contact@werdhe.com" style="color:#1B6B3A;text-decoration:none;">contact@werdhe.com</a>
@@ -260,7 +260,7 @@ const emailBienvenue = async (user) => {
 };
 // ─── NOUVELLE CANDIDATURE (proprio) ─────────────
 const emailNouvelleCandidature = async (proprio, locataire, logement) => {
-  return envoyer(proprio.email, 'Nouvelle candidature — ' + logement.titre, templateBase(`
+  return envoyer(proprio.email, 'Nouvelle candidature pour ' + logement.titre, templateBase(`
     ${hdr('#1565C0', '', 'Nouvelle candidature !', logement.titre)}
     <div style="padding:24px;">
       <p style="font-size:14px;color:#555;"><strong>${locataire.prenom} ${locataire.nom}</strong> vient de postuler pour votre logement.</p>
@@ -272,7 +272,7 @@ const emailNouvelleCandidature = async (proprio, locataire, logement) => {
 };
 // ─── CANDIDATURE ACCEPTÉE (locataire) ────────────
 const emailCandidatureAcceptee = async (locataire, proprio, logement) => {
-  return envoyer(locataire.email, 'Candidature acceptée — ' + logement.titre, templateBase(`
+  return envoyer(locataire.email, 'Candidature acceptée pour ' + logement.titre, templateBase(`
     ${hdr('#1B6B3A', '', 'Candidature acceptée !', 'Félicitations ' + locataire.prenom + ' !')}
     <div style="padding:24px;">
       <div style="background:#E8F5E9;border-radius:10px;padding:14px 18px;margin:16px 0;border-left:4px solid #1B6B3A;">
@@ -283,7 +283,7 @@ const emailCandidatureAcceptee = async (locataire, proprio, logement) => {
 };
 // ─── CANDIDATURE REFUSÉE (locataire) ───────────────────────
 const emailCandidatureRefusee = async (locataire, logement, motif) => {
-  return envoyer(locataire.email, 'Candidature non retenue — ' + logement.titre, templateBase(`
+  return envoyer(locataire.email, 'Candidature non retenue pour ' + logement.titre, templateBase(`
     ${hdr('#B71C1C', '', 'Candidature non retenue', logement.titre)}
     <div style="padding:24px;">
       ${motif ? `<div style="background:#FFEBEE;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#B71C1C;"><strong>Motif :</strong> ${motif}</div>` : ''}
@@ -303,7 +303,7 @@ const emailRappelLoyer = async (locataire, logement, montant) => {
 };
 // ─── LOYER EN RETARD (J+5) ────────────────────────
 const emailLoyerEnRetard = async (locataire, proprio, logement, montant) => {
-  return envoyer(locataire.email, 'Loyer en retard — ' + logement.titre, templateBase(`
+  return envoyer(locataire.email, 'Loyer en retard pour ' + logement.titre, templateBase(`
     ${hdr('#B71C1C', '', 'Loyer en retard', 'Action requise')}
     <div style="padding:24px;">
       <div style="background:#FFEBEE;border-radius:10px;padding:14px 18px;margin:16px 0;border-left:4px solid #B71C1C;">
@@ -325,7 +325,7 @@ const emailNouveauMessage = async (destinataire, expediteur, apercu) => {
 };
 // ─── BAIL BIENTÔT EXPIRANT (J-30) ──────────────────────────
 const emailBailExpirant = async (locataire, proprio, logement, dateExpiration) => {
-  return envoyer(locataire.email, 'Bail expirant — ' + logement.titre, templateBase(`
+  return envoyer(locataire.email, 'Bail expirant pour ' + logement.titre, templateBase(`
     ${hdr('#1565C0', '', 'Bail expirant bientôt', 'Dans 30 jours')}
     <div style="padding:24px;">
       <div style="background:#E3F2FD;border-radius:10px;padding:14px 18px;margin:16px 0;border-left:4px solid #1565C0;">
@@ -336,7 +336,7 @@ const emailBailExpirant = async (locataire, proprio, logement, dateExpiration) =
 };
 // ─── PRÉAVIS REÇU ──────────────────────────
 const emailPreavisRecu = async (destinataire, expediteur, logement, motif) => {
-  return envoyer(destinataire.email, 'Préavis reçu — ' + logement.titre, templateBase(`
+  return envoyer(destinataire.email, 'Préavis reçu pour ' + logement.titre, templateBase(`
     ${hdr('#37474F', '', 'Préavis reçu', logement.titre)}
     <div style="padding:24px;">
       <div style="background:#ECEFF1;border-radius:10px;padding:14px 18px;margin:16px 0;border-left:4px solid #37474F;">
@@ -347,7 +347,7 @@ const emailPreavisRecu = async (destinataire, expediteur, logement, motif) => {
 };
 // ─── PAIEMENT ENREGISTRÉ ───────────────────────
 const emailPaiementEnregistre = async (locataire, logement, paiement) => {
-  return envoyer(locataire.email, 'Paiement enregistré — ' + logement.titre, templateBase(`
+  return envoyer(locataire.email, 'Paiement enregistré pour ' + logement.titre, templateBase(`
     ${hdr('#1B6B3A', '', 'Paiement confirmé !', 'Quittance disponible')}
     <div style="padding:24px;">
       <div style="background:#E8F5E9;border-radius:10px;padding:14px 18px;margin:16px 0;border-left:4px solid #1B6B3A;">
@@ -374,7 +374,7 @@ const emailRapportMensuel = async (proprietaire, periode, pdfBuffer) => {
     await resend.emails.send({
       from: process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
       to: [proprietaire.email],
-      subject: 'Votre rapport financier Werdhe — ' + periode,
+      subject: 'Votre rapport financier Werdhe pour ' + periode,
       html: templateBase(`
         ${hdr('linear-gradient(135deg,#1B2B22,#1B6B3A)', '', 'Rapport financier mensuel', periode)}
         <div style="padding:24px;">
@@ -403,7 +403,7 @@ const envoyerEmailSupport = async (compte, sujet, message) => {
     ${hdr('#1565C0', '', 'Demande de support prioritaire', 'Compte Agence')}
     <div style="padding:24px;">
       <div style="background:#F7F8F7;border-radius:10px;padding:14px 18px;margin-bottom:16px;">
-        ${ligne('Nom', echapperHtml(compte.prenom + ' ' + compte.nom))}${ligne('Email', echapperHtml(compte.email))}${ligne('Téléphone', echapperHtml(compte.telephone || '—'))}${ligne('Plan', echapperHtml(compte.plan))}
+        ${ligne('Nom', echapperHtml(compte.prenom + ' ' + compte.nom))}${ligne('Email', echapperHtml(compte.email))}${ligne('Téléphone', echapperHtml(compte.telephone || '-'))}${ligne('Plan', echapperHtml(compte.plan))}
       </div>
       <p style="font-size:13px;color:#888;margin:0 0 4px;font-weight:700;">Sujet</p>
       <p style="font-size:14px;color:#1B2B22;margin:0 0 16px;">${echapperHtml(sujet)}</p>
