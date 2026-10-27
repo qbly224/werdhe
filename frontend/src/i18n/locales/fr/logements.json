@@ -152,7 +152,7 @@
     },
     "header": {
       "titre": "Candidature de location",
-      "etape": "Étape 1 / 7 — Côté locataire"
+      "etape": "Étape 1 / 7 : côté locataire"
     },
     "fiche": {
       "disponible": "Disponible",
@@ -435,7 +435,7 @@
       },
       "etape3": {
         "titre": "Dossier et signature",
-        "desc": "Uploadez vos documents une seule fois. Le bail se signe électroniquement — plus besoin de se déplacer.",
+        "desc": "Uploadez vos documents une seule fois. Le bail se signe électroniquement, plus besoin de se déplacer.",
         "cta": "Suivant"
       },
       "etape4": {
@@ -456,7 +456,7 @@
     "proprio": {
       "etape0": {
         "bienvenue": "Bienvenue sur Werdhe, {{prenom}} !",
-        "desc": "Gérez tous vos logements depuis un seul tableau de bord. Candidatures, paiements, documents — tout est centralisé.",
+        "desc": "Gérez tous vos logements depuis un seul tableau de bord. Candidatures, paiements, documents : tout est centralisé.",
         "dashboardComplet": "Dashboard complet",
         "dashboardCompletDesc": "Tout en un seul endroit",
         "paiementsAuto": "Paiements auto",
@@ -504,7 +504,7 @@
       },
       "etape2": {
         "titre": "Ajoutez votre premier bien",
-        "desc": "Publiez votre logement en 5 minutes. Titre, adresse, prix, photos — et les candidatures arrivent directement.",
+        "desc": "Publiez votre logement en 5 minutes. Titre, adresse, prix, photos, et c'est tout : les candidatures arrivent directement.",
         "ceQueVousDevezPreparer": "Ce que vous devez préparer :",
         "photos": "Photos du logement (au moins 1)",
         "adresse": "Adresse exacte + ville",
@@ -552,7 +552,7 @@
         "toastBienvenue": "Bienvenue sur Werdhe ! Ajoutez votre premier bien"
       }
     },
-    "jeConnaisDejaWerdhe": "Je connais déjà Werdhe — passer"
+    "jeConnaisDejaWerdhe": "Je connais déjà Werdhe, passer"
   },
   "tourTooltip": {
     "passerLeTutoriel": "Passer le tutoriel",

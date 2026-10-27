@@ -44,7 +44,7 @@ const genererAlertes = async (proprietaireId) => {
             [
               proprietaireId,
               loc.logement_id,
-              loc.prenom + ' ' + loc.nom + ' — Loyer en retard de ' + joursRetard + ' jours',
+              loc.prenom + ' ' + loc.nom + ' : loyer en retard de ' + joursRetard + ' jours',
               'Bien concerne : ' + loc.logement_titre
             ]
           );

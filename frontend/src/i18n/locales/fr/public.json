@@ -101,7 +101,7 @@
     "features": [
       { "titre": "Dossiers sécurisés", "desc": "CNI, bulletins de paie, contrats stockés et accessibles en toute sécurité." },
       { "titre": "Documents automatiques", "desc": "Baux, quittances et mises en demeure générés en un clic." },
-      { "titre": "Alertes intelligentes", "desc": "Rappels loyers, baux expirants, préavis - tout est automatisé." },
+      { "titre": "Alertes intelligentes", "desc": "Rappels loyers, baux expirants, préavis : tout est automatisé." },
       { "titre": "Paiements multiples", "desc": "Orange Money, MTN MoMo, espèces ou virement acceptés." },
       { "titre": "Messagerie intégrée", "desc": "Communiquez directement avec locataires et propriétaires." },
       { "titre": "Rapports financiers", "desc": "Suivez vos revenus mois par mois avec des graphiques clairs." },
@@ -177,7 +177,7 @@
       { "titre": "Trouvez votre logement idéal", "sous": "Appartements, villas, studios à Conakry et partout en Guinée", "tag": "Conakry · Boké · Kindia · Labé · Kankan" },
       { "titre": "Publiez votre bien en 5 minutes", "sous": "Gérez candidatures, baux et paiements depuis un seul tableau de bord", "tag": "Pour les propriétaires · Essai 1 mois gratuit" },
       { "titre": "Des villas modernes en Guinée", "sous": "Découvrez nos logements vérifiés, sans intermédiaire, sans frais cachés", "tag": "Villas · Appartements · Studios · Bureaux" },
-      { "titre": "La location simplifiée", "sous": "Candidatez, signez votre bail et payez - tout en ligne sur Werdhe", "tag": "100% gratuit pour les locataires" }
+      { "titre": "La location simplifiée", "sous": "Candidatez, signez votre bail et payez : tout en ligne sur Werdhe", "tag": "100% gratuit pour les locataires" }
     ],
     "footer": {
       "desc": "La plateforme immobilière de référence en Guinée. Trouvez, louez et gérez vos biens en toute simplicité.",
@@ -295,7 +295,7 @@
     "essaiDemarre": "Essai {{plan}} démarré ! 1 mois gratuit.",
     "ctaFinal": {
       "titre": "Rejoignez Werdhe aujourd'hui",
-      "sousTitre": "Proprietaire ou locataire — la plateforme est faite pour vous"
+      "sousTitre": "Propriétaire ou locataire, la plateforme est faite pour vous"
     },
     "footer": {
       "confidentialite": "Confidentialite",
@@ -309,7 +309,7 @@
       { "titre": "Bienvenue sur Werdhe", "sous": "La plateforme immobilière de référence en Guinée" },
       { "titre": "Gérez vos biens", "sous": "Candidatures, baux et paiements depuis un seul endroit" },
       { "titre": "Trouvez votre logement", "sous": "Des centaines de biens disponibles à Conakry et partout en Guinée" },
-      { "titre": "Un chez-vous à votre image", "sous": "Villas, bungalows, appartements — pour chaque style de vie" }
+      { "titre": "Un chez-vous à votre image", "sous": "Villas, bungalows, appartements : pour chaque style de vie" }
     ],
     "compteurs": {
       "logements": "Logements",
@@ -448,7 +448,7 @@
     "titre": "Vérification en 2 étapes",
     "codeEnvoyeA": "Code envoyé à",
     "codeValideEncore": "Code valide encore",
-    "codeExpire": "Code expiré — reconnectez-vous",
+    "codeExpire": "Code expiré, reconnectez-vous",
     "verificationEnCours": "Vérification...",
     "confirmer": "Confirmer",
     "retourConnexion": "Retour à la connexion"
@@ -672,10 +672,10 @@
   "cgu": {
     "seo": {
       "titre": "Conditions Générales d'Utilisation",
-      "description": "Conditions générales d'utilisation de la plateforme Werdhe — Location immobilière en Guinée."
+      "description": "Conditions générales d'utilisation de la plateforme Werdhe, location immobilière en Guinée."
     },
     "retour": "Retour",
-    "documentsLegaux": "Werdhe — Documents légaux",
+    "documentsLegaux": "Werdhe · Documents légaux",
     "titre": "Conditions Générales d'Utilisation",
     "derniereMiseAJour": "Dernière mise à jour : 1er août 2026",
     "intro": "Veuillez lire attentivement ces conditions avant d'utiliser la plateforme Werdhe. En vous inscrivant, vous acceptez l'intégralité de ces conditions.",
@@ -734,10 +734,10 @@
   "confidentialite": {
     "seo": {
       "titre": "Politique de Confidentialité",
-      "description": "Politique de confidentialité de Werdhe — Comment nous collectons et protégeons vos données personnelles."
+      "description": "Politique de confidentialité de Werdhe, comment nous collectons et protégeons vos données personnelles."
     },
     "retour": "Retour",
-    "documentsLegaux": "Werdhe — Documents légaux",
+    "documentsLegaux": "Werdhe · Documents légaux",
     "titre": "Politique de Confidentialité",
     "derniereMiseAJour": "Dernière mise à jour : 1er août 2026",
     "intro": "La protection de vos données personnelles est une priorité pour Werdhe. Cette politique explique comment nous collectons, utilisons et protégeons vos informations.",
@@ -765,7 +765,7 @@
       },
       "6": {
         "titre": "6. Partage des données",
-        "contenu": "Vos données peuvent être partagées avec :\n\nPrestataires de services :\n• Supabase (hébergement base de données) — USA\n• Cloudinary (stockage de fichiers) — USA\n• Resend (envoi d'emails) — USA\n• Vercel (hébergement frontend) — USA\n• Render (hébergement backend) — USA\n• Orange Money / MTN MoMo (paiements) — Guinée\n\nCes prestataires sont contractuellement tenus de protéger vos données.\n\nWerdhe ne vend jamais vos données à des tiers à des fins commerciales.\n\nAutorités : En cas d'obligation légale ou de décision judiciaire."
+        "contenu": "Vos données peuvent être partagées avec :\n\nPrestataires de services :\n• Supabase (hébergement base de données), États-Unis\n• Cloudinary (stockage de fichiers), États-Unis\n• Resend (envoi d'emails), États-Unis\n• Vercel (hébergement frontend), États-Unis\n• Render (hébergement backend), États-Unis\n• Orange Money / MTN MoMo (paiements), Guinée\n\nCes prestataires sont contractuellement tenus de protéger vos données.\n\nWerdhe ne vend jamais vos données à des tiers à des fins commerciales.\n\nAutorités : en cas d'obligation légale ou de décision judiciaire."
       },
       "7": {
         "titre": "7. Sécurité des données",

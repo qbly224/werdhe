@@ -270,7 +270,7 @@ const genererHTMLFacture = (data) => {
         </div>
 
         <div class="footer">
-          <p>Werdhè — Plateforme de location immobilière en Guinée</p>
+          <p>Werdhè · Plateforme de location immobilière en Guinée</p>
           <p>Ce document est généré automatiquement et constitue une preuve de paiement valide.</p>
           <p style="margin-top:4px; color:#ddd">${numero} | ${date}</p>
         </div>
@@ -371,7 +371,7 @@ const genererHTMLQuittance = (data) => {
         </div>
 
         <div class="footer">
-          <p>Werdhè — Quittance de loyer officielle</p>
+          <p>Werdhè · Quittance de loyer officielle</p>
           <p>QUI-${numero} | ${date}</p>
         </div>
       </div>
@@ -427,7 +427,7 @@ const genererHTMLContratBail = (data) => {
         </div>
 
         <div class="section">
-          <h3>Article 1 — Désignation des locaux</h3>
+          <h3>Article 1 : Désignation des locaux</h3>
           <div class="article">
             <p>
               Le bailleur loue au preneur, qui accepte, le bien immobilier
@@ -441,7 +441,7 @@ const genererHTMLContratBail = (data) => {
         </div>
 
         <div class="section">
-          <h3>Article 2 — Durée du contrat</h3>
+          <h3>Article 2 : Durée du contrat</h3>
           <div class="article">
             <p>
               Le présent contrat est conclu pour une durée de
@@ -458,7 +458,7 @@ const genererHTMLContratBail = (data) => {
         </div>
 
         <div class="section">
-          <h3>Article 3 — Loyer et charges</h3>
+          <h3>Article 3 : Loyer et charges</h3>
           <div class="article">
             <p>
               Le loyer mensuel est fixé à
@@ -470,7 +470,7 @@ const genererHTMLContratBail = (data) => {
         </div>
 
         <div class="section">
-          <h3>Article 4 — Obligations du bailleur</h3>
+          <h3>Article 4 : Obligations du bailleur</h3>
           <div class="article">
             <p>
               Le bailleur s'engage à : délivrer le logement en bon état d'usage,
@@ -481,7 +481,7 @@ const genererHTMLContratBail = (data) => {
         </div>
 
         <div class="section">
-          <h3>Article 5 — Obligations du preneur</h3>
+          <h3>Article 5 : Obligations du preneur</h3>
           <div class="article">
             <p>
               Le preneur s'engage à : payer le loyer aux termes convenus,
@@ -493,7 +493,7 @@ const genererHTMLContratBail = (data) => {
         </div>
 
         <div class="section">
-          <h3>Article 6 — Résiliation</h3>
+          <h3>Article 6 : Résiliation</h3>
           <div class="article">
             <p>
               Chaque partie peut mettre fin au contrat moyennant un préavis
@@ -505,7 +505,7 @@ const genererHTMLContratBail = (data) => {
         </div>
 
         <div class="section">
-          <h3>Article 7 — Droit applicable</h3>
+          <h3>Article 7 : Droit applicable</h3>
           <div class="article">
             <p>
               Le présent contrat est soumis au droit guinéen.
@@ -531,7 +531,7 @@ const genererHTMLContratBail = (data) => {
         </div>
 
         <div class="footer">
-          <p>Werdhè — Contrat de bail officiel</p>
+          <p>Werdhè · Contrat de bail officiel</p>
           <p>BAIL-${numero} | ${date}</p>
         </div>
       </div>

@@ -73,7 +73,7 @@ VALUES (
 <p>Vérifiez l'arrivée d'eau et d'électricité (la stabilité du courant varie selon les quartiers), l'état de la plomberie, la présence de moustiquaires, et demandez si un groupe électrogène ou un forage est disponible en cas de coupure. N'hésitez pas à discuter avec les voisins du quartier.</p>
 
 <h2>Signer le bail en toute sécurité</h2>
-<p>Passer par une plateforme comme Werdhe permet de centraliser les échanges, de signer le bail électroniquement avec une preuve horodatée, et de garder une trace de tous les paiements — un vrai filet de sécurité par rapport à un accord oral ou un simple reçu manuscrit.</p>$$,
+<p>Passer par une plateforme comme Werdhe permet de centraliser les échanges, de signer le bail électroniquement avec une preuve horodatée, et de garder une trace de tous les paiements : un vrai filet de sécurité par rapport à un accord oral ou un simple reçu manuscrit.</p>$$,
   'Guide locataire',
   'Budget, quartiers de Conakry, pièges à éviter : le guide complet pour louer un appartement en Guinée en 2026.',
   'Équipe Werdhe',
@@ -150,7 +150,7 @@ VALUES (
 <p>Un propriétaire sérieux doit pouvoir présenter un titre de propriété ou tout document attestant de son droit à louer le bien. Sur Werdhe, chaque propriétaire peut faire vérifier son identité pour obtenir le badge "Propriétaire vérifié", un gage de confiance supplémentaire pour les candidats.</p>
 
 <h2>Simplifier le dossier avec Werdhe</h2>
-<p>Plutôt que d'envoyer des documents par email ou WhatsApp, la plateforme permet de déposer son dossier une seule fois et de candidater directement en ligne — le propriétaire reçoit tout en un clic, et la signature du bail se fait ensuite électroniquement, avec horodatage et preuve d'acceptation des deux parties.</p>$$,
+<p>Plutôt que d'envoyer des documents par email ou WhatsApp, la plateforme permet de déposer son dossier une seule fois et de candidater directement en ligne. Le propriétaire reçoit tout en un clic, et la signature du bail se fait ensuite électroniquement, avec horodatage et preuve d'acceptation des deux parties.</p>$$,
   'Guide locataire',
   'La liste des documents à préparer (identité, revenus, garant, caution) pour constituer un dossier de location en Guinée.',
   'Équipe Werdhe',
@@ -175,7 +175,7 @@ VALUES (
 <p>Chaque candidat dépose un dossier complet en ligne (identité, revenus, garant) directement consultable par le propriétaire, qui peut comparer plusieurs profils avant de décider.</p>
 
 <h3>Des paiements traçables</h3>
-<p>Les loyers réglés par Mobile Money (Orange Money, MTN MoMo) sont enregistrés automatiquement, avec génération de quittances et alertes en cas de retard — fini les carnets de comptes tenus à la main.</p>
+<p>Les loyers réglés par Mobile Money (Orange Money, MTN MoMo) sont enregistrés automatiquement, avec génération de quittances et alertes en cas de retard : fini les carnets de comptes tenus à la main.</p>
 
 <h3>Un bail signé et horodaté</h3>
 <p>La signature électronique du bail enregistre le nom, la date et l'heure d'acceptation de chaque partie, créant une preuve bien plus solide qu'un accord verbal ou qu'une simple signature manuscrite sans témoin.</p>

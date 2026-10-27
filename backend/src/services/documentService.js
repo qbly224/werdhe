@@ -233,8 +233,8 @@ function genererHTMLFacture(data) {
   <div class="section-titre">Détail du bien loue</div>
   <table class="details-table">
     <tr><th>Designation</th><th>Montant</th></tr>
-    <tr><td>Loyer mensuel — ${logement.titre}</td><td>${Number(montant).toLocaleString('fr-FR')} GNF</td></tr>
-    <tr><td>Adresse : ${logement.adresse}, ${logement.ville}</td><td>—</td></tr>
+    <tr><td>Loyer mensuel pour ${logement.titre}</td><td>${Number(montant).toLocaleString('fr-FR')} GNF</td></tr>
+    <tr><td>Adresse : ${logement.adresse}, ${logement.ville}</td><td>-</td></tr>
     ${logement.nb_chambres ? `<tr><td>Chambres</td><td>${logement.nb_chambres}</td></tr>` : ''}
     ${logement.superficie ? `<tr><td>Superficie</td><td>${logement.superficie} m²</td></tr>` : ''}
   </table>
@@ -362,7 +362,7 @@ function genererHTMLContratBail(data) {
 
   ${partiesHTML(proprietaire, locataire)}
 
-  <div class="section-titre">Article 1 — Objet du bail</div>
+  <div class="section-titre">Article 1 : Objet du bail</div>
   <p>
     Le present contrat porte sur la location du logement suivant :
     <strong>${logement.titre}</strong>, situe au
@@ -372,7 +372,7 @@ function genererHTMLContratBail(data) {
     ${logement.nb_salles_bain ? logement.nb_salles_bain + ' salle(s) de bain.' : ''}
   </p>
 
-  <div class="section-titre">Article 2 — Duree du bail</div>
+  <div class="section-titre">Article 2 : Duree du bail</div>
   <p>
     Le bail est consenti pour une duree de
     <strong>${duree_mois ? duree_mois + ' mois' : 'duree indeterminee'}</strong>,
@@ -389,7 +389,7 @@ function genererHTMLContratBail(data) {
     a la signature de ce contrat.
   </div>
 
-  <div class="section-titre">Article 3 — Loyer et charges</div>
+  <div class="section-titre">Article 3 : Loyer et charges</div>
   <p>
     Le loyer mensuel est fixe a
     <strong>${Number(montant).toLocaleString('fr-FR')} GNF</strong> par mois,
@@ -403,7 +403,7 @@ function genererHTMLContratBail(data) {
     <div class="montant-sub">Payable le 1er de chaque mois</div>
   </div>
 
-  <div class="section-titre">Article 4 — Depot de garantie</div>
+  <div class="section-titre">Article 4 : Depot de garantie</div>
   <p>
     Un depot de garantie equivalent a
     <strong>${Number(montant).toLocaleString('fr-FR')} GNF</strong> (1 mois de loyer)
@@ -412,7 +412,7 @@ function genererHTMLContratBail(data) {
     deduction faite des eventuelles reparations.
   </p>
 
-  <div class="section-titre">Article 5 — Obligations du locataire</div>
+  <div class="section-titre">Article 5 : Obligations du locataire</div>
   <p>Le locataire s'engage a :</p>
   <ul style="margin:8px 0 8px 20px;font-size:13px;color:#555;">
     <li>Payer le loyer a bonne date chaque mois</li>
@@ -422,7 +422,7 @@ function genererHTMLContratBail(data) {
     <li>Respecter les regles de voisinage</li>
   </ul>
 
-  <div class="section-titre">Article 6 — Obligations du proprietaire</div>
+  <div class="section-titre">Article 6 : Obligations du proprietaire</div>
   <p>Le proprietaire s'engage a :</p>
   <ul style="margin:8px 0 8px 20px;font-size:13px;color:#555;">
     <li>Remettre le logement en bon etat d'usage</li>
@@ -431,14 +431,14 @@ function genererHTMLContratBail(data) {
     <li>Delivrer une quittance de loyer chaque mois</li>
   </ul>
 
-  <div class="section-titre">Article 7 — Preavis et resiliation</div>
+  <div class="section-titre">Article 7 : Preavis et resiliation</div>
   <p>
     En cas de depart, le locataire devra notifier un preavis d'au moins
     <strong>1 mois</strong> avant la date de depart souhaitee,
     via la plateforme Werdhe ou par ecrit.
   </p>
 
-  <div class="section-titre">Article 8 — Signatures</div>
+  <div class="section-titre">Article 8 : Signatures</div>
   <p style="margin-bottom:20px;">
     Fait a ${logement.ville}, le ${date}.
     En deux exemplaires, dont un pour chaque partie.
@@ -577,7 +577,7 @@ function genererHTMLMiseEnDemeure(data) {
       ${locataire.prenom} ${locataire.nom}
     </div>
     <div style="font-size:13px;color:#555;">
-      Locataire — ${logement.titre}, ${logement.adresse}, ${logement.ville}
+      Locataire du logement ${logement.titre}, ${logement.adresse}, ${logement.ville}
     </div>
   </div>
 
@@ -680,7 +680,7 @@ function genererHTMLPreavis(data) {
     <div style="font-weight:700;font-size:15px;margin:6px 0;">
       ${proprietaire.prenom} ${proprietaire.nom}
     </div>
-    <div style="font-size:13px;color:#555;">Proprietaire — ${logement.titre}</div>
+    <div style="font-size:13px;color:#555;">Proprietaire du logement ${logement.titre}</div>
   </div>
 
   <div style="text-align:center;margin:20px 0;">
@@ -688,7 +688,7 @@ function genererHTMLPreavis(data) {
       LETTRE DE PREAVIS DE DEPART
     </div>
     <div style="font-size:13px;color:#555;">
-      Objet : Resiliation de bail — Depart du ${dateDepartLabel}
+      Objet : Resiliation de bail, depart du ${dateDepartLabel}
     </div>
   </div>
 
@@ -859,12 +859,12 @@ function genererHTMLCaution(data) {
 
   <div class="signature-zone">
     <div class="signature-box">
-      <div class="signature-label">Le Proprietaire — recoit la caution</div>
+      <div class="signature-label">Le Proprietaire, recoit la caution</div>
       <div style="margin-top:10px;font-size:12px;color:#555;">${proprietaire.prenom} ${proprietaire.nom}</div>
       <div style="height:40px;border-bottom:1px solid #ccc;margin-top:20px;"></div>
     </div>
     <div class="signature-box">
-      <div class="signature-label">Le Locataire — verse la caution</div>
+      <div class="signature-label">Le Locataire, verse la caution</div>
       <div style="margin-top:10px;font-size:12px;color:#555;">${locataire.prenom} ${locataire.nom}</div>
       <div style="height:40px;border-bottom:1px solid #ccc;margin-top:20px;"></div>
     </div>
@@ -926,12 +926,12 @@ const genererDocument = async ({
     if (type === 'facture') {
       htmlDocument = genererHTMLFacture(dataCommune);
       var nomMoisF = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
-      titre = 'Facture ' + numero + (mois ? ' — ' + nomMoisF[mois - 1] + ' ' + annee : '');
+      titre = 'Facture ' + numero + (mois ? ' du ' + nomMoisF[mois - 1] + ' ' + annee : '');
 
     } else if (type === 'quittance') {
       htmlDocument = genererHTMLQuittance(dataCommune);
       var nomMoisQ = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
-      titre = 'Quittance ' + numero + (mois ? ' — ' + nomMoisQ[mois - 1] + ' ' + annee : '');
+      titre = 'Quittance ' + numero + (mois ? ' du ' + nomMoisQ[mois - 1] + ' ' + annee : '');
 
     } else if (type === 'contrat_bail') {
       htmlDocument = genererHTMLContratBail(dataCommune);
@@ -1028,7 +1028,7 @@ function genererHTMLCertificatSignature(signatures) {
         <td><strong>${s.role === 'proprietaire' ? 'Bailleur' : 'Preneur'}</strong></td>
         <td>${s.nom_complet}</td>
         <td>${date}</td>
-        <td style="font-family:monospace;font-size:11px">${s.ip_adresse || '—'}</td>
+        <td style="font-family:monospace;font-size:11px">${s.ip_adresse || '-'}</td>
       </tr>
     `;
   }).join('');

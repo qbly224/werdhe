@@ -117,7 +117,7 @@ if (user.role === 'admin') {
       await resend.emails.send({
         from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
         to:      user.email,
-        subject: 'Code de vérification Admin — Werdhe',
+        subject: 'Votre code de vérification admin Werdhe',
         html: `
           <!DOCTYPE html>
           <html>

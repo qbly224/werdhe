@@ -101,7 +101,7 @@
     "features": [
       { "titre": "Secure files", "desc": "ID cards, pay stubs and contracts stored and accessed securely." },
       { "titre": "Automatic documents", "desc": "Leases, receipts and formal notices generated in one click." },
-      { "titre": "Smart alerts", "desc": "Rent reminders, expiring leases, notice periods — all automated." },
+      { "titre": "Smart alerts", "desc": "Rent reminders, expiring leases, notice periods: all automated." },
       { "titre": "Multiple payment methods", "desc": "Orange Money, MTN MoMo, cash or bank transfer accepted." },
       { "titre": "Built-in messaging", "desc": "Communicate directly with tenants and landlords." },
       { "titre": "Financial reports", "desc": "Track your income month by month with clear charts." },
@@ -177,7 +177,7 @@
       { "titre": "Find your ideal home", "sous": "Apartments, villas, studios in Conakry and across Guinea", "tag": "Conakry · Boké · Kindia · Labé · Kankan" },
       { "titre": "List your property in 5 minutes", "sous": "Manage applications, leases and payments from a single dashboard", "tag": "For landlords · 1-month free trial" },
       { "titre": "Modern villas in Guinea", "sous": "Discover our verified listings, no middleman, no hidden fees", "tag": "Villas · Apartments · Studios · Offices" },
-      { "titre": "Renting made simple", "sous": "Apply, sign your lease and pay — all online on Werdhe", "tag": "100% free for tenants" }
+      { "titre": "Renting made simple", "sous": "Apply, sign your lease and pay: all online on Werdhe", "tag": "100% free for tenants" }
     ],
     "footer": {
       "desc": "Guinea's leading real-estate platform. Find, rent and manage your properties with ease.",
@@ -295,7 +295,7 @@
     "essaiDemarre": "{{plan}} trial started! 1 month free.",
     "ctaFinal": {
       "titre": "Join Werdhe today",
-      "sousTitre": "Landlord or tenant — this platform is made for you"
+      "sousTitre": "Landlord or tenant, this platform is made for you"
     },
     "footer": {
       "confidentialite": "Privacy",
@@ -309,7 +309,7 @@
       { "titre": "Welcome to Werdhe", "sous": "Guinea's leading real-estate platform" },
       { "titre": "Manage your properties", "sous": "Applications, leases and payments all in one place" },
       { "titre": "Find your home", "sous": "Hundreds of properties available in Conakry and across Guinea" },
-      { "titre": "A home that fits your style", "sous": "Villas, bungalows, apartments — for every lifestyle" }
+      { "titre": "A home that fits your style", "sous": "Villas, bungalows, apartments: for every lifestyle" }
     ],
     "compteurs": {
       "logements": "Listings",
@@ -448,7 +448,7 @@
     "titre": "Two-step verification",
     "codeEnvoyeA": "Code sent to",
     "codeValideEncore": "Code still valid for",
-    "codeExpire": "Code expired — please log in again",
+    "codeExpire": "Code expired, please log in again",
     "verificationEnCours": "Verifying...",
     "confirmer": "Confirm",
     "retourConnexion": "Back to login"
@@ -672,10 +672,10 @@
   "cgu": {
     "seo": {
       "titre": "Terms of Use",
-      "description": "Terms of use for the Werdhe platform — Rental housing in Guinea."
+      "description": "Terms of use for the Werdhe platform, rental housing in Guinea."
     },
     "retour": "Back",
-    "documentsLegaux": "Werdhe — Legal documents",
+    "documentsLegaux": "Werdhe · Legal documents",
     "titre": "Terms of Use",
     "derniereMiseAJour": "Last updated: August 1, 2026",
     "intro": "Please read these terms carefully before using the Werdhe platform. By signing up, you accept these terms in full.",
@@ -734,10 +734,10 @@
   "confidentialite": {
     "seo": {
       "titre": "Privacy Policy",
-      "description": "Werdhe's privacy policy — How we collect and protect your personal data."
+      "description": "Werdhe's privacy policy, how we collect and protect your personal data."
     },
     "retour": "Back",
-    "documentsLegaux": "Werdhe — Legal documents",
+    "documentsLegaux": "Werdhe · Legal documents",
     "titre": "Privacy Policy",
     "derniereMiseAJour": "Last updated: August 1, 2026",
     "intro": "Protecting your personal data is a priority for Werdhe. This policy explains how we collect, use and protect your information.",
@@ -765,7 +765,7 @@
       },
       "6": {
         "titre": "6. Data sharing",
-        "contenu": "Your data may be shared with:\n\nService providers:\n• Supabase (database hosting) — USA\n• Cloudinary (file storage) — USA\n• Resend (email delivery) — USA\n• Vercel (frontend hosting) — USA\n• Render (backend hosting) — USA\n• Orange Money / MTN MoMo (payments) — Guinea\n\nThese providers are contractually required to protect your data.\n\nWerdhe never sells your data to third parties for commercial purposes.\n\nAuthorities: In the event of a legal obligation or court order."
+        "contenu": "Your data may be shared with:\n\nService providers:\n• Supabase (database hosting), USA\n• Cloudinary (file storage), USA\n• Resend (email delivery), USA\n• Vercel (frontend hosting), USA\n• Render (backend hosting), USA\n• Orange Money / MTN MoMo (payments), Guinea\n\nThese providers are contractually required to protect your data.\n\nWerdhe never sells your data to third parties for commercial purposes.\n\nAuthorities: in the event of a legal obligation or court order."
       },
       "7": {
         "titre": "7. Data security",

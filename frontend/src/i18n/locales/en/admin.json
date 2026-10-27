@@ -52,7 +52,7 @@
       "boutonPause": "Pause",
       "boutonReprendre": "Resume",
       "alerteCritique": "{{count}} payment(s) overdue by more than 5 days",
-      "actionRequise": "Action required — check pending payments",
+      "actionRequise": "Action required: check pending payments",
       "kpi": {
         "inscriptionsAujourdhui": "Sign-ups today",
         "candidaturesAujourdhui": "Applications today",
@@ -121,7 +121,7 @@
       "confirmSupprimer": "Delete this listing?",
       "toastVerifie": "Listing verified!",
       "toastSupprime": "Listing deleted",
-      "toastMasque": "Listing hidden — no longer public",
+      "toastMasque": "Listing hidden, no longer public",
       "toastDemasque": "Listing visible again"
     },
     "reservations": {
@@ -164,7 +164,7 @@
       "compteur": "{{count}} document(s) generated on the platform",
       "aucunDocument": "No documents yet.",
       "partiesLabel": "Tenant: {{loc}} · Landlord: {{prop}}",
-      "inconnu": "—",
+      "inconnu": "-",
       "telecharger": "Download"
     },
     "signalements": {
@@ -241,7 +241,7 @@
     }
   },
   "blogPage": {
-    "seoTitre": "Blog — Real estate guides and news in Guinea",
+    "seoTitre": "Blog: real estate guides and news in Guinea",
     "seoDescription": "Tips for renting, rent prices by neighborhood, required documents: the Werdhe blog on real estate in Guinea.",
     "voirLogements": "View listings",
     "titre": "The Werdhe Blog",
@@ -289,14 +289,14 @@
     "estimationLabel": "Estimate",
     "gnfParMois": "GNF / month",
     "baseSurComparables": "Based on {{count}} similar listing(s) on Werdhe",
-    "estimationStatistique": "Statistical estimate — list your property to help refine market prices",
+    "estimationStatistique": "Statistical estimate, list your property to help refine market prices",
     "publierMonLogement": "List my property",
     "disclaimer": "This estimate is indicative and does not replace professional advice.",
     "enSavoirPlus": "Learn more about",
     "prixParQuartier": "rent prices by neighborhood in Conakry"
   },
   "seo": {
-    "titreParDefaut": "Werdhe — Rental housing in Guinea",
+    "titreParDefaut": "Werdhe: rental housing in Guinea",
     "descriptionParDefaut": "Werdhe is the go-to platform for renting housing in Guinea. Find your apartment, villa or studio in Conakry and across Guinea."
   },
   "footer": {

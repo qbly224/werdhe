@@ -152,7 +152,7 @@
     },
     "header": {
       "titre": "Rental application",
-      "etape": "Step 1 / 7 — Tenant side"
+      "etape": "Step 1 / 7: tenant side"
     },
     "fiche": {
       "disponible": "Available",
@@ -435,7 +435,7 @@
       },
       "etape3": {
         "titre": "Application and signature",
-        "desc": "Upload your documents once. The lease is signed electronically — no need to travel.",
+        "desc": "Upload your documents once. The lease is signed electronically, no need to travel.",
         "cta": "Next"
       },
       "etape4": {
@@ -456,7 +456,7 @@
     "proprio": {
       "etape0": {
         "bienvenue": "Welcome to Werdhe, {{prenom}}!",
-        "desc": "Manage all your properties from a single dashboard. Applications, payments, documents — everything centralized.",
+        "desc": "Manage all your properties from a single dashboard. Applications, payments, documents: everything centralized.",
         "dashboardComplet": "Full dashboard",
         "dashboardCompletDesc": "Everything in one place",
         "paiementsAuto": "Automatic payments",
@@ -504,7 +504,7 @@
       },
       "etape2": {
         "titre": "Add your first property",
-        "desc": "Publish your property in 5 minutes. Title, address, price, photos — and applications arrive directly.",
+        "desc": "Publish your property in 5 minutes. Title, address, price, photos, and that's it: applications arrive directly.",
         "ceQueVousDevezPreparer": "What you need to prepare:",
         "photos": "Property photos (at least 1)",
         "adresse": "Exact address + city",
@@ -552,7 +552,7 @@
         "toastBienvenue": "Welcome to Werdhe! Add your first property"
       }
     },
-    "jeConnaisDejaWerdhe": "I already know Werdhe — skip"
+    "jeConnaisDejaWerdhe": "I already know Werdhe, skip"
   },
   "tourTooltip": {
     "passerLeTutoriel": "Skip the tutorial",

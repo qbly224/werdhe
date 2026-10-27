@@ -192,7 +192,7 @@ async function genererRapportFinancierPDF(userId) {
       doc.text((p.loc_prenom + ' ' + p.loc_nom).slice(0, 18),   58,  tableY + 6, { width: 110 });
       doc.text(p.logement_titre.slice(0, 22),                    173, tableY + 6, { width: 130 });
       doc.text(new Date(p.created_at).toLocaleDateString('fr-FR'), 308, tableY + 6, { width: 80 });
-      doc.text(p.mode_paiement || '—',                           393, tableY + 6, { width: 60 });
+      doc.text(p.mode_paiement || '-',                           393, tableY + 6, { width: 60 });
       doc.fillColor(statutColor).font('Helvetica-Bold')
          .text(GNF(p.montant),                                   458, tableY + 6, { width: 80, align: 'right' });
 
@@ -206,7 +206,7 @@ async function genererRapportFinancierPDF(userId) {
     var pageHeight = doc.page.height;
     doc.rect(0, pageHeight - 40, 595, 40).fill('#1B2B22');
     doc.fontSize(8).fillColor('rgba(255,255,255,0.5)').font('Helvetica')
-       .text('© 2026 Werdhe — Plateforme Immobilière Guinée — werdhe.com', 50, pageHeight - 27, { align: 'center', width: 495 });
+       .text('© 2026 Werdhe · Plateforme Immobilière Guinée · werdhe.com', 50, pageHeight - 27, { align: 'center', width: 495 });
 
     doc.end();
   });

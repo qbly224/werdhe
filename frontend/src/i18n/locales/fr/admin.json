@@ -52,7 +52,7 @@
       "boutonPause": "Pause",
       "boutonReprendre": "Reprendre",
       "alerteCritique": "{{count}} paiement(s) en retard depuis plus de 5 jours",
-      "actionRequise": "Action requise — vérifiez les paiements en attente",
+      "actionRequise": "Action requise : vérifiez les paiements en attente",
       "kpi": {
         "inscriptionsAujourdhui": "Inscriptions aujourd'hui",
         "candidaturesAujourdhui": "Candidatures aujourd'hui",
@@ -121,7 +121,7 @@
       "confirmSupprimer": "Supprimer ce logement ?",
       "toastVerifie": "Logement vérifié !",
       "toastSupprime": "Logement supprimé",
-      "toastMasque": "Annonce masquée — invisible du public",
+      "toastMasque": "Annonce masquée, invisible du public",
       "toastDemasque": "Annonce de nouveau visible"
     },
     "reservations": {
@@ -164,7 +164,7 @@
       "compteur": "{{count}} document(s) générés sur la plateforme",
       "aucunDocument": "Aucun document pour le moment.",
       "partiesLabel": "Locataire : {{loc}} · Propriétaire : {{prop}}",
-      "inconnu": "—",
+      "inconnu": "-",
       "telecharger": "Télécharger"
     },
     "signalements": {
@@ -241,7 +241,7 @@
     }
   },
   "blogPage": {
-    "seoTitre": "Blog — Guides et actualités immobilières en Guinée",
+    "seoTitre": "Blog : guides et actualités immobilières en Guinée",
     "seoDescription": "Conseils pour louer, prix des loyers par quartier, documents à fournir : le blog Werdhe sur l'immobilier en Guinée.",
     "voirLogements": "Voir les logements",
     "titre": "Le blog Werdhe",
@@ -289,14 +289,14 @@
     "estimationLabel": "Estimation",
     "gnfParMois": "GNF / mois",
     "baseSurComparables": "Basé sur {{count}} logement(s) similaire(s) sur Werdhe",
-    "estimationStatistique": "Estimation statistique — publiez votre bien pour affiner les prix du marché",
+    "estimationStatistique": "Estimation statistique, publiez votre bien pour affiner les prix du marché",
     "publierMonLogement": "Publier mon logement",
     "disclaimer": "Cette estimation est indicative et ne remplace pas l'avis d'un professionnel.",
     "enSavoirPlus": "En savoir plus sur les",
     "prixParQuartier": "prix par quartier à Conakry"
   },
   "seo": {
-    "titreParDefaut": "Werdhe — Location immobilière en Guinée",
+    "titreParDefaut": "Werdhe : location immobilière en Guinée",
     "descriptionParDefaut": "Werdhe est la plateforme de référence pour louer un logement en Guinée. Trouvez votre appartement, villa ou studio à Conakry et partout en Guinée."
   },
   "footer": {
