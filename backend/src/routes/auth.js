@@ -779,7 +779,9 @@ router.get('/mon-score', verifierToken, async (req, res) => {
 });
 
 // ─── SCORE D'UN LOCATAIRE (pour propriétaire) ────────────────────
-router.get('/score/:userId', verifierToken, async (req, res) => {
+// Public : affiché sur la fiche logement pour informer tout visiteur,
+// y compris non connecté, de la fiabilité du propriétaire.
+router.get('/score/:userId', async (req, res) => {
   try {
     const { calculerScore, labelScore } = require('../services/scoreService');
     var score  = await calculerScore(req.params.userId);
