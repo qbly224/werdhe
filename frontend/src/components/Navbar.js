@@ -21,13 +21,13 @@ export default function Navbar() {
   }
 
   return (
-    <nav style={{ background: '#fff', borderBottom: '1px solid #EBEBEB', padding: '0 24px', height: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
+    <nav className="site-navbar" style={{ background: '#fff', borderBottom: '1px solid #EBEBEB', padding: '10px 24px', minHeight: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', rowGap: 8, position: 'sticky', top: 0, zIndex: 100 }}>
       <Link to="/" style={{ textDecoration: 'none' }}>
         <Logo size={34} showText={true} darkBg={false} />
       </Link>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <Link to="/logements" style={{ fontSize: 13, color: '#555', textDecoration: 'none', fontWeight: 500 }}>
+      <div className="site-navbar-actions" style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', rowGap: 8 }}>
+        <Link to="/logements" className="site-navbar-logements" style={{ fontSize: 13, color: '#555', textDecoration: 'none', fontWeight: 500 }}>
           {t('nav.logements')}
         </Link>
         {user ? (

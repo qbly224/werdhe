@@ -124,7 +124,7 @@ export default function LogementDetail() {
       </nav>
 
       <div style={{ maxWidth: 1060, margin: '0 auto', padding: '24px 16px 60px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 24, alignItems: 'start' }}>
+        <div className="logement-detail-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 24, alignItems: 'start' }}>
 
           {/* ─── COLONNE GAUCHE ───────────────────────────────── */}
           <div>
@@ -296,8 +296,8 @@ export default function LogementDetail() {
             )}
           </div>
 
-          {/* ─── COLONNE DROITE (sticky) ─────────────────────── */}
-          <div style={{ position: 'sticky', top: 72 }}>
+          {/* ─── COLONNE DROITE (sticky sur desktop, empilée sur mobile) ─── */}
+          <div className="logement-detail-sidebar" style={{ position: 'sticky', top: 72 }}>
             <div style={{ background: '#fff', borderRadius: 18, padding: '22px 20px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', marginBottom: 14 }}>
 
               {/* Prix */}

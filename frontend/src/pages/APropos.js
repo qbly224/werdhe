@@ -99,7 +99,7 @@ export default function APropos() {
       />
 
       {/* Header */}
-      <div style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div className="apropos-header" style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', padding: '10px 24px', minHeight: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', rowGap: 8 }}>
         <button onClick={function() { navigate(-1); }}
           style={{ background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
           <ChevronLeft size={16} strokeWidth={2} /> {t('apropos.retour')}
@@ -146,7 +146,7 @@ export default function APropos() {
 
         {/* Notre mission */}
         <section style={{ marginBottom: 48 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, alignItems: 'center' }}>
+          <div className="apropos-mission-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, alignItems: 'center' }}>
             <div>
               <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('apropos.mission.overline')}</div>
               <h2 style={{ fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 800, color: '#1B2B22', margin: '0 0 16px', letterSpacing: -0.5, lineHeight: 1.2 }}>
