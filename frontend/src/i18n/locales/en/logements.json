@@ -263,7 +263,9 @@
     "popup": {
       "voirLeLogement": "View property →",
       "prixParMois": "GNF/month",
-      "chambresAbrev": "{{count}} bd"
+      "chambresAbrev": "{{count}} bd",
+      "biensIci": "{{count}} properties here",
+      "aPartirDe": "From"
     },
     "legende": {
       "disponible": "Available",
