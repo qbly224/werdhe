@@ -169,11 +169,11 @@ export default function Pricing() {
       />
 
       {/* Navbar */}
-      <nav style={{ background: '#fff', borderBottom: '0.5px solid #E0E0E0', padding: '0 24px', height: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
+      <nav className="site-navbar" style={{ background: '#fff', borderBottom: '0.5px solid #E0E0E0', padding: '10px 24px', minHeight: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', rowGap: 8, position: 'sticky', top: 0, zIndex: 100 }}>
         <Link to="/" style={{ textDecoration: 'none' }}>
           <Logo size={34} showText={true} darkBg={false} />
         </Link>
-        <div style={{ display: 'flex', gap: 10 }}>
+        <div className="site-navbar-actions" style={{ display: 'flex', gap: 10, flexWrap: 'wrap', rowGap: 8 }}>
           <Link to="/login" style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>{t('pricing.connexion')}</Link>
           <Link to="/inscription" style={{ padding: '8px 16px', borderRadius: 8, background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>{t('pricing.demarrer')}</Link>
         </div>
@@ -243,7 +243,8 @@ export default function Pricing() {
           <h2 style={{ fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 'clamp(24px, 3.4vw, 36px)', color: '#1B2B22', margin: 0 }}>{t('pricing.comparaison')}</h2>
         </div>
 
-        <div className="pricing-ledger" style={{ background: '#fff', border: '1px solid #1B2B22', position: 'relative', overflowX: 'auto' }}>
+        <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
+        <div className="pricing-ledger" style={{ background: '#fff', border: '1px solid #1B2B22', position: 'relative' }}>
           <div className="pricing-stamp">{t('pricing.tampon')}</div>
 
           {/* En-tête */}
@@ -341,6 +342,7 @@ export default function Pricing() {
               </div>
             );
           })}
+        </div>
         </div>
       </div>
 

@@ -493,6 +493,25 @@
 
   /* Header */
   .dash-header { padding: 0 14px !important; }
+
+  /* Fiche logement : colonnes empilées au lieu de la colonne fixe 340px */
+  .logement-detail-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .logement-detail-sidebar {
+    position: static !important;
+    top: auto !important;
+  }
+}
+
+/* Navbar publique (components/Navbar.js) : évite le débordement horizontal
+   quand le logo + les liens + les boutons ne tiennent plus sur une ligne. */
+@media (max-width: 480px) {
+  .site-navbar { padding-left: 14px !important; padding-right: 14px !important; }
+  .site-navbar-actions { gap: 8px !important; }
+  .site-navbar-logements { display: none !important; }
+  .apropos-header { padding-left: 14px !important; padding-right: 14px !important; }
+  .apropos-mission-grid { grid-template-columns: 1fr !important; }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {

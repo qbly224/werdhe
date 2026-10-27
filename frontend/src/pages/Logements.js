@@ -92,11 +92,11 @@ export default function Logements() {
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
       {/* Navbar */}
-      <nav style={{ background: 'rgba(247,248,247,0.96)', backdropFilter: 'blur(8px)', borderBottom: '0.5px solid rgba(27,107,58,0.1)', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
+      <nav className="site-navbar" style={{ background: 'rgba(247,248,247,0.96)', backdropFilter: 'blur(8px)', borderBottom: '0.5px solid rgba(27,107,58,0.1)', padding: '10px 24px', minHeight: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', rowGap: 8, position: 'sticky', top: 0, zIndex: 100 }}>
                 <Link to="/" style={{ textDecoration: 'none' }}>
           <Logo size={34} showText={true} darkBg={false} />
         </Link>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <div className="site-navbar-actions" style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap', rowGap: 8 }}>
           {user ? (
             <>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 12px', background: '#fff', borderRadius: 20, fontSize: 13 }}>
