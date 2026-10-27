@@ -40,7 +40,7 @@ export default function Logements() {
   var [total, setTotal]           = useState(0);
   var [page, setPage]             = useState(1);
   var [showFiltres, setShowFiltres] = useState(false);
-  var [vueMode, setVueMode] = useState('liste'); // 'liste' ou 'carte'
+  var [vueMode, setVueMode] = useState(function() { return searchParams.get('vue') === 'carte' ? 'carte' : 'liste'; }); // 'liste' ou 'carte'
 
   // Filtres
   var [search, setSearch]         = useState(function() { return searchParams.get('search') || ''; });

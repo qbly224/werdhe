@@ -349,8 +349,10 @@ useEffect(function() {
         <Logo size={36} showText={true} darkBg={false} />
 
         <div style={{ display: 'flex', gap: 28, alignItems: 'center' }} className="nav-desktop">
-          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.tarifs'), '#tarifs'], [t('landingPage.nav.avis'), '#avis'], [t('landingPage.nav.faq'), '#faq']].map(function(l) {
-            return <a key={l[1]} href={l[1]} style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontWeight: 500 }}>{l[0]}</a>;
+          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.tarifs'), '#tarifs'], [t('landingPage.nav.avis'), '#avis'], [t('landingPage.nav.faq'), '#faq'], [t('landingPage.nav.carte'), '/logements?vue=carte']].map(function(l) {
+            return l[1].charAt(0) === '#'
+              ? <a key={l[1]} href={l[1]} style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontWeight: 500 }}>{l[0]}</a>
+              : <a key={l[1]} href={l[1]} onClick={function(e) { e.preventDefault(); navigate(l[1]); }} style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontWeight: 500 }}>{l[0]}</a>;
           })}
         </div>
 
@@ -376,9 +378,12 @@ useEffect(function() {
       {/* Menu mobile */}
       {mobileMenu && (
         <div style={{ position: 'fixed', inset: 0, top: 60, background: '#fff', zIndex: 99, padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.tarifs'), '#tarifs']].map(function(l) {
+          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.tarifs'), '#tarifs'], [t('landingPage.nav.carte'), '/logements?vue=carte']].map(function(l) {
             return (
-              <a key={l[1]} href={l[1]} onClick={function() { setMobileMenu(false); }}
+              <a key={l[1]} href={l[1]} onClick={function(e) {
+                  setMobileMenu(false);
+                  if (l[1].charAt(0) !== '#') { e.preventDefault(); navigate(l[1]); }
+                }}
                 style={{ fontSize: 18, color: '#1B2B22', textDecoration: 'none', fontWeight: 600, padding: '12px 0', borderBottom: '0.5px solid #f0f0f0' }}>
                 {l[0]}
               </a>

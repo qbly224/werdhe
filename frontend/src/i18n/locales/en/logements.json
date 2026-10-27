@@ -272,6 +272,8 @@
       "occupe": "Occupied",
       "nbLogements": "{{count}} listing(s)"
     },
+    "vueSatellite": "Satellite",
+    "vuePlan": "Map",
     "tokenManquant": "Map unavailable right now."
   },
   "onboardingLocataire": {

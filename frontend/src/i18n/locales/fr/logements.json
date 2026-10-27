@@ -272,6 +272,8 @@
       "occupe": "Occupé",
       "nbLogements": "{{count}} logement(s)"
     },
+    "vueSatellite": "Satellite",
+    "vuePlan": "Carte",
     "tokenManquant": "Carte indisponible pour le moment."
   },
   "onboardingLocataire": {
