@@ -475,11 +475,12 @@ useEffect(function() {
         </div>
 
         {/* Slides nav points */}
-        <div style={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8, zIndex: 2 }}>
+        <div style={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 10, zIndex: 2 }}>
           {SLIDES.map(function(_, i) {
+            var actif = slideActif === i;
             return (
-              <button key={i} onClick={function() { setSlideActif(i); }}
-                style={{ width: slideActif === i ? 28 : 8, height: 8, borderRadius: 4, border: 'none', background: slideActif === i ? '#F5A623' : 'rgba(255,255,255,0.5)', cursor: 'pointer', transition: 'all .4s', padding: 0 }} />
+              <button key={i} onClick={function() { setSlideActif(i); }} aria-label={'Slide ' + (i + 1)}
+                style={{ width: actif ? 12 : 9, height: actif ? 12 : 9, borderRadius: '50%', border: actif ? 'none' : '1.5px solid rgba(255,255,255,0.7)', background: actif ? '#F5A623' : 'rgba(255,255,255,0.35)', boxShadow: actif ? '0 0 0 3px rgba(245,166,35,0.25)' : 'none', cursor: 'pointer', transition: 'all .3s', padding: 0 }} />
             );
           })}
         </div>
