@@ -1,15 +1,18 @@
 /* eslint-disable */
 // Service Worker Werdhe — Mode hors-ligne + Cache
 
-var CACHE_NAME    = 'werdhe-v2';
-var CACHE_STATIC  = 'werdhe-static-v2';
-var CACHE_DYNAMIC = 'werdhe-dynamic-v2';
+var CACHE_NAME    = 'werdhe-v3';
+var CACHE_STATIC  = 'werdhe-static-v3';
+var CACHE_DYNAMIC = 'werdhe-dynamic-v3';
 
-// Ressources à mettre en cache immédiatement
+// Ressources à mettre en cache immédiatement. Les fichiers JS/CSS buildés
+// par Create React App ont un nom haché (ex: main.891d88b2.css) qui change
+// à chaque déploiement : impossible de les lister ici à l'avance, ils sont
+// mis en cache à la volée par la stratégie "Cache First" ci-dessous dès
+// qu'ils sont chargés une première fois.
 var STATIC_ASSETS = [
   '/',
   '/offline.html',
-  '/static/css/main.css',
   '/manifest.json',
   '/logo192.png',
   '/favicon.ico',
@@ -130,11 +133,4 @@ self.addEventListener('notificationclick', function(e) {
       if (clients.openWindow) return clients.openWindow('https://werdhe.com' + url);
     })
   );
-});
-
-// ─── SYNC EN ARRIÈRE-PLAN ─────────────────────────────────────────
-self.addEventListener('sync', function(e) {
-  if (e.tag === 'sync-messages') {
-    console.log('[SW] Sync messages en arrière-plan');
-  }
 });
