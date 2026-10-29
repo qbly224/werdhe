@@ -3,6 +3,17 @@
     "horsLigne": "Offline: data may be outdated",
     "retablie": "Connection restored"
   },
+  "pwa": {
+    "installerWerdhe": "Install Werdhe",
+    "accesRapide": "Quick access from your home screen, like a real app",
+    "instructionsIOS": {
+      "avant": "Tap",
+      "apres": "then \"Add to Home Screen\""
+    },
+    "installer": "Install",
+    "fermer": "Close",
+    "toastInstalle": "Werdhe is installed!"
+  },
   "chatbot": {
     "bulle": "Need help?",
     "titre": "Werdhe Assistant",

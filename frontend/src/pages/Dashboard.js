@@ -4946,35 +4946,8 @@ export default function Dashboard() {
   var [monPlan, setMonPlan] = useState({ plan: 'gratuit', droits: { max_biens: 2, mobile_money: false, documents_pdf: false }, nb_biens: 0 });
   var [showOnboarding, setShowOnboarding] = useState(false);
   var [enLigne, setEnLigne] = useState(navigator.onLine);
-  var [installPrompt, setInstallPrompt] = useState(null);
-  var [showInstall, setShowInstall]     = useState(false);
 
 useInactivite(true);
-
-useEffect(function() {
-  function handler(e) {
-    e.preventDefault();
-    setInstallPrompt(e);
-    // Montrer la bannière si pas déjà installée
-    if (!window.matchMedia('(display-mode: standalone)').matches) {
-      setShowInstall(true);
-    }
-  }
-  window.addEventListener('beforeinstallprompt', handler);
-  return function() { window.removeEventListener('beforeinstallprompt', handler); };
-}, []);
-
-function installerApp() {
-  if (!installPrompt) return;
-  installPrompt.prompt();
-  installPrompt.userChoice.then(function(result) {
-    if (result.outcome === 'accepted') {
-      toast.success(t('dashboardMain.toastInstalle'));
-    }
-    setShowInstall(false);
-    setInstallPrompt(null);
-  });
-}
 
   var premierChargement = useRef(true);
   var { darkMode, toggleDarkMode } = useDarkMode();
@@ -5198,26 +5171,6 @@ function chargerDonnees() {
   passer={tour.passer}
   terminer={tour.terminer}
 />
-{/* Bannière installation PWA */}
-{showInstall && (
-  <div style={{ position: 'fixed', bottom: isMobile ? 70 : 20, left: '50%', transform: 'translateX(-50%)', background: '#1B2B22', color: '#fff', borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.25)', zIndex: 9999, maxWidth: 380, width: 'calc(100% - 32px)' }}>
-    <div style={{ flexShrink: 0 }}><Download size={26} strokeWidth={1.5} color="#fff" /></div>
-    <div style={{ flex: 1 }}>
-      <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 3 }}>{t('dashboardMain.installerWerdhe')}</div>
-      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>{t('dashboardMain.accesRapide')}</div>
-    </div>
-    <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-      <button onClick={function() { setShowInstall(false); }}
-        style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', borderRadius: 8, padding: '6px 10px', fontSize: 12, cursor: 'pointer' }}>
-        {t('dashboardMain.plusTard')}
-      </button>
-      <button onClick={installerApp}
-        style={{ background: '#F5A623', border: 'none', color: '#1B2B22', borderRadius: 8, padding: '6px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-        {t('dashboardMain.installer')}
-      </button>
-    </div>
-  </div>
-)}
 {isMobile && sidebarOpen && (
   <div
     onClick={function() { setSidebarOpen(false); }}
