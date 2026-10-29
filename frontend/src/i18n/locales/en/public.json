@@ -1,4 +1,8 @@
 {
+  "connexion": {
+    "horsLigne": "Offline: data may be outdated",
+    "retablie": "Connection restored"
+  },
   "chatbot": {
     "bulle": "Need help?",
     "titre": "Werdhe Assistant",

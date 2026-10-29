@@ -1,4 +1,8 @@
 {
+  "connexion": {
+    "horsLigne": "Hors ligne : infos non actualisées",
+    "retablie": "Connexion rétablie"
+  },
   "chatbot": {
     "bulle": "Besoin d'aide ?",
     "titre": "Assistant Werdhe",
