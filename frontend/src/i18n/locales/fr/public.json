@@ -3,6 +3,17 @@
     "horsLigne": "Hors ligne : infos non actualisées",
     "retablie": "Connexion rétablie"
   },
+  "pwa": {
+    "installerWerdhe": "Installer Werdhe",
+    "accesRapide": "Accès rapide depuis votre écran d'accueil, comme une vraie application",
+    "instructionsIOS": {
+      "avant": "Appuyez sur",
+      "apres": "puis « Sur l'écran d'accueil »"
+    },
+    "installer": "Installer",
+    "fermer": "Fermer",
+    "toastInstalle": "Werdhe est installé !"
+  },
   "chatbot": {
     "bulle": "Besoin d'aide ?",
     "titre": "Assistant Werdhe",
