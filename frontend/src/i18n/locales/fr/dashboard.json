@@ -275,6 +275,10 @@
     "titre": "Score de confiance"
   },
   "dashboardMain": {
+    "paiementDjomyReussi": "Paiement réussi !",
+    "paiementDjomyEchec": "Le paiement a échoué ou a été annulé.",
+    "paiementDjomyEnAttente": "Paiement en cours de traitement...",
+    "paiementDjomyErreurVerif": "Impossible de vérifier le paiement",
     "toastInstalle": "Werdhe installé sur votre écran d'accueil !",
     "connexionRetablie": "Connexion rétablie",
     "connexionPerdue": "Connexion perdue",
@@ -847,6 +851,12 @@
       "traitementEnCours": "Traitement...",
       "confirmer": "Confirmer - {{montant}}",
       "retour": "Retour",
+      "erreur": "Erreur, veuillez réessayer",
+      "enAttenteConfirmation": "En attente de confirmation",
+      "confirmationProprietaire": "Le propriétaire doit confirmer la réception",
+      "aucuneReservationActive": "Aucune réservation active pour effectuer un paiement.",
+      "payerEnLigne": "Payer {{montant}} en ligne",
+      "signalerEspeces": "Signaler un paiement en espèces / virement",
       "succes": {
         "titre": "Paiement enregistre !",
         "description": "Quittance envoyee au locataire."
@@ -1399,32 +1409,13 @@
   },
   "modalPaiementMobile": {
     "erreurPaiement": "Erreur paiement",
-    "paiementConfirmeToast": "Paiement confirme !",
-    "erreurConfirmation": "Erreur confirmation",
-    "titre": "Paiement Mobile Money",
+    "titre": "Paiement",
     "montantAPayer": "Montant à payer",
-    "choisirOperateur": "Choisissez votre operateur",
-    "orangeMoney": "Orange Money",
-    "mtnMomo": "MTN MoMo",
-    "paiementInstantane": "Paiement instantane",
-    "saisirNumero": "Saisissez votre numero",
     "numeroTelephone": "Numero de telephone",
-    "numerosOrange": "Numeros Orange : 060, 065, 066, 067, 068",
-    "numerosMtn": "Numeros MTN : 061, 062, 063, 064",
-    "retour": "Retour",
-    "envoiEnCours": "Envoi...",
-    "envoyerLaDemande": "Envoyer la demande",
-    "demandeEnvoyee": "Demande envoyee !",
-    "expireDans": "Expire dans {{temps}}",
-    "instructions": "Instructions :",
-    "reference": "Ref : {{ref}}",
-    "modeDemonstration": "Mode démonstration : cliquez pour simuler la confirmation",
-    "confirmationEnCours": "Confirmation...",
-    "simulerConfirmation": "Simuler la confirmation du paiement",
-    "paiementConfirme": "Paiement confirme !",
-    "votrePaiementDe": "Votre paiement de",
-    "aEteConfirme": "a ete confirme. Une quittance vous sera envoyee par email.",
-    "fermer": "Fermer"
+    "methodesAcceptees": "Orange Money, MTN MoMo, Kulu ou carte bancaire : vous choisirez votre moyen de paiement sur la page suivante.",
+    "payer": "Payer",
+    "redirectionEnCours": "Redirection vers le paiement...",
+    "fermer": "Annuler"
   },
   "etatDesLieux": {
     "pieces": {

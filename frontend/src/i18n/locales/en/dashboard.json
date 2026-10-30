@@ -275,6 +275,10 @@
     "titre": "Trust score"
   },
   "dashboardMain": {
+    "paiementDjomyReussi": "Payment successful!",
+    "paiementDjomyEchec": "The payment failed or was cancelled.",
+    "paiementDjomyEnAttente": "Payment processing...",
+    "paiementDjomyErreurVerif": "Could not verify the payment",
     "toastInstalle": "Werdhe installed on your home screen!",
     "connexionRetablie": "Connection restored",
     "connexionPerdue": "Connection lost",
@@ -847,6 +851,12 @@
       "traitementEnCours": "Processing...",
       "confirmer": "Confirm - {{montant}}",
       "retour": "Back",
+      "erreur": "Error, please try again",
+      "enAttenteConfirmation": "Awaiting confirmation",
+      "confirmationProprietaire": "The owner must confirm receipt",
+      "aucuneReservationActive": "No active reservation to pay for.",
+      "payerEnLigne": "Pay {{montant}} online",
+      "signalerEspeces": "Report a cash / bank transfer payment",
       "succes": {
         "titre": "Payment recorded!",
         "description": "Receipt sent to the tenant."
@@ -1399,32 +1409,13 @@
   },
   "modalPaiementMobile": {
     "erreurPaiement": "Payment error",
-    "paiementConfirmeToast": "Payment confirmed!",
-    "erreurConfirmation": "Confirmation error",
-    "titre": "Mobile Money Payment",
+    "titre": "Payment",
     "montantAPayer": "Amount due",
-    "choisirOperateur": "Choose your mobile money operator",
-    "orangeMoney": "Orange Money",
-    "mtnMomo": "MTN MoMo",
-    "paiementInstantane": "Instant payment",
-    "saisirNumero": "Enter your number",
     "numeroTelephone": "Phone number",
-    "numerosOrange": "Orange numbers: 060, 065, 066, 067, 068",
-    "numerosMtn": "MTN numbers: 061, 062, 063, 064",
-    "retour": "Back",
-    "envoiEnCours": "Sending...",
-    "envoyerLaDemande": "Send request",
-    "demandeEnvoyee": "Request sent!",
-    "expireDans": "Expires in {{temps}}",
-    "instructions": "Instructions:",
-    "reference": "Ref: {{ref}}",
-    "modeDemonstration": "Demo mode: click to simulate the confirmation",
-    "confirmationEnCours": "Confirming...",
-    "simulerConfirmation": "Simulate payment confirmation",
-    "paiementConfirme": "Payment confirmed!",
-    "votrePaiementDe": "Your payment of",
-    "aEteConfirme": "has been confirmed. A receipt will be sent to you by email.",
-    "fermer": "Close"
+    "methodesAcceptees": "Orange Money, MTN MoMo, Kulu or card: you'll choose your payment method on the next page.",
+    "payer": "Pay",
+    "redirectionEnCours": "Redirecting to payment...",
+    "fermer": "Cancel"
   },
   "etatDesLieux": {
     "pieces": {

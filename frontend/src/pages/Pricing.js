@@ -226,13 +226,8 @@ export default function Pricing() {
           montant={montantCycle(PLANS.find(function(p) { return p.id === showPaiement; }).prix_mois)}
           titre={t('pricing.modalTitre', { plan: showPaiement === 'pro' ? t('pricing.plans.pro.nom') : t('pricing.plans.agence.nom'), cycle: CYCLES[cycle].label })}
           payload={{ plan: showPaiement, cycle: cycle, code_promo: codeOk && codeOk.valide ? code : undefined }}
-          endpoints={{
-            orange:    '/abonnements/orange-money/initier',
-            mtn:       '/abonnements/mtn-momo/initier',
-            confirmer: '/abonnements/confirmer/',
-          }}
+          endpoint="/abonnements/souscrire"
           onClose={function() { setShowPaiement(null); }}
-          onSuccess={function() { navigate('/dashboard'); }}
         />
       )}
 

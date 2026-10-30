@@ -8,8 +8,11 @@ const {
   confirmerPaiementEspeces,
   getMesPaiements,
   getPaiementsProprietaire,
-  getFacture
+  getFacture,
+  initierPaiementDjomy,
+  verifierStatutDjomy
 } = require('../controllers/paiementController');
+const { webhookDjomy } = require('../controllers/djomyWebhookController');
 
 // Toutes les routes paiements sont protégées
 
@@ -44,23 +47,13 @@ router.patch('/:id/confirmer-especes', verifierToken, confirmerPaiementEspeces);
 // Facture (accessible aux deux parties)
 router.get('/facture/:numero', verifierToken, getFacture);
 
-const {
-  initierOrangeMoney,
-  initierMTNMomo,
-  confirmerPaiement,
-  webhookOrange,
-  webhookMTN,
-  verifierStatut
-} = require('../controllers/mobilemoneyController');
+// Paiement du loyer via Djomy (Orange Money / MTN MoMo / Kulu / carte,
+// avec redirection vers la page de paiement hébergée par Djomy)
+router.post('/djomy/initier', verifierToken, initierPaiementDjomy);
+router.get('/djomy/statut/:id', verifierToken, verifierStatutDjomy);
 
-// Mobile Money
-router.post('/orange-money/initier', verifierToken, initierOrangeMoney);
-router.post('/mtn-momo/initier', verifierToken, initierMTNMomo);
-router.patch('/confirmer/:paiement_id', verifierToken, confirmerPaiement);
-router.get('/statut/:paiement_id', verifierToken, verifierStatut);
-
-// Webhooks (sans token)
-router.post('/webhook/orange', webhookOrange);
-router.post('/webhook/mtn', webhookMTN);
+// Webhook signé Djomy (sans token — authentifié par signature HMAC),
+// partagé entre les paiements de loyer et d'abonnement
+router.post('/webhook/djomy', webhookDjomy);
 
 module.exports = router;

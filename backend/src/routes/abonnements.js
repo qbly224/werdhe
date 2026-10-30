@@ -4,27 +4,8 @@ const db      = require('../database');
 const verifierToken = require('../middleware/auth');
 const resoudreProprietaireEffectif = require('../middleware/equipe');
 const { getPlan, FONCTIONNALITES } = require('../middleware/verifierPlan');
-
-// Remettre en ligne les biens masqués automatiquement lors d'une précédente
-// expiration, dans la limite autorisée par le nouveau plan.
-async function remettreEnLigneBiens(userId, plan) {
-  try {
-    var limite = FONCTIONNALITES[plan] ? FONCTIONNALITES[plan].max_biens : 0;
-    if (!limite) return;
-    await db.query(
-      `UPDATE logements SET statut = 'disponible', masque_limite_plan = FALSE
-       WHERE id IN (
-         SELECT id FROM logements
-         WHERE proprietaire_id = $1 AND masque_limite_plan = TRUE
-         ORDER BY created_at DESC
-         LIMIT $2
-       )`,
-      [userId, limite === Infinity ? 100000 : limite]
-    );
-  } catch (err) {
-    console.warn('[Abonnement] Remise en ligne biens:', err.message);
-  }
-}
+const djomyService = require('../services/djomyService');
+const { remettreEnLigneBiens, activerAbonnementPaye, marquerFactureEchouee } = require('../services/abonnementService');
 
 // Prix de base (GNF / mois) et cycles de facturation disponibles
 var PRIX_MENSUEL = { pro: 120000, agence: 300000 };
@@ -39,52 +20,8 @@ function calculerMontant(plan, cycle) {
   return Math.round(PRIX_MENSUEL[plan] * infosCycle.mois * (1 - infosCycle.reduction));
 }
 
-function validerTelephone(tel) {
-  var propre = String(tel || '').replace(/\s+/g, '').replace(/^(\+224|00224)/, '');
-  if (!/^\d{9}$/.test(propre)) return null;
-  return '224' + propre;
-}
-
 function genererReference() {
-  return 'WRD-AB-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-}
-
-async function envoyerFactureParEmail(userId, plan, montant, cycle, debut, fin) {
-  if (!process.env.RESEND_API_KEY) return;
-  try {
-    const { Resend } = require('resend');
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    var userInfo = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
-    var u = userInfo.rows[0];
-    if (!u) return;
-    await resend.emails.send({
-      from:    process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
-      to:      u.email,
-      subject: 'Facture abonnement Werdhe, plan ' + plan.charAt(0).toUpperCase() + plan.slice(1),
-      html: `
-        <div style="font-family:sans-serif;max-width:500px;margin:0 auto">
-          <div style="background:#1B6B3A;padding:20px;border-radius:12px 12px 0 0">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:34px;height:34px;"><img src="https://werdhe.com/logo192.png" width="34" height="34" alt="Werdhe" style="display:block;border-radius:9px;width:34px;height:34px;" /></td><td style="padding-left:9px;vertical-align:middle;font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-weight:800;font-size:17px;color:#fff;">Werdhe · Facture</td></tr></table>
-          </div>
-          <div style="background:#fff;padding:24px;border-radius:0 0 12px 12px;border:1px solid #e0e0e0">
-            <p>Bonjour <b>${u.prenom} ${u.nom}</b>,</p>
-            <p>Merci pour votre abonnement au plan <b>${plan}</b>.</p>
-            <div style="background:#F8F8F8;border-radius:10px;padding:16px;margin:16px 0">
-              <table style="width:100%;font-size:13px">
-                <tr><td style="color:#888">Plan</td><td style="text-align:right;font-weight:700">${plan.charAt(0).toUpperCase() + plan.slice(1)}</td></tr>
-                <tr><td style="color:#888">Cycle</td><td style="text-align:right">${cycle}</td></tr>
-                <tr><td style="color:#888">Période</td><td style="text-align:right">${new Date(debut).toLocaleDateString('fr-FR')} → ${new Date(fin).toLocaleDateString('fr-FR')}</td></tr>
-                <tr><td style="color:#888">Montant</td><td style="text-align:right;font-weight:700;color:#1B6B3A">${new Intl.NumberFormat('fr-FR').format(montant)} GNF</td></tr>
-              </table>
-            </div>
-            <p style="color:#888;font-size:12px">Werdhe · Plateforme immobilière Guinée</p>
-          </div>
-        </div>
-      `
-    });
-  } catch (e) {
-    console.warn('[Facture abonnement] Email non envoyé:', e.message);
-  }
+  return 'WRD-ABO-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6).toUpperCase();
 }
 
 // ─── MON ABONNEMENT ACTUEL ───────────────────────────────────────
@@ -238,17 +175,15 @@ router.get('/valider-code', async (req, res) => {
   }
 });
 
-// ─── INITIER LE PAIEMENT DE L'ABONNEMENT (Mobile Money) ──────────
-async function initierPaiement(req, res, operateur) {
+// ─── SOUSCRIRE / RENOUVELER UN ABONNEMENT (paiement Djomy) ───────
+router.post('/souscrire', verifierToken, async (req, res) => {
   try {
     var { plan, cycle, telephone, code_promo } = req.body;
     if (!['pro', 'agence'].includes(plan)) {
       return res.status(400).json({ erreur: 'Plan invalide' });
     }
-
-    var telFormate = validerTelephone(telephone);
-    if (!telFormate) {
-      return res.status(400).json({ erreur: 'Numéro de téléphone invalide. Format: 6XX XXX XXX' });
+    if (!telephone) {
+      return res.status(400).json({ erreur: 'Numéro de téléphone requis' });
     }
 
     var cycleChoisi = CYCLES[cycle] ? cycle : 'mensuel';
@@ -276,153 +211,77 @@ async function initierPaiement(req, res, operateur) {
 
     var facture = await db.query(
       `INSERT INTO factures_abonnements
-         (user_id, plan, montant, periode_debut, periode_fin, statut, cycle, reference_externe, operateur, telephone)
-       VALUES ($1, $2, $3, $4, $5, 'en_attente', $6, $7, $8, $9)
+         (user_id, plan, montant, periode_debut, periode_fin, statut, cycle, telephone)
+       VALUES ($1, $2, $3, $4, $5, 'en_attente', $6, $7)
        RETURNING *`,
-      [req.user.id, plan, montant, debut, fin, cycleChoisi, reference, operateur, telFormate]
+      [req.user.id, plan, montant, debut, fin, cycleChoisi, telephone]
     );
+
+    var frontendUrl = process.env.FRONTEND_URL || 'https://werdhe.com';
+    var returnUrl = frontendUrl + '/dashboard?paiement_abonnement=' + facture.rows[0].id;
+
+    var gateway;
+    try {
+      gateway = await djomyService.initierPaiementGateway({
+        montant: montant,
+        telephone: telephone,
+        description: 'Abonnement Werdhe - ' + plan,
+        reference: reference,
+        returnUrl: returnUrl,
+        metadata: { facture_id: facture.rows[0].id, type: 'abonnement' }
+      });
+    } catch (erreurDjomy) {
+      await db.query('DELETE FROM factures_abonnements WHERE id = $1', [facture.rows[0].id]);
+      throw erreurDjomy;
+    }
+
+    await db.query('UPDATE factures_abonnements SET reference_externe = $1 WHERE id = $2', [gateway.transactionId, facture.rows[0].id]);
 
     res.json({
-      success:     true,
-      reference:   reference,
-      facture_id:  facture.rows[0].id,
-      montant:     montant,
-      simulation:  true,
-      message:     'Simulation : demande envoyée au ' + telephone,
-      instructions: operateur === 'orange'
-        ? [
-            'Composez *144*1*4# sur votre téléphone Orange',
-            'Entrez votre code PIN Orange Money',
-            'Confirmez le paiement de ' + new Intl.NumberFormat('fr-FR').format(montant) + ' GNF',
-            'Attendez la confirmation SMS'
-          ]
-        : [
-            'Composez *156# sur votre téléphone MTN',
-            'Choisissez "Payer un marchand"',
-            'Entrez le code marchand Werdhe : WRD001',
-            'Entrez le montant : ' + new Intl.NumberFormat('fr-FR').format(montant) + ' GNF',
-            'Confirmez avec votre PIN MoMo'
-          ]
+      success:      true,
+      facture_id:   facture.rows[0].id,
+      montant:      montant,
+      redirectUrl:  gateway.redirectUrl,
+      transactionId: gateway.transactionId
     });
   } catch (err) {
-    console.error('[Abonnement initier]', err.message);
-    res.status(500).json({ erreur: 'Erreur lors de l\'initiation du paiement' });
+    console.error('[Abonnement souscrire]', err.message);
+    res.status(err.validation ? 400 : 500).json({ erreur: err.validation ? err.message : 'Erreur lors de l\'initiation du paiement' });
   }
-}
+});
 
-router.post('/orange-money/initier', verifierToken, function(req, res) { initierPaiement(req, res, 'orange'); });
-router.post('/mtn-momo/initier',     verifierToken, function(req, res) { initierPaiement(req, res, 'mtn'); });
-router.post('/souscrire', verifierToken, function(req, res) {
-  var operateur = req.body.operateur || 'orange';
-  initierPaiement(req, res, operateur);
-});
-// ─── ROUTE UNIFIÉE (appelée par la page Pricing) ─────────────────
-router.post('/souscrire', verifierToken, function(req, res) {
-  var operateur = req.body.operateur || 'orange';
-  initierPaiement(req, res, operateur);
-});
-// ─── CONFIRMER LE PAIEMENT (simulation) ──────────────────────────
-router.patch('/confirmer/:facture_id', verifierToken, async (req, res) => {
+// ─── VÉRIFIER LE STATUT D'UNE FACTURE (appelé par le front après retour) ─
+router.get('/djomy/statut/:facture_id', verifierToken, async (req, res) => {
   try {
     var { facture_id } = req.params;
-
     var result = await db.query(
-      `UPDATE factures_abonnements
-       SET statut = 'payee'
-       WHERE id = $1 AND user_id = $2 AND statut = 'en_attente'
-       RETURNING *`,
+      `SELECT * FROM factures_abonnements WHERE id = $1 AND user_id = $2`,
       [facture_id, req.user.id]
     );
-
     if (result.rows.length === 0) {
       return res.status(404).json({ erreur: 'Facture non trouvée' });
     }
 
     var f = result.rows[0];
-
-    var maj = await db.query(
-      `UPDATE abonnements
-       SET plan = $1, statut = 'actif', date_fin = $2, cycle = $3,
-           essai_termine = TRUE, rappel_j3_envoye = FALSE, rappel_j5_envoye = FALSE,
-           rappel_j7_avant_envoye = FALSE, rappel_j3_avant_envoye = FALSE, rappel_j1_avant_envoye = FALSE
-       WHERE user_id = $4`,
-      [f.plan, f.periode_fin, f.cycle, req.user.id]
-    );
-
-    if (maj.rowCount === 0) {
-      await db.query(
-        `INSERT INTO abonnements (user_id, plan, statut, date_fin, cycle, essai_termine)
-         VALUES ($1, $2, 'actif', $3, $4, TRUE)`,
-        [req.user.id, f.plan, f.periode_fin, f.cycle]
-      );
+    if (f.statut !== 'en_attente' || !f.reference_externe) {
+      return res.json({ statut: f.statut, facture: f });
     }
 
-    await db.query('UPDATE users SET plan = $1, abonnement_bloque = FALSE WHERE id = $2', [f.plan, req.user.id]);
-    await remettreEnLigneBiens(req.user.id, f.plan);
+    var statutDjomy = await djomyService.recupererStatutPaiement(f.reference_externe);
 
-    envoyerFactureParEmail(req.user.id, f.plan, f.montant, f.cycle, f.periode_debut, f.periode_fin).catch(console.warn);
+    if (statutDjomy.status === 'SUCCESS') {
+      var activee = await activerAbonnementPaye(facture_id);
+      if (activee) f = activee;
+    } else if (statutDjomy.status === 'FAILED' || statutDjomy.status === 'CANCELLED') {
+      await marquerFactureEchouee(facture_id);
+      f.statut = 'echec';
+    }
 
-    res.json({
-      success:  true,
-      message:  'Paiement confirmé ! Abonnement ' + f.plan + ' activé.',
-      plan:     f.plan,
-      date_fin: new Date(f.periode_fin).toLocaleDateString('fr-FR')
-    });
+    res.json({ statut: f.statut, facture: f });
   } catch (err) {
-    console.error('[Abonnement confirmer]', err.message);
-    res.status(500).json({ erreur: 'Erreur confirmation paiement' });
+    console.error('[Abonnement statut Djomy]', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
   }
 });
-// ─── WEBHOOK SIMULATION (confirme après 30s en dev) ──────────────
-router.post('/webhook/confirmer', async (req, res) => {
-  try {
-    var { reference, statut } = req.body;
-    if (!reference) return res.status(400).json({ erreur: 'Référence manquante' });
 
-    var facture = await db.query(
-      `SELECT * FROM factures_abonnements WHERE reference_externe = $1`,
-      [reference]
-    );
-    if (facture.rows.length === 0) {
-      return res.status(404).json({ erreur: 'Facture non trouvée' });
-    }
-    var f = facture.rows[0];
-
-    if (statut === 'succes') {
-      await db.query(
-        `UPDATE factures_abonnements SET statut = 'payee' WHERE reference_externe = $1`,
-        [reference]
-      );
-      var maj = await db.query(
-        `UPDATE abonnements SET plan = $1, statut = 'actif', date_fin = $2, cycle = $3,
-         essai_termine = TRUE, rappel_j3_envoye = FALSE, rappel_j5_envoye = FALSE,
-         rappel_j7_avant_envoye = FALSE, rappel_j3_avant_envoye = FALSE, rappel_j1_avant_envoye = FALSE
-         WHERE user_id = $4`,
-        [f.plan, f.periode_fin, f.cycle, f.user_id]
-      );
-      if (maj.rowCount === 0) {
-        await db.query(
-          `INSERT INTO abonnements (user_id, plan, statut, date_fin, cycle, essai_termine)
-           VALUES ($1, $2, 'actif', $3, $4, TRUE)`,
-          [f.user_id, f.plan, f.periode_fin, f.cycle]
-        );
-      }
-      await db.query(
-        'UPDATE users SET plan = $1, abonnement_bloque = FALSE WHERE id = $2',
-        [f.plan, f.user_id]
-      );
-      await remettreEnLigneBiens(f.user_id, f.plan);
-      envoyerFactureParEmail(f.user_id, f.plan, f.montant, f.cycle, f.periode_debut, f.periode_fin).catch(console.warn);
-    } else {
-      await db.query(
-        `UPDATE factures_abonnements SET statut = 'echec' WHERE reference_externe = $1`,
-        [reference]
-      );
-    }
-    res.json({ recu: true });
-  } catch (err) {
-    console.error('[Webhook]', err.message);
-    res.status(500).json({ erreur: err.message });
-  }
-});
 module.exports = router;
