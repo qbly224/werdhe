@@ -1992,64 +1992,8 @@ function OngletPaiements(props) {
   var estLocataire = user && user.role === 'locataire';
 
   // ── VUE LOCATAIRE ─────────────────────────────────────────────
-    if (estLocataire) {
-    var [paiementsLoc, setPaiementsLoc] = useState([]);
-    var [loadPay, setLoadPay]           = useState(true);
-
-    useEffect(function() {
-      api.get('/paiements/mes-paiements')
-        .then(function(r) { setPaiementsLoc(r.data.paiements || []); })
-        .catch(console.error)
-        .finally(function() { setLoadPay(false); });
-    }, []);
-
-    var paiements = paiementsLoc;
-    if (loadPay) return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 60, gap: 12 }}>
-        <div style={{ width: 28, height: 28, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-        <span style={{ color: '#888', fontSize: 14 }}>{t('ongletPaiementsDash.chargement')}</span>
-      </div>
-    );
-    return (
-      <div>
-        <div className="dash-page-header">
-          <div><h1>{t('ongletPaiementsDash.locataire.titre')}</h1><p>{t('ongletPaiementsDash.locataire.nbPaiements', { count: paiements.length })}</p></div>
-        </div>
-
-        {paiements.length === 0 && (
-          <div className="dash-empty-state">
-            <Banknote size={48} strokeWidth={1} color="#C8E6C9" />
-            <h3>{t('ongletPaiementsDash.locataire.aucunPaiement.titre')}</h3>
-            <p>{t('ongletPaiementsDash.locataire.aucunPaiement.description')}</p>
-          </div>
-        )}
-
-        {paiements.map(function(p, i) {
-          var statut = p.statut === 'complete' ? { label: t('ongletPaiementsDash.statuts.paye'), color: '#1B6B3A', bg: '#E8F5E9' }
-            : p.statut === 'retard'   ? { label: t('ongletPaiementsDash.statuts.enRetard'), color: '#B71C1C', bg: '#FFEBEE' }
-            : { label: t('ongletPaiementsDash.statuts.enAttente'), color: '#E65100', bg: '#FFF3E0' };
-          return (
-            <div key={i} style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderLeft: '4px solid ' + statut.color }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{p.logement_titre}</div>
-                  <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>{new Date(p.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}</div>
-                  {p.mode_paiement && <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{t('ongletPaiementsDash.locataire.via', { mode: p.mode_paiement })}</div>}
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 16, fontWeight: 800, color: statut.color }}>
-                    {new Intl.NumberFormat('fr-FR').format(p.montant)} GNF
-                  </div>
-                  <span style={{ background: statut.bg, color: statut.color, borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, display: 'inline-block', marginTop: 4 }}>
-                    {statut.label}
-                  </span>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-   );
+  if (estLocataire) {
+    return <PaiementsLocataire stats={stats} onPaiementEffectue={function() { window.dispatchEvent(new CustomEvent('werdhe:refresh')); }} />;
   }
   // Proprio → déléguer à PaiementsProprietaire
   return <PaiementsProprietaire stats={stats} />;
@@ -2211,27 +2155,44 @@ return {
 function PaiementsLocataire(props) {
   var t = useTranslation('dashboard').t;
   var stats = props.stats;
-  var PAY_MODES = [
-    { id: 'om', label: t('ongletPaiementsDash.payModes.om.label'), sub: t('ongletPaiementsDash.payModes.om.sub'), color: '#FF6600', text: '#fff', abbr: 'OM' },
-    { id: 'mtn', label: t('ongletPaiementsDash.payModes.mtn.label'), sub: t('ongletPaiementsDash.payModes.mtn.sub'), color: '#FFCC00', text: '#1B2B22', abbr: 'MM' },
-    { id: 'cash', label: t('ongletPaiementsDash.payModes.cash.label'), sub: t('ongletPaiementsDash.payModes.cash.sub'), abbr: 'ESP' },
-    { id: 'bank', label: t('ongletPaiementsDash.payModes.bank.label'), sub: t('ongletPaiementsDash.payModes.bank.sub'), abbr: 'VIR' }
-  ];
-  var [nbMois, setNbMois] = useState(1);
-  var [mode, setMode] = useState('om');
-  var [stepPay, setStepPay] = useState('select');
   var [logement, setLogement] = useState(null);
+  var [reservationReelle, setReservationReelle] = useState(null);
+  var [showPaiementDjomy, setShowPaiementDjomy] = useState(false);
+  var [enregistrementEspeces, setEnregistrementEspeces] = useState(false);
   useEffect(function() {
     var r = (stats.reservations||[]).find(function(r){return r.statut==='confirmee';});
-    if(r){setLogement({nom:r.logement_titre||t('ongletPaiementsDash.locataireLegacy.monLogement'),proprio:(r.proprietaire_prenom||'')+' '+(r.proprietaire_nom||''),propIni:((r.proprietaire_prenom||'').charAt(0)+(r.proprietaire_nom||'').charAt(0)).toUpperCase()||'P',quartier:r.logement_ville||'Conakry',loyer:Number(r.prix_mensuel)||0,debut:r.date_debut?new Date(r.date_debut).toLocaleDateString('fr-FR'):'-',fin:r.date_fin?new Date(r.date_fin).toLocaleDateString('fr-FR'):'-'});}
-    else{setLogement({nom:'Appartement F3 - Ratoma',proprio:'Mamadou Barry',propIni:'MB',quartier:'Ratoma, Conakry',loyer:1500000,debut:'1 juillet 2025',fin:'30 juin 2026'});}
+    if(r){
+      setReservationReelle(r);
+      setLogement({nom:r.logement_titre||t('ongletPaiementsDash.locataireLegacy.monLogement'),proprio:(r.prop_prenom||'')+' '+(r.prop_nom||''),propIni:((r.prop_prenom||'').charAt(0)+(r.prop_nom||'').charAt(0)).toUpperCase()||'P',quartier:r.logement_ville||'Conakry',loyer:Number(r.prix_mensuel)||0,montantDu:Number(r.montant_total)||0,debut:r.date_debut?new Date(r.date_debut).toLocaleDateString('fr-FR'):'-',fin:r.date_fin?new Date(r.date_fin).toLocaleDateString('fr-FR'):'-'});
+    } else {
+      setReservationReelle(null);
+      setLogement({nom:'Appartement F3 - Ratoma',proprio:'Mamadou Barry',propIni:'MB',quartier:'Ratoma, Conakry',loyer:1500000,montantDu:1500000,debut:'1 juillet 2025',fin:'30 juin 2026'});
+    }
   }, [stats]);
   if (!logement) return null;
-  var addMonths = function(n){var d=new Date();d.setMonth(d.getMonth()+n);return d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});};
   var moisActuel = new Date().toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
-  var total = logement.loyer * nbMois;
-  var historique = (stats.paiements||[]).slice(0,3).map(function(p){return{mois:new Date(p.created_at).toLocaleDateString('fr-FR',{month:'long',year:'numeric'}),montant:Number(p.montant),mode:p.mode_paiement==='en_ligne'?t('ongletPaiementsDash.locataireLegacy.enLigne'):t('ongletPaiementsDash.locataireLegacy.especes')};});
+  var paiementsResa = reservationReelle ? (stats.paiements||[]).filter(function(p){return p.reservation_id===reservationReelle.id;}) : [];
+  var paiementComplet = paiementsResa.find(function(p){return p.statut==='complete';});
+  var paiementEnAttente = paiementsResa.find(function(p){return p.statut==='en_attente';});
+  var historique = (stats.paiements||[]).slice(0,3).map(function(p){return{mois:new Date(p.created_at).toLocaleDateString('fr-FR',{month:'long',year:'numeric'}),montant:Number(p.montant),mode:p.mode_paiement==='especes'?t('ongletPaiementsDash.locataireLegacy.especes'):p.mode_paiement};});
   if(historique.length===0){historique=[{mois:t('ongletPaiementsDash.locataireLegacy.moisPrecedent'),montant:logement.loyer,mode:'Orange Money'},{mois:t('ongletPaiementsDash.locataireLegacy.ilYA2Mois'),montant:logement.loyer,mode:t('ongletPaiementsDash.locataireLegacy.especes')},{mois:t('ongletPaiementsDash.locataireLegacy.ilYA3Mois'),montant:logement.loyer,mode:'MTN MoMo'}];}
+
+  function signalerEspeces() {
+    if (!reservationReelle) return;
+    setEnregistrementEspeces(true);
+    api.post('/paiements', { reservation_id: reservationReelle.id, mode_paiement: 'especes' })
+      .then(function() {
+        toast.success(t('ongletPaiementsDash.locataireLegacy.toastPaiementEffectue'));
+        if (props.onPaiementEffectue) props.onPaiementEffectue();
+      })
+      .catch(function(err) {
+        toast.error(err.response && err.response.data ? err.response.data.erreur : t('ongletPaiementsDash.modal.erreur'));
+      })
+      .finally(function() { setEnregistrementEspeces(false); });
+  }
+
+  var statutPaye = !!paiementComplet;
+
   return (
     <div style={{fontFamily:'system-ui,sans-serif'}}>
       <div style={{background:'#1A4FA0',borderRadius:'14px',padding:'16px 18px',marginBottom:'18px'}}><div style={{color:'#fff',fontWeight:'700',fontSize:'16px'}}>{t('ongletPaiementsDash.locataireLegacy.mesPaiements')}</div><div style={{color:'rgba(255,255,255,.75)',fontSize:'12px',marginTop:'2px'}}>{moisActuel}</div></div>
@@ -2244,37 +2205,43 @@ function PaiementsLocataire(props) {
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'8px',marginBottom:'14px'}}>
           {[[t('ongletPaiementsDash.locataireLegacy.debut'),logement.debut],[t('ongletPaiementsDash.locataireLegacy.fin'),logement.fin],[t('ongletPaiementsDash.locataireLegacy.caution'),GNF(logement.loyer)]].map(function(row){return <div key={row[0]} style={{background:'#F8F8F8',borderRadius:'8px',padding:'8px 10px'}}><div style={{fontSize:'10px',color:'#888'}}>{row[0]}</div><div style={{fontSize:'11px',fontWeight:'600',color:'#333',marginTop:'2px'}}>{row[1]}</div></div>;})}
         </div>
-        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 14px',background:stepPay==='success'?'#E8F5E9':'#FFEBEE',borderRadius:'10px',marginBottom:'14px',border:'0.5px solid '+(stepPay==='success'?'#A5D6A7':'#FFCDD2')}}>
-          <div><div style={{fontSize:'13px',fontWeight:'700',color:stepPay==='success'?'#1B6B3A':'#B71C1C'}}>{stepPay==='success'?t('ongletPaiementsDash.locataireLegacy.loyerPaye', { mois: moisActuel }):t('ongletPaiementsDash.locataireLegacy.loyerImpaye', { mois: moisActuel })}</div><div style={{fontSize:'11px',color:'#888',marginTop:'2px'}}>{stepPay==='success'?t('ongletPaiementsDash.locataireLegacy.quittanceEnvoyee'):t('ongletPaiementsDash.locataireLegacy.duDepuis3Jours')}</div></div>
-          <div style={{fontSize:'16px',fontWeight:'700',color:stepPay==='success'?'#1B6B3A':'#C62828'}}>{GNF(logement.loyer)}</div>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 14px',background:statutPaye?'#E8F5E9':(paiementEnAttente?'#FFF8E1':'#FFEBEE'),borderRadius:'10px',marginBottom:'14px',border:'0.5px solid '+(statutPaye?'#A5D6A7':(paiementEnAttente?'#FFE082':'#FFCDD2'))}}>
+          <div><div style={{fontSize:'13px',fontWeight:'700',color:statutPaye?'#1B6B3A':(paiementEnAttente?'#A66A00':'#B71C1C')}}>{statutPaye?t('ongletPaiementsDash.locataireLegacy.loyerPaye', { mois: moisActuel }):(paiementEnAttente?t('ongletPaiementsDash.modal.enAttenteConfirmation'):t('ongletPaiementsDash.locataireLegacy.loyerImpaye', { mois: moisActuel }))}</div><div style={{fontSize:'11px',color:'#888',marginTop:'2px'}}>{statutPaye?t('ongletPaiementsDash.locataireLegacy.quittanceEnvoyee'):(paiementEnAttente?t('ongletPaiementsDash.modal.confirmationProprietaire'):t('ongletPaiementsDash.locataireLegacy.duDepuis3Jours'))}</div></div>
+          <div style={{fontSize:'16px',fontWeight:'700',color:statutPaye?'#1B6B3A':(paiementEnAttente?'#A66A00':'#C62828')}}>{GNF(logement.montantDu)}</div>
         </div>
         <div style={{fontSize:'13px',fontWeight:'600',marginBottom:'8px'}}>{t('ongletPaiementsDash.locataireLegacy.historiqueRecent')}</div>
         {historique.map(function(h,i){return(<div key={i} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'8px 10px',background:'#F8F8F8',borderRadius:'8px',marginBottom:'6px'}}><div><div style={{fontSize:'12px',fontWeight:'600'}}>{h.mois}</div><div style={{fontSize:'11px',color:'#888'}}>{h.mode}</div></div><div style={{display:'flex',alignItems:'center',gap:'8px'}}><span style={{fontSize:'12px',fontWeight:'700',color:'#1B6B3A'}}>{GNF(h.montant)}</span><span style={{background:'#E8F5E9',color:'#1B5E20',padding:'2px 8px',borderRadius:'20px',fontSize:'10px',fontWeight:'700'}}>{t('ongletPaiementsDash.locataireLegacy.paye')}</span></div></div>);})}
       </div>
-      {stepPay!=='success'?(<div style={{background:'#fff',borderRadius:'14px',padding:'16px',marginBottom:'14px',boxShadow:'0 2px 10px rgba(0,0,0,.06)'}}>
-        <div style={{fontSize:'14px',fontWeight:'700',marginBottom:'14px'}}>{t('ongletPaiementsDash.locataireLegacy.effectuerPaiement')}</div>
-        <div style={{marginBottom:'18px'}}>
-          <div style={{fontSize:'13px',fontWeight:'600',marginBottom:'10px'}}>{t('ongletPaiementsDash.locataireLegacy.nbMoisAPayer')}</div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'8px',marginBottom:'10px'}}>
-            {[[1,t('ongletPaiementsDash.locataireLegacy.unMois')],[2,t('ongletPaiementsDash.delaiMois', { n: 2 })],[3,t('ongletPaiementsDash.delaiMois', { n: 3 })],[6,t('ongletPaiementsDash.delaiMois', { n: 6 })],[12,t('ongletPaiementsDash.locataireLegacy.unAn')]].map(function(opt){return(<button key={opt[0]} type="button" onClick={function(){setNbMois(opt[0]);}} style={{padding:'10px 4px',borderRadius:'10px',fontSize:'13px',cursor:'pointer',border:nbMois===opt[0]?'2px solid #1A4FA0':'0.5px solid #E0E0E0',background:nbMois===opt[0]?'#E3F2FD':'#FAFAFA',color:nbMois===opt[0]?'#0D47A1':'#555',fontWeight:nbMois===opt[0]?700:400}}>{opt[1]}</button>);})}
+      {!reservationReelle ? (
+        <div style={{background:'#F8F8F8',borderRadius:'14px',padding:'20px',textAlign:'center',color:'#888',fontSize:'13px'}}>{t('ongletPaiementsDash.modal.aucuneReservationActive')}</div>
+      ) : statutPaye ? (
+        <div style={{background:'#E8F5E9',borderRadius:'14px',padding:'20px',textAlign:'center',boxShadow:'0 2px 10px rgba(0,0,0,.06)'}}><div style={{fontSize:'40px',marginBottom:'10px'}}>🎉</div><div style={{fontSize:'16px',fontWeight:'700',color:'#1B6B3A',marginBottom:'6px'}}>{t('ongletPaiementsDash.locataireLegacy.paiementEffectue')}</div></div>
+      ) : (
+        <div style={{background:'#fff',borderRadius:'14px',padding:'16px',marginBottom:'14px',boxShadow:'0 2px 10px rgba(0,0,0,.06)'}}>
+          <div style={{fontSize:'14px',fontWeight:'700',marginBottom:'14px'}}>{t('ongletPaiementsDash.locataireLegacy.effectuerPaiement')}</div>
+          <div style={{background:'#F8F8F8',borderRadius:'10px',padding:'12px 14px',marginBottom:'14px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <span style={{fontSize:'12px',color:'#888'}}>{t('ongletPaiementsDash.locataireLegacy.total')}</span>
+            <span style={{fontSize:'18px',fontWeight:'700',color:'#1A4FA0'}}>{GNF(logement.montantDu)}</span>
           </div>
-          <div style={{background:'#E3F2FD',borderRadius:'10px',padding:'10px 14px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-            <div><div style={{fontSize:'12px',color:'#0D47A1',fontWeight:'600'}}>{t('ongletPaiementsDash.locataireLegacy.periodeCouverte')}</div><div style={{fontSize:'11px',color:'#1565C0',marginTop:'2px'}}>{t('ongletPaiementsDash.locataireLegacy.moisVers', { debut: moisActuel, fin: addMonths(nbMois-1) })}</div></div>
-            <div style={{textAlign:'right'}}><div style={{fontSize:'11px',color:'#888'}}>{nbMois} x {GNF(logement.loyer)}</div><div style={{fontSize:'18px',fontWeight:'700',color:'#1A4FA0'}}>{GNF(total)}</div></div>
-          </div>
+          {paiementEnAttente ? (
+            <div style={{textAlign:'center',fontSize:'12px',color:'#A66A00',padding:'10px'}}>{t('ongletPaiementsDash.modal.enAttenteConfirmation')}</div>
+          ) : (
+            <div style={{display:'flex',flexDirection:'column',gap:'10px'}}>
+              <button type="button" onClick={function(){setShowPaiementDjomy(true);}} style={{width:'100%',background:'#1A4FA0',color:'#fff',border:'none',borderRadius:'12px',padding:'14px',fontSize:'15px',fontWeight:'700',cursor:'pointer'}}>{t('ongletPaiementsDash.modal.payerEnLigne', { montant: GNF(logement.montantDu) })}</button>
+              <button type="button" onClick={signalerEspeces} disabled={enregistrementEspeces} style={{width:'100%',background:'#F0F4F1',color:'#1B6B3A',border:'0.5px solid #A5D6A7',borderRadius:'12px',padding:'12px',fontSize:'13px',fontWeight:'600',cursor:enregistrementEspeces?'not-allowed':'pointer'}}>{enregistrementEspeces?t('ongletPaiementsDash.modal.traitementEnCours'):t('ongletPaiementsDash.modal.signalerEspeces')}</button>
+            </div>
+          )}
         </div>
-        <div style={{marginBottom:'16px'}}>
-          <div style={{fontSize:'13px',fontWeight:'600',marginBottom:'10px'}}>{t('ongletPaiementsDash.modal.modePaiement')}</div>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
-            {PAY_MODES.map(function(p){return(<div key={p.id} onClick={function(){setMode(p.id);}} style={{display:'flex',alignItems:'center',gap:'10px',padding:'11px 12px',cursor:'pointer',border:mode===p.id?'2px solid #1A4FA0':'0.5px solid #E0E0E0',background:mode===p.id?'#E3F2FD':'#fff',borderRadius:'10px'}}><div style={{width:'34px',height:'34px',background:p.color||'#E8F5E9',borderRadius:'8px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:p.icon?'18px':'11px',fontWeight:'700',color:p.text||'#1B6B3A',flexShrink:0}}>{p.icon||p.abbr}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:'12px',fontWeight:'600',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.label}</div><div style={{fontSize:'10px',color:'#888'}}>{p.sub}</div></div>{mode===p.id&&<Check size={14} strokeWidth={2} color="#1A4FA0" style={{flexShrink:0}} />}</div>);})}
-          </div>
-        </div>
-        <div style={{background:'#F8F8F8',borderRadius:'10px',padding:'12px 14px',marginBottom:'14px'}}>
-          <div style={{fontSize:'12px',fontWeight:'600',marginBottom:'8px'}}>{t('ongletPaiementsDash.locataireLegacy.recapitulatif')}</div>
-          {[[t('ongletPaiementsDash.locataireLegacy.bien'),logement.nom],[t('ongletPaiementsDash.locataireLegacy.moisPayes'),t('ongletPaiementsDash.delaiMois', { n: nbMois })],[t('ongletPaiementsDash.locataireLegacy.mode'),(PAY_MODES.find(function(p){return p.id===mode;})||{}).label],[t('ongletPaiementsDash.locataireLegacy.total'),GNF(total)]].map(function(row){return(<div key={row[0]} style={{display:'flex',justifyContent:'space-between',fontSize:'12px',padding:'4px 0',borderBottom:'0.5px solid #EFEFEF'}}><span style={{color:'#888'}}>{row[0]}</span><span style={{fontWeight:'600',color:row[0]===t('ongletPaiementsDash.locataireLegacy.total')?'#1A4FA0':'#333'}}>{row[1]}</span></div>);})}
-        </div>
-        <button type="button" onClick={function(){setStepPay('success');toast.success(t('ongletPaiementsDash.locataireLegacy.toastPaiementEffectue'));}} style={{width:'100%',background:'#1A4FA0',color:'#fff',border:'none',borderRadius:'12px',padding:'14px',fontSize:'15px',fontWeight:'700',cursor:'pointer'}}>{t('ongletPaiementsDash.locataireLegacy.confirmerMontant', { montant: GNF(total) })}</button>
-      </div>):(<div style={{background:'#E8F5E9',borderRadius:'14px',padding:'20px',textAlign:'center',boxShadow:'0 2px 10px rgba(0,0,0,.06)'}}><div style={{fontSize:'40px',marginBottom:'10px'}}>🎉</div><div style={{fontSize:'16px',fontWeight:'700',color:'#1B6B3A',marginBottom:'6px'}}>{t('ongletPaiementsDash.locataireLegacy.paiementEffectue')}</div><div style={{fontSize:'13px',color:'#2E7D32',marginBottom:'16px'}}>{t('ongletPaiementsDash.locataireLegacy.recapSucces', { montant: GNF(total), n: nbMois })}</div><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}><button type="button" style={{background:'#fff',color:'#1B6B3A',border:'0.5px solid #A5D6A7',borderRadius:'10px',padding:'10px',fontSize:'13px',cursor:'pointer',fontWeight:'600'}}>{t('ongletPaiementsDash.proprio.voirQuittance')}</button><button type="button" onClick={function(){setStepPay('select');setNbMois(1);}} style={{background:'#1B6B3A',color:'#fff',border:'none',borderRadius:'10px',padding:'10px',fontSize:'13px',cursor:'pointer',fontWeight:'700'}}>{t('ongletPaiementsDash.modal.retour')}</button></div></div>)}
+      )}
+      {showPaiementDjomy && reservationReelle && (
+        <ModalPaiementMobile
+          montant={logement.montantDu}
+          titre={logement.nom}
+          payload={{ reservation_id: reservationReelle.id }}
+          endpoint="/paiements/djomy/initier"
+          onClose={function(){setShowPaiementDjomy(false);}}
+        />
+      )}
     </div>
   );
 }
@@ -4549,13 +4516,8 @@ function OngletParametres(props) {
     montant={Math.round(PRIX_ABONNEMENT[showPaiementAbo] * CYCLES_ABONNEMENT[cycleChoisi].mois * (1 - CYCLES_ABONNEMENT[cycleChoisi].reduction))}
     titre={t('ongletParametres.abonnementTitre', { plan: showPaiementAbo === 'pro' ? 'Pro' : 'Agence', cycle: CYCLES_ABONNEMENT[cycleChoisi].label })}
     payload={{ plan: showPaiementAbo, cycle: cycleChoisi }}
-    endpoints={{
-      orange:    '/abonnements/orange-money/initier',
-      mtn:       '/abonnements/mtn-momo/initier',
-      confirmer: '/abonnements/confirmer/',
-    }}
+    endpoint="/abonnements/souscrire"
     onClose={function() { setShowPaiementAbo(null); }}
-    onSuccess={function() { chargerAbonnement(); }}
   />
 )}
 
@@ -5053,6 +5015,36 @@ useEffect(function() {
     clearInterval(interval);
   };
 }, []);
+
+  // ── Retour depuis la page de paiement Djomy (loyer ou abonnement) ─
+  useEffect(function() {
+    var params = new URLSearchParams(window.location.search);
+    var paiementLoyerId = params.get('paiement_loyer');
+    var paiementAboId = params.get('paiement_abonnement');
+    if (!paiementLoyerId && !paiementAboId) return;
+
+    var requete = paiementLoyerId
+      ? api.get('/paiements/djomy/statut/' + paiementLoyerId)
+      : api.get('/abonnements/djomy/statut/' + paiementAboId);
+
+    requete
+      .then(function(res) {
+        var statut = res.data.statut;
+        if (statut === 'complete' || statut === 'payee') {
+          toast.success(t('dashboardMain.paiementDjomyReussi'));
+        } else if (statut === 'echoue' || statut === 'echec') {
+          toast.error(t('dashboardMain.paiementDjomyEchec'));
+        } else {
+          toast(t('dashboardMain.paiementDjomyEnAttente'));
+        }
+        chargerDonnees();
+      })
+      .catch(function() { toast.error(t('dashboardMain.paiementDjomyErreurVerif')); })
+      .finally(function() {
+        setOnglet(paiementAboId ? '/dashboard/parametres' : '/dashboard/paiements');
+        navigate('/dashboard', { replace: true });
+      });
+  }, []);
 
 function chargerDonnees() {
   if (premierChargement.current) setLoading(true);

@@ -165,7 +165,13 @@ app.use(compression({
   }
 }));
 // ── Body parser — AVANT les routes ───────────────────────────────
-app.use(express.json({ limit: '10mb' }));
+// `verify` conserve le corps brut dans req.rawBody : nécessaire pour
+// vérifier la signature HMAC du webhook Djomy (POST /paiements/webhook/djomy),
+// qui porte sur les octets exacts reçus et non sur le JSON reparsé.
+app.use(express.json({
+  limit: '10mb',
+  verify: function(req, res, buf) { req.rawBody = buf; }
+}));
 // Appliquer les limites
 app.use('/api', limiteurAPI);
 app.use('/auth/connexion',              limiteurConnexion);
