@@ -90,7 +90,9 @@ function AttenteCard({ icone, message, sub }) {
     var t = setInterval(function() { setDots(function(d) { return d.length >= 3 ? '.' : d + '.'; }); }, 600);
     return function() { clearInterval(t); };
   }, []);
-  var IconeComp = typeof icone === 'function' ? icone : null;
+  // Les icônes lucide-react sont des composants forwardRef (typeof === 'object'),
+  // pas des fonctions : seule une chaîne (emoji) doit être rendue telle quelle.
+  var IconeComp = icone && typeof icone !== 'string' ? icone : null;
   return (
     <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', marginBottom: 14 }}>
       <div style={{ fontSize: 40, marginBottom: 12, display: 'flex', justifyContent: 'center' }}>

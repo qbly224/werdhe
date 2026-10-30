@@ -4494,7 +4494,7 @@ function OngletParametres(props) {
     <div style={{ marginTop: 12, paddingTop: 12, borderTop: '0.5px solid #F0F0F0' }}>
       <div style={{ fontSize: 11, color: '#888', fontWeight: 600, marginBottom: 6 }}>{t('ongletParametres.historiqueFactures')}</div>
       {factures.map(function(f) {
-        var couleurStatut = f.statut === 'payee' ? '#1B6B3A' : f.statut === 'echec' ? '#B71C1C' : '#888';
+        var couleurStatut = f.statut === 'payee' ? '#1B6B3A' : f.statut === 'annulee' ? '#B71C1C' : '#888';
         return (
           <div key={f.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, padding: '6px 0', borderBottom: '0.5px solid #F5F5F5' }}>
             <div>
@@ -5032,7 +5032,7 @@ useEffect(function() {
         var statut = res.data.statut;
         if (statut === 'complete' || statut === 'payee') {
           toast.success(t('dashboardMain.paiementDjomyReussi'));
-        } else if (statut === 'echoue' || statut === 'echec') {
+        } else if (statut === 'echoue' || statut === 'annulee') {
           toast.error(t('dashboardMain.paiementDjomyEchec'));
         } else {
           toast(t('dashboardMain.paiementDjomyEnAttente'));

@@ -62,14 +62,14 @@ async function envoyerFactureParEmail(userId, plan, montant, cycle, debut, fin) 
 
 // ================================================
 // Active l'abonnement correspondant à une facture Djomy payée.
-// Idempotent : si la facture n'est plus 'en_attente' (déjà traitée par
+// Idempotent : si la facture n'est plus 'emise' (déjà traitée par
 // un appel précédent du webhook ou de la vérification de statut), ne
 // fait rien et renvoie null.
 // ================================================
 async function activerAbonnementPaye(factureId) {
   var factureRes = await db.query(
     `UPDATE factures_abonnements SET statut = 'payee'
-     WHERE id = $1 AND statut = 'en_attente' RETURNING *`,
+     WHERE id = $1 AND statut = 'emise' RETURNING *`,
     [factureId]
   );
   if (factureRes.rows.length === 0) return null;
@@ -102,7 +102,7 @@ async function activerAbonnementPaye(factureId) {
 // Marque une facture d'abonnement en échec (paiement annulé/échoué côté Djomy).
 async function marquerFactureEchouee(factureId) {
   await db.query(
-    `UPDATE factures_abonnements SET statut = 'echec' WHERE id = $1 AND statut = 'en_attente'`,
+    `UPDATE factures_abonnements SET statut = 'annulee' WHERE id = $1 AND statut = 'emise'`,
     [factureId]
   );
 }
