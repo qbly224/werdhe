@@ -212,7 +212,7 @@ router.post('/souscrire', verifierToken, async (req, res) => {
     var facture = await db.query(
       `INSERT INTO factures_abonnements
          (user_id, plan, montant, periode_debut, periode_fin, statut, cycle, telephone)
-       VALUES ($1, $2, $3, $4, $5, 'en_attente', $6, $7)
+       VALUES ($1, $2, $3, $4, $5, 'emise', $6, $7)
        RETURNING *`,
       [req.user.id, plan, montant, debut, fin, cycleChoisi, telephone]
     );
@@ -263,7 +263,7 @@ router.get('/djomy/statut/:facture_id', verifierToken, async (req, res) => {
     }
 
     var f = result.rows[0];
-    if (f.statut !== 'en_attente' || !f.reference_externe) {
+    if (f.statut !== 'emise' || !f.reference_externe) {
       return res.json({ statut: f.statut, facture: f });
     }
 
@@ -274,7 +274,7 @@ router.get('/djomy/statut/:facture_id', verifierToken, async (req, res) => {
       if (activee) f = activee;
     } else if (statutDjomy.status === 'FAILED' || statutDjomy.status === 'CANCELLED') {
       await marquerFactureEchouee(facture_id);
-      f.statut = 'echec';
+      f.statut = 'annulee';
     }
 
     res.json({ statut: f.statut, facture: f });
