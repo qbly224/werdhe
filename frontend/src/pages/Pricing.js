@@ -435,6 +435,17 @@ export default function Pricing() {
 
         @media (max-width: 640px) {
           .pricing-stamp { display: none; }
+          .pricing-ledger { min-width: 520px; }
+          .ledger-row { grid-template-columns: 108px repeat(3, 1fr); }
+          .ledger-cell { padding: 10px 8px; font-size: 12px; }
+          .ledger-head .ledger-cell { padding: 16px 8px 12px; }
+          .ledger-price-row .ledger-cell { padding: 16px 8px; }
+          .ledger-label-col {
+            position: sticky; left: 0; z-index: 2;
+            background: #fff;
+            box-shadow: 2px 0 6px rgba(0,0,0,0.08);
+          }
+          .ledger-head .ledger-label-col { background: #0F1E14; }
         }
       `}</style>
     </div>
