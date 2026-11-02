@@ -88,19 +88,26 @@ function attendre(ms) {
   return new Promise(function(resolve) { setTimeout(resolve, ms); });
 }
 
-// Le modèle gratuit renvoie parfois un 503 "high demand, try again later"
-// ou un 504 "Deadline expired before operation could complete" — transitoire
-// la plupart du temps, donc on retente une fois avant d'abandonner.
+// Le modèle gratuit renvoie souvent un 503 "high demand, try again later"
+// ou un 504 "Deadline expired before operation could complete" — observé en
+// rafales de plusieurs minutes sur de vrais échanges, pas de simples pics
+// isolés. Un seul réessai ne suffisait pas : on en tente jusqu'à 2, avec un
+// délai croissant.
+var DELAIS_RETRY_MS = [900, 1800];
+
 async function genererAvecRetry(client, params) {
-  try {
-    return await client.models.generateContent(params);
-  } catch (err) {
-    if (err && (err.status === 503 || err.status === 504)) {
-      await attendre(900);
+  var derniereErreur;
+  for (var i = 0; i <= DELAIS_RETRY_MS.length; i++) {
+    try {
       return await client.models.generateContent(params);
+    } catch (err) {
+      derniereErreur = err;
+      var estTransitoire = err && (err.status === 503 || err.status === 504);
+      if (!estTransitoire || i === DELAIS_RETRY_MS.length) throw err;
+      await attendre(DELAIS_RETRY_MS[i]);
     }
-    throw err;
   }
+  throw derniereErreur;
 }
 
 // messages : [{ role: 'user'|'assistant', content: string }, ...]
