@@ -1,12 +1,14 @@
 const { GoogleGenAI, createUserContent, createModelContent } = require('@google/genai');
 const db = require('../database');
 
-// 'gemini-flash-latest' pointe actuellement vers gemini-3.8-flash, dont le
-// quota gratuit (20 requêtes/jour, par modèle) était déjà épuisé en
-// production. Le quota étant suivi par nom de modèle exact, épingler un
-// modèle différent (non partagé avec l'alias "latest") donne un quota
-// gratuit journalier distinct, encore inutilisé.
-var MODEL = 'gemini-2.5-flash';
+// 'gemini-flash-latest' pointe vers gemini-3.8-flash, dont le quota gratuit
+// (20 requêtes/jour, par modèle) était épuisé en production. gemini-2.5-flash
+// (tenté ensuite) est désormais fermé aux nouvelles clés API (404 "no longer
+// available to new users"). Vérifié en direct contre l'API Gemini (pas
+// deviné) : gemini-3.5-flash-lite répond correctement et, étant un modèle
+// "lite" distinct de gemini-3.8-flash, dispose de son propre quota gratuit
+// journalier, encore inutilisé.
+var MODEL = 'gemini-3.5-flash-lite';
 var MAX_TOURS_OUTIL = 2; // évite une boucle d'appels d'outil infinie
 
 var SYSTEM_PROMPT = `Tu es l'assistant de Werdhe, une plateforme de location immobilière en Guinée (Conakry et les principales villes du pays).
