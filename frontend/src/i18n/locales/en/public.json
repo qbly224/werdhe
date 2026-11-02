@@ -820,7 +820,7 @@
     "titre": "Transparent pricing",
     "sousTitre": "100% free for tenants · Pro and Agency for landlords",
     "paiementMobileMoney": "Secure online payment: Orange Money, MTN MoMo, Kulu, card",
-    "glisserPourVoirPlans": "Swipe to see all plans",
+    "reductionPastille": "{{pct}}% off",
     "cycles": {
       "mensuel": "Monthly",
       "semestriel": "6 months",
@@ -837,7 +837,7 @@
         "nom": "Pro",
         "badge": "1 month free",
         "sousTitre": "Up to 20 properties",
-        "features": ["Up to 20 properties", "Online applications and files", "Orange Money + MTN MoMo payments", "Automatic leases and PDF receipts", "Rent alerts on day 3 / day 5", "Financial reports + CSV export", "Messaging with read receipts", "Tenant trust score", "Priority email support"],
+        "features": ["Up to 20 properties", "Online applications and files", "Online payments (Orange Money, MTN MoMo, Kulu, card)", "Automatic leases and PDF receipts", "Rent alerts on day 3 / day 5", "Financial reports + CSV export", "Messaging with read receipts", "Tenant trust score", "Priority email support"],
         "nonInclus": ["Multiple users", "Unlimited properties"]
       },
       "agence": {

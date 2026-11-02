@@ -231,114 +231,76 @@ export default function Pricing() {
         />
       )}
 
-      {/* Registre des tarifs — un document unique, pas trois cartes identiques */}
-      <div style={{ maxWidth: 1000, margin: '0 auto 40px', padding: '0 20px' }}>
+      {/* Cartes des plans */}
+      <div style={{ maxWidth: 1080, margin: '0 auto 40px', padding: '0 20px' }}>
         <div style={{ textAlign: 'center', marginBottom: 30 }}>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: '#1B6B3A', marginBottom: 8 }}>{t('pricing.registreOverline')}</div>
           <h2 style={{ fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 'clamp(24px, 3.4vw, 36px)', color: '#1B2B22', margin: 0 }}>{t('pricing.comparaison')}</h2>
         </div>
 
-        <div className="ledger-scroll-hint">{t('pricing.glisserPourVoirPlans')} →</div>
-        <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
-        <div className="pricing-ledger" style={{ background: '#fff', border: '1px solid #1B2B22', position: 'relative' }}>
-          <div className="pricing-stamp">{t('pricing.tampon')}</div>
+        <div className="plan-cards">
+          {PLANS.map(function(plan) {
+            var vedette = plan.id === 'pro';
+            var payant = plan.prix_mois > 0;
+            var reduction = CYCLES[cycle].reduction;
+            var pastille = payant && reduction > 0
+              ? t('pricing.reductionPastille', { pct: Math.round(reduction * 100) })
+              : (payant ? plan.badge : null);
+            return (
+              <div key={plan.id} className={'plan-card' + (vedette ? ' plan-card-vedette' : '')}>
+                <div className="plan-card-head">
+                  {pastille && <span className="plan-pill">{pastille}</span>}
+                  <div className="plan-name">{plan.nom}</div>
+                  <div className="plan-tagline">{plan.sous_titre}</div>
+                </div>
 
-          {/* En-tête */}
-          <div className="ledger-row ledger-head">
-            <div className="ledger-cell ledger-label-col" />
-            {PLANS.map(function(plan) {
-              return (
-                <div key={plan.id} className="ledger-cell" style={{ textAlign: 'center' }}>
-                  <div style={plan.id === 'pro' ? { fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 18, ...gradientOr } : { fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 18, color: plan.couleur }}>
-                    {plan.nom}
+                <div className="plan-card-body">
+                  <div className="plan-price">
+                    {payant ? (
+                      <>
+                        <OdometerNumber value={montantCycle(plan.prix_mois)} suffix={"\u00A0GNF"}
+                          style={{ fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 32, color: 'inherit' }} />
+                        <span className="plan-per">/ {CYCLES[cycle].label.toLowerCase()}</span>
+                      </>
+                    ) : (
+                      <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 38 }}>{t('pricing.gratuit')}</span>
+                    )}
                   </div>
-                  <div style={{ fontSize: 11, color: '#999', marginTop: 2 }}>{plan.sous_titre}</div>
-                </div>
-              );
-            })}
-          </div>
 
-          {/* Prix */}
-          <div className="ledger-row ledger-price-row">
-            <div className="ledger-cell ledger-label-col">{t('pricing.abonnement')}</div>
-            {PLANS.map(function(plan) {
-              var prixCible = montantCycle(plan.prix_mois);
-              return (
-                <div key={plan.id} className="ledger-cell" style={{ textAlign: 'center' }}>
-                  {plan.prix_mois === 0 ? (
-                    <div style={{ fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 28, color: '#1B2B22' }}>{t('pricing.gratuit')}</div>
-                  ) : (
-                    <>
-                      <OdometerNumber value={prixCible} suffix="GNF"
-                        style={{ fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 28, color: '#1B2B22', justifyContent: 'center' }} />
-                      <div style={{ fontSize: 11, color: '#999', marginTop: 2 }}>{CYCLES[cycle].label.toLowerCase()}</div>
-                      {CYCLES[cycle].reduction > 0 && (
-                        <div style={{ fontSize: 10.5, color: '#1B6B3A', fontWeight: 700, marginTop: 3 }}>
-                          {t('pricing.economie', { montant: GNF(Math.round(plan.prix_mois * CYCLES[cycle].mois * CYCLES[cycle].reduction)) })}
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* CTA */}
-          <div className="ledger-row ledger-cta-row">
-            <div className="ledger-cell ledger-label-col" />
-            {PLANS.map(function(plan) {
-              return (
-                <div key={plan.id} className="ledger-cell" style={{ textAlign: 'center' }}>
-                  <button onClick={function() { choisirPlan(plan.id); }} disabled={essaiEnCours === plan.id}
-                    className="ledger-cta-btn" style={{ background: essaiEnCours === plan.id ? '#aaa' : plan.couleur }}>
+                  <button onClick={function() { choisirPlan(plan.id); }} disabled={essaiEnCours === plan.id} className="plan-cta">
                     {essaiEnCours === plan.id
                       ? t('pricing.demarrage')
-                      : <>{plan.id === 'gratuit' ? t('pricing.creerCompteGratuit') : t('pricing.essaiGratuit1Mois')} <ArrowRight size={13} strokeWidth={2.5} /></>
+                      : <>{plan.id === 'gratuit' ? t('pricing.creerCompteGratuit') : t('pricing.essaiGratuit1Mois')} <ArrowRight size={14} strokeWidth={2.5} /></>
                     }
                   </button>
-                  {plan.id !== 'gratuit' && (
-                    <button onClick={function() { setShowPaiement(plan.id); }} className="ledger-already-link">
-                      {t('pricing.dejaUtiliseEssai')}
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
 
-          {/* Fonctionnalités */}
-          {[
-            { label: t('pricing.table.logementsGeres'),         vals: ['-', '20', t('pricing.table.illimites')]    },
-            { label: t('pricing.table.paiementMobileMoney'),    vals: [false, true,  true]        },
-            { label: t('pricing.table.candidaturesDossiers'),   vals: [true,  true,  true]        },
-            { label: t('pricing.table.documentsPdfAuto'),       vals: [false, true,  true]        },
-            { label: t('pricing.table.alertesLoyersAuto'),      vals: [false, true,  true]        },
-            { label: t('pricing.table.rapportsFinanciers'),     vals: [false, true,  true]        },
-            { label: t('pricing.table.scoreConfiance'),         vals: [true,  true,  true]        },
-            { label: t('pricing.table.multiUtilisateurs'),      vals: [false, false, t('pricing.table.cinqComptes')] },
-            { label: t('pricing.table.support'),                vals: ['-', t('pricing.table.email'), t('pricing.table.mailMessage')] },
-          ].map(function(row, i) {
-            var colors = ['#1565C0', '#1B6B3A', '#7B1FA2'];
-            return (
-              <div key={i} className="ledger-row">
-                <div className="ledger-cell ledger-label-col" style={{ color: '#555' }}>{row.label}</div>
-                {row.vals.map(function(v, vi) {
-                  return (
-                    <div key={vi} className="ledger-cell" style={{ textAlign: 'center' }}>
-                      {v === true
-                        ? <Check size={16} strokeWidth={2.5} color={colors[vi]} />
-                        : v === false
-                        ? <X size={16} strokeWidth={2} color="#DDD" />
-                        : <span style={{ fontSize: 13, fontWeight: 700, color: colors[vi] }}>{v}</span>
-                      }
-                    </div>
-                  );
-                })}
+                  <div className="plan-fineprint">
+                    {payant && reduction > 0
+                      ? t('pricing.economie', { montant: GNF(Math.round(plan.prix_mois * CYCLES[cycle].mois * reduction)) })
+                      : null}
+                    {payant && (
+                      <button onClick={function() { setShowPaiement(plan.id); }} className="plan-already">
+                        {t('pricing.dejaUtiliseEssai')}
+                      </button>
+                    )}
+                  </div>
+
+                  <ul className="plan-features">
+                    {plan.features.map(function(f, i) {
+                      return (
+                        <li key={i}><Check size={16} strokeWidth={2.5} className="plan-check" /> <span>{f}</span></li>
+                      );
+                    })}
+                    {plan.nonInclus.map(function(f, i) {
+                      return (
+                        <li key={'n' + i} className="plan-feature-off"><X size={16} strokeWidth={2} /> <span>{f}</span></li>
+                      );
+                    })}
+                  </ul>
+                </div>
               </div>
             );
           })}
-        </div>
         </div>
       </div>
 
@@ -410,51 +372,54 @@ export default function Pricing() {
       <style>{`
         @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
-        .pricing-ledger { min-width: 620px; }
-        .ledger-row { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; }
-        .ledger-row + .ledger-row { border-top: 1px solid #ECE8D9; }
-        .ledger-cell { padding: 14px 18px; display: flex; flex-direction: column; justify-content: center; font-size: 13px; }
-        .ledger-label-col { color: #1B2B22; font-weight: 500; }
-        .ledger-head { background: #0F1E14; border-bottom: 2px solid #1B2B22; }
-        .ledger-head .ledger-cell { padding: 20px 18px 16px; }
-        .ledger-price-row .ledger-cell { padding: 22px 18px; }
-        .ledger-cta-row .ledger-cell { padding: 10px 14px 20px; align-items: center; }
-        .ledger-cta-btn {
-          width: 100%; max-width: 180px; padding: 10px 14px; border: none; color: #fff;
-          font-size: 12.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center;
-          justify-content: center; gap: 6px;
+        .plan-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
+        .plan-card {
+          display: flex; flex-direction: column; background: #EEF0EE; border-radius: 26px; padding: 8px;
+          color: #1B2B22; transition: transform .2s, box-shadow .2s;
         }
-        .ledger-already-link { background: none; border: none; color: #999; font-size: 10.5px; cursor: pointer; text-decoration: underline; margin-top: 6px; }
-
-        .pricing-stamp {
-          position: absolute; top: -46px; left: 61%; width: 108px; height: 108px; border-radius: 50%;
-          border: 2px solid #B5401F; color: #B5401F; display: flex; align-items: center; justify-content: center;
-          text-align: center; transform: rotate(-10deg); font-family: 'Fraunces', serif; font-weight: 700;
-          font-size: 12.5px; line-height: 1.15; opacity: .85; mix-blend-mode: multiply; pointer-events: none; z-index: 2;
+        .plan-card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(15,30,20,0.12); }
+        .plan-card-head {
+          position: relative; background: #fff; border-radius: 20px; padding: 22px 20px 20px; min-height: 130px;
         }
-        .pricing-stamp::before { content: ''; position: absolute; inset: 6px; border: 1px solid #B5401F; border-radius: 50%; }
+        .plan-pill {
+          position: absolute; top: 16px; right: 16px; background: #E4F4EA; color: #1B6B3A;
+          border-radius: 20px; padding: 4px 11px; font-size: 12px; font-weight: 800;
+        }
+        .plan-name { font-family: 'Fraunces', serif; font-weight: 650; font-size: 24px; margin-bottom: 6px; padding-right: 110px; }
+        .plan-tagline { font-size: 14px; color: #666; line-height: 1.45; }
+        .plan-card-body { padding: 22px 14px 14px; display: flex; flex-direction: column; flex: 1; }
+        .plan-price { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; min-height: 46px; }
+        .plan-per { font-size: 14px; color: #777; }
+        .plan-cta {
+          margin-top: 18px; width: 100%; padding: 13px 16px; border-radius: 12px; cursor: pointer;
+          background: #fff; color: #1B2B22; border: 1.5px solid #D6DBD7; font-size: 14.5px; font-weight: 700;
+          display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background .15s, border-color .15s;
+        }
+        .plan-cta:hover { border-color: #1B6B3A; background: #F6FBF8; }
+        .plan-cta:disabled { opacity: .6; cursor: default; }
+        .plan-fineprint { min-height: 42px; margin-top: 12px; text-align: center; font-size: 12.5px; color: #1B6B3A; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .plan-already { background: none; border: none; color: #8A8F8B; font-size: 11.5px; font-weight: 500; cursor: pointer; text-decoration: underline; padding: 0; }
+        .plan-features { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+        .plan-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.4; }
+        .plan-features li svg { flex-shrink: 0; margin-top: 1px; }
+        .plan-check { color: #1FA750; }
+        .plan-feature-off { color: #9AA09B; }
 
-        .ledger-scroll-hint { display: none; }
+        .plan-card-vedette { background: linear-gradient(180deg, #16321F 0%, #08110B 100%); color: #fff; }
+        .plan-card-vedette .plan-card-head { background: linear-gradient(160deg, #1B6B3A 0%, #0F3D22 100%); }
+        .plan-card-vedette .plan-tagline { color: rgba(255,255,255,0.78); }
+        .plan-card-vedette .plan-pill { background: #F5A623; color: #1B2B22; }
+        .plan-card-vedette .plan-per { color: rgba(255,255,255,0.65); }
+        .plan-card-vedette .plan-cta { background: #fff; border-color: #fff; color: #1B2B22; }
+        .plan-card-vedette .plan-cta:hover { background: #F5A623; border-color: #F5A623; }
+        .plan-card-vedette .plan-fineprint { color: #FFD98E; }
+        .plan-card-vedette .plan-already { color: rgba(255,255,255,0.55); }
+        .plan-card-vedette .plan-check { color: #5BE08A; }
+        .plan-card-vedette .plan-feature-off { color: rgba(255,255,255,0.4); }
 
-        @media (max-width: 640px) {
-          .pricing-stamp { display: none; }
-          .ledger-scroll-hint {
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            font-size: 11.5px; font-weight: 600; color: #1B6B3A;
-            margin-bottom: 8px; animation: ledgerHintPulse 1.8s ease-in-out infinite;
-          }
-          @keyframes ledgerHintPulse { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
-          .pricing-ledger { min-width: 520px; }
-          .ledger-row { grid-template-columns: 108px repeat(3, 1fr); }
-          .ledger-cell { padding: 10px 8px; font-size: 12px; }
-          .ledger-head .ledger-cell { padding: 16px 8px 12px; }
-          .ledger-price-row .ledger-cell { padding: 16px 8px; }
-          .ledger-label-col {
-            position: sticky; left: 0; z-index: 2;
-            background: #fff;
-            box-shadow: 2px 0 6px rgba(0,0,0,0.08);
-          }
-          .ledger-head .ledger-label-col { background: #0F1E14; }
+        @media (max-width: 900px) {
+          .plan-cards { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; }
+          .plan-card:hover { transform: none; }
         }
       `}</style>
     </div>
