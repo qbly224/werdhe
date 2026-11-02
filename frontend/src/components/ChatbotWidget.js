@@ -124,7 +124,11 @@ export default function ChatbotWidget() {
     if (conversationId) form.append('conversation_id', conversationId);
     if (fichierEnCours) form.append('image', fichierEnCours);
 
-    api.post('/chatbot/message', form).then(function(res) {
+    // L'instance api impose Content-Type: application/json par défaut ;
+    // il faut l'effacer explicitement pour un corps FormData, sinon le
+    // navigateur n'ajoute pas la frontière multipart et la requête est
+    // bloquée côté CORS avant même d'atteindre le serveur.
+    api.post('/chatbot/message', form, { headers: { 'Content-Type': undefined } }).then(function(res) {
       if (res.data.conversation_id) setConversationId(res.data.conversation_id);
       setMessages(historique.concat([{
         role: 'assistant',
