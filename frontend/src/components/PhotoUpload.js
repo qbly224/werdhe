@@ -25,7 +25,7 @@ const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
       const res = await api.post(
         `/logements/${logementId}/photos`,
         formData,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
+        { headers: { 'Content-Type': undefined } }
       );
       setPhotos(res.data.photos);
       if (onUpdate) onUpdate(res.data.photos);

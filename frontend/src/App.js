@@ -20,13 +20,14 @@ import AuthCallback from './pages/AuthCallback';
 import Login2FA from './pages/Login2FA';
 import { HelmetProvider } from 'react-helmet-async';
 import NotFound from './pages/NotFound';
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import CookieBanner from './components/CookieBanner';
 import ChatbotWidget from './components/ChatbotWidget';
 import ConnexionBanner from './components/ConnexionBanner';
 import InstallPwaBanner from './components/InstallPwaBanner';
 import Logo from './components/Logo';
 import i18n from './i18n';
+import api from './services/api';
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -75,6 +76,14 @@ function RoutePrivee(props) {
 }
 
 function App() {
+  useEffect(function() {
+    // Le backend (plan gratuit Render) se met en veille après une période
+    // d'inactivité et prend 30 à 60s à redémarrer. On le réveille dès le
+    // chargement de l'app pour que la première vraie action de
+    // l'utilisateur (chatbot, paiement...) n'attende pas ce délai à froid.
+    api.get('/health').catch(function() {});
+  }, []);
+
   return (
     <ErrorBoundary>
     <HelmetProvider>

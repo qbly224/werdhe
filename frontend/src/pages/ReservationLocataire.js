@@ -206,7 +206,7 @@ export default function ReservationLocataire() {
   toast.loading(t('reservationLocataire.etape2.toastUploadEnCours'));
 
   api.post('/reservations/' + reservationId + '/dossier', fd, {
-    headers: { 'Content-Type': 'multipart/form-data' }
+    headers: { 'Content-Type': undefined }
   })
     .then(function(res) {
       toast.dismiss();
@@ -289,7 +289,7 @@ export default function ReservationLocataire() {
     fd.append('reservation_id', reservationId);
     if (newMsg.trim()) fd.append('contenu', newMsg);
     if (fichierMsg) fd.append('fichier', fichierMsg);
-    api.post('/messages', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
+    api.post('/messages', fd, { headers: { 'Content-Type': undefined } })
       .then(function(res) {
         setMsgs(function(prev) {
           return prev.concat(

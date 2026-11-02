@@ -8,8 +8,8 @@ var SYSTEM_PROMPT = `Tu es l'assistant de Werdhe, une plateforme de location imm
 
 Ce que tu dois savoir sur Werdhe :
 - C'est gratuit, pour toujours, pour les locataires : aucun frais d'agence, aucune commission.
-- Les propriétaires ont 3 formules : Gratuit (plan de base), Pro à 120 000 GNF/mois (jusqu'à 20 logements, paiement Orange Money + MTN MoMo, baux et quittances PDF automatiques, alertes de loyer), Agence à 300 000 GNF/mois (logements illimités, multi-utilisateurs). Les plans payants ont 1 mois d'essai gratuit, sans Mobile Money requis.
-- Modes de paiement acceptés : Orange Money, MTN MoMo, espèces, virement bancaire (BICIGUI, Ecobank).
+- Les propriétaires ont 3 formules : Gratuit (plan de base), Pro à 120 000 GNF/mois (jusqu'à 20 logements, paiement en ligne, baux et quittances PDF automatiques, alertes de loyer), Agence à 300 000 GNF/mois (logements illimités, multi-utilisateurs). Les plans payants ont 1 mois d'essai gratuit, sans paiement requis.
+- Modes de paiement acceptés : Orange Money, MTN MoMo, Kulu, carte bancaire (en ligne), espèces ou virement bancaire (BICIGUI, Ecobank).
 - Sécurité : HTTPS, mots de passe hachés, 2FA pour les admins, aucune donnée bancaire stockée.
 - Un locataire peut : chercher un logement, candidater, échanger par messagerie avec le propriétaire, signer son bail électroniquement, payer en ligne.
 - Un propriétaire peut : publier un logement (photos, prix, équipements, statut foncier), gérer ses candidatures, générer quittances et rapports.
@@ -77,7 +77,11 @@ async function rechercherLogements(criteres) {
 
 function getClient() {
   if (!process.env.GEMINI_API_KEY) return null;
-  return new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  // Sans timeout explicite, un appel Gemini qui ne répond jamais (réseau,
+  // service indisponible) bloque la requête HTTP indéfiniment côté client :
+  // ni réponse ni erreur, un symptôme qui se présente à tort comme une
+  // erreur CORS dans le navigateur.
+  return new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, httpOptions: { timeout: 25000 } });
 }
 
 function attendre(ms) {

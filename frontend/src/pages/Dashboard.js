@@ -3033,7 +3033,7 @@ function OngletMessages() {
     if (fichier) formData.append('fichier', fichier);
     if (replyTo) formData.append('reply_to', replyTo.id); 
 
-    api.post('/messages', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+    api.post('/messages', formData, { headers: { 'Content-Type': undefined } })
       .then(function(res) {
         setMessages(function(prev) { return prev.concat(res.data.data); });
         setMessage('');
@@ -3328,7 +3328,7 @@ function OngletReclamations() {
     fd.append('priorite', form.priorite);
     fd.append('logement_id', form.logement_id);
     if (photo) fd.append('photo', photo);
-    api.post('/reclamations', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
+    api.post('/reclamations', fd, { headers: { 'Content-Type': undefined } })
       .then(function() { toast.success(t('ongletReclamations.toastEnvoyee')); setShowForm(false); setForm({ titre: '', description: '', categorie: 'autre', priorite: 'normale', logement_id: '' }); setPhoto(null); charger(); })
       .catch(function() { toast.error(t('ongletReclamations.toastErreur')); });
   }

@@ -27,7 +27,7 @@ export default function GestionPhotos({ logementId, photosInitiales, onUpdate })
     files.forEach(function(f) { fd.append('photos', f); });
 
     api.post('/logements/' + logementId + '/photos', fd, {
-      headers: { 'Content-Type': 'multipart/form-data' }
+      headers: { 'Content-Type': undefined }
     })
       .then(function(res) {
         setPhotos(res.data.photos);

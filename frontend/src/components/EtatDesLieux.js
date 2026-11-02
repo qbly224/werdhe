@@ -183,7 +183,7 @@ export default function EtatDesLieux({ reservationId, type = 'entree', onTermine
         fd.append('photo_' + entry[0], entry[1].file);
       });
 
-      await api.post('/etat-des-lieux', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+      await api.post('/etat-des-lieux', fd, { headers: { 'Content-Type': undefined } });
 
       setStep('confirmation');
       toast.success(t('etatDesLieux.etatEnregistreEtSigne'));
