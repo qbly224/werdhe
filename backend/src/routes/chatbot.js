@@ -27,6 +27,21 @@ router.get('/_debug/models', async function(req, res) {
     return res.status(404).end();
   }
   try {
+    // ListModels ne reflète pas forcément les restrictions réelles par clé
+    // (gemini-2.5-flash y apparaît mais 404 en generateContent) — avec
+    // ?model=NOM, on tente un vrai appel generateContent pour vérifier.
+    if (req.query.model) {
+      var rr = await fetch(
+        'https://generativelanguage.googleapis.com/v1beta/models/' + req.query.model + ':generateContent?key=' + process.env.GEMINI_API_KEY,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: 'dis juste "ok"' }] }] })
+        }
+      );
+      var body = await rr.json();
+      return res.status(rr.status).json(body);
+    }
     var r = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + process.env.GEMINI_API_KEY);
     var data = await r.json();
     var modeles = (data.models || [])
