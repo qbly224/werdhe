@@ -178,7 +178,7 @@
     },
     "faq": [
       { "q": "Is Werdhe free for tenants?", "r": "Yes, 100% free forever. No agency fees, no commission." },
-      { "q": "How does the Pro / Agency trial work?", "r": "1 full month of access to the plan you choose, no Mobile Money required. At the end, you decide whether to continue." },
+      { "q": "How does the Pro / Agency trial work?", "r": "1 full month of access to the plan you choose, no payment required. At the end, you decide whether to continue." },
       { "q": "Which payment methods are accepted?", "r": "Orange Money, MTN MoMo, cash and bank transfer (BICIGUI, Ecobank)." },
       { "q": "Is my data secure?", "r": "Yes. HTTPS, hashed passwords, admin 2FA, no banking data stored." },
       { "q": "Can I manage several properties?", "r": "Yes. The Pro plan allows up to 20 properties, the Agency plan is unlimited." }
@@ -382,7 +382,7 @@
       "pro": "Pro",
       "agence": "Agency"
     },
-    "essaiPlan": "{{plan}} 1-month free trial - no Mobile Money needed",
+    "essaiPlan": "{{plan}} 1-month free trial - no payment needed",
     "gratuitLocataires": "100% free for tenants, forever",
     "continuer": "Continue",
     "vosInformations": "Your information",
@@ -646,7 +646,7 @@
       {
         "categorie": "Payments",
         "questions": [
-          { "q": "Which payment methods are accepted?", "r": "Orange Money, MTN MoMo, cash and bank transfer (BICIGUI, Ecobank). Mobile Money payments are available from the Pro plan onward." },
+          { "q": "Which payment methods are accepted?", "r": "Orange Money, MTN MoMo, Kulu, card, cash or bank transfer (BICIGUI, Ecobank)." },
           { "q": "How is the deposit handled?", "r": "The deposit equals 1 month's rent. It's paid directly to the landlord once the rental is confirmed. Werdhe does not hold funds in escrow (in progress)." },
           { "q": "Can I cancel my subscription?", "r": "Yes, at any time from your settings. The cancellation takes effect at the end of the current billing period. No prorated refund is issued." }
         ]
@@ -812,14 +812,15 @@
   "pricing": {
     "seo": {
       "titre": "Pricing - Free for tenants, Pro and Agency plans",
-      "description": "Werdhe is 100% free for tenants. Pro and Agency plans for landlords, with a 1-month free trial. Mobile Money payment."
+      "description": "Werdhe is 100% free for tenants. Pro and Agency plans for landlords, with a 1-month free trial. Secure online payment."
     },
     "connexion": "Log in",
     "demarrer": "Get started",
     "badgeOverline": "Real estate pricing",
     "titre": "Transparent pricing",
     "sousTitre": "100% free for tenants · Pro and Agency for landlords",
-    "paiementMobileMoney": "Payment by Mobile Money only (Orange / MTN)",
+    "paiementMobileMoney": "Secure online payment: Orange Money, MTN MoMo, Kulu, card",
+    "glisserPourVoirPlans": "Swipe to see all plans",
     "cycles": {
       "mensuel": "Monthly",
       "semestriel": "6 months",
@@ -847,8 +848,8 @@
       }
     },
     "faq": [
-      { "q": "How do I pay for my subscription?", "r": "Payment is only accepted via Mobile Money (Orange Money or MTN MoMo). No cash payments are accepted." },
-      { "q": "Is the trial really free?", "r": "Yes, 1 full month on Pro or Agency, no Mobile Money required. Access to all the features of the plan you chose. At the end, you decide whether to continue." },
+      { "q": "How do I pay for my subscription?", "r": "Payment is made online via Orange Money, MTN MoMo, Kulu or card. No cash payments are accepted." },
+      { "q": "Is the trial really free?", "r": "Yes, 1 full month on Pro or Agency, no payment required. Access to all the features of the plan you chose. At the end, you decide whether to continue." },
       { "q": "What billing cycles are available?", "r": "Monthly, every 6 months (-10%) or yearly (-20%). Choose whatever suits you best." },
       { "q": "What happens if I don't pay on time?", "r": "You receive a reminder 3 days after the due date, then a final reminder at 5 days. Without payment, access is blocked until the balance is settled." },
       { "q": "Can I change plans at any time?", "r": "Yes. You can upgrade or downgrade from your settings. The change takes effect immediately." },
@@ -877,7 +878,7 @@
       "fonctionnalite": "Feature",
       "logementsGeres": "Properties managed",
       "illimites": "Unlimited",
-      "paiementMobileMoney": "Mobile Money payment",
+      "paiementMobileMoney": "Online payment",
       "candidaturesDossiers": "Applications and files",
       "documentsPdfAuto": "Automatic PDF documents",
       "alertesLoyersAuto": "Automatic rent alerts",
@@ -891,7 +892,7 @@
     },
     "questionsFrequentes": "Frequently asked questions",
     "pretACommencer": "Ready to get started?",
-    "ctaSousTitre": "1-month free trial · Mobile Money payment only",
+    "ctaSousTitre": "1-month free trial · Secure online payment",
     "demarrerEssai": "Start the free trial",
     "footerCgu": "Terms",
     "footerConfidentialite": "Privacy"

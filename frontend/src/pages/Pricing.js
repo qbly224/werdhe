@@ -238,6 +238,7 @@ export default function Pricing() {
           <h2 style={{ fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 'clamp(24px, 3.4vw, 36px)', color: '#1B2B22', margin: 0 }}>{t('pricing.comparaison')}</h2>
         </div>
 
+        <div className="ledger-scroll-hint">{t('pricing.glisserPourVoirPlans')} →</div>
         <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
         <div className="pricing-ledger" style={{ background: '#fff', border: '1px solid #1B2B22', position: 'relative' }}>
           <div className="pricing-stamp">{t('pricing.tampon')}</div>
@@ -433,8 +434,16 @@ export default function Pricing() {
         }
         .pricing-stamp::before { content: ''; position: absolute; inset: 6px; border: 1px solid #B5401F; border-radius: 50%; }
 
+        .ledger-scroll-hint { display: none; }
+
         @media (max-width: 640px) {
           .pricing-stamp { display: none; }
+          .ledger-scroll-hint {
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            font-size: 11.5px; font-weight: 600; color: #1B6B3A;
+            margin-bottom: 8px; animation: ledgerHintPulse 1.8s ease-in-out infinite;
+          }
+          @keyframes ledgerHintPulse { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
           .pricing-ledger { min-width: 520px; }
           .ledger-row { grid-template-columns: 108px repeat(3, 1fr); }
           .ledger-cell { padding: 10px 8px; font-size: 12px; }

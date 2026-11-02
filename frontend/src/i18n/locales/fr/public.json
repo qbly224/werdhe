@@ -178,7 +178,7 @@
     },
     "faq": [
       { "q": "Werdhe est-il gratuit pour les locataires ?", "r": "Oui, 100% gratuit pour toujours. Aucun frais d'agence, aucune commission." },
-      { "q": "Comment fonctionne l'essai Pro / Agence ?", "r": "1 mois complet d'accès au plan choisi, sans Mobile Money requis. À la fin, vous choisissez de continuer ou non." },
+      { "q": "Comment fonctionne l'essai Pro / Agence ?", "r": "1 mois complet d'accès au plan choisi, sans paiement requis. À la fin, vous choisissez de continuer ou non." },
       { "q": "Quels modes de paiement sont acceptés ?", "r": "Orange Money, MTN MoMo, espèces et virement bancaire (BICIGUI, Ecobank)." },
       { "q": "Mes données sont-elles sécurisées ?", "r": "Oui. HTTPS, mots de passe hachés, 2FA admin, aucune donnée bancaire stockée." },
       { "q": "Puis-je gérer plusieurs logements ?", "r": "Oui. Le plan Pro permet jusqu'à 20 biens, le plan Agence est illimité." }
@@ -382,7 +382,7 @@
       "pro": "Pro",
       "agence": "Agence"
     },
-    "essaiPlan": "Essai {{plan}} 1 mois gratuit - sans Mobile Money",
+    "essaiPlan": "Essai {{plan}} 1 mois gratuit - sans paiement",
     "gratuitLocataires": "100% gratuit pour les locataires, pour toujours",
     "continuer": "Continuer",
     "vosInformations": "Vos informations",
@@ -646,7 +646,7 @@
       {
         "categorie": "Paiements",
         "questions": [
-          { "q": "Quels modes de paiement sont acceptés ?", "r": "Orange Money, MTN MoMo, espèces et virement bancaire (BICIGUI, Ecobank). Les paiements Mobile Money sont disponibles à partir du plan Pro." },
+          { "q": "Quels modes de paiement sont acceptés ?", "r": "Orange Money, MTN MoMo, Kulu, carte bancaire, espèces ou virement bancaire (BICIGUI, Ecobank)." },
           { "q": "Comment la caution est-elle gérée ?", "r": "La caution représente 1 mois de loyer. Elle est versée directement au propriétaire lors de la confirmation de la location. Werdhe ne détient pas les fonds en séquestre (en cours d'implémentation)." },
           { "q": "Puis-je annuler mon abonnement ?", "r": "Oui, à tout moment depuis vos paramètres. L'annulation prend effet à la fin de la période en cours. Aucun remboursement prorata n'est effectué." }
         ]
@@ -812,14 +812,15 @@
   "pricing": {
     "seo": {
       "titre": "Tarifs - Locataire gratuit, plans Pro et Agence",
-      "description": "Werdhe est 100% gratuit pour les locataires. Plans Pro et Agence pour les propriétaires, 1 mois d'essai gratuit. Paiement Mobile Money."
+      "description": "Werdhe est 100% gratuit pour les locataires. Plans Pro et Agence pour les propriétaires, 1 mois d'essai gratuit. Paiement en ligne sécurisé."
     },
     "connexion": "Connexion",
     "demarrer": "Démarrer",
     "badgeOverline": "Tarification immobilière",
     "titre": "Des tarifs transparents",
     "sousTitre": "100% gratuit pour les locataires · Pro et Agence pour les propriétaires",
-    "paiementMobileMoney": "Paiement uniquement par Mobile Money (Orange / MTN)",
+    "paiementMobileMoney": "Paiement en ligne sécurisé : Orange Money, MTN MoMo, Kulu, carte",
+    "glisserPourVoirPlans": "Faites glisser pour voir tous les plans",
     "cycles": {
       "mensuel": "Mensuel",
       "semestriel": "6 mois",
@@ -847,8 +848,8 @@
       }
     },
     "faq": [
-      { "q": "Comment payer mon abonnement ?", "r": "Le paiement se fait uniquement par Mobile Money (Orange Money ou MTN MoMo). Aucun paiement en espèces n'est accepté." },
-      { "q": "L'essai est-il vraiment gratuit ?", "r": "Oui, 1 mois complet sur Pro ou Agence, sans Mobile Money requis. Accès à toutes les fonctionnalités du plan choisi. À la fin, choisissez de continuer ou non." },
+      { "q": "Comment payer mon abonnement ?", "r": "Le paiement se fait en ligne via Orange Money, MTN MoMo, Kulu ou carte bancaire. Aucun paiement en espèces n'est accepté." },
+      { "q": "L'essai est-il vraiment gratuit ?", "r": "Oui, 1 mois complet sur Pro ou Agence, sans paiement requis. Accès à toutes les fonctionnalités du plan choisi. À la fin, choisissez de continuer ou non." },
       { "q": "Quels rythmes de paiement sont proposés ?", "r": "Mensuel, tous les 6 mois (-10%) ou annuel (-20%). Vous choisissez ce qui vous convient." },
       { "q": "Que se passe-t-il si je ne paie pas à temps ?", "r": "Vous recevez une relance 3 jours après l'échéance, puis une dernière relance à 5 jours. Sans règlement, l'accès est bloqué jusqu'à régularisation." },
       { "q": "Puis-je changer de plan à tout moment ?", "r": "Oui. Vous pouvez upgrader ou downgrader depuis vos paramètres. Le changement prend effet immédiatement." },
@@ -877,7 +878,7 @@
       "fonctionnalite": "Fonctionnalité",
       "logementsGeres": "Logements gérés",
       "illimites": "Illimités",
-      "paiementMobileMoney": "Paiement Mobile Money",
+      "paiementMobileMoney": "Paiement en ligne",
       "candidaturesDossiers": "Candidatures et dossiers",
       "documentsPdfAuto": "Documents PDF auto",
       "alertesLoyersAuto": "Alertes loyers auto",
@@ -891,7 +892,7 @@
     },
     "questionsFrequentes": "Questions fréquentes",
     "pretACommencer": "Prêt à commencer ?",
-    "ctaSousTitre": "1 mois d'essai gratuit · Paiement Mobile Money uniquement",
+    "ctaSousTitre": "1 mois d'essai gratuit · Paiement en ligne sécurisé",
     "demarrerEssai": "Démarrer l'essai gratuit",
     "footerCgu": "CGU",
     "footerConfidentialite": "Confidentialité"
