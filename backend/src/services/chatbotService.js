@@ -88,13 +88,14 @@ function attendre(ms) {
   return new Promise(function(resolve) { setTimeout(resolve, ms); });
 }
 
-// Le modèle gratuit renvoie parfois un 503 "high demand, try again later" —
-// transitoire la plupart du temps, donc on retente une fois avant d'abandonner.
+// Le modèle gratuit renvoie parfois un 503 "high demand, try again later"
+// ou un 504 "Deadline expired before operation could complete" — transitoire
+// la plupart du temps, donc on retente une fois avant d'abandonner.
 async function genererAvecRetry(client, params) {
   try {
     return await client.models.generateContent(params);
   } catch (err) {
-    if (err && err.status === 503) {
+    if (err && (err.status === 503 || err.status === 504)) {
       await attendre(900);
       return await client.models.generateContent(params);
     }
