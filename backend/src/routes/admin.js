@@ -2,6 +2,7 @@ const express = require('express');
 const router  = express.Router();
 const db      = require('../database');
 const verifierToken = require('../middleware/auth');
+const { PRIX_MENSUEL } = require('../config/plans');
 
 // ════════════════════════════════════════════════════════
 // MIDDLEWARE — Accès admin uniquement
@@ -151,7 +152,7 @@ router.get('/stats', verifierToken, verifierAdmin, async (req, res) => {
 // ════════════════════════════════════════════════════════
 router.get('/users', verifierToken, verifierAdmin, async (req, res) => {
   try {
-    var { role, statut, search } = req.query;
+    var { role, statut, search, source } = req.query;
     var page  = Math.max(1, parseInt(req.query.page, 10) || 1);
     var limit = Math.min(500, Math.max(1, parseInt(req.query.limit, 10) || 500));
     var offset = (page - 1) * limit;
@@ -172,9 +173,13 @@ router.get('/users', verifierToken, verifierAdmin, async (req, res) => {
       conditions.push(`(LOWER(u.nom) LIKE LOWER($${idx}) OR LOWER(u.prenom) LIKE LOWER($${idx}) OR LOWER(u.email) LIKE LOWER($${idx}))`);
       params.push('%' + search + '%'); idx++;
     }
+    if (['paye', 'essai', 'offert'].includes(source)) {
+      conditions.push(`ab.source = $${idx}`);
+      params.push(source); idx++;
+    }
 
     var countResult = await db.query(
-      `SELECT COUNT(*) FROM users u WHERE ${conditions.join(' AND ')}`,
+      `SELECT COUNT(*) FROM users u LEFT JOIN abonnements ab ON ab.user_id = u.id WHERE ${conditions.join(' AND ')}`,
       params
     );
 
@@ -183,13 +188,15 @@ router.get('/users', verifierToken, verifierAdmin, async (req, res) => {
          u.id, u.nom, u.prenom, u.email, u.telephone, u.role,
          u.suspendu, u.abonnement_bloque, u.locataire_verifie, u.plan,
          u.note_moyenne, u.nb_notations, u.created_at,
+         ab.source, to_char(ab.offert_jusqu_au, 'YYYY-MM-DD') AS offert_jusqu_au, ab.offert_motif,
          COUNT(DISTINCT l.id) as nb_logements,
          COUNT(DISTINCT r.id) as nb_reservations
        FROM users u
+       LEFT JOIN abonnements ab ON ab.user_id = u.id
        LEFT JOIN logements l ON l.proprietaire_id = u.id
        LEFT JOIN reservations r ON r.locataire_id = u.id
        WHERE ${conditions.join(' AND ')}
-       GROUP BY u.id
+       GROUP BY u.id, ab.source, ab.offert_jusqu_au, ab.offert_motif
        ORDER BY u.created_at DESC
        LIMIT $${idx} OFFSET $${idx + 1}`,
       params.concat([limit, offset])
@@ -573,7 +580,7 @@ router.get('/preavis', verifierToken, verifierAdmin, async (req, res) => {
 // Revenus et statistiques financières
 router.get('/revenus', verifierToken, verifierAdmin, async (req, res) => {
   try {
-    var [commissions, abonnements, evolution] = await Promise.all([
+    var [commissions, abonnements, comptes, offerts, evolution] = await Promise.all([
 
       // Total paiements
       db.query(`
@@ -598,6 +605,31 @@ router.get('/revenus', verifierToken, verifierAdmin, async (req, res) => {
           AND created_at >= NOW() - INTERVAL '30 days'
       `),
 
+      // Répartition des comptes propriétaires par source d'abonnement
+      db.query(`
+        SELECT
+          COUNT(*) FILTER (WHERE u.plan = 'gratuit')::int AS gratuits,
+          COUNT(*) FILTER (WHERE u.plan <> 'gratuit' AND COALESCE(a.source, 'paye') = 'paye')::int AS payants,
+          COUNT(*) FILTER (WHERE u.plan <> 'gratuit' AND a.source = 'essai')::int AS essais,
+          COUNT(*) FILTER (WHERE u.plan <> 'gratuit' AND a.source = 'offert')::int AS offerts
+        FROM users u LEFT JOIN abonnements a ON a.user_id = u.id
+        WHERE u.role IN ('proprietaire', 'les_deux')
+      `),
+
+      // Comptes offerts : jamais comptés dans le chiffre d'affaires
+      db.query(`
+        SELECT
+          COUNT(*)::int AS nb,
+          COUNT(*) FILTER (WHERE a.plan = 'pro')::int AS pro,
+          COUNT(*) FILTER (WHERE a.plan = 'agence')::int AS agence,
+          COUNT(*) FILTER (WHERE a.offert_motif = 'collaborateur')::int AS collaborateur,
+          COUNT(*) FILTER (WHERE a.offert_motif = 'partenaire')::int AS partenaire,
+          COUNT(*) FILTER (WHERE a.offert_motif = 'pilote')::int AS pilote,
+          COUNT(*) FILTER (WHERE a.offert_motif = 'geste_commercial')::int AS geste_commercial
+        FROM abonnements a
+        WHERE a.source = 'offert' AND (a.offert_jusqu_au IS NULL OR a.offert_jusqu_au >= CURRENT_DATE)
+      `),
+
       // Évolution sur 6 mois
       db.query(`
         SELECT
@@ -611,9 +643,17 @@ router.get('/revenus', verifierToken, verifierAdmin, async (req, res) => {
       `)
     ]);
 
+    var o = offerts.rows[0];
     res.json({
       commissions:        commissions.rows[0],
       abonnements:        abonnements.rows[0],
+      comptes:            comptes.rows[0],
+      offerts: {
+        nb:        o.nb,
+        par_plan:  { pro: o.pro, agence: o.agence },
+        par_motif: { collaborateur: o.collaborateur, partenaire: o.partenaire, pilote: o.pilote, geste_commercial: o.geste_commercial },
+        valeur_mensuelle_non_facturee: o.pro * PRIX_MENSUEL.pro + o.agence * PRIX_MENSUEL.agence,
+      },
       evolution:          evolution.rows,
     });
 
@@ -676,40 +716,6 @@ router.get('/logs', verifierToken, verifierAdmin, async (req, res) => {
   }
 });
 
-// ─── CHANGER LE PLAN D'UN USER ────────────────────────────────────
-router.patch('/users/:id/plan', verifierToken, verifierAdmin, async (req, res) => {
-  try {
-    var { plan } = req.body;
-    if (!['gratuit', 'pro', 'agence'].includes(plan)) {
-      return res.status(400).json({ erreur: 'Plan invalide' });
-    }
-    await db.query('UPDATE users SET plan = $1 WHERE id = $2', [plan, req.params.id]);
-
-    // Pas de contrainte unique sur abonnements.user_id (un utilisateur peut
-    // avoir plusieurs lignes au fil du temps) : on met à jour la plus
-    // récente si elle existe, sinon on en crée une. Un plan attribué par
-    // l'admin n'a pas de date d'expiration suivie automatiquement.
-    var dernier = await db.query(
-      `SELECT id FROM abonnements WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1`,
-      [req.params.id]
-    );
-    if (dernier.rows.length > 0) {
-      await db.query(
-        `UPDATE abonnements SET plan = $1, statut = 'actif', date_fin = NULL WHERE id = $2`,
-        [plan, dernier.rows[0].id]
-      );
-    } else {
-      await db.query(
-        `INSERT INTO abonnements (user_id, plan, statut) VALUES ($1, $2, 'actif')`,
-        [req.params.id, plan]
-      );
-    }
-
-    res.json({ message: 'Plan mis à jour !' });
-  } catch (err) {
-    res.status(500).json({ erreur: err.message });
-  }
-});
 // ─── STATS TEMPS RÉEL ────────────────────────────────────────────
 router.get('/stats/live', verifierToken, verifierAdmin, async (req, res) => {
   try {

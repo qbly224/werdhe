@@ -60,6 +60,7 @@ const statsRoutes = require('./routes/stats');
 const equipeRoutes = require('./routes/equipe');
 const supportRoutes = require('./routes/support');
 const chatbotRoutes = require('./routes/chatbot');
+const adminAbonnementsRoutes = require('./routes/adminAbonnements');
 
 // ── Vérifier les variables d'environnement obligatoires ──────────
 var ENV_REQUISES = ['JWT_SECRET', 'DATABASE_URL'];
@@ -195,6 +196,7 @@ app.use('/messages',          messagesRoutes);
 app.use('/reclamations',      reclamationsRoutes);
 app.use('/scores',            scoresRoutes);
 app.use('/admin',             adminRoutes);
+app.use('/admin',             adminAbonnementsRoutes);
 app.use('/preavis',           preavisRoutes);
 app.use('/abonnements', abonnementRoutes);
 app.use('/notations', notationsRoutes);

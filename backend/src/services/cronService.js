@@ -3,6 +3,7 @@ const db        = require('../database');
 const { Resend } = require('resend');
 const emailService = require('./emailService');
 const { verrouillerBiensExcedentaires } = require('./abonnementService');
+const adminAbonnementService = require('./adminAbonnementService');
 
 var resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -460,6 +461,7 @@ cron.schedule('30 8 * * *', async function() {
        WHERE a.statut IN ('actif', 'essai')
          AND a.date_fin::date <= (CURRENT_DATE - INTERVAL '3 days')::date
          AND a.date_fin::date > (CURRENT_DATE - INTERVAL '5 days')::date
+         AND a.source <> 'offert'
          AND a.rappel_j3_envoye IS NOT TRUE`
     );
 
@@ -505,6 +507,7 @@ cron.schedule('30 8 * * *', async function() {
        JOIN users u ON a.user_id = u.id
        WHERE a.statut IN ('actif', 'essai')
          AND a.date_fin::date <= (CURRENT_DATE - INTERVAL '5 days')::date
+         AND a.source <> 'offert'
          AND a.rappel_j5_envoye IS NOT TRUE`
     );
 
@@ -585,6 +588,7 @@ cron.schedule('15 8 * * *', async function() {
          JOIN users u ON a.user_id = u.id
          WHERE a.statut IN ('actif', 'essai')
            AND a.date_fin::date = (CURRENT_DATE + INTERVAL '${palier.jours} days')::date
+           AND a.source <> 'offert'
            AND a.${palier.colonne} IS NOT TRUE`
       );
 
@@ -668,5 +672,24 @@ cron.schedule('15 8 1 * *', async function() {
     console.error('[CRON Rapport mensuel] Erreur:', err.message);
   }
 });
+
+// ════════════════════════════════════════════════════════
+// CRON 10 — Accès offerts : expiration et rappel J-7
+// Tourne tous les jours à 8h05, et une fois au démarrage du serveur : le
+// service gratuit Render s'endort, une exécution manquée est donc rattrapée
+// au réveil (les requêtes ciblent « échéance dépassée », pas « exactement hier »).
+// ════════════════════════════════════════════════════════
+async function traiterAccesOfferts() {
+  try {
+    var bilan = await adminAbonnementService.traiterOffresExpirees();
+    if (bilan.expirees > 0 || bilan.rappels > 0) {
+      console.log('[CRON Accès offerts] ' + bilan.expirees + ' expiré(s), ' + bilan.rappels + ' rappel(s) J-7');
+    }
+  } catch (err) {
+    console.error('[CRON Accès offerts] Erreur:', err.message);
+  }
+}
+cron.schedule('5 8 * * *', traiterAccesOfferts);
+setTimeout(traiterAccesOfferts, 60 * 1000);
 
 module.exports = {};

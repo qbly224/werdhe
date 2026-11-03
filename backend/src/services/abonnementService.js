@@ -2,8 +2,9 @@ const db = require('../database');
 const { limiteBiens } = require('../config/plans');
 
 // Remettre en ligne les biens masqués automatiquement lors d'une précédente
-// expiration, dans la limite autorisée par le nouveau plan. Chaque bien
-// retrouve le statut qu'il avait avant le masquage (un bien loué reste loué).
+// expiration, dans la limite des places libres du plan (limite moins les biens
+// déjà visibles). Chaque bien retrouve le statut qu'il avait avant le masquage
+// (un bien loué reste loué).
 async function remettreEnLigneBiens(userId, plan) {
   try {
     var limite = limiteBiens(plan);
@@ -17,7 +18,7 @@ async function remettreEnLigneBiens(userId, plan) {
          SELECT id FROM logements
          WHERE proprietaire_id = $1 AND masque_limite_plan = TRUE
          ORDER BY created_at DESC
-         LIMIT $2
+         LIMIT GREATEST($2::int - (SELECT COUNT(*) FROM logements WHERE proprietaire_id = $1 AND statut <> 'suspendu')::int, 0)
        )`,
       [userId, limite === Infinity ? 100000 : limite]
     );
@@ -45,6 +46,18 @@ async function verrouillerBiensExcedentaires(userId, plan) {
     [userId, limite]
   );
   return res.rowCount;
+}
+
+// Aligne les biens sur la limite d'un plan : remet en ligne ce qui peut l'être,
+// verrouille l'excédent. Renvoie le nombre de biens verrouillés.
+async function appliquerLimitePlan(userId, plan) {
+  await remettreEnLigneBiens(userId, plan);
+  try {
+    return await verrouillerBiensExcedentaires(userId, plan);
+  } catch (err) {
+    console.warn('[Abonnement] Verrouillage biens:', err.message);
+    return 0;
+  }
 }
 
 async function envoyerFactureParEmail(userId, plan, montant, cycle, debut, fin) {
@@ -105,7 +118,9 @@ async function activerAbonnementPaye(factureId) {
     `UPDATE abonnements
      SET plan = $1, statut = 'actif', date_fin = $2, cycle = $3,
          essai_termine = TRUE, rappel_j3_envoye = FALSE, rappel_j5_envoye = FALSE,
-         rappel_j7_avant_envoye = FALSE, rappel_j3_avant_envoye = FALSE, rappel_j1_avant_envoye = FALSE
+         rappel_j7_avant_envoye = FALSE, rappel_j3_avant_envoye = FALSE, rappel_j1_avant_envoye = FALSE,
+         source = 'paye', offert_jusqu_au = NULL, offert_motif = NULL, offert_par = NULL,
+         offert_rappel_j7_envoye = FALSE
      WHERE user_id = $4`,
     [f.plan, f.periode_fin, f.cycle, f.user_id]
   );
@@ -132,4 +147,4 @@ async function marquerFactureEchouee(factureId) {
   );
 }
 
-module.exports = { activerAbonnementPaye, marquerFactureEchouee, remettreEnLigneBiens, verrouillerBiensExcedentaires };
+module.exports = { activerAbonnementPaye, marquerFactureEchouee, remettreEnLigneBiens, verrouillerBiensExcedentaires, appliquerLimitePlan, envoyerFactureParEmail };
