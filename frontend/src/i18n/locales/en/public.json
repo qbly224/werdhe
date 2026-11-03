@@ -122,7 +122,7 @@
       { "titre": "Built-in messaging", "desc": "Communicate directly with tenants and landlords." },
       { "titre": "Financial reports", "desc": "Track your income month by month with clear charts." },
       { "titre": "Mutual ratings", "desc": "Tenants and landlords rate each other after every rental." },
-      { "titre": "Multiple properties", "desc": "Manage up to 25 properties from a single dashboard." }
+      { "titre": "Multiple properties", "desc": "Manage up to {{pro}} properties from a single dashboard." }
     ],
     "pricingSection": {
       "overline": "Pricing",
@@ -142,7 +142,7 @@
       },
       "pro": {
         "nom": "Pro",
-        "sousTitre": "Up to 20 properties",
+        "sousTitre": "Up to {{pro}} properties",
         "cta": "1-month free trial",
         "features": ["Orange Money + MTN MoMo", "Leases and PDF receipts", "Automatic alerts", "Financial reports", "1-month trial"]
       },
@@ -181,7 +181,7 @@
       { "q": "How does the Pro / Agency trial work?", "r": "1 full month of access to the plan you choose, no payment required. At the end, you decide whether to continue." },
       { "q": "Which payment methods are accepted?", "r": "Orange Money, MTN MoMo, cash and bank transfer (BICIGUI, Ecobank)." },
       { "q": "Is my data secure?", "r": "Yes. HTTPS, hashed passwords, admin 2FA, no banking data stored." },
-      { "q": "Can I manage several properties?", "r": "Yes. The Pro plan allows up to 20 properties, the Agency plan is unlimited." }
+      { "q": "Can I manage several properties?", "r": "Yes. The Pro plan allows up to {{pro}} properties, the Agency plan is unlimited." }
     ],
     "ctaFinal": {
       "title": "Ready to get started?",
@@ -299,7 +299,7 @@
       },
       "pro": {
         "type": "Pro",
-        "sousTitre": "Up to 20 properties",
+        "sousTitre": "Up to {{pro}} properties",
         "features": ["Orange Money + MTN MoMo", "Leases and PDF receipts", "Listings directory", "Financial reports"]
       },
       "agence": {
@@ -635,10 +635,10 @@
       {
         "categorie": "For landlords",
         "questions": [
-          { "q": "How much does Werdhe cost for landlords?", "r": "The Free plan lets you manage up to 2 properties. The Pro plan (120,000 GNF/month) allows up to 25 properties with advanced features. The Agency plan (300,000 GNF/month) offers unlimited properties. 14-day free Pro trial, no commitment." },
+          { "q": "How much does Werdhe cost for landlords?", "r": "The Free plan lets you manage up to {{gratuit}} properties. The Pro plan (120,000 GNF/month) allows up to {{pro}} properties with advanced features. The Agency plan (300,000 GNF/month) offers unlimited properties. 1-month free Pro trial, no commitment." },
           { "q": "How do I publish my first property?", "r": "In your dashboard, click \"+ Add a property\", fill in the details (title, address, price, size) and add photos. Your listing is published immediately." },
           { "q": "How does the Werdhe commission work?", "r": "Werdhe takes a 5% commission on every rent payment collected through the platform. This commission is calculated automatically. It covers all our services: document generation, alerts, messaging, etc." },
-          { "q": "Can I manage several properties?", "r": "Yes. With the Pro plan, manage up to 25 properties. The Agency plan offers unlimited properties with multi-user management. From your dashboard, each property has its own record with its tenants and payments." },
+          { "q": "Can I manage several properties?", "r": "Yes. With the Pro plan, manage up to {{pro}} properties. The Agency plan offers unlimited properties with multi-user management. From your dashboard, each property has its own record with its tenants and payments." },
           { "q": "How do I generate a rent receipt?", "r": "In the \"Documents\" tab, select the property and tenant, choose \"Rent receipt\" and click \"Generate\". The receipt is created as a PDF and automatically emailed to the tenant." },
           { "q": "What happens if a tenant doesn't pay?", "r": "The system automatically sends an alert at day 3 and a formal notice at day 5. You receive a notification and an email. Official letter templates are available in the Documents section." }
         ]
@@ -836,8 +836,8 @@
       "pro": {
         "nom": "Pro",
         "badge": "1 month free",
-        "sousTitre": "Up to 20 properties",
-        "features": ["Up to 20 properties", "Online applications and files", "Online payments (Orange Money, MTN MoMo, Kulu, card)", "Automatic leases and PDF receipts", "Rent alerts on day 3 / day 5", "Financial reports + CSV export", "Messaging with read receipts", "Tenant trust score", "Priority email support"],
+        "sousTitre": "Up to {{pro}} properties",
+        "features": ["Up to {{pro}} properties", "Online applications and files", "Online payments (Orange Money, MTN MoMo, Kulu, card)", "Automatic leases and PDF receipts", "Rent alerts on day 3 / day 5", "Financial reports + CSV export", "Messaging with read receipts", "Tenant trust score", "Priority email support"],
         "nonInclus": ["Multiple users", "Unlimited properties"]
       },
       "agence": {

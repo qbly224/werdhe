@@ -10,8 +10,9 @@ import {
 } from 'lucide-react';
 import Logo from '../components/Logo';
 import { useTranslation } from 'react-i18next';
+import useLimitesPlans from '../hooks/useLimitesPlans';
 
-function getFaqCategories(t) {
+function getFaqCategories(t, limites) {
   return [
     {
       categorie: t('contact.faq.0.categorie'),
@@ -31,10 +32,10 @@ function getFaqCategories(t) {
       couleur: '#1B6B3A',
       bg: '#E8F5E9',
       questions: [
-        { q: t('contact.faq.1.questions.0.q'), r: t('contact.faq.1.questions.0.r') },
+        { q: t('contact.faq.1.questions.0.q'), r: t('contact.faq.1.questions.0.r', limites) },
         { q: t('contact.faq.1.questions.1.q'), r: t('contact.faq.1.questions.1.r') },
         { q: t('contact.faq.1.questions.2.q'), r: t('contact.faq.1.questions.2.r') },
-        { q: t('contact.faq.1.questions.3.q'), r: t('contact.faq.1.questions.3.r') },
+        { q: t('contact.faq.1.questions.3.q'), r: t('contact.faq.1.questions.3.r', limites) },
         { q: t('contact.faq.1.questions.4.q'), r: t('contact.faq.1.questions.4.r') },
         { q: t('contact.faq.1.questions.5.q'), r: t('contact.faq.1.questions.5.r') },
       ]
@@ -71,7 +72,8 @@ function getContacts(t) {
 
 export default function Contact() {
   var t = useTranslation('public').t;
-  var FAQ_CATEGORIES = getFaqCategories(t);
+  var limites = useLimitesPlans();
+  var FAQ_CATEGORIES = getFaqCategories(t, limites);
   var CONTACTS = getContacts(t);
   var navigate = useNavigate();
   var [openFaq, setOpenFaq] = useState(null);

@@ -122,7 +122,7 @@
       { "titre": "Messagerie intégrée", "desc": "Communiquez directement avec locataires et propriétaires." },
       { "titre": "Rapports financiers", "desc": "Suivez vos revenus mois par mois avec des graphiques clairs." },
       { "titre": "Notations mutuelles", "desc": "Locataires et propriétaires se notent après chaque location." },
-      { "titre": "Multi-logements", "desc": "Gérez jusqu'à 25 biens depuis un seul tableau de bord." }
+      { "titre": "Multi-logements", "desc": "Gérez jusqu'à {{pro}} biens depuis un seul tableau de bord." }
     ],
     "pricingSection": {
       "overline": "Tarifs",
@@ -142,7 +142,7 @@
       },
       "pro": {
         "nom": "Pro",
-        "sousTitre": "Jusqu'à 20 biens",
+        "sousTitre": "Jusqu'à {{pro}} biens",
         "cta": "Essai gratuit 1 mois",
         "features": ["Orange Money + MTN MoMo", "Baux et quittances PDF", "Alertes automatiques", "Rapports financiers", "Essai 1 mois"]
       },
@@ -181,7 +181,7 @@
       { "q": "Comment fonctionne l'essai Pro / Agence ?", "r": "1 mois complet d'accès au plan choisi, sans paiement requis. À la fin, vous choisissez de continuer ou non." },
       { "q": "Quels modes de paiement sont acceptés ?", "r": "Orange Money, MTN MoMo, espèces et virement bancaire (BICIGUI, Ecobank)." },
       { "q": "Mes données sont-elles sécurisées ?", "r": "Oui. HTTPS, mots de passe hachés, 2FA admin, aucune donnée bancaire stockée." },
-      { "q": "Puis-je gérer plusieurs logements ?", "r": "Oui. Le plan Pro permet jusqu'à 20 biens, le plan Agence est illimité." }
+      { "q": "Puis-je gérer plusieurs logements ?", "r": "Oui. Le plan Pro permet jusqu'à {{pro}} biens, le plan Agence est illimité." }
     ],
     "ctaFinal": {
       "title": "Prêt à commencer ?",
@@ -299,7 +299,7 @@
       },
       "pro": {
         "type": "Pro",
-        "sousTitre": "Jusqu'a 20 biens",
+        "sousTitre": "Jusqu'à {{pro}} biens",
         "features": ["Orange Money + MTN MoMo", "Baux et quittances PDF", "Annuaire logements", "Rapports financiers"]
       },
       "agence": {
@@ -635,10 +635,10 @@
       {
         "categorie": "Pour les propriétaires",
         "questions": [
-          { "q": "Combien coûte Werdhe pour les propriétaires ?", "r": "Le plan Gratuit permet de gérer jusqu'à 2 biens. Le plan Pro (120 000 GNF/mois) permet jusqu'à 25 biens avec des fonctionnalités avancées. Le plan Agence (300 000 GNF/mois) offre des biens illimités. Essai Pro 14 jours gratuit sans engagement." },
+          { "q": "Combien coûte Werdhe pour les propriétaires ?", "r": "Le plan Gratuit permet de gérer jusqu'à {{gratuit}} biens. Le plan Pro (120 000 GNF/mois) permet jusqu'à {{pro}} biens avec des fonctionnalités avancées. Le plan Agence (300 000 GNF/mois) offre des biens illimités. Essai Pro d'1 mois gratuit sans engagement." },
           { "q": "Comment publier mon premier bien ?", "r": "Dans votre dashboard, cliquez sur \"+ Ajouter un bien\", remplissez les informations (titre, adresse, prix, superficie) et ajoutez des photos. Votre logement est publié immédiatement." },
           { "q": "Comment fonctionne la commission Werdhe ?", "r": "Werdhe perçoit 5% sur chaque loyer encaissé via la plateforme. Cette commission est automatiquement calculée. Elle couvre l'ensemble des services : génération de documents, alertes, messagerie, etc." },
-          { "q": "Puis-je gérer plusieurs logements ?", "r": "Oui. Avec le plan Pro, gérez jusqu'à 25 biens. Le plan Agence offre des biens illimités avec gestion multi-utilisateurs. Depuis votre dashboard, chaque bien a sa propre fiche avec ses locataires et paiements." },
+          { "q": "Puis-je gérer plusieurs logements ?", "r": "Oui. Avec le plan Pro, gérez jusqu'à {{pro}} biens. Le plan Agence offre des biens illimités avec gestion multi-utilisateurs. Depuis votre dashboard, chaque bien a sa propre fiche avec ses locataires et paiements." },
           { "q": "Comment générer une quittance de loyer ?", "r": "Dans l'onglet \"Documents\", sélectionnez le bien et le locataire, choisissez \"Quittance de loyer\" et cliquez \"Générer\". La quittance est créée en PDF et envoyée automatiquement au locataire par email." },
           { "q": "Que se passe-t-il si un locataire ne paie pas ?", "r": "Le système envoie automatiquement une alerte à J+3 et une mise en demeure à J+5. Vous recevez une notification et un email. Des modèles de lettres officielles sont disponibles dans la section Documents." }
         ]
@@ -836,8 +836,8 @@
       "pro": {
         "nom": "Pro",
         "badge": "1 mois gratuit",
-        "sousTitre": "Jusqu'à 20 logements",
-        "features": ["Jusqu'à 20 logements", "Candidatures et dossiers en ligne", "Paiement en ligne (Orange Money, MTN MoMo, Kulu, carte)", "Baux et quittances PDF auto", "Alertes loyers J-3 / J+5", "Rapports financiers + export CSV", "Messagerie avec accusé de lecture", "Score de confiance locataires", "Support email prioritaire"],
+        "sousTitre": "Jusqu'à {{pro}} logements",
+        "features": ["Jusqu'à {{pro}} logements", "Candidatures et dossiers en ligne", "Paiement en ligne (Orange Money, MTN MoMo, Kulu, carte)", "Baux et quittances PDF auto", "Alertes loyers J-3 / J+5", "Rapports financiers + export CSV", "Messagerie avec accusé de lecture", "Score de confiance locataires", "Support email prioritaire"],
         "nonInclus": ["Multi-utilisateurs", "Logements illimités"]
       },
       "agence": {

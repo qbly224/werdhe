@@ -3,7 +3,8 @@ const router  = express.Router();
 const db      = require('../database');
 const verifierToken = require('../middleware/auth');
 const resoudreProprietaireEffectif = require('../middleware/equipe');
-const { getPlan, FONCTIONNALITES } = require('../middleware/verifierPlan');
+const { getPlan } = require('../middleware/verifierPlan');
+const { PLANS, limitesPubliques } = require('../config/plans');
 const djomyService = require('../services/djomyService');
 const { remettreEnLigneBiens, activerAbonnementPaye, marquerFactureEchouee } = require('../services/abonnementService');
 
@@ -24,12 +25,17 @@ function genererReference() {
   return 'WRD-ABO-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6).toUpperCase();
 }
 
+// ─── LIMITES PAR PLAN (public : pages Tarifs, accueil, FAQ) ───────
+router.get('/plans', function(req, res) {
+  res.json({ plans: limitesPubliques() });
+});
+
 // ─── MON ABONNEMENT ACTUEL ───────────────────────────────────────
 router.get('/mon-plan', verifierToken, resoudreProprietaireEffectif, async (req, res) => {
   try {
     var proprietaireId = req.proprietaireEffectifId;
     var plan   = await getPlan(proprietaireId);
-    var droits = FONCTIONNALITES[plan] || FONCTIONNALITES.gratuit;
+    var droits = PLANS[plan] || PLANS.gratuit;
 
     var nbBiens = await db.query(
       'SELECT COUNT(*) FROM logements WHERE proprietaire_id = $1',

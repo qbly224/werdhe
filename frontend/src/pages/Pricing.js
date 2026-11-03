@@ -11,6 +11,7 @@ import Logo from '../components/Logo';
 import { useTranslation } from 'react-i18next';
 import BlueprintPattern, { PlanMasseMotif } from '../components/BlueprintPattern';
 import OdometerNumber from '../components/OdometerNumber';
+import useLimitesPlans from '../hooks/useLimitesPlans';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
 var gradientOr = { background: 'linear-gradient(135deg, #F5A623 0%, #FFD98E 55%, #F5A623 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' };
@@ -23,7 +24,7 @@ function getCycles(t) {
   };
 }
 
-function getPlans(t) {
+function getPlans(t, limites) {
   return [
     {
       id:         'gratuit',
@@ -51,9 +52,9 @@ function getPlans(t) {
       bg:        '#E8F5E9',
       badge:     t('pricing.plans.pro.badge'),
       recommande: true,
-      sous_titre: t('pricing.plans.pro.sousTitre'),
+      sous_titre: t('pricing.plans.pro.sousTitre', limites),
       features: [
-        t('pricing.plans.pro.features.0'),
+        t('pricing.plans.pro.features.0', limites),
         t('pricing.plans.pro.features.1'),
         t('pricing.plans.pro.features.2'),
         t('pricing.plans.pro.features.3'),
@@ -106,7 +107,8 @@ function getFaqItems(t) {
 export default function Pricing() {
   var t                   = useTranslation('public').t;
   var CYCLES              = getCycles(t);
-  var PLANS               = getPlans(t);
+  var limites             = useLimitesPlans();
+  var PLANS               = getPlans(t, limites);
   var FAQ_ITEMS           = getFaqItems(t);
   var navigate            = useNavigate();
   var { user }             = useAuth();

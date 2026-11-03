@@ -368,7 +368,7 @@
   "onboardingProprietaire": {
     "plans": {
       "gratuitTitre": "Free - 0 GNF/month",
-      "gratuitDesc": "Up to 2 properties · Basic management",
+      "gratuitDesc": "Up to {{gratuit}} properties · Basic management",
       "proTitre": "Pro - 120,000 GNF/month",
       "proDesc": "Mobile Money + Cash + Documents + Reports",
       "agenceTitre": "Agency - 300,000 GNF/month",
@@ -471,21 +471,21 @@
       },
       "etape1": {
         "titre": "Choose your plan",
-        "desc": "Start with a free 14-day Pro trial",
+        "desc": "Start with a free 1-month Pro trial",
         "gratuit": {
           "nom": "Free",
           "prix": "0 GNF",
-          "desc": "Up to 2 properties",
-          "feature1": "2 properties max",
+          "desc": "Up to {{gratuit}} properties",
+          "feature1": "{{gratuit}} properties max",
           "feature2": "Basic applications",
           "feature3": "Messaging"
         },
         "pro": {
           "nom": "Pro",
           "prix": "120,000 GNF/month",
-          "desc": "Up to 25 properties · 14 days free",
+          "desc": "Up to {{pro}} properties · 1 month free",
           "badge": "Recommended",
-          "feature1": "25 properties",
+          "feature1": "{{pro}} properties",
           "feature2": "Orange Money + MTN",
           "feature3": "PDF documents",
           "feature4": "Automatic alerts",

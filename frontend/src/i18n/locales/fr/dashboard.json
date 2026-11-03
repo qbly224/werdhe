@@ -19,7 +19,7 @@
       "documentsPdf": "La génération de baux et quittances PDF est disponible à partir du plan Pro.",
       "annuaire": "La visibilité dans l'annuaire Werdhe est disponible à partir du plan Pro.",
       "rapports": "Les rapports financiers sont disponibles à partir du plan Pro.",
-      "maxBiens": "Vous avez atteint la limite de 2 biens du plan Gratuit. Passez au plan Pro pour jusqu'à 25 biens.",
+      "maxBiens": "Vous avez atteint la limite de {{gratuit}} biens du plan Gratuit. Passez au plan Pro pour jusqu'à {{pro}} biens.",
       "multiUsers": "Les comptes multi-utilisateurs (jusqu'à 5 membres d'équipe) sont disponibles avec le plan Agence.",
       "defaut": "Passez au plan supérieur pour accéder à cette fonctionnalité."
     }
@@ -126,7 +126,7 @@
     "preavisEnvoye": "Préavis envoyé",
     "occupe": "• Occupé",
     "locataireDepuisLe": "{{prenom}} {{nom}} · Depuis le {{date}}",
-    "limiteAtteinte20": "Limite de 20 logements atteinte.",
+    "limiteAtteinte": "Limite de {{max}} logements atteinte.",
     "passerPlanAgence": "Passer au plan Agence →",
     "locataire": {
       "titre": "Mes locations",
@@ -311,7 +311,7 @@
     },
     "logementsIllimites": {
       "titre": "Logements illimités",
-      "desc": "Vous avez atteint la limite de 20 logements du plan Pro. Passez au plan Agence pour des biens illimités."
+      "desc": "Vous avez atteint la limite de {{pro}} logements du plan Pro. Passez au plan Agence pour des biens illimités."
     },
     "defaut": {
       "titre": "Fonctionnalité Agence",
