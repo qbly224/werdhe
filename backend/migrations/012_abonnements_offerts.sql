@@ -26,7 +26,7 @@ ALTER TABLE abonnements
   ADD CONSTRAINT abonnements_offert_motif_check
     CHECK (offert_motif IN ('collaborateur', 'partenaire', 'pilote', 'geste_commercial')),
   ADD CONSTRAINT abonnements_offert_coherence CHECK (
-    (source = 'offert' AND plan <> 'gratuit' AND offert_motif IS NOT NULL AND offert_par IS NOT NULL)
+    (source = 'offert' AND plan IS NOT NULL AND plan <> 'gratuit' AND offert_motif IS NOT NULL AND offert_par IS NOT NULL)
     OR
     (source <> 'offert' AND offert_motif IS NULL AND offert_par IS NULL AND offert_jusqu_au IS NULL)
   );
@@ -45,6 +45,7 @@ ALTER TABLE factures_abonnements
   ADD CONSTRAINT factures_manuel_coherence CHECK (
     origine <> 'manuel'
     OR (enregistre_par IS NOT NULL
+        AND operateur IS NOT NULL
         AND operateur IN ('orange_money', 'mtn_momo', 'especes', 'virement'))
   );
 
