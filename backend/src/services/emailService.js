@@ -1,4 +1,5 @@
 const { Resend } = require('resend');
+const { PLANS } = require('../config/plans');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -412,6 +413,58 @@ const envoyerEmailSupport = async (compte, sujet, message) => {
     </div>`, 'Support Agence'));
 };
 
+// ─── ACCÈS OFFERTS (actions admin) ──────────────────────────────────
+// Le motif interne choisi par l'admin n'apparaît jamais ici : seul le
+// message facultatif « au propriétaire » est transmis.
+function nomPlan(plan) { return plan === 'agence' ? 'Agence' : plan === 'pro' ? 'Pro' : 'Gratuit'; }
+function dateFr(iso) { return String(iso).split('-').reverse().join('/'); }
+function blocMessage(message) {
+  if (!message) return '';
+  return `<div style="border-left:3px solid #F5A623;background:#FFFBF0;padding:12px 16px;margin:16px 0;border-radius:0 8px 8px 0;">
+    <p style="font-size:13px;color:#555;line-height:1.7;margin:0;white-space:pre-wrap;">${echapperHtml(message)}</p>
+  </div>`;
+}
+
+const emailAccesOffert = async (user, infos) => {
+  var plan = nomPlan(infos.plan);
+  var duree = infos.jusquau ? 'jusqu\'au <strong>' + dateFr(infos.jusquau) + '</strong>' : 'sans limite de durée';
+  return envoyer(user.email, 'Votre accès ' + plan + ' Werdhe vous est offert', templateBase(`
+    ${hdr('linear-gradient(135deg,#1B2B22,#1B6B3A)', '', 'Un accès ' + plan + ' vous est offert', 'De la part de l\'équipe Werdhe')}
+    <div style="padding:24px;">
+      <p style="font-size:14px;color:#555;line-height:1.7;">Bonjour <strong>${echapperHtml(user.prenom)}</strong>, l'équipe Werdhe vous offre l'accès au plan <strong>${plan}</strong>, ${duree}.</p>
+      ${blocMessage(infos.message)}
+      ${btn('Ouvrir mon tableau de bord', 'https://werdhe.com/dashboard', '#1B6B3A')}
+    </div>`, 'Accès offert'));
+};
+
+const emailAccesOffertBientotTermine = async (user, infos) => {
+  var plan = nomPlan(infos.plan);
+  var jours = infos.jours + ' jour' + (infos.jours > 1 ? 's' : '');
+  return envoyer(user.email, 'Votre accès offert Werdhe se termine dans ' + jours, templateBase(`
+    ${hdr('#F5A623', '', 'Votre accès offert se termine bientôt', 'Plan ' + plan)}
+    <div style="padding:24px;">
+      <p style="font-size:14px;color:#555;line-height:1.7;">Bonjour <strong>${echapperHtml(user.prenom)}</strong>, votre accès offert au plan <strong>${plan}</strong> se termine le <strong>${dateFr(infos.jusquau)}</strong> (dans ${jours}).</p>
+      <p style="font-size:14px;color:#555;line-height:1.7;">Ensuite, votre compte repassera au plan Gratuit (${PLANS.gratuit.max_biens} logements). Aucune donnée ne sera supprimée ; les biens au-delà de cette limite seront simplement masqués. Pour garder toutes les fonctionnalités, choisissez un abonnement.</p>
+      ${btn('Voir les abonnements', 'https://werdhe.com/pricing', '#1B6B3A')}
+    </div>`, 'Fin d\'accès offert'));
+};
+
+const emailAccesRevoque = async (user, infos) => {
+  var plan = nomPlan(infos.plan);
+  var cause = infos.motifFin === 'echeance' ? 'est arrivé à échéance' : 'a pris fin';
+  var masques = infos.nbMasques > 0
+    ? `<p style="font-size:14px;color:#555;line-height:1.7;">${infos.nbMasques} bien${infos.nbMasques > 1 ? 's' : ''} au-delà de la limite du plan Gratuit (${PLANS.gratuit.max_biens} logements) ${infos.nbMasques > 1 ? 'sont masqués' : 'est masqué'} : ${infos.nbMasques > 1 ? 'ils' : 'il'} ne ${infos.nbMasques > 1 ? 'sont' : 'est'} pas supprimé${infos.nbMasques > 1 ? 's' : ''} et ${infos.nbMasques > 1 ? 'reviendront' : 'reviendra'} en ligne avec un abonnement.</p>`
+    : '';
+  return envoyer(user.email, 'Votre accès offert Werdhe est terminé', templateBase(`
+    ${hdr('#1B2B22', '', 'Votre accès offert est terminé', 'Plan ' + plan)}
+    <div style="padding:24px;">
+      <p style="font-size:14px;color:#555;line-height:1.7;">Bonjour <strong>${echapperHtml(user.prenom)}</strong>, votre accès offert au plan <strong>${plan}</strong> ${cause}. Votre compte repasse au plan Gratuit ; toutes vos données sont conservées.</p>
+      ${masques}
+      ${blocMessage(infos.message)}
+      ${btn('Voir les abonnements', 'https://werdhe.com/pricing', '#1B6B3A')}
+    </div>`, 'Accès offert terminé'));
+};
+
 module.exports = {
   envoyerEmailReset,
   envoyerEmailDocument,
@@ -429,4 +482,7 @@ module.exports = {
   emailInvitationEquipe,
   emailRapportMensuel,
   envoyerEmailSupport,
+  emailAccesOffert,
+  emailAccesOffertBientotTermine,
+  emailAccesRevoque,
 };

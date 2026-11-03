@@ -6,10 +6,23 @@ const { PLANS } = require('../config/plans');
 async function getPlan(userId) {
   try {
     var result = await db.query(
-      `SELECT plan FROM users WHERE id = $1`,
+      `SELECT u.plan,
+              (a.source = 'offert' AND a.offert_jusqu_au IS NOT NULL AND a.offert_jusqu_au < CURRENT_DATE) AS offre_echue
+       FROM users u LEFT JOIN abonnements a ON a.user_id = u.id
+       WHERE u.id = $1`,
       [userId]
     );
-    return result.rows[0] ? result.rows[0].plan : 'gratuit';
+    var ligne = result.rows[0];
+    if (!ligne) return 'gratuit';
+
+    // Un accès offert échu ne donne plus aucun droit, sans attendre le CRON
+    // quotidien (qui peut avoir manqué son passage) : on le clôture à la volée.
+    if (ligne.offre_echue) {
+      require('../services/adminAbonnementService').expirerOffre(userId)
+        .catch(function(err) { console.warn('[getPlan] Expiration accès offert:', err.message); });
+      return 'gratuit';
+    }
+    return ligne.plan;
   } catch (err) {
     return 'gratuit';
   }

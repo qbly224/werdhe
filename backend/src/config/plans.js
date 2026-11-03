@@ -40,6 +40,9 @@ var PLANS = {
   }
 };
 
+// Prix de base (GNF / mois)
+var PRIX_MENSUEL = { pro: 120000, agence: 300000 };
+
 function limiteBiens(plan) {
   return (PLANS[plan] || PLANS.gratuit).max_biens;
 }
@@ -56,4 +59,4 @@ function limitesPubliques() {
   return sortie;
 }
 
-module.exports = { PLANS, limiteBiens, limitesPubliques };
+module.exports = { PLANS, PRIX_MENSUEL, limiteBiens, limitesPubliques };

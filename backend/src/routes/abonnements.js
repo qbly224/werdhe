@@ -4,12 +4,11 @@ const db      = require('../database');
 const verifierToken = require('../middleware/auth');
 const resoudreProprietaireEffectif = require('../middleware/equipe');
 const { getPlan } = require('../middleware/verifierPlan');
-const { PLANS, limitesPubliques } = require('../config/plans');
+const { PLANS, PRIX_MENSUEL, limitesPubliques } = require('../config/plans');
 const djomyService = require('../services/djomyService');
 const { remettreEnLigneBiens, activerAbonnementPaye, marquerFactureEchouee } = require('../services/abonnementService');
 
-// Prix de base (GNF / mois) et cycles de facturation disponibles
-var PRIX_MENSUEL = { pro: 120000, agence: 300000 };
+// Cycles de facturation disponibles
 var CYCLES = {
   mensuel:    { mois: 1,  reduction: 0    },
   semestriel: { mois: 6,  reduction: 0.10 },
@@ -122,7 +121,7 @@ router.post('/essai', verifierToken, async (req, res) => {
 
     var maj = await db.query(
       `UPDATE abonnements
-       SET plan = $1, statut = 'essai', date_fin = $2, essai_termine = TRUE,
+       SET plan = $1, statut = 'essai', source = 'essai', date_fin = $2, essai_termine = TRUE,
            rappel_j3_envoye = FALSE, rappel_j5_envoye = FALSE,
            rappel_j7_avant_envoye = FALSE, rappel_j3_avant_envoye = FALSE, rappel_j1_avant_envoye = FALSE
        WHERE user_id = $3`,
@@ -131,8 +130,8 @@ router.post('/essai', verifierToken, async (req, res) => {
 
     if (maj.rowCount === 0) {
       await db.query(
-        `INSERT INTO abonnements (user_id, plan, statut, date_fin, essai_termine)
-         VALUES ($1, $2, 'essai', $3, TRUE)`,
+        `INSERT INTO abonnements (user_id, plan, statut, source, date_fin, essai_termine)
+         VALUES ($1, $2, 'essai', 'essai', $3, TRUE)`,
         [req.user.id, plan, dateFin]
       );
     }

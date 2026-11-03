@@ -12,6 +12,7 @@ import {
   Lock, Ban, Unlock, Pause, Play, FileText, Flag, Download, EyeOff, Eye,
 } from 'lucide-react';
 import Logo from '../components/Logo';
+import PanneauAbonnement, { BadgeSource } from '../components/admin/PanneauAbonnement';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n) + ' GNF'; };
 
@@ -33,6 +34,8 @@ export default function Admin() {
   var [searchUser, setSearchUser]   = useState('');
   var [filterRole, setFilterRole]   = useState('tous');
   var [filterStatut, setFilterStatut] = useState('tous');
+  var [filterSource, setFilterSource] = useState('tous');
+  var [panneauUserId, setPanneauUserId] = useState(null);
   var intervalRef = useRef(null);
   var [codesPromo, setCodesPromo]   = useState([]);
   var [logsAudit, setLogsAudit]     = useState([]);
@@ -229,7 +232,8 @@ export default function Admin() {
   var usersFiltres = users.filter(function(u) {
     var matchSearch = !searchUser || (u.nom + ' ' + u.prenom + ' ' + u.email).toLowerCase().includes(searchUser.toLowerCase());
     var matchRole   = filterRole === 'tous' || u.role === filterRole;
-    return matchSearch && matchRole;
+    var matchSource = filterSource === 'tous' || u.source === filterSource;
+    return matchSearch && matchRole && matchSource;
   });
 
   var reservationsFiltrees = reservations.filter(function(r) {
@@ -579,19 +583,26 @@ var NAV = [
                 </h1>
                 <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.users.compteur', { filtres: usersFiltres.length, total: users.length })}</p>
               </div>
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                   <Search size={14} strokeWidth={2} style={{ position: 'absolute', left: 12, color: '#aaa', pointerEvents: 'none' }} />
                   <input type="text" placeholder={t('admin.users.rechercherPlaceholder')} value={searchUser}
                     onChange={function(e) { setSearchUser(e.target.value); }}
-                    style={{ padding: '9px 14px 9px 34px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none' }} />
+                    style={{ padding: '9px 14px 9px 34px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', marginBottom: 0 }} />
                 </div>
                 <select value={filterRole} onChange={function(e) { setFilterRole(e.target.value); }}
-                  style={{ padding: '9px 14px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: '#fff' }}>
+                  style={{ padding: '9px 14px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: '#fff', width: 'auto', marginBottom: 0 }}>
                   <option value="tous">{t('admin.users.filtreTousRoles')}</option>
                   <option value="locataire">{t('admin.users.filtreLocataires')}</option>
                   <option value="proprietaire">{t('admin.users.filtreProprietaires')}</option>
                   <option value="admin">{t('admin.users.filtreAdmins')}</option>
+                </select>
+                <select aria-label="Filtrer par source d'abonnement" value={filterSource} onChange={function(e) { setFilterSource(e.target.value); }}
+                  style={{ padding: '9px 14px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: '#fff', width: 'auto', marginBottom: 0 }}>
+                  <option value="tous">Toutes les sources</option>
+                  <option value="paye">Payé</option>
+                  <option value="essai">Essai</option>
+                  <option value="offert">Offert</option>
                 </select>
               </div>
             </div>
@@ -612,6 +623,7 @@ var NAV = [
                         {u.suspendu && <span style={{ background: '#FFEBEE', color: '#B71C1C', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{t('admin.users.suspendu')}</span>}
                         {u.abonnement_bloque && <span style={{ background: '#FFF3E0', color: '#E65100', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}><Lock size={11} strokeWidth={2} /> {t('admin.users.abonnementImpaye')}</span>}
                         {u.plan && u.plan !== 'gratuit' && <span style={{ background: '#E8F5E9', color: '#1B6B3A', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{u.plan}</span>}
+                        <BadgeSource source={u.source} offertJusqu={u.offert_jusqu_au} />
                       </div>
                       <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{u.email} · {u.telephone || 'N/A'}</div>
                       <div style={{ fontSize: 11, color: '#aaa', marginTop: 2 }}>
@@ -622,6 +634,12 @@ var NAV = [
                       <span style={{ background: roleColor + '20', color: roleColor, borderRadius: 20, padding: '3px 12px', fontSize: 11, fontWeight: 700 }}>
                         {u.role}
                       </span>
+                      {(u.role === 'proprietaire' || u.role === 'les_deux') && (
+                        <button onClick={function() { setPanneauUserId(u.id); }}
+                          style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #C8E6C9', background: '#fff', color: '#1B6B3A', fontSize: 11, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                          <CreditCard size={12} strokeWidth={2} /> Abonnement
+                        </button>
+                      )}
                       {u.role !== 'admin' && (
                         <button onClick={function() { suspendreUser(u.id, u.suspendu); }}
                           style={{ padding: '6px 12px', borderRadius: 8, border: u.suspendu ? '0.5px solid #A5D6A7' : '0.5px solid #FFCDD2', background: u.suspendu ? '#E8F5E9' : '#FFEBEE', color: u.suspendu ? '#1B5E20' : '#B71C1C', fontSize: 11, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
@@ -789,6 +807,65 @@ var NAV = [
           })}
         </div>
 
+        {/* Répartition des comptes et comptes offerts (hors chiffre d'affaires) */}
+        {(revenus.comptes || revenus.offerts) && (
+          <div style={{ marginBottom: 24 }}>
+            {revenus.comptes && (
+              <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginBottom: 14 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 12 }}>Répartition des comptes</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 10 }}>
+                  {[
+                    { label: 'Payants',  val: revenus.comptes.payants,  color: '#1B6B3A', bg: '#E8F5E9' },
+                    { label: 'En essai', val: revenus.comptes.essais,   color: '#1565C0', bg: '#E3F2FD' },
+                    { label: 'Offerts',  val: revenus.comptes.offerts,  color: '#6A1B9A', bg: '#F3E5F5' },
+                    { label: 'Gratuits', val: revenus.comptes.gratuits, color: '#666',    bg: '#F0F0F0' },
+                  ].map(function(c) {
+                    return (
+                      <div key={c.label} style={{ background: c.bg, borderRadius: 12, padding: '12px 14px' }}>
+                        <div style={{ fontSize: 22, fontWeight: 800, color: c.color }}>{c.val || 0}</div>
+                        <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>{c.label}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {revenus.offerts && (
+              <div style={{ background: '#FBF5FC', border: '1px solid #E1BEE7', borderRadius: 14, padding: 20 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#6A1B9A', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  Comptes offerts
+                  <span style={{ background: '#F3E5F5', borderRadius: 20, padding: '2px 10px', fontSize: 12 }}>{revenus.offerts.nb || 0}</span>
+                </div>
+                <p style={{ fontSize: 12, color: '#777', margin: '6px 0 14px', lineHeight: 1.5 }}>
+                  Les comptes offerts ne comptent pas dans le chiffre d’affaires : ils sont présentés à part, avec la valeur mensuelle qu’ils représenteraient s’ils payaient.
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 10 }}>
+                  <div style={{ background: '#fff', borderRadius: 12, padding: '12px 14px' }}>
+                    <div style={{ fontSize: 18, fontWeight: 800, color: '#6A1B9A' }}>{GNF(revenus.offerts.valeur_mensuelle_non_facturee || 0)}</div>
+                    <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>Valeur mensuelle non facturée</div>
+                  </div>
+                  <div style={{ background: '#fff', borderRadius: 12, padding: '12px 14px' }}>
+                    <div style={{ fontSize: 12, color: '#555', lineHeight: 1.8 }}>
+                      <div>Pro : <strong>{(revenus.offerts.par_plan && revenus.offerts.par_plan.pro) || 0}</strong></div>
+                      <div>Agence : <strong>{(revenus.offerts.par_plan && revenus.offerts.par_plan.agence) || 0}</strong></div>
+                    </div>
+                    <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>Par plan</div>
+                  </div>
+                  <div style={{ background: '#fff', borderRadius: 12, padding: '12px 14px' }}>
+                    <div style={{ fontSize: 12, color: '#555', lineHeight: 1.8 }}>
+                      {[['collaborateur', 'Collaborateur'], ['partenaire', 'Partenaire'], ['pilote', 'Pilote'], ['geste_commercial', 'Geste commercial']].map(function(m) {
+                        return <div key={m[0]}>{m[1]} : <strong>{(revenus.offerts.par_motif && revenus.offerts.par_motif[m[0]]) || 0}</strong></div>;
+                      })}
+                    </div>
+                    <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>Par motif</div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Évolution 6 mois */}
         <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>{t('admin.revenus.evolutionTitre')}</div>
@@ -872,22 +949,16 @@ var NAV = [
               <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{u.prenom} {u.nom}</div>
               <div style={{ fontSize: 12, color: '#888' }}>{u.email} · {u.role}</div>
             </div>
-            <select
-              value={u.plan || 'gratuit'}
-              onChange={function(e) {
-                var newPlan = e.target.value;
-                api.patch('/admin/users/' + u.id + '/plan', { plan: newPlan })
-                  .then(function() {
-                    toast.success(t('admin.abonnements.toastMisAJour'));
-                    charger();
-                  })
-                  .catch(function() { toast.error(t('admin.erreurs.generique')); });
-              }}
-              style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, background: '#fff', cursor: 'pointer' }}>
-              <option value="gratuit">{t('admin.plans.gratuit')}</option>
-              <option value="pro">{t('admin.plans.pro')}</option>
-              <option value="agence">{t('admin.plans.agence')}</option>
-            </select>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <span style={{ background: u.plan && u.plan !== 'gratuit' ? '#E8F5E9' : '#F0F0F0', color: u.plan && u.plan !== 'gratuit' ? '#1B6B3A' : '#777', borderRadius: 20, padding: '3px 10px', fontSize: 12, fontWeight: 700, textTransform: 'capitalize' }}>{u.plan || 'gratuit'}</span>
+              <BadgeSource source={u.source} offertJusqu={u.offert_jusqu_au} />
+              {(u.role === 'proprietaire' || u.role === 'les_deux') && (
+                <button onClick={function() { setPanneauUserId(u.id); }}
+                  style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #C8E6C9', background: '#fff', color: '#1B6B3A', fontSize: 12, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <CreditCard size={12} strokeWidth={2} /> Gérer l’abonnement
+                </button>
+              )}
+            </div>
           </div>
         );
       })}
@@ -1263,6 +1334,10 @@ var NAV = [
 )}
 
       </div>
+
+      {panneauUserId && (
+        <PanneauAbonnement userId={panneauUserId} onClose={function() { setPanneauUserId(null); }} onChange={charger} />
+      )}
     </div>
   );
 }
