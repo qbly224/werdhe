@@ -368,7 +368,7 @@
   "onboardingProprietaire": {
     "plans": {
       "gratuitTitre": "Gratuit - 0 GNF/mois",
-      "gratuitDesc": "Jusqu'a 2 biens · Gestion basique",
+      "gratuitDesc": "Jusqu'à {{gratuit}} biens · Gestion basique",
       "proTitre": "Pro - 120 000 GNF/mois",
       "proDesc": "Mobile Money + Especes + Documents + Rapports",
       "agenceTitre": "Agence - 300 000 GNF/mois",
@@ -471,21 +471,21 @@
       },
       "etape1": {
         "titre": "Choisissez votre plan",
-        "desc": "Commencez avec un essai Pro gratuit de 14 jours",
+        "desc": "Commencez avec un essai Pro gratuit d'1 mois",
         "gratuit": {
           "nom": "Gratuit",
           "prix": "0 GNF",
-          "desc": "Jusqu'à 2 logements",
-          "feature1": "2 logements max",
+          "desc": "Jusqu'à {{gratuit}} logements",
+          "feature1": "{{gratuit}} logements max",
           "feature2": "Candidatures de base",
           "feature3": "Messagerie"
         },
         "pro": {
           "nom": "Pro",
           "prix": "120 000 GNF/mois",
-          "desc": "Jusqu'à 25 logements · 14 jours gratuits",
+          "desc": "Jusqu'à {{pro}} logements · 1 mois gratuit",
           "badge": "Recommandé",
-          "feature1": "25 logements",
+          "feature1": "{{pro}} logements",
           "feature2": "Orange Money + MTN",
           "feature3": "Documents PDF",
           "feature4": "Alertes auto",

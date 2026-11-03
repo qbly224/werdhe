@@ -12,6 +12,7 @@ import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import useLimitesPlans from '../hooks/useLimitesPlans';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import OdometerNumber from '../components/OdometerNumber';
 
@@ -71,7 +72,7 @@ function getEtapesLocataire(t) {
   ];
 }
 
-function getFonctionnalites(t) {
+function getFonctionnalites(t, limites) {
   return [
     { icon: <Shield size={20} strokeWidth={1.5} />,       titre: t('landingPage.features.0.titre'),    desc: t('landingPage.features.0.desc') },
     { icon: <FileText size={20} strokeWidth={1.5} />,     titre: t('landingPage.features.1.titre'), desc: t('landingPage.features.1.desc') },
@@ -80,11 +81,11 @@ function getFonctionnalites(t) {
     { icon: <MessageCircle size={20} strokeWidth={1.5} />, titre: t('landingPage.features.4.titre'),   desc: t('landingPage.features.4.desc') },
     { icon: <TrendingUp size={20} strokeWidth={1.5} />,   titre: t('landingPage.features.5.titre'),    desc: t('landingPage.features.5.desc') },
     { icon: <Star size={20} strokeWidth={1.5} />,         titre: t('landingPage.features.6.titre'),    desc: t('landingPage.features.6.desc') },
-    { icon: <Building2 size={20} strokeWidth={1.5} />,    titre: t('landingPage.features.7.titre'),        desc: t('landingPage.features.7.desc') },
+    { icon: <Building2 size={20} strokeWidth={1.5} />,    titre: t('landingPage.features.7.titre'),        desc: t('landingPage.features.7.desc', limites) },
   ];
 }
 
-function getPlans(t) {
+function getPlans(t, limites) {
   return [
     {
       nom: t('landingPage.plans.tenant.nom'),
@@ -106,7 +107,7 @@ function getPlans(t) {
     {
       nom: t('landingPage.plans.pro.nom'),
       prix: 120000,
-      sousTitre: t('landingPage.plans.pro.sousTitre'),
+      sousTitre: t('landingPage.plans.pro.sousTitre', limites),
       couleur: '#1B6B3A',
       bg: '#E8F5E9',
       features: [
@@ -141,20 +142,21 @@ function getPlans(t) {
   ];
 }
 
-function getFaqLanding(t) {
+function getFaqLanding(t, limites) {
   return [
     { q: t('landingPage.faq.0.q'),      r: t('landingPage.faq.0.r') },
     { q: t('landingPage.faq.1.q'),       r: t('landingPage.faq.1.r') },
     { q: t('landingPage.faq.2.q'),          r: t('landingPage.faq.2.r') },
     { q: t('landingPage.faq.3.q'),              r: t('landingPage.faq.3.r') },
-    { q: t('landingPage.faq.4.q'),              r: t('landingPage.faq.4.r') },
+    { q: t('landingPage.faq.4.q'),              r: t('landingPage.faq.4.r', limites) },
   ];
 }
 
 function FaqLanding() {
   var t = useTranslation('public').t;
   var [open, setOpen] = useState(null);
-  var FAQ_LANDING = getFaqLanding(t);
+  var limites = useLimitesPlans();
+  var FAQ_LANDING = getFaqLanding(t, limites);
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {FAQ_LANDING.map(function(item, i) {
@@ -258,8 +260,9 @@ export default function LandingPage() {
   var TEMOIGNAGES          = getTemoignages(t);
   var ETAPES_PROPRIETAIRE  = getEtapesProprietaire(t);
   var ETAPES_LOCATAIRE     = getEtapesLocataire(t);
-  var FONCTIONNALITES      = getFonctionnalites(t);
-  var PLANS                = getPlans(t);
+  var limitesPlans         = useLimitesPlans();
+  var FONCTIONNALITES      = getFonctionnalites(t, limitesPlans);
+  var PLANS                = getPlans(t, limitesPlans);
 
 useEffect(function() {
   function handleMouse(e) {

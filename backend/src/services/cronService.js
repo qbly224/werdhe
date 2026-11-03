@@ -2,7 +2,7 @@ const cron      = require('node-cron');
 const db        = require('../database');
 const { Resend } = require('resend');
 const emailService = require('./emailService');
-const { FONCTIONNALITES } = require('../middleware/verifierPlan');
+const { verrouillerBiensExcedentaires } = require('./abonnementService');
 
 var resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -451,13 +451,15 @@ cron.schedule('0 2 * * 0', async function() {
 cron.schedule('30 8 * * *', async function() {
   console.log('[CRON] Vérification abonnements impayés — ' + new Date().toLocaleDateString('fr-FR'));
   try {
-    // Relance J+3 : abonnement échu depuis exactement 3 jours
+    // Relance J+3 : abonnement échu depuis 3 jours ou plus (rattrape un passage manqué,
+    // le service gratuit Render pouvant dormir à l'heure du CRON), sans dépasser le stade du blocage
     var rappelsJ3 = await db.query(
       `SELECT a.id, a.user_id, a.plan, u.nom, u.prenom, u.email
        FROM abonnements a
        JOIN users u ON a.user_id = u.id
        WHERE a.statut IN ('actif', 'essai')
-         AND a.date_fin::date = (CURRENT_DATE - INTERVAL '3 days')::date
+         AND a.date_fin::date <= (CURRENT_DATE - INTERVAL '3 days')::date
+         AND a.date_fin::date > (CURRENT_DATE - INTERVAL '5 days')::date
          AND a.rappel_j3_envoye IS NOT TRUE`
     );
 
@@ -495,13 +497,14 @@ cron.schedule('30 8 * * *', async function() {
       ).catch(console.warn);
     }
 
-    // Relance finale + blocage J+5 : abonnement échu depuis exactement 5 jours
+    // Relance finale + blocage J+5 : abonnement échu depuis 5 jours ou plus
+    // (le drapeau rappel_j5_envoye garantit un seul traitement par abonnement)
     var blocagesJ5 = await db.query(
       `SELECT a.id, a.user_id, a.plan, u.nom, u.prenom, u.email
        FROM abonnements a
        JOIN users u ON a.user_id = u.id
        WHERE a.statut IN ('actif', 'essai')
-         AND a.date_fin::date = (CURRENT_DATE - INTERVAL '5 days')::date
+         AND a.date_fin::date <= (CURRENT_DATE - INTERVAL '5 days')::date
          AND a.rappel_j5_envoye IS NOT TRUE`
     );
 
@@ -542,19 +545,9 @@ cron.schedule('30 8 * * *', async function() {
       );
 
       // Masquer automatiquement les biens excédant la limite du plan gratuit
-      // (les plus récents restent visibles)
+      // (les plus récents restent visibles, rien n'est supprimé)
       try {
-        var limiteGratuit = FONCTIONNALITES.gratuit.max_biens;
-        await db.query(
-          `UPDATE logements SET statut = 'suspendu', masque_limite_plan = TRUE
-           WHERE id IN (
-             SELECT id FROM logements
-             WHERE proprietaire_id = $1 AND statut != 'suspendu'
-             ORDER BY created_at DESC
-             OFFSET $2
-           )`,
-          [r5.user_id, limiteGratuit]
-        );
+        await verrouillerBiensExcedentaires(r5.user_id, 'gratuit');
       } catch (maskErr) {
         console.warn('[CRON Abonnement J+5] Masquage biens:', maskErr.message);
       }

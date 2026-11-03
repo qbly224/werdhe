@@ -4,11 +4,13 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import useLimitesPlans from '../hooks/useLimitesPlans';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import './Accueil.css';
 
 export default function Accueil() {
   const { t } = useTranslation('public');
+  const limites = useLimitesPlans();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [essaiEnCours, setEssaiEnCours] = useState(null);
@@ -315,7 +317,7 @@ export default function Accueil() {
             <div className="accueil-plan-badge">{t('accueil.pricing.recommande')}</div>
             <div className="accueil-plan-type">{t('accueil.pricing.pro.type')}</div>
             <div className="accueil-plan-price">120 000 <span>{t('accueil.pricing.parMois')}</span></div>
-            <div className="accueil-plan-sub">{t('accueil.pricing.pro.sousTitre')}</div>
+            <div className="accueil-plan-sub">{t('accueil.pricing.pro.sousTitre', limites)}</div>
             <button onClick={function() { choisirPlan('pro'); }} disabled={essaiEnCours === 'pro'}
               className="accueil-btn-green accueil-btn-full" style={{textAlign:'center',display:'block',cursor:essaiEnCours==='pro'?'not-allowed':'pointer'}}>
               {essaiEnCours === 'pro' ? t('accueil.pricing.demarrage') : t('accueil.pricing.essaiGratuit')}

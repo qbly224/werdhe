@@ -594,7 +594,7 @@ router.get('/revenus', verifierToken, verifierAdmin, async (req, res) => {
           COUNT(CASE WHEN plan = 'pro' THEN 1 END) as nb_pro,
           COUNT(CASE WHEN plan = 'agence' THEN 1 END) as nb_agence
         FROM factures_abonnements
-        WHERE statut = 'emise'
+        WHERE statut = 'payee'
           AND created_at >= NOW() - INTERVAL '30 days'
       `),
 

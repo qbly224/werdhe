@@ -1,5 +1,6 @@
 const { GoogleGenAI, createUserContent, createModelContent } = require('@google/genai');
 const db = require('../database');
+const { PLANS } = require('../config/plans');
 
 // 'gemini-flash-latest' pointe vers gemini-3.8-flash, dont le quota gratuit
 // (20 requêtes/jour, par modèle) était épuisé en production. gemini-2.5-flash
@@ -15,7 +16,7 @@ var SYSTEM_PROMPT = `Tu es l'assistant de Werdhe, une plateforme de location imm
 
 Ce que tu dois savoir sur Werdhe :
 - C'est gratuit, pour toujours, pour les locataires : aucun frais d'agence, aucune commission.
-- Les propriétaires ont 3 formules : Gratuit (plan de base), Pro à 120 000 GNF/mois (jusqu'à 20 logements, paiement en ligne, baux et quittances PDF automatiques, alertes de loyer), Agence à 300 000 GNF/mois (logements illimités, multi-utilisateurs). Les plans payants ont 1 mois d'essai gratuit, sans paiement requis.
+- Les propriétaires ont 3 formules : Gratuit (plan de base, jusqu'à ${PLANS.gratuit.max_biens} logements), Pro à 120 000 GNF/mois (jusqu'à ${PLANS.pro.max_biens} logements, paiement en ligne, baux et quittances PDF automatiques, alertes de loyer), Agence à 300 000 GNF/mois (logements illimités, multi-utilisateurs). Les plans payants ont 1 mois d'essai gratuit, sans paiement requis.
 - Modes de paiement acceptés : Orange Money, MTN MoMo, Kulu, carte bancaire (en ligne), espèces ou virement bancaire (BICIGUI, Ecobank).
 - Sécurité : HTTPS, mots de passe hachés, 2FA pour les admins, aucune donnée bancaire stockée.
 - Un locataire peut : chercher un logement, candidater, échanger par messagerie avec le propriétaire, signer son bail électroniquement, payer en ligne.

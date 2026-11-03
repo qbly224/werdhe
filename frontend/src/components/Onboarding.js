@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import useLimitesPlans from '../hooks/useLimitesPlans';
 import {
   Home, Users, FileText, Bell, CreditCard,
   Search, CalendarCheck, Key, ChevronRight,
@@ -20,6 +21,7 @@ function OnboardingProprioAvance({ onTermine }) {
   var auth      = useAuth();
   var user      = auth.user;
   var t         = useTranslation('logements').t;
+  var limites   = useLimitesPlans();
 
   var [etape, setEtape]           = useState(0);
   var [planChoisi, setPlanChoisi] = useState('pro');
@@ -160,20 +162,20 @@ function OnboardingProprioAvance({ onTermine }) {
                   id:    'gratuit',
                   nom:   t('onboarding.proprio.etape1.gratuit.nom'),
                   prix:  t('onboarding.proprio.etape1.gratuit.prix'),
-                  desc:  t('onboarding.proprio.etape1.gratuit.desc'),
+                  desc:  t('onboarding.proprio.etape1.gratuit.desc', limites),
                   color: '#888',
                   bg:    '#F5F5F5',
-                  features: [t('onboarding.proprio.etape1.gratuit.feature1'), t('onboarding.proprio.etape1.gratuit.feature2'), t('onboarding.proprio.etape1.gratuit.feature3')],
+                  features: [t('onboarding.proprio.etape1.gratuit.feature1', limites), t('onboarding.proprio.etape1.gratuit.feature2'), t('onboarding.proprio.etape1.gratuit.feature3')],
                 },
                 {
                   id:    'pro',
                   nom:   t('onboarding.proprio.etape1.pro.nom'),
                   prix:  t('onboarding.proprio.etape1.pro.prix'),
-                  desc:  t('onboarding.proprio.etape1.pro.desc'),
+                  desc:  t('onboarding.proprio.etape1.pro.desc', limites),
                   color: '#1B6B3A',
                   bg:    '#E8F5E9',
                   badge: t('onboarding.proprio.etape1.pro.badge'),
-                  features: [t('onboarding.proprio.etape1.pro.feature1'), t('onboarding.proprio.etape1.pro.feature2'), t('onboarding.proprio.etape1.pro.feature3'), t('onboarding.proprio.etape1.pro.feature4'), t('onboarding.proprio.etape1.pro.feature5')],
+                  features: [t('onboarding.proprio.etape1.pro.feature1', limites), t('onboarding.proprio.etape1.pro.feature2'), t('onboarding.proprio.etape1.pro.feature3'), t('onboarding.proprio.etape1.pro.feature4'), t('onboarding.proprio.etape1.pro.feature5')],
                 },
                 {
                   id:    'agence',

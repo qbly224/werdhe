@@ -1,14 +1,18 @@
 const db = require('../database');
-const { FONCTIONNALITES } = require('../middleware/verifierPlan');
+const { limiteBiens } = require('../config/plans');
 
 // Remettre en ligne les biens masqués automatiquement lors d'une précédente
-// expiration, dans la limite autorisée par le nouveau plan.
+// expiration, dans la limite autorisée par le nouveau plan. Chaque bien
+// retrouve le statut qu'il avait avant le masquage (un bien loué reste loué).
 async function remettreEnLigneBiens(userId, plan) {
   try {
-    var limite = FONCTIONNALITES[plan] ? FONCTIONNALITES[plan].max_biens : 0;
+    var limite = limiteBiens(plan);
     if (!limite) return;
     await db.query(
-      `UPDATE logements SET statut = 'disponible', masque_limite_plan = FALSE
+      `UPDATE logements
+       SET statut = COALESCE(statut_avant_masque, 'disponible'),
+           statut_avant_masque = NULL,
+           masque_limite_plan = FALSE
        WHERE id IN (
          SELECT id FROM logements
          WHERE proprietaire_id = $1 AND masque_limite_plan = TRUE
@@ -20,6 +24,27 @@ async function remettreEnLigneBiens(userId, plan) {
   } catch (err) {
     console.warn('[Abonnement] Remise en ligne biens:', err.message);
   }
+}
+
+// Verrouille (sans rien supprimer) les biens au-delà de la limite du plan :
+// les plus récents restent visibles, les autres sont masqués et leur statut
+// d'origine est mémorisé pour pouvoir être restauré. Renvoie le nombre de
+// biens verrouillés.
+async function verrouillerBiensExcedentaires(userId, plan) {
+  var limite = limiteBiens(plan);
+  if (limite === Infinity) return 0;
+  var res = await db.query(
+    `UPDATE logements
+     SET statut_avant_masque = statut, statut = 'suspendu', masque_limite_plan = TRUE
+     WHERE id IN (
+       SELECT id FROM logements
+       WHERE proprietaire_id = $1 AND statut <> 'suspendu'
+       ORDER BY created_at DESC
+       OFFSET $2
+     )`,
+    [userId, limite]
+  );
+  return res.rowCount;
 }
 
 async function envoyerFactureParEmail(userId, plan, montant, cycle, debut, fin) {
@@ -107,4 +132,4 @@ async function marquerFactureEchouee(factureId) {
   );
 }
 
-module.exports = { activerAbonnementPaye, marquerFactureEchouee, remettreEnLigneBiens };
+module.exports = { activerAbonnementPaye, marquerFactureEchouee, remettreEnLigneBiens, verrouillerBiensExcedentaires };

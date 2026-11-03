@@ -1,44 +1,6 @@
 const db = require('../database');
 
-// Fonctionnalités par plan
-var FONCTIONNALITES = {
-  gratuit: {
-    max_biens:            2,
-    mobile_money:         false,
-    documents_pdf:        false,
-    annuaire:             false,
-    rapports:             false,
-    alertes_auto:         false,
-    multi_users:          false,
-    max_membres:          0,
-    rapport_mensuel:      false,
-    support_prioritaire:  false,
-  },
-  pro: {
-    max_biens:            25,
-    mobile_money:         true,
-    documents_pdf:        true,
-    annuaire:             true,
-    rapports:             true,
-    alertes_auto:         true,
-    multi_users:          false,
-    max_membres:          0,
-    rapport_mensuel:      false,
-    support_prioritaire:  false,
-  },
-  agence: {
-    max_biens:            Infinity,
-    mobile_money:         true,
-    documents_pdf:        true,
-    annuaire:             true,
-    rapports:             true,
-    alertes_auto:         true,
-    multi_users:          true,
-    max_membres:          5,
-    rapport_mensuel:      true,
-    support_prioritaire:  true,
-  }
-};
+const { PLANS } = require('../config/plans');
 
 // Récupérer le plan d'un utilisateur
 async function getPlan(userId) {
@@ -56,7 +18,7 @@ async function getPlan(userId) {
 // Récupérer les droits (fonctionnalités) d'un utilisateur, par son id
 async function obtenirDroits(userId) {
   var plan = await getPlan(userId);
-  return FONCTIONNALITES[plan] || FONCTIONNALITES.gratuit;
+  return PLANS[plan] || PLANS.gratuit;
 }
 
 // Middleware : vérifier une fonctionnalité
@@ -64,7 +26,7 @@ function verifierFonctionnalite(fonctionnalite) {
   return async function(req, res, next) {
     try {
       var plan = await getPlan(req.proprietaireEffectifId || req.user.id);
-      var droits = FONCTIONNALITES[plan] || FONCTIONNALITES.gratuit;
+      var droits = PLANS[plan] || PLANS.gratuit;
 
       if (!droits[fonctionnalite]) {
         return res.status(403).json({
@@ -86,7 +48,7 @@ async function verifierLimiteBiens(req, res, next) {
   try {
     var proprietaireId = req.proprietaireEffectifId || req.user.id;
     var plan = await getPlan(proprietaireId);
-    var droits = FONCTIONNALITES[plan] || FONCTIONNALITES.gratuit;
+    var droits = PLANS[plan] || PLANS.gratuit;
 
     var result = await db.query(
       'SELECT COUNT(*) FROM logements WHERE proprietaire_id = $1',
@@ -109,4 +71,4 @@ async function verifierLimiteBiens(req, res, next) {
   }
 }
 
-module.exports = { verifierFonctionnalite, verifierLimiteBiens, getPlan, obtenirDroits, FONCTIONNALITES };
+module.exports = { verifierFonctionnalite, verifierLimiteBiens, getPlan, obtenirDroits };

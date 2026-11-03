@@ -40,6 +40,7 @@ import { SkeletonKPI, SkeletonListe, SkeletonCard } from '../components/Skeleton
 import TourTooltip from '../components/TourTooltip';
 import useOnboarding from '../hooks/useOnboarding';
 import { useTranslation } from 'react-i18next';
+import useLimitesPlans from '../hooks/useLimitesPlans';
 import i18n, { changerLangue } from '../i18n';
 
 // ================================================
@@ -68,13 +69,14 @@ var DOCS_TYPES = [
 
 function UpgradeBanner({ fonctionnalite, planRequis }) {
   var t = useTranslation('dashboard').t;
+  var limites = useLimitesPlans();
   var navigate = useNavigate();
   var messages = {
     mobile_money:  t('upgradeBanner.messages.mobileMoney'),
     documents_pdf: t('upgradeBanner.messages.documentsPdf'),
     annuaire:      t('upgradeBanner.messages.annuaire'),
     rapports:      t('upgradeBanner.messages.rapports'),
-    max_biens:     t('upgradeBanner.messages.maxBiens'),
+    max_biens:     t('upgradeBanner.messages.maxBiens', limites),
     multi_users:   t('upgradeBanner.messages.multiUsers'),
   };
   return (
@@ -572,10 +574,11 @@ function OngletBiens(props) {
   var recharger = props.recharger;
   var user      = props.user;
   var setOnglet = props.setOnglet;
-  var plan      = props.plan || { plan: 'gratuit', droits: { max_biens: 2 }, nb_biens: 0 };
+  var plan      = props.plan || { plan: 'gratuit', droits: { max_biens: null }, nb_biens: 0 };
   var estProprio = user && (user.role === 'proprietaire' || user.role === 'les_deux');
   // Dans OngletBiens, après la déclaration de limiteAtteinte
-  var limiteAtteinte = plan.nb_biens >= 20 && plan.plan !== 'agence';
+  var maxBiensPlan = plan.droits ? plan.droits.max_biens : null; // null = illimité
+  var limiteAtteinte = maxBiensPlan != null && plan.nb_biens >= maxBiensPlan;
 
   var [showConfirm, setShowConfirm] = useState(null);
   var [modeEdit, setModeEdit]       = useState(null);
@@ -684,7 +687,7 @@ function OngletBiens(props) {
               {limiteAtteinte ? (
   <div style={{ background: '#FFF3E0', border: '1px solid #FFE082', borderRadius: 10, padding: '10px 16px', fontSize: 13, color: '#7B4F00', display: 'flex', alignItems: 'center', gap: 10 }}>
     <AlertCircle size={16} strokeWidth={1.5} color="#E65100" />
-    {t('ongletBiens.limiteAtteinte20')}{' '}
+    {t('ongletBiens.limiteAtteinte', { max: maxBiensPlan })}{' '}
     <button onClick={function() { navigate('/pricing'); }}
       style={{ background: 'none', border: 'none', color: '#7B1FA2', fontWeight: 700, cursor: 'pointer', padding: 0, fontSize: 13 }}>
       {t('ongletBiens.passerPlanAgence')}
@@ -4850,6 +4853,7 @@ function OngletMesLocations(props) {
 }
 function UpgradePrompt({ fonctionnalite, planRequis, setOnglet }) {
   var t = useTranslation('dashboard').t;
+  var limites = useLimitesPlans();
   var navigate = useNavigate();
   var CONFIGS = {
     multi_users: {
@@ -4861,7 +4865,7 @@ function UpgradePrompt({ fonctionnalite, planRequis, setOnglet }) {
     },
     logements_illimites: {
       titre:  t('upgradePrompt.logementsIllimites.titre'),
-      desc:   t('upgradePrompt.logementsIllimites.desc'),
+      desc:   t('upgradePrompt.logementsIllimites.desc', limites),
       icon:   <Building2 size={36} strokeWidth={1} color="#7B1FA2" />,
       bg:     '#F3E5F5',
       color:  '#7B1FA2',
@@ -4905,7 +4909,7 @@ export default function Dashboard() {
   var [showNotif, setShowNotif] = useState(false);
   var [alertes, setAlertes] = useState([]);
   var [stats, setStats] = useState({ logements: [], reservations: [], paiements: [] });
-  var [monPlan, setMonPlan] = useState({ plan: 'gratuit', droits: { max_biens: 2, mobile_money: false, documents_pdf: false }, nb_biens: 0 });
+  var [monPlan, setMonPlan] = useState({ plan: 'gratuit', droits: { max_biens: null, mobile_money: false, documents_pdf: false }, nb_biens: 0 });
   var [showOnboarding, setShowOnboarding] = useState(false);
   var [enLigne, setEnLigne] = useState(navigator.onLine);
 
