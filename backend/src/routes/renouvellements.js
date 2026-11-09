@@ -227,6 +227,10 @@ router.patch('/:id/repondre', verifierToken, gerer(async function(req, res) {
         throw erreur(409, "Cette location n'est plus active");
       }
       var nouvelleFin = ajouterMois(debutDeProlongation(resa.rows[0]), rn.nouvelle_duree_mois);
+      // Valeurs « avant », conservées pour l'avenant (tableau avant / après).
+      await client.query(
+        `UPDATE renouvellements_bail SET date_fin_avant = $1, loyer_avant = $2 WHERE id = $3`,
+        [debutDeProlongation(resa.rows[0]), resa.rows[0].montant_total, rn.id]);
       await client.query(
         `UPDATE reservations SET date_fin = $1, duree_mois = COALESCE(duree_mois, 0) + $2,
            montant_total = COALESCE($3, montant_total), updated_at = NOW()

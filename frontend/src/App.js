@@ -68,6 +68,7 @@ var BlogArticle      = lazy(function() { return import('./pages/BlogArticle'); }
 var Estimation       = lazy(function() { return import('./pages/Estimation'); });
 var RejoindreEquipe  = lazy(function() { return import('./pages/RejoindreEquipe'); });
 var VerifierDocument = lazy(function() { return import('./pages/VerifierDocument'); });
+var SignerActe = lazy(function() { return import('./pages/SignerActe'); });
 
 function RoutePrivee(props) {
   var auth = useAuth();
@@ -137,6 +138,7 @@ function App() {
           <Route path="/estimation" element={<Estimation />} />
           <Route path="/equipe/rejoindre" element={<RoutePrivee><RejoindreEquipe /></RoutePrivee>} />
           <Route path="/verifier/:numero" element={<VerifierDocument />} />
+          <Route path="/signer/:jeton" element={<SignerActe />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
   </Suspense>      

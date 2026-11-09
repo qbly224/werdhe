@@ -948,5 +948,28 @@
       "etat_lieux": "Inspection report", "mise_en_demeure": "Formal notice", "preavis": "Move-out notice",
       "rapport_financier": "Financial report", "caution": "Security deposit", "autre": "Document"
     }
+  },
+  "signerActe": {
+    "titre": "Signing a guarantee agreement",
+    "chargement": "Loading…",
+    "invalide": "This link is invalid, expired or already used",
+    "invalideAide": "Ask the landlord to send you a new link.",
+    "merci": "Signature recorded, thank you",
+    "merciAide": "The landlord and the tenant have been notified. You will receive the final document by e-mail once all signatures are in.",
+    "intro": "{{bailleur}} asks you to act as guarantor for {{locataire}}, tenant of {{logement}}. Read the agreement below, enter your identity, copy the statement and sign.",
+    "identiteTitre": "Your identity",
+    "nom": "Full name",
+    "naissance": "Date of birth",
+    "cni": "ID document number",
+    "adresse": "Address",
+    "profession": "Occupation",
+    "telephone": "Phone",
+    "mentionTitre": "Handwritten statement",
+    "mentionAide": "Copy the following sentence exactly:",
+    "continuer": "Continue to signature",
+    "signatureTitre": "Your signature",
+    "signer": "Sign the agreement",
+    "erreur": "The signature could not be recorded",
+    "accueil": "Back to home"
   }
 }

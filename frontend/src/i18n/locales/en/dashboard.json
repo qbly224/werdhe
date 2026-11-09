@@ -766,6 +766,124 @@
       "signer": "Sign"
     }
   },
+  "actes": {
+    "titre": "Documents to sign",
+    "fermer": "Close",
+    "retour": "Back",
+    "chargement": "Loading…",
+    "erreur": "Something went wrong",
+    "erreurChargement": "Could not load",
+    "erreurTelechargement": "Download error",
+    "explication": "The landlord prepares and signs, then the other party (and the guarantor, without an account) sign in turn. The final document is only generated after all signatures, then it can no longer be edited.",
+    "type": {
+      "avenant": "Lease renewal addendum",
+      "decompte": "Deposit refund statement",
+      "cautionnement": "Guarantee agreement"
+    },
+    "statut": {
+      "brouillon": "Draft",
+      "a_valider": "Awaiting signature",
+      "signe": "Signed by all parties",
+      "genere": "Generated and locked"
+    },
+    "aVousDeSigner": "Your turn to sign",
+    "consulter": "View",
+    "continuer": "Continue",
+    "loyerInchange": "rent unchanged",
+    "avenantProposition": "Renewal accepted: {{n}} additional months, {{loyer}}.",
+    "decompteExplication": "The move-out inspection is generated: enter the justified deductions and draw up the deposit statement.",
+    "cautionExplication": "Have a guarantor sign a guarantee agreement. They receive a link by e-mail and sign without creating an account.",
+    "preparer": {
+      "avenant": "Prepare the addendum",
+      "decompte": "Prepare the statement",
+      "cautionnement": "Prepare the guarantee agreement"
+    },
+    "rien": {
+      "avenant": "No accepted renewal awaiting an addendum for this tenancy.",
+      "decompte": "The statement is available once the move-out inspection is generated.",
+      "cautionnement": "The guarantee agreement is prepared before or during the tenancy."
+    },
+    "rienDuTout": "Nothing to do for now.",
+    "preparePar": "prepared by {{nom}}",
+    "correctionDemandee": "Correction requested:",
+    "aucune": "None",
+    "msg": {
+      "brouillonAutre": "{{nom}} is preparing this document. You will be notified when it is ready to sign.",
+      "aSigner": "{{nom}} prepared and signed this document. Review it, then sign or request a correction.",
+      "attente": "Waiting for the other signatures.",
+      "pretAGenerer": "All signatures are in. Generate the final document: it can no longer be edited afterwards.",
+      "attenteGeneration": "All signatures are in. {{nom}} will generate the final document.",
+      "genere": "The document is generated and locked: you can download it."
+    },
+    "avenant": {
+      "duree": "Duration",
+      "moisSupp": "extension of {{n}} months",
+      "finAvant": "Lease end before",
+      "finApres": "Lease end after",
+      "loyerAvant": "Rent before",
+      "loyerApres": "Rent after",
+      "dateEffet": "Addendum effective date",
+      "clause": "Special clause (optional)"
+    },
+    "decompte": {
+      "depot": "Security deposit paid",
+      "retenues": "Deductions justified by the inspection",
+      "libelle": "Deducted item",
+      "commentaire": "Comment",
+      "constat": "Move-in: {{entree}} → move-out: {{sortie}}",
+      "ajouter": "Add a deduction",
+      "total": "Total deductions",
+      "aRestituer": "Amount to refund",
+      "note": "Note (optional)"
+    },
+    "caution": {
+      "nature": "Type of guarantee",
+      "solidaire": "Joint and several",
+      "simple": "Simple",
+      "montant": "Maximum guaranteed amount (GNF)",
+      "duree": "Duration (months)",
+      "moisN": "{{n}} months",
+      "lien": "Relationship with the tenant",
+      "lienPlaceholder": "E.g. father",
+      "garantNom": "Guarantor's name",
+      "garantEmail": "Guarantor's e-mail",
+      "garantTel": "Guarantor's phone",
+      "explicationGarant": "The guarantor enters their own identity, copies the statement and signs from the link received by e-mail.",
+      "lienTitre": "Guarantor's signature",
+      "garantAsigne": "The guarantor has signed.",
+      "garantAttendu": "Waiting for the guarantor's signature (link valid until {{date}}).",
+      "lienEnvoyeMail": "Link sent by e-mail.",
+      "lienNonEnvoye": "The e-mail could not be sent: send this link yourself (WhatsApp, SMS).",
+      "copier": "Copy the link",
+      "renvoyer": "Send a new link to the guarantor"
+    },
+    "signatures": "Signatures",
+    "role": {
+      "proprietaire": "landlord",
+      "locataire": "tenant",
+      "garant": "guarantor"
+    },
+    "signature": {
+      "titreEnvoi": "Your signature before sending",
+      "titreSigner": "Your signature: {{type}}"
+    },
+    "brouillonEnregistre": "Draft saved",
+    "toastEnvoye": "Sent and signed: the other parties have been notified",
+    "toastSigne": "Signature recorded",
+    "toastCorrection": "Correction requested",
+    "toastGenere": "Document generated and locked",
+    "toastAbandonne": "Abandoned",
+    "lienRenvoye": "New link sent",
+    "lienCopie": "Link copied",
+    "voirApercu": "View the document preview",
+    "masquerApercu": "Hide the preview",
+    "apercu": "Preview",
+    "signerEtEnvoyer": "Sign and send",
+    "relireEtSigner": "Sign",
+    "correctionExplication": "The document goes back to draft, signatures are cleared and the landlord is notified.",
+    "genererAvertissement": "Once generated, the document can no longer be edited: you can only download it. Check one last time.",
+    "abandonner": "Abandon this document"
+  },
   "ongletDocuments": {
     "titre": "Documents",
     "nbDocuments": "{{count}} document(s)",
@@ -808,7 +926,10 @@
       "miseEnDemeure": { "titre": "Formal notice", "desc": "For unpaid rent" },
       "rapportFinancier": { "titre": "Financial report", "desc": "Monthly or yearly revenue" },
       "caution": { "titre": "Deposit / Security", "desc": "Joint deposit agreement" },
-      "preavis": { "titre": "Move-out notice", "desc": "Tenant notice letter" }
+      "preavis": { "titre": "Move-out notice", "desc": "Tenant notice letter" },
+      "avenant": {"titre": "Renewal addendum", "desc": "Record the accepted renewal"},
+      "decompte": {"titre": "Deposit refund", "desc": "Security deposit statement"},
+      "cautionnement": {"titre": "Guarantee agreement", "desc": "Guarantor signing without an account"}
     },
     "cfgDoc": {
       "contratBail": "Lease agreement",
@@ -818,7 +939,10 @@
       "preavis": "Notice",
       "facture": "Invoice",
       "caution": "Deposit receipt",
-      "document": "Document"
+      "document": "Document",
+      "avenant": "Addendum",
+      "decompte": "Refund statement",
+      "cautionnement": "Guarantee agreement"
     }
   },
   "ongletMessages": {

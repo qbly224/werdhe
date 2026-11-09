@@ -137,8 +137,9 @@ function empreinteContenu(edl, role, reserves) {
   return crypto.createHash('sha256').update(canon, 'utf8').digest('hex');
 }
 
-// Valide et normalise une signature (dessinée ou nom tapé).
-function construireSignature(corps, utilisateur, ip, edl, role, reserves) {
+// Valide et normalise une signature (dessinée ou nom tapé). `hash` est l'empreinte
+// du contenu signé, calculée par l'appelant (état des lieux, acte…).
+function validerSignature(corps, utilisateur, ip, role, hash) {
   corps = corps || {};
   if (corps.accepte !== true) throw new Error('Cochez « lu et approuvé » pour signer');
   var mode = corps.mode === 'dessin' ? 'dessin' : 'texte';
@@ -157,12 +158,16 @@ function construireSignature(corps, utilisateur, ip, edl, role, reserves) {
     if (nom.length < 3) throw new Error('Tapez votre nom complet pour signer');
     sig.nom_complet = nom;
   }
-  sig.hash = empreinteContenu(edl, role, reserves);
+  sig.hash = hash;
   return sig;
+}
+
+function construireSignature(corps, utilisateur, ip, edl, role, reserves) {
+  return validerSignature(corps, utilisateur, ip, role, empreinteContenu(edl, role, reserves));
 }
 
 module.exports = {
   ETATS, RANG, LIBELLES_ETAT, LIMITES,
   genererGrille, grilleDepuisEntree, fusionnerGrille, normaliserReleves,
-  grilleComplete, degradations, empreinteContenu, construireSignature, propre
+  grilleComplete, degradations, empreinteContenu, construireSignature, validerSignature, propre
 };

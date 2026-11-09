@@ -948,5 +948,28 @@
       "etat_lieux": "État des lieux", "mise_en_demeure": "Mise en demeure", "preavis": "Préavis",
       "rapport_financier": "Rapport financier", "caution": "Dépôt de garantie", "autre": "Document"
     }
+  },
+  "signerActe": {
+    "titre": "Signature d'un acte de cautionnement",
+    "chargement": "Chargement…",
+    "invalide": "Ce lien est invalide, expiré ou déjà utilisé",
+    "invalideAide": "Demandez au bailleur de vous envoyer un nouveau lien.",
+    "merci": "Signature enregistrée, merci",
+    "merciAide": "Le bailleur et le locataire sont prévenus. Vous recevrez le document final par e-mail une fois toutes les signatures réunies.",
+    "intro": "{{bailleur}} vous demande de vous porter caution pour {{locataire}}, locataire de {{logement}}. Relisez l'acte ci-dessous, renseignez votre identité, recopiez la mention puis signez.",
+    "identiteTitre": "Votre identité",
+    "nom": "Nom complet",
+    "naissance": "Date de naissance",
+    "cni": "Numéro de pièce d'identité",
+    "adresse": "Adresse",
+    "profession": "Profession",
+    "telephone": "Téléphone",
+    "mentionTitre": "Mention manuscrite",
+    "mentionAide": "Recopiez exactement la phrase suivante :",
+    "continuer": "Continuer vers la signature",
+    "signatureTitre": "Votre signature",
+    "signer": "Signer l'acte",
+    "erreur": "La signature n'a pas pu être enregistrée",
+    "accueil": "Retour à l'accueil"
   }
 }

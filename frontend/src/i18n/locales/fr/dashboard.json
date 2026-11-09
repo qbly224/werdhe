@@ -766,6 +766,124 @@
       "signer": "Signer"
     }
   },
+  "actes": {
+    "titre": "Documents à signer",
+    "fermer": "Fermer",
+    "retour": "Retour",
+    "chargement": "Chargement…",
+    "erreur": "Une erreur est survenue",
+    "erreurChargement": "Impossible de charger",
+    "erreurTelechargement": "Erreur de téléchargement",
+    "explication": "Le bailleur prépare et signe, puis l'autre partie (et le garant, sans compte) signent à leur tour. Le document final n'est généré qu'après toutes les signatures, puis il ne peut plus être modifié.",
+    "type": {
+      "avenant": "Avenant de renouvellement",
+      "decompte": "Restitution de la caution",
+      "cautionnement": "Acte de cautionnement"
+    },
+    "statut": {
+      "brouillon": "Brouillon",
+      "a_valider": "En attente de signature",
+      "signe": "Signé par toutes les parties",
+      "genere": "Généré et verrouillé"
+    },
+    "aVousDeSigner": "À vous de signer",
+    "consulter": "Consulter",
+    "continuer": "Continuer",
+    "loyerInchange": "loyer inchangé",
+    "avenantProposition": "Renouvellement accepté : {{n}} mois supplémentaires, {{loyer}}.",
+    "decompteExplication": "L'état des lieux de sortie est généré : chiffrez les retenues justifiées et établissez le décompte du dépôt de garantie.",
+    "cautionExplication": "Faites signer un acte de cautionnement à un garant. Il reçoit un lien par e-mail et signe sans créer de compte.",
+    "preparer": {
+      "avenant": "Préparer l'avenant",
+      "decompte": "Préparer le décompte",
+      "cautionnement": "Préparer l'acte de cautionnement"
+    },
+    "rien": {
+      "avenant": "Aucun renouvellement accepté en attente d'avenant pour cette location.",
+      "decompte": "Le décompte est disponible une fois l'état des lieux de sortie généré.",
+      "cautionnement": "L'acte de cautionnement se prépare avant ou pendant la location."
+    },
+    "rienDuTout": "Rien à faire pour le moment.",
+    "preparePar": "préparé par {{nom}}",
+    "correctionDemandee": "Correction demandée :",
+    "aucune": "Aucune",
+    "msg": {
+      "brouillonAutre": "{{nom}} prépare ce document. Vous serez prévenu(e) quand il sera prêt à signer.",
+      "aSigner": "{{nom}} a préparé et signé ce document. Relisez-le, puis signez ou demandez une correction.",
+      "attente": "En attente des autres signatures.",
+      "pretAGenerer": "Toutes les signatures sont là. Générez le document final : il ne pourra plus être modifié.",
+      "attenteGeneration": "Toutes les signatures sont là. {{nom}} va générer le document final.",
+      "genere": "Le document est généré et verrouillé : vous pouvez le télécharger."
+    },
+    "avenant": {
+      "duree": "Durée",
+      "moisSupp": "prolongation de {{n}} mois",
+      "finAvant": "Fin du bail avant",
+      "finApres": "Fin du bail après",
+      "loyerAvant": "Loyer avant",
+      "loyerApres": "Loyer après",
+      "dateEffet": "Date d'effet de l'avenant",
+      "clause": "Clause particulière (facultatif)"
+    },
+    "decompte": {
+      "depot": "Dépôt de garantie versé",
+      "retenues": "Retenues justifiées par l'état des lieux",
+      "libelle": "Élément retenu",
+      "commentaire": "Commentaire",
+      "constat": "Entrée : {{entree}} → sortie : {{sortie}}",
+      "ajouter": "Ajouter une retenue",
+      "total": "Total des retenues",
+      "aRestituer": "Somme à restituer",
+      "note": "Note (facultatif)"
+    },
+    "caution": {
+      "nature": "Nature de la caution",
+      "solidaire": "Solidaire",
+      "simple": "Simple",
+      "montant": "Montant maximal garanti (GNF)",
+      "duree": "Durée (mois)",
+      "moisN": "{{n}} mois",
+      "lien": "Lien avec le locataire",
+      "lienPlaceholder": "Ex. : père",
+      "garantNom": "Nom du garant",
+      "garantEmail": "E-mail du garant",
+      "garantTel": "Téléphone du garant",
+      "explicationGarant": "Le garant renseigne lui-même son identité, recopie la mention et signe depuis le lien reçu par e-mail.",
+      "lienTitre": "Signature du garant",
+      "garantAsigne": "Le garant a signé.",
+      "garantAttendu": "En attente de la signature du garant (lien valable jusqu'au {{date}}).",
+      "lienEnvoyeMail": "Lien envoyé par e-mail.",
+      "lienNonEnvoye": "L'e-mail n'a pas pu partir : envoyez ce lien vous-même (WhatsApp, SMS).",
+      "copier": "Copier le lien",
+      "renvoyer": "Envoyer un nouveau lien au garant"
+    },
+    "signatures": "Signatures",
+    "role": {
+      "proprietaire": "bailleur",
+      "locataire": "locataire",
+      "garant": "garant"
+    },
+    "signature": {
+      "titreEnvoi": "Votre signature avant envoi",
+      "titreSigner": "Votre signature : {{type}}"
+    },
+    "brouillonEnregistre": "Brouillon enregistré",
+    "toastEnvoye": "Envoyé et signé : les autres parties ont été prévenues",
+    "toastSigne": "Signature enregistrée",
+    "toastCorrection": "Correction demandée",
+    "toastGenere": "Document généré et verrouillé",
+    "toastAbandonne": "Abandonné",
+    "lienRenvoye": "Nouveau lien envoyé",
+    "lienCopie": "Lien copié",
+    "voirApercu": "Voir l'aperçu du document",
+    "masquerApercu": "Masquer l'aperçu",
+    "apercu": "Aperçu",
+    "signerEtEnvoyer": "Signer et envoyer",
+    "relireEtSigner": "Signer",
+    "correctionExplication": "Le document repasse en brouillon, les signatures sont effacées et le bailleur est prévenu.",
+    "genererAvertissement": "Une fois généré, le document ne peut plus être modifié : vous pourrez seulement le télécharger. Vérifiez une dernière fois.",
+    "abandonner": "Abandonner ce document"
+  },
   "ongletDocuments": {
     "titre": "Documents",
     "nbDocuments": "{{count}} document(s)",
@@ -808,7 +926,10 @@
       "miseEnDemeure": { "titre": "Mise en demeure", "desc": "Pour loyer impayé" },
       "rapportFinancier": { "titre": "Rapport financier", "desc": "Revenus du mois ou de l'annee" },
       "caution": { "titre": "Dépôt de garantie", "desc": "Attestation de dépôt de garantie" },
-      "preavis": { "titre": "Préavis de départ", "desc": "Lettre de préavis" }
+      "preavis": { "titre": "Préavis de départ", "desc": "Lettre de préavis" },
+      "avenant": {"titre": "Avenant de renouvellement", "desc": "Acter le renouvellement accepté"},
+      "decompte": {"titre": "Restitution de caution", "desc": "Décompte du dépôt de garantie"},
+      "cautionnement": {"titre": "Acte de cautionnement", "desc": "Garant signant sans compte"}
     },
     "cfgDoc": {
       "contratBail": "Contrat de bail",
@@ -818,7 +939,10 @@
       "preavis": "Préavis",
       "facture": "Facture",
       "caution": "Reçu de caution",
-      "document": "Document"
+      "document": "Document",
+      "avenant": "Avenant",
+      "decompte": "Décompte de restitution",
+      "cautionnement": "Acte de cautionnement"
     }
   },
   "ongletMessages": {
