@@ -315,26 +315,49 @@ function miseEnDemeure(d) {
   return document_('Mise en demeure ' + d.numero, [page(entete('MISE EN DEMEURE', d.numero, d.date) + corps + pied(d))]);
 }
 
-// ── 6. PRÉAVIS ─────────────────────────────────────────────
+// ── 6. PRÉAVIS (donné par le locataire ou par le bailleur) ──
+// Le cadre « Accusé de réception » est complété au téléchargement avec la date
+// d'accusé enregistrée (jeton ACCUSE) : le document stocké ne change pas.
 function preavis(d) {
+  var parBailleur = d.auteur === 'proprietaire';
+  var auteur = parBailleur ? d.proprietaire : d.locataire;
+  var dest = parBailleur ? d.locataire : d.proprietaire;
   var dep = d.date_depart ? new Date(d.date_depart) : null;
   var valide = dep && !isNaN(dep.getTime());
   var depLabel = valide ? dateLongue(dep) : 'à convenir';
   var jours = valide ? Math.round((dep - d.dateGeneration) / 86400000) : null;
+  var min = d.delai_minimum_jours;
+  var adresse = cl(d.logement.titre, 60) + ', ' + cl(d.logement.adresse, 70) + ', ' + cl(d.logement.ville, 40);
+  var motif = d.motif ? '<p><b>Motif :</b> ' + cl(d.motif, 120) + '</p>' : '';
+  var note = d.note ? '<p>' + cl(d.note, 300) + '</p>' : '';
+
+  var introLoc = '<p>Par la présente, je vous informe de ma décision de quitter le logement situé ' + cl(d.logement.adresse, 70) + ', ' + cl(d.logement.ville, 40) + ', que j\'occupe en qualité de locataire. Je libérerai les lieux à la date indiquée ci-dessous.</p>';
+  var introBail = '<p>Par la présente, je vous informe de ma décision de mettre fin au bail du logement situé ' + cl(d.logement.adresse, 70) + ', ' + cl(d.logement.ville, 40) + ', que vous occupez en qualité de locataire. Vous êtes invité(e) à libérer les lieux à la date indiquée ci-dessous.</p>';
+  var suiteLoc = '<p>Je restituerai les clés et laisserai le logement propre et en bon état d\'entretien à cette date. Je demande la réalisation d\'un état des lieux de sortie contradictoire avec vous ou votre représentant, et la restitution du dépôt de garantie dans le délai prévu au contrat de bail, soit 30 jours après la remise des clés.</p>';
+  var suiteBail = '<p>Un état des lieux de sortie contradictoire sera réalisé à cette date et les clés devront être remises. Le dépôt de garantie vous sera restitué dans le délai prévu au contrat de bail, soit 30 jours après la remise des clés, déduction faite des sommes justifiées.</p>';
+
   var corps = '<div class="corps">' +
-    '<div style="text-align:right;margin-bottom:8px;font-size:12px"><b>' + nomComplet(d.locataire) + '</b><br>' + cl(d.logement.titre, 60) + ', ' + cl(d.logement.adresse, 70) + ', ' + cl(d.logement.ville, 40) + '<br>' + cl(d.locataire.telephone || '', 24) + ' · ' + cl(d.locataire.email || '', 40) + '<br>' + cl(d.logement.ville, 40) + ', le ' + esc(d.date) + '</div>' +
-    '<div class="box" style="max-width:340px;margin-bottom:10px"><small>Destinataire</small><b>' + nomComplet(d.proprietaire) + '</b><br>Bailleur du logement</div>' +
-    '<p><b>Objet : congé du logement' + (valide ? ', départ le ' + esc(depLabel) : '') + '</b></p>' +
-    '<p>Madame, Monsieur ' + cl(d.proprietaire.nom, 40) + ',</p>' +
-    '<p>Par la présente, je vous informe de ma décision de quitter le logement situé ' + cl(d.logement.adresse, 70) + ', ' + cl(d.logement.ville, 40) + ', que j\'occupe en qualité de locataire. Je libérerai les lieux à la date indiquée ci-dessous.</p>' +
-    '<div class="big"><small>Date de départ</small><b>' + esc(depLabel) + '</b>' + (jours !== null && jours >= 0 ? '<small>' + jours + ' jour' + (jours > 1 ? 's' : '') + ' après l\'envoi de ce préavis</small>' : '') + '</div>' +
-    '<p>Je restituerai les clés et laisserai le logement propre et en bon état d\'entretien à cette date. Je demande la réalisation d\'un état des lieux de sortie contradictoire avec vous ou votre représentant.</p>' +
-    '<p>Je souhaite que le dépôt de garantie me soit restitué dans le délai prévu au contrat de bail, soit 30 jours après la remise des clés.</p>' +
-    '<p>Je vous remercie de bien vouloir accuser réception de ce courrier et de me confirmer les modalités de l\'état des lieux de sortie.</p>' +
+    '<div style="text-align:right;margin-bottom:8px;font-size:12px"><b>' + nomComplet(auteur) + '</b><br>' + (parBailleur ? 'Bailleur' : adresse) + '<br>' + cl(auteur.telephone || '', 24) + ' · ' + cl(auteur.email || '', 40) + '<br>' + cl(d.logement.ville, 40) + ', le ' + esc(d.date) + '</div>' +
+    '<div class="box" style="max-width:360px;margin-bottom:10px"><small>Destinataire</small><b>' + nomComplet(dest) + '</b><br>' + (parBailleur ? 'Locataire de : ' + adresse : 'Bailleur du logement') + '</div>' +
+    '<p><b>Objet : ' + (parBailleur ? 'congé donné par le bailleur' : 'congé du logement') + (valide ? ', départ le ' + esc(depLabel) : '') + '</b></p>' +
+    '<p>Madame, Monsieur ' + cl(dest.nom, 40) + ',</p>' +
+    (parBailleur ? introBail : introLoc) +
+    '<div class="big"><small>Date de départ (date limite du préavis)</small><b>' + esc(depLabel) + '</b>' +
+    (jours !== null && jours >= 0 ? '<small>' + jours + ' jour' + (jours > 1 ? 's' : '') + ' après l\'envoi de ce préavis' + (min ? ' · délai minimal : ' + min + ' jours' : '') + '</small>' : '') + '</div>' +
+    motif + note +
+    (parBailleur ? suiteBail : suiteLoc) +
+    '<p>Je vous remercie de bien vouloir accuser réception de ce courrier.</p>' +
     '<p>Veuillez agréer, Madame, Monsieur, mes salutations distinguées.</p>' +
-    '<div class="sign"><div class="sig"><small>L\'auteur du préavis</small><div class="ink">' + nomComplet(d.locataire) + '</div><div class="meta">Établi électroniquement le ' + esc(d.dateHeure) + '</div></div>' +
-    '<div class="sig"><small>Accusé de réception</small><div class="meta" style="margin-top:6px">Notifié au destinataire par e-mail et alerte Werdhe.<br>La date de réception est enregistrée dans le journal du document.</div></div></div></div>';
-  return document_('Préavis ' + d.numero, [page(entete('LETTRE DE PRÉAVIS', d.numero, d.date) + corps + pied(d))]);
+    '<div class="sign"><div class="sig"><small>L\'auteur du préavis</small><div class="ink">' + nomComplet(auteur) + '</div><div class="meta">Établi et signé électroniquement le ' + esc(d.dateHeure) + '</div></div>' +
+    '<div class="sig"><small>Accusé de réception · ' + nomComplet(dest) + '</small><!--ACCUSE--><div class="meta" style="margin-top:6px">En attente d\'accusé de réception.<br>Notifié par e-mail et alerte Werdhe ; la date de réception est enregistrée dans le journal du document.</div></div></div></div>';
+  return document_('Préavis ' + d.numero, [page(entete(parBailleur ? 'CONGÉ DONNÉ PAR LE BAILLEUR' : 'LETTRE DE PRÉAVIS', d.numero, d.date) + corps + pied(d))]);
+}
+
+function injecterAccuseReception(html, accuse) {
+  if (!accuse || !accuse.accuse_at) return String(html);
+  var quand = new Date(accuse.accuse_at).toLocaleString('fr-FR', { timeZone: 'Africa/Conakry', dateStyle: 'long', timeStyle: 'short' });
+  var bloc = '<div class="ink">Reçu</div><div class="meta">Accusé de réception le ' + esc(quand) + (accuse.nom ? '<br>par ' + cl(accuse.nom, 48) : '') + '</div>';
+  return String(html).replace(/<!--ACCUSE--><div class="meta"[^>]*>[\s\S]*?<\/div>/, bloc);
 }
 
 // ── 7. RAPPORT FINANCIER ───────────────────────────────────
@@ -396,5 +419,5 @@ var MODELES = {
 
 module.exports = {
   MODELES, EMPREINTE_JETON, URL_VERIF, MOIS,
-  esc, cl, gnf, enLettres, dateFR, dateLongue, dateHeureFR, injecterSignaturesBail
+  esc, cl, gnf, enLettres, dateFR, dateLongue, dateHeureFR, injecterSignaturesBail, injecterAccuseReception
 };

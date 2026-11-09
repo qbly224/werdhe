@@ -802,7 +802,10 @@
       "infoLocataire": "Keep paying your rent as usual until the move-out date. A move-out inspection will be scheduled with the landlord.",
       "contacterLocataire": "Contact the tenant",
       "contacterProprio": "Contact the landlord",
-      "telechargerPdf": "Download PDF"
+      "telechargerPdf": "Download PDF",
+      "infoProprioDate": "Keep collecting rent as usual until {{date}}. A move-out inspection will be due on that date.",
+      "dateDepart": "Departure date",
+      "document": "Document"
     },
     "confirm": {
       "actionIrreversible": "Official and irreversible action. The recipient will receive an email + a notification on the platform.",
@@ -819,8 +822,11 @@
       "dateDeSortie": "Move-out date",
       "messageOptionnel": "Optional message to explain your response...",
       "demanderRenouvellement": "Request renewal",
-      "accepterDepart": "Accept the move-out",
-      "repondreAuPreavis": "Respond to notice →"
+      "accepterDepart": "Acknowledge receipt of the notice",
+      "repondreAuPreavis": "Acknowledge receipt or reply →",
+      "lireDocument": "Read the notice document",
+      "toastAccuse": "Acknowledgement of receipt recorded",
+      "toastRenouvellement": "Renewal request sent!"
     },
     "form": {
       "alerteInfo": "The notice will be sent officially by email and notification to the party concerned.",
@@ -831,7 +837,27 @@
       "unBienVirgule": "a property, ",
       "unMotifEt": "a reason and ",
       "unDelai": "a notice period",
-      "preparerBouton": "Prepare the official notice →"
+      "preparerBouton": "Prepare the official notice →",
+      "dateDepart": "Departure date (notice deadline)",
+      "delaiMinimum": "Minimum notice: {{n}} days, so {{date}} at the earliest.",
+      "champsManquants": "Choose the property, the reason and the departure date"
+    },
+    "apercu": {
+      "titre": "Preview of the notice before sending",
+      "avertissement": "Read carefully: once sent, the notice is signed and locked. You will only be able to download it, or cancel it until the recipient has acknowledged receipt.",
+      "chargement": "Preparing the preview…",
+      "envoyer": "Sign and send the notice"
+    },
+    "mes": {
+      "titre": "Notices I sent",
+      "depart": "Departure on {{date}}",
+      "enAttente": "Awaiting acknowledgement of receipt",
+      "accuse": "Receipt acknowledged on {{date}}",
+      "pdf": "Download the PDF",
+      "annuler": "Cancel the notice",
+      "annulerMotif": "Reason for cancelling",
+      "confirmerAnnulation": "Confirm cancellation",
+      "toastAnnule": "Notice cancelled"
     }
   },
   "ongletPaiementsDash": {

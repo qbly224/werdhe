@@ -692,4 +692,72 @@ async function traiterAccesOfferts() {
 cron.schedule('5 8 * * *', traiterAccesOfferts);
 setTimeout(traiterAccesOfferts, 60 * 1000);
 
-module.exports = {};
+// ════════════════════════════════════════════════════════
+// CRON 11 — Rappel d'accusé de réception d'un préavis (48 h)
+// Un préavis envoyé sans accusé de réception depuis 48 h : alerte + e-mail
+// au destinataire, une seule fois. Tourne toutes les heures.
+// ════════════════════════════════════════════════════════
+async function rappelsAccusePreavis() {
+  try {
+    var { enregistrerEvenement } = require('./documentService');
+    var { esc } = require('./documentTemplates');
+    var result = await db.query(
+      `SELECT p.id, p.document_id, p.type, p.date_sortie_estimee,
+              r.locataire_id, l.proprietaire_id, l.id as logement_id, l.titre as logement_titre,
+              u_loc.prenom as loc_prenom, u_loc.email as loc_email,
+              u_prop.prenom as prop_prenom, u_prop.email as prop_email
+       FROM preavis p
+       JOIN reservations r ON p.reservation_id = r.id
+       JOIN logements l ON r.logement_id = l.id
+       JOIN users u_loc ON r.locataire_id = u_loc.id
+       JOIN users u_prop ON l.proprietaire_id = u_prop.id
+       WHERE p.statut = 'envoye'
+         AND p.accuse_at IS NULL
+         AND p.rappel_envoye_at IS NULL
+         AND p.created_at < NOW() - INTERVAL '48 hours'`
+    );
+
+    for (var p of result.rows) {
+      var versProprio = p.type === 'locataire';
+      var destId = versProprio ? p.proprietaire_id : p.locataire_id;
+      var destEmail = versProprio ? p.prop_email : p.loc_email;
+      var destPrenom = versProprio ? p.prop_prenom : p.loc_prenom;
+      var dateDepart = p.date_sortie_estimee ? new Date(p.date_sortie_estimee).toLocaleDateString('fr-FR') : '';
+
+      await db.query(
+        `INSERT INTO alertes (proprietaire_id, destinataire_id, logement_id, type, titre, description, priorite)
+         VALUES ($1, $2, $3, 'bail_bientot', $4, $5, 'haute')`,
+        [p.proprietaire_id, destId, p.logement_id,
+          'Rappel : accusez réception du préavis pour ' + p.logement_titre,
+          'Un préavis (départ le ' + dateDepart + ') attend votre accusé de réception depuis plus de 48 h.']
+      );
+
+      if (process.env.RESEND_API_KEY && destEmail) {
+        try {
+          const { Resend } = require('resend');
+          const resend = new Resend(process.env.RESEND_API_KEY);
+          await resend.emails.send({
+            from: process.env.EMAIL_FROM || 'Werdhe <onboarding@resend.dev>',
+            to: destEmail,
+            subject: 'Rappel : accusez réception du préavis pour ' + p.logement_titre,
+            html: '<div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:24px">' +
+              '<p>Bonjour <b>' + esc(destPrenom) + '</b>,</p>' +
+              '<p>Un préavis concernant <b>' + esc(p.logement_titre) + '</b> (départ prévu le <b>' + esc(dateDepart) + '</b>) vous a été envoyé il y a plus de 48 h et n\'a pas encore fait l\'objet d\'un accusé de réception.</p>' +
+              '<p><a href="https://werdhe.com/dashboard" style="display:inline-block;background:#1B6B3A;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700">Accuser réception →</a></p></div>'
+          });
+        } catch (e) {
+          console.warn('[CRON préavis] e-mail non envoyé:', e.message);
+        }
+      }
+
+      await db.query('UPDATE preavis SET rappel_envoye_at = NOW() WHERE id = $1', [p.id]);
+      if (p.document_id) await enregistrerEvenement(p.document_id, 'rappel', null, { destinataire: destEmail || null });
+    }
+    if (result.rows.length) console.log('[CRON] Rappels d\'accusé de réception envoyés : ' + result.rows.length);
+  } catch (err) {
+    console.error('[CRON préavis] Erreur:', err.message);
+  }
+}
+cron.schedule('40 * * * *', rappelsAccusePreavis);
+
+module.exports = { rappelsAccusePreavis };

@@ -55,6 +55,7 @@ async function enregistrerEvenement(documentId, type, userId, details, ip) {
 }
 
 function titreDocument(type, numero, p) {
+  var preavisLib = p.auteur === 'proprietaire' ? 'Congé donné par le bailleur ' : 'Préavis de départ ';
   var mois = p.mois ? T.MOIS[p.mois - 1] + ' ' + p.annee : '';
   var libelles = {
     facture: 'Facture ' + numero + (mois ? ' · ' + mois : ''),
@@ -64,7 +65,7 @@ function titreDocument(type, numero, p) {
     mise_en_demeure: 'Mise en demeure ' + numero,
     rapport_financier: 'Rapport financier ' + numero,
     caution: 'Dépôt de garantie ' + numero,
-    preavis: 'Préavis de départ ' + numero
+    preavis: preavisLib + numero
   };
   return libelles[type];
 }
@@ -79,6 +80,7 @@ const genererDocument = async ({
   duree_mois, type_location,
   mois, annee,
   date_depart, type_etat, mois_retard, paiements,
+  auteur, motif, note, delai_minimum_jours,
   auteur_id = null,
   envoyer_email = true
 }) => {
@@ -100,13 +102,14 @@ const genererDocument = async ({
       periode: periode, montant: montant, mode_paiement: mode_paiement,
       duree_mois: duree_mois, type_location: type_location,
       mois: mois, annee: annee,
-      date_depart: date_depart, type_etat: type_etat, mois_retard: mois_retard, paiements: paiements
+      date_depart: date_depart, type_etat: type_etat, mois_retard: mois_retard, paiements: paiements,
+      auteur: auteur, motif: motif, note: note, delai_minimum_jours: delai_minimum_jours
     };
 
     var htmlAvecJeton = modele(donnees);
     var hash = sha256(htmlAvecJeton);
     var html = htmlAvecJeton.split(T.EMPREINTE_JETON).join(hash);
-    var titre = titreDocument(type, numero, { mois: mois, annee: annee, type_etat: type_etat });
+    var titre = titreDocument(type, numero, { mois: mois, annee: annee, type_etat: type_etat, auteur: auteur });
 
     // Données d'entrée conservées (sans le QR ni l'horodatage objet) pour audit.
     var snapshot = Object.assign({}, donnees);
@@ -166,6 +169,28 @@ const genererDocument = async ({
 };
 
 // ================================================
+// APERÇU : rend le document sans rien enregistrer (ni numéro, ni empreinte).
+// Sert à relire avant d'envoyer ; l'aperçu porte un filigrane « APERÇU ».
+// ================================================
+function apercuDocument(params) {
+  var modele = T.MODELES[params.type];
+  if (!modele) return null;
+  var maintenant = new Date();
+  var donnees = Object.assign({}, params, {
+    numero: 'APERÇU',
+    date: T.dateFR(maintenant),
+    dateHeure: T.dateHeureFR(maintenant),
+    dateGeneration: maintenant,
+    qr: '',
+    proprietaire: params.proprietaire || {}, locataire: params.locataire || {}, logement: params.logement || {}
+  });
+  var html = modele(donnees).split(T.EMPREINTE_JETON).join('généré à l\'envoi');
+  var filigrane = '<div style="position:fixed;top:40%;left:0;right:0;text-align:center;font:800 130px Arial,sans-serif;' +
+    'color:rgba(27,107,58,.10);transform:rotate(-22deg);pointer-events:none;z-index:99">APERÇU</div>';
+  return html.replace('</body>', filigrane + '</body>');
+}
+
+// ================================================
 // CONVERTIR UN DOCUMENT HTML EN PDF (Chromium)
 // Le format de page vient du CSS (@page A4, marge 0) : un document = une
 // feuille A4 (le bail : deux faces).
@@ -198,6 +223,7 @@ async function genererPdfDepuisHtml(html) {
 
 module.exports = {
   genererDocument, genererPdfDepuisHtml,
-  calculerEmpreinte, verifierIntegrite, enregistrerEvenement,
-  injecterSignaturesBail: T.injecterSignaturesBail
+  calculerEmpreinte, verifierIntegrite, enregistrerEvenement, apercuDocument,
+  injecterSignaturesBail: T.injecterSignaturesBail,
+  injecterAccuseReception: T.injecterAccuseReception
 };
