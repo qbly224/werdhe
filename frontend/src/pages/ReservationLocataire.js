@@ -249,23 +249,18 @@ export default function ReservationLocataire() {
   }
 
   function telechargerBailSigne() {
-    api.get('/documents?type=contrat_bail')
-      .then(function(res) {
-        var docs = (res.data.documents || []).filter(function(d) { return d.reservation_id === reservationId; });
-        if (docs.length === 0) { toast.error(t('reservationLocataire.bail.toastIntrouvable')); return; }
-        return api.get('/documents/' + docs[0].id + '/telecharger?format=pdf', { responseType: 'blob' })
-          .then(function(res2) {
-            var typePdf = (res2.headers && res2.headers['content-type'] || '').indexOf('pdf') !== -1;
-            var blob = new Blob([res2.data], { type: typePdf ? 'application/pdf' : 'text/html; charset=utf-8' });
-            var url  = window.URL.createObjectURL(blob);
-            var link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'Bail_' + reservationId.slice(0, 8) + (typePdf ? '.pdf' : '.html'));
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            toast.success(t('reservationLocataire.bail.toastTelecharge'));
-          });
+    api.get('/documents/bail/' + reservationId + '/telecharger?format=pdf', { responseType: 'blob' })
+      .then(function(res2) {
+        var typePdf = (res2.headers && res2.headers['content-type'] || '').indexOf('pdf') !== -1;
+        var blob = new Blob([res2.data], { type: typePdf ? 'application/pdf' : 'text/html; charset=utf-8' });
+        var url  = window.URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Bail_' + reservationId.slice(0, 8) + (typePdf ? '.pdf' : '.html'));
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        toast.success(t('reservationLocataire.bail.toastTelecharge'));
       })
       .catch(function() { toast.error(t('reservationLocataire.bail.toastErreurTelechargement')); });
   }

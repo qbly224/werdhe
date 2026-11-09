@@ -184,6 +184,22 @@
       "preavis": "Notice",
       "renouveler": "Renew"
     },
+    "renouvNego": {
+      "contrePropositionDe": "Counter-offer from {{nom}}",
+      "resume": "{{n}} months · rent {{loyer}} GNF/month",
+      "accepter": "Accept",
+      "contreProposer": "Counter-offer",
+      "refuser": "Decline",
+      "enAttenteLocataire": "Offer sent ({{n}} months · {{loyer}} GNF/month): waiting for the tenant's reply",
+      "aucuneLocation": "No active tenancy to renew",
+      "toastEnvoyee": "Renewal offer sent!",
+      "toastContreEnvoyee": "Counter-offer sent!",
+      "toastAccepte": "Renewal accepted!",
+      "toastRefuse": "Offer declined.",
+      "erreur": "Something went wrong",
+      "titreContre": "Renewal counter-offer",
+      "envoyerContre": "Send the counter-offer"
+    },
     "renouvModal": {
       "titre": "Propose a renewal",
       "logement": "Property:",
@@ -736,7 +752,16 @@
       "inchange": "Unchanged",
       "recuLe": "Received on",
       "refuser": "Decline",
-      "accepter": "Accept"
+      "accepter": "Accept",
+      "contreProposer": "Counter-offer",
+      "contreTitre": "Your counter-offer",
+      "contreDuree": "Preferred duration",
+      "contreLoyer": "Preferred rent (GNF/month)",
+      "contreMessage": "Message (optional)",
+      "contreMessagePlaceholder": "E.g. I would like to renew for 12 months at the same rent",
+      "contreEnvoyer": "Send the counter-offer",
+      "contreEnvoyee": "Counter-offer sent!",
+      "annuler": "Cancel"
     },
     "sent": {
       "titreOfficiel": "Official notice sent",

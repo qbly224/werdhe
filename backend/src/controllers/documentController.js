@@ -19,6 +19,77 @@ var TYPES_LOCATAIRE = [
   'quittance', 'etat_lieux', 'preavis'
 ];
 
+// Réservation avec les infos du logement, du propriétaire et du locataire,
+// nécessaires à tous les modèles de documents.
+const SQL_RESERVATION_DOCUMENT = `SELECT
+    r.*,
+    -- Infos logement
+    l.id as logement_id,
+    l.titre as logement_titre,
+    l.adresse, l.ville,
+    l.prix_mensuel,
+    l.nb_chambres,
+    l.nb_salles_bain,
+    l.superficie,
+    l.proprietaire_id,
+    -- Infos propriétaire
+    u_prop.nom as prop_nom,
+    u_prop.prenom as prop_prenom,
+    u_prop.email as prop_email,
+    u_prop.telephone as prop_tel,
+    -- Infos locataire
+    u_loc.nom as loc_nom,
+    u_loc.prenom as loc_prenom,
+    u_loc.email as loc_email,
+    u_loc.telephone as loc_tel
+  FROM reservations r
+  JOIN logements l ON r.logement_id = l.id
+  JOIN users u_prop ON l.proprietaire_id = u_prop.id
+  JOIN users u_loc ON r.locataire_id = u_loc.id
+  WHERE r.id = $1`;
+
+function paramsGeneration(r, type, mois, annee) {
+  return {
+    type,
+    reservation_id: r.id,
+    logement: {
+      id: r.logement_id,
+      titre: r.logement_titre,
+      adresse: r.adresse,
+      ville: r.ville,
+      superficie: r.superficie,
+      nb_chambres: r.nb_chambres,
+      nb_salles_bain: r.nb_salles_bain
+    },
+    proprietaire: {
+      id: r.proprietaire_id,
+      nom: r.prop_nom,
+      prenom: r.prop_prenom,
+      email: r.prop_email,
+      telephone: r.prop_tel
+    },
+    locataire: {
+      id: r.locataire_id,
+      nom: r.loc_nom,
+      prenom: r.loc_prenom,
+      email: r.loc_email,
+      telephone: r.loc_tel
+    },
+    periode: {
+      debut: r.date_debut,
+      fin: r.date_fin
+    },
+    montant: r.montant_total || r.prix_mensuel,
+    mode_paiement: 'especes',
+    duree_mois: r.duree_mois,
+    type_location: r.type_location,
+    // Pour quittance mensuelle : mois/année spécifique
+    mois: mois || new Date().getMonth() + 1,
+    annee: annee || new Date().getFullYear(),
+    envoyer_email: true
+  };
+}
+
 // ================================================
 // GÉNÉRER UN DOCUMENT
 // ================================================
@@ -38,35 +109,7 @@ const genererDocumentManuel = async (req, res) => {
     }
 
     // Récupérer toutes les infos via la réservation
-    const result = await db.query(
-      `SELECT
-          r.*,
-          -- Infos logement
-          l.id as logement_id,
-          l.titre as logement_titre,
-          l.adresse, l.ville,
-          l.prix_mensuel,
-          l.nb_chambres,
-          l.nb_salles_bain,
-          l.superficie,
-          l.proprietaire_id,
-          -- Infos propriétaire
-          u_prop.nom as prop_nom,
-          u_prop.prenom as prop_prenom,
-          u_prop.email as prop_email,
-          u_prop.telephone as prop_tel,
-          -- Infos locataire
-          u_loc.nom as loc_nom,
-          u_loc.prenom as loc_prenom,
-          u_loc.email as loc_email,
-          u_loc.telephone as loc_tel
-       FROM reservations r
-       JOIN logements l ON r.logement_id = l.id
-       JOIN users u_prop ON l.proprietaire_id = u_prop.id
-       JOIN users u_loc ON r.locataire_id = u_loc.id
-       WHERE r.id = $1`,
-      [reservation_id]
-    );
+    const result = await db.query(SQL_RESERVATION_DOCUMENT, [reservation_id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ erreur: 'Reservation non trouvee' });
@@ -93,45 +136,7 @@ const genererDocumentManuel = async (req, res) => {
     }
 
     // Construire les données pour la génération
-    const genResult = await genererDocument({
-      type,
-      reservation_id,
-      logement: {
-        id: r.logement_id,
-        titre: r.logement_titre,
-        adresse: r.adresse,
-        ville: r.ville,
-        superficie: r.superficie,
-        nb_chambres: r.nb_chambres,
-        nb_salles_bain: r.nb_salles_bain
-      },
-      proprietaire: {
-        id: r.proprietaire_id,
-        nom: r.prop_nom,
-        prenom: r.prop_prenom,
-        email: r.prop_email,
-        telephone: r.prop_tel
-      },
-      locataire: {
-        id: r.locataire_id,
-        nom: r.loc_nom,
-        prenom: r.loc_prenom,
-        email: r.loc_email,
-        telephone: r.loc_tel
-      },
-      periode: {
-        debut: r.date_debut,
-        fin: r.date_fin
-      },
-      montant: r.montant_total || r.prix_mensuel,
-      mode_paiement: 'especes',
-      duree_mois: r.duree_mois,
-      type_location: r.type_location,
-      // Pour quittance mensuelle : mois/année spécifique
-      mois: mois || new Date().getMonth() + 1,
-      annee: annee || new Date().getFullYear(),
-      envoyer_email: true
-    });
+    const genResult = await genererDocument(paramsGeneration(r, type, mois, annee));
 
     if (!genResult.success) {
       return res.status(500).json({ erreur: genResult.erreur });
@@ -405,6 +410,57 @@ const telechargerDocument = async (req, res) => {
 };
 
 // ================================================
+// TÉLÉCHARGER LE BAIL D'UNE LOCATION
+// La signature électronique ne crée aucun document : le contrat est généré
+// à la demande la première fois (puis réutilisé), et le certificat de
+// signature y est ajouté au téléchargement.
+// ================================================
+const telechargerBailReservation = async (req, res) => {
+  try {
+    const reservationId = req.params.reservation_id;
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(reservationId))) {
+      return res.status(404).json({ erreur: 'Reservation non trouvee' });
+    }
+
+    const result = await db.query(SQL_RESERVATION_DOCUMENT, [reservationId]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ erreur: 'Reservation non trouvee' });
+    }
+    const r = result.rows[0];
+    if (r.proprietaire_id !== req.user.id && r.locataire_id !== req.user.id) {
+      return res.status(403).json({ erreur: 'Non autorise' });
+    }
+
+    const signatures = await db.query(
+      'SELECT 1 FROM signatures_bail WHERE reservation_id = $1 LIMIT 1', [reservationId]
+    ).catch(function() { return { rows: [] }; });
+    if (!r.bail_signe && signatures.rows.length === 0) {
+      return res.status(409).json({ erreur: "Le bail n'a pas encore été signé" });
+    }
+
+    var doc = (await db.query(
+      `SELECT id FROM documents
+       WHERE reservation_id = $1 AND type = 'contrat_bail'
+       ORDER BY created_at DESC LIMIT 1`, [reservationId]
+    )).rows[0];
+
+    if (!doc) {
+      const gen = await genererDocument(Object.assign(paramsGeneration(r, 'contrat_bail'), { envoyer_email: false }));
+      if (!gen.success) {
+        return res.status(500).json({ erreur: gen.erreur || 'Impossible de générer le bail' });
+      }
+      doc = gen.document;
+    }
+
+    req.params.id = doc.id;
+    return telechargerDocument(req, res);
+  } catch (err) {
+    console.error('Erreur téléchargement bail:', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+};
+
+// ================================================
 // RENVOYER PAR EMAIL
 // ================================================
 const renvoyerEmail = async (req, res) => {
@@ -512,6 +568,7 @@ module.exports = {
   signerBail,
   getMesDocuments,
   telechargerDocument,
+  telechargerBailReservation,
   renvoyerEmail,
   uploadManuel,
   uploaderDocumentManuel
