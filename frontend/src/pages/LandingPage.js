@@ -348,21 +348,22 @@ useEffect(function() {
         url="https://werdhe.com"
       />
       {/* ─── NAVBAR ─────────────────────────────────────────────── */}
-      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(247,248,247,0.92)', backdropFilter: 'blur(8px)', borderBottom: '0.5px solid rgba(27,107,58,0.12)', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(247,248,247,0.92)', backdropFilter: 'blur(8px)', borderBottom: '0.5px solid rgba(27,107,58,0.12)', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="nav-barre">
         <Logo size={36} showText={true} darkBg={false} />
 
         <div style={{ display: 'flex', gap: 28, alignItems: 'center' }} className="nav-desktop">
-          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.tarifs'), '#tarifs'], [t('landingPage.nav.avis'), '#avis'], [t('landingPage.nav.faq'), '#faq'], [t('landingPage.nav.carte'), '/logements?vue=carte']].map(function(l) {
+          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.carte'), '/logements?vue=carte'], [t('landingPage.nav.tarifs'), '#tarifs'], [t('landingPage.nav.faq'), '#faq']].map(function(l) {
             return l[1].charAt(0) === '#'
               ? <a key={l[1]} href={l[1]} style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontWeight: 500 }}>{l[0]}</a>
               : <a key={l[1]} href={l[1]} onClick={function(e) { e.preventDefault(); navigate(l[1]); }} style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontWeight: 500 }}>{l[0]}</a>;
           })}
         </div>
 
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }} className="nav-actions">
           <LanguageSwitcher />
           <button onClick={function() { navigate('/login'); }}
-            style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', background: 'transparent', color: '#1B6B3A', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', background: 'transparent', color: '#1B6B3A', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
+            className="btn-nav-login">
             {t('landingPage.nav.connexion')}
           </button>
           <button onClick={function() { navigate('/inscription'); }}
@@ -381,7 +382,7 @@ useEffect(function() {
       {/* Menu mobile */}
       {mobileMenu && (
         <div style={{ position: 'fixed', inset: 0, top: 60, background: '#fff', zIndex: 99, padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.tarifs'), '#tarifs'], [t('landingPage.nav.carte'), '/logements?vue=carte']].map(function(l) {
+          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.carte'), '/logements?vue=carte'], [t('landingPage.nav.tarifs'), '#tarifs']].map(function(l) {
             return (
               <a key={l[1]} href={l[1]} onClick={function(e) {
                   setMobileMenu(false);
@@ -911,6 +912,14 @@ useEffect(function() {
           .nav-desktop { display: none !important; }
           .btn-nav-hide { display: none !important; }
           .btn-hamburger { display: flex !important; }
+          .nav-actions { gap: 6px !important; }
+          .btn-nav-login { padding: 8px 12px !important; }
+        }
+        @media (max-width: 400px) {
+          .nav-barre { padding: 0 14px !important; }
+        }
+        @media (max-width: 380px) {
+          .btn-nav-login { display: none !important; }
         }
         @media (min-width: 769px) {
           .btn-hamburger { display: none !important; }
