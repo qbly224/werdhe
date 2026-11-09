@@ -1,7 +1,7 @@
 const db = require('../database');
 const crypto = require('crypto');
 const {
-  genererDocument, genererPdfDepuisHtml, injecterSignaturesBail,
+  genererDocument, genererPdfDepuisHtml, injecterSignaturesBail, injecterAccuseReception,
   verifierIntegrite, enregistrerEvenement
 } = require('../services/documentService');
 const { envoyerEmailDocument } = require('../services/emailService');
@@ -16,12 +16,14 @@ const multer = require('multer');
 var TYPES_PROPRIO = [
   'facture', 'quittance', 'contrat_bail',
   'etat_lieux', 'mise_en_demeure',
-  'rapport_financier', 'caution', 'preavis'
+  'rapport_financier', 'caution'
 ];
 
 var TYPES_LOCATAIRE = [
-  'quittance', 'etat_lieux', 'preavis'
+  'quittance', 'etat_lieux'
 ];
+// Les préavis ne se génèrent plus ici : ils passent par l'onglet Préavis
+// (aperçu, date limite, accusé de réception) qui crée le document.
 
 // Réservation avec les infos du logement, du propriétaire et du locataire,
 // nécessaires à tous les modèles de documents.
@@ -114,6 +116,16 @@ async function htmlPourSortie(doc) {
     html = injecterSignaturesBail(html, signatures.rows);
   }
 
+  if (doc.type === 'preavis') {
+    const accuse = await db.query(
+      `SELECT p.accuse_at, u.prenom || ' ' || u.nom AS nom
+       FROM preavis p LEFT JOIN users u ON u.id = p.accuse_par
+       WHERE p.document_id = $1`,
+      [doc.id]
+    ).catch(function() { return { rows: [] }; });
+    if (accuse.rows[0]) html = injecterAccuseReception(html, accuse.rows[0]);
+  }
+
   if (doc.statut === 'annule') {
     var tampon = '<div style="position:fixed;top:42%;left:0;right:0;text-align:center;font:800 120px Arial,sans-serif;' +
       'color:rgba(179,38,30,.22);transform:rotate(-22deg);pointer-events:none;z-index:99">ANNULÉ</div>';
@@ -130,14 +142,6 @@ const genererDocumentManuel = async (req, res) => {
     const { reservation_id, type, mois, annee } = req.body;
     var extra = { auteur_id: req.user.id };
 
-    if (type === 'preavis' && req.body.date_depart) {
-      var dep = new Date(req.body.date_depart);
-      var aujourdhui = new Date(); aujourdhui.setHours(0, 0, 0, 0);
-      if (isNaN(dep.getTime()) || dep < aujourdhui) {
-        return res.status(400).json({ erreur: 'La date de départ doit être une date à venir' });
-      }
-      extra.date_depart = dep;
-    }
     if (type === 'etat_lieux') {
       extra.type_etat = req.body.type_etat === 'sortie' ? 'sortie' : 'entree';
     }
@@ -201,7 +205,7 @@ const genererDocumentManuel = async (req, res) => {
       mise_en_demeure: 'Mise en demeure générée !',
       rapport_financier: 'Rapport financier généré !',
       caution: 'Attestation de dépôt de garantie générée !',
-      preavis: 'Préavis généré et envoyé !'
+      preavis: 'Préavis généré !'
     };
 
     res.status(201).json({
@@ -589,11 +593,29 @@ const annulerDocument = async (req, res) => {
       return res.status(409).json({ erreur: 'Un bail signé par les deux parties ne peut pas être annulé' });
     }
 
+    // Un préavis ne peut être retiré que par son auteur, et plus une fois que
+    // le destinataire en a accusé réception.
+    var preavisLie = null;
+    if (doc.type === 'preavis') {
+      preavisLie = (await db.query(
+        'SELECT id, auteur_id, statut FROM preavis WHERE document_id = $1', [doc.id]
+      )).rows[0];
+      if (preavisLie && preavisLie.statut !== 'envoye') {
+        return res.status(409).json({ erreur: 'Ce préavis a déjà fait l\'objet d\'un accusé de réception : il ne peut plus être annulé' });
+      }
+      if (preavisLie && preavisLie.auteur_id !== req.user.id) {
+        return res.status(403).json({ erreur: 'Seul l\'auteur du préavis peut l\'annuler' });
+      }
+    }
+
     const maj = await db.query(
       `UPDATE documents SET statut = 'annule', annule_at = NOW(), annule_motif = $2
        WHERE id = $1 RETURNING id, statut, annule_at, annule_motif`,
       [id, motif]
     );
+    if (preavisLie) {
+      await db.query("UPDATE preavis SET statut = 'termine' WHERE id = $1 AND statut = 'envoye'", [preavisLie.id]);
+    }
     await enregistrerEvenement(doc.id, 'annule', req.user.id, { motif: motif }, req.ip);
 
     res.json({ message: 'Document annulé', document: maj.rows[0] });

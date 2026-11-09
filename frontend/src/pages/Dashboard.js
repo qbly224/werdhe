@@ -2372,7 +2372,12 @@ function envoyerContreProposition() {
   var estProprietaire = user && (user.role === 'proprietaire' || user.role === 'les_deux');
   var [step, setStep]       = useState('form');
   var [motif, setMotif]     = useState('');
-  var [delai, setDelai]     = useState('');
+  var [dateDepart, setDateDepart] = useState('');
+  var [apercu, setApercu]   = useState(null);
+  var [apercuLoading, setApercuLoading] = useState(false);
+  var [delais, setDelais]   = useState({ locataire: 30, proprietaire: 30, maximum: 730 });
+  var [mesPreavis, setMesPreavis] = useState([]);
+  var [annulation, setAnnulation] = useState(null); // { documentId, motif }
   var [note, setNote]       = useState('');
   var [bien, setBien]       = useState(null);
   var [biens, setBiens]     = useState([]);
@@ -2415,7 +2420,49 @@ useEffect(function() {
   api.get('/preavis/recus')
     .then(function(res) { setPreavisRecus(res.data.preavis || []); })
     .catch(console.error);
+  api.get('/preavis/delai-minimum')
+    .then(function(res) { setDelais(res.data); })
+    .catch(function() {});
+  chargerMesPreavis();
 }, []);
+
+function chargerMesPreavis() {
+  api.get('/preavis')
+    .then(function(res) {
+      setMesPreavis((res.data.preavis || []).filter(function(p) {
+        return p.auteur_id === (user && user.id) && p.statut !== 'termine';
+      }));
+    })
+    .catch(function() {});
+}
+
+function telechargerDocumentPreavis(documentId, numero) {
+  if (!documentId) { toast.error(t('ongletPreavisDash.toastErreurTelechargement')); return; }
+  api.get('/documents/' + documentId + '/telecharger?format=pdf', { responseType: 'blob' })
+    .then(function(r) {
+      var typePdf = (r.headers && r.headers['content-type'] || '').indexOf('pdf') !== -1;
+      var url  = window.URL.createObjectURL(new Blob([r.data], { type: typePdf ? 'application/pdf' : 'text/html; charset=utf-8' }));
+      var link = document.createElement('a');
+      link.href = url;
+      link.download = (numero || 'Preavis') + (typePdf ? '.pdf' : '.html');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success(t('ongletPreavisDash.toastPdfTelecharge'));
+    })
+    .catch(function() { toast.error(t('ongletPreavisDash.toastErreurTelechargement')); });
+}
+
+function confirmerAnnulationPreavis() {
+  if (!annulation || (annulation.motif || '').trim().length < 3) return;
+  api.post('/documents/' + annulation.documentId + '/annuler', { motif: annulation.motif })
+    .then(function() {
+      toast.success(t('ongletPreavisDash.mes.toastAnnule'));
+      setAnnulation(null);
+      chargerMesPreavis();
+    })
+    .catch(function(err) { toast.error(err.response && err.response.data ? err.response.data.erreur : t('ongletPreavisDash.toastErreurEnvoi')); });
+}
 
 function repondre(preavisId, reponse) {
   setReponseLoading(true);
@@ -2424,7 +2471,7 @@ function repondre(preavisId, reponse) {
     message:  messageReponse
   })
     .then(function() {
-      toast.success(reponse === 'accepte' ? 'Préavis accepté !' : 'Demande de renouvellement envoyée !');
+      toast.success(reponse === 'accepte' ? t('ongletPreavisDash.recus.toastAccuse') : t('ongletPreavisDash.recus.toastRenouvellement'));
       setReponseModal(null);
       setMessageReponse('');
       setPreavisRecus(function(prev) { return prev.filter(function(p) { return p.id !== preavisId; }); });
@@ -2434,83 +2481,53 @@ function repondre(preavisId, reponse) {
     })
     .finally(function() { setReponseLoading(false); });
 }
+  function reservationChoisie() {
+    return estProprietaire ? bien : reservation;
+  }
+
+  function minDate() {
+    var d = new Date();
+    d.setDate(d.getDate() + (estProprietaire ? delais.proprietaire : delais.locataire));
+    return d.toISOString().slice(0, 10);
+  }
+
+  function maxDate() {
+    var d = new Date();
+    d.setDate(d.getDate() + (delais.maximum || 730));
+    return d.toISOString().slice(0, 10);
+  }
+
+  function erreurApi(err, defaut) {
+    return err.response && err.response.data && err.response.data.erreur ? err.response.data.erreur : defaut;
+  }
+
+  // Étape « aperçu » : le serveur génère le document sans rien enregistrer.
+  function ouvrirApercu() {
+    var r = reservationChoisie();
+    if (!r || !r.id) { toast.error(t('ongletPreavisDash.toastAucuneReservation')); return; }
+    if (!motif || !dateDepart || (estProprietaire && !bien)) { toast.error(t('ongletPreavisDash.form.champsManquants')); return; }
+    setApercuLoading(true);
+    api.post('/preavis/apercu', { reservation_id: r.id, motif: motif, date_depart: dateDepart, note: note })
+      .then(function(res) { setApercu(res.data.html); setStep('confirm'); })
+      .catch(function(err) { toast.error(erreurApi(err, t('ongletPreavisDash.toastErreurEnvoi'))); })
+      .finally(function() { setApercuLoading(false); });
+  }
+
   function envoyer() {
-    var reservationId = estProprietaire ? (bien && bien.id) : (reservation && reservation.id);
-    
-    console.log('=== PREAVIS DEBUG ===');
-    console.log('reservationId:', reservationId);
-    console.log('motif:', motif);
-    console.log('delai:', delai);
-    console.log('type:', estProprietaire ? 'proprietaire' : 'locataire');
-    console.log('reservation:', reservation);
-    if (!reservationId) { toast.error(t('ongletPreavisDash.toastAucuneReservation')); return; }
+    var r = reservationChoisie();
+    if (!r || !r.id) { toast.error(t('ongletPreavisDash.toastAucuneReservation')); return; }
     setLoading(true);
-    api.post('/preavis', {
-      reservation_id: reservationId,
-      motif:          motif,
-      delai_mois:     parseInt(delai),
-      note:           note,
-      type:           estProprietaire ? 'proprietaire' : 'locataire'
-    })
+    api.post('/preavis', { reservation_id: r.id, motif: motif, date_depart: dateDepart, note: note })
     .then(function(res) {
       setResultat(res.data);
       setStep('sent');
+      chargerMesPreavis();
       toast.success(t('ongletPreavisDash.toastPreavisEnvoye'));
     })
     .catch(function(err) {
-      toast.error(err.response && err.response.data ? err.response.data.erreur : t('ongletPreavisDash.toastErreurEnvoi'));
+      toast.error(erreurApi(err, t('ongletPreavisDash.toastErreurEnvoi')));
     })
     .finally(function() { setLoading(false); });
-  }
-  function telechargerPDF() {
-    // Générer et télécharger le document préavis
-    api.get('/documents?type=preavis')
-      .then(function(res) {
-        var docs = res.data.documents || [];
-        if (docs.length > 0) {
-          var doc = docs[0];
-          return api.get('/documents/' + doc.id + '/telecharger', { responseType: 'blob' })
-            .then(function(r) {
-              var url  = window.URL.createObjectURL(new Blob([r.data], { type: 'text/html' }));
-              var link = document.createElement('a');
-              link.href = url;
-              link.download = 'Preavis_' + new Date().toLocaleDateString('fr-FR').replace(/\//g, '-') + '.html';
-              document.body.appendChild(link);
-              link.click();
-              link.remove();
-              toast.success(t('ongletPreavisDash.toastPdfTelecharge'));
-            });
-        } else {
-          // Générer un PDF minimal depuis les données locales
-          var contenu = `
-            <html><head><meta charset="UTF-8"><title>${t('ongletPreavisDash.pdf.titre')}</title>
-            <style>body{font-family:sans-serif;padding:40px;max-width:600px;margin:0 auto}
-            h1{color:#1B6B3A}.box{background:#FFF8E1;border:1px solid #FFE082;border-radius:8px;padding:16px;margin:16px 0}
-            .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid #FFE082;font-size:14px}</style></head>
-            <body>
-              <h1>${t('ongletPreavisDash.pdf.entete')}</h1>
-              <p>${t('ongletPreavisDash.pdf.date', { date: new Date().toLocaleDateString('fr-FR') })}</p>
-              <div class="box">
-                <div class="row"><span>${t('ongletPreavisDash.pdf.motif')}</span><b>${motif}</b></div>
-                <div class="row"><span>${t('ongletPreavisDash.pdf.delai')}</span><b>${t('ongletPaiementsDash.delaiMois', { n: delai })}</b></div>
-                <div class="row"><span>${t('ongletPreavisDash.pdf.dateSortieEstimee')}</span><b>${addDays(parseInt(delai) * 30)}</b></div>
-              </div>
-              ${note ? '<p style="font-style:italic">"' + note + '"</p>' : ''}
-              <p>${t('ongletPreavisDash.pdf.genereParWerdhe')}</p>
-            </body></html>
-          `;
-          var blob = new Blob([contenu], { type: 'text/html' });
-          var url  = window.URL.createObjectURL(blob);
-          var link = document.createElement('a');
-          link.href = url;
-          link.download = 'Preavis_Werdhe.html';
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-          toast.success(t('ongletPreavisDash.toastPreavisTelecharge'));
-        }
-      })
-      .catch(function() { toast.error(t('ongletPreavisDash.toastErreurTelechargement')); });
   }
   function contacter() {
     if (setOnglet) setOnglet('/dashboard/messages');
@@ -2602,7 +2619,7 @@ function repondre(preavisId, reponse) {
           <p>{estProprietaire ? t('ongletPreavisDash.notifierLocataire') : t('ongletPreavisDash.notifierProprietaire')}</p>
         </div>
         {step !== 'form' && (
-          <button className="btn-outline-green" onClick={function() { setStep('form'); setMotif(''); setDelai(''); setNote(''); setBien(null); setResultat(null); }}>
+          <button className="btn-outline-green" onClick={function() { setStep('form'); setMotif(''); setDateDepart(''); setNote(''); setBien(null); setResultat(null); setApercu(null); }}>
             {t('ongletPreavisDash.nouveauPreavis')}
           </button>
         )}
@@ -2634,8 +2651,8 @@ function repondre(preavisId, reponse) {
               estProprietaire ? [t('ongletPreavisDash.sent.locataireNotifie'), resultat.dest_prenom + ' ' + resultat.dest_nom] : null,
               estProprietaire ? [t('ongletPreavisDash.sent.contact'), resultat.dest_tel || t('ongletReservationsProprio.na')] : null,
               [t('ongletPreavisDash.sent.motif'), motif],
-              [estProprietaire ? t('ongletPreavisDash.sent.delaiAccorde') : t('ongletPreavisDash.sent.delaiDePreavis'), t('ongletPaiementsDash.delaiMois', { n: delai })],
-              [t('ongletPreavisDash.sent.dateSortieEstimee'), resultat.date_sortie || addDays(parseInt(delai) * 30)],
+              [t('ongletPreavisDash.sent.dateDepart'), resultat.date_sortie],
+              [t('ongletPreavisDash.sent.document'), resultat.numero],
               [t('ongletPreavisDash.sent.statut'), t('ongletPreavisDash.sent.enAttenteAccuse')],
             ].filter(Boolean).map(function(row) {
               return (
@@ -2652,7 +2669,7 @@ function repondre(preavisId, reponse) {
             <Info size={14} strokeWidth={1.5} />
             <span style={{ lineHeight: 1.5 }}>
               {estProprietaire
-                ? t('ongletPreavisDash.sent.infoProprio', { n: delai })
+                ? t('ongletPreavisDash.sent.infoProprioDate', { date: resultat.date_sortie })
                 : t('ongletPreavisDash.sent.infoLocataire')}
             </span>
           </div>
@@ -2663,7 +2680,7 @@ function repondre(preavisId, reponse) {
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '12px', borderRadius: 10, background: '#F5F5F5', color: '#555', border: '0.5px solid #E0E0E0', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
               <MessageCircle size={14} strokeWidth={1.5} /> {estProprietaire ? t('ongletPreavisDash.sent.contacterLocataire') : t('ongletPreavisDash.sent.contacterProprio')}
             </button>
-            <button onClick={telechargerPDF}
+            <button onClick={function() { telechargerDocumentPreavis(resultat.document_id, resultat.numero); }}
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '12px', borderRadius: 10, background: estProprietaire ? '#C62828' : '#1B6B3A', color: '#fff', border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
               <FileText size={14} strokeWidth={1.5} /> {t('ongletPreavisDash.sent.telechargerPdf')}
             </button>
@@ -2671,35 +2688,77 @@ function repondre(preavisId, reponse) {
         </div>
       )}
 
-      {/* ── CONFIRMATION AVANT ENVOI ─────────────────────────── */}
-      {step === 'confirm' && (
+      {/* ── APERÇU AVANT ENVOI ───────────────────────────────── */}
+      {step === 'confirm' && (function() {
+        var largeur = Math.min(794, Math.max(280, (typeof window !== 'undefined' ? window.innerWidth : 794) - 96));
+        var echelle = largeur / 794;
+        return (
         <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}><span style={{display:'flex',alignItems:'center',gap:6}}><AlertTriangle size={15} strokeWidth={1.5}/> {t('ongletPreavis.confirmerEnvoiTitre')}</span></div>
-          <div style={{ background: '#FFEBEE', borderRadius: 10, padding: 14, marginBottom: 16, fontSize: 13, color: '#B71C1C', fontWeight: 600 }}>
-            {t('ongletPreavisDash.confirm.actionIrreversible')}
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 12 }}><span style={{display:'flex',alignItems:'center',gap:6}}><AlertTriangle size={15} strokeWidth={1.5}/> {t('ongletPreavisDash.apercu.titre')}</span></div>
+          <div style={{ background: '#FFEBEE', borderRadius: 10, padding: 14, marginBottom: 14, fontSize: 13, color: '#B71C1C', fontWeight: 600 }}>
+            {t('ongletPreavisDash.apercu.avertissement')}
           </div>
-          {[
-            estProprietaire ? [t('ongletPreavisDash.sent.bien'), bien && bien.logement_titre] : [t('ongletReservationsProprio.demandeRecue.labels.logement'), reservation && reservation.logement_titre],
-            [t('ongletPreavisDash.sent.motif'), motif],
-            [t('ongletPreavis.locataire.confirm.labels.delai'), t('ongletPaiementsDash.delaiMois', { n: delai })],
-            [t('ongletPreavisDash.sent.dateSortieEstimee'), addDays(parseInt(delai) * 30)],
-            note ? [t('ongletPreavisDash.confirm.message'), note] : null,
-          ].filter(Boolean).map(function(row) {
-            return (
-              <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '6px 0', borderBottom: '0.5px solid #f0f0f0', flexWrap: 'wrap', gap: 4 }}>
-                <span style={{ color: '#888' }}>{row[0]}</span>
-                <span style={{ fontWeight: 600, color: '#333', textAlign: 'right', maxWidth: '60%' }}>{row[1]}</span>
-              </div>
-            );
-          })}
+          <div style={{ width: largeur, maxWidth: '100%', height: 1123 * echelle, overflow: 'hidden', borderRadius: 6, border: '1px solid #E0E0E0', margin: '0 auto 16px', background: '#E6ECE8' }}>
+            <iframe title={t('ongletPreavisDash.apercu.titre')} srcDoc={apercu || ''} sandbox=""
+              style={{ width: 794, height: 1123, border: 0, transformOrigin: '0 0', transform: 'scale(' + echelle + ')', background: '#fff' }} />
+          </div>
           <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
             <button onClick={function() { setStep('form'); }}
               style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer' }}>{t('ongletPreavis.modifier')}</button>
             <button onClick={envoyer} disabled={loading}
               style={{ flex: 2, background: loading ? '#999' : (estProprietaire ? '#C62828' : '#1B6B3A'), color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
-              {loading ? t('ongletPreavisDash.confirm.envoiEnCours') : <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><Send size={14} strokeWidth={1.5}/> {t('ongletPreavisDash.confirm.envoyerOfficiel')}</span>}
+              {loading ? t('ongletPreavisDash.confirm.envoiEnCours') : <span style={{display:'flex',alignItems:'center',gap:6,justifyContent:'center'}}><Send size={14} strokeWidth={1.5}/> {t('ongletPreavisDash.apercu.envoyer')}</span>}
             </button>
           </div>
+        </div>
+        );
+      })()}
+
+      {/* ── MES PRÉAVIS ENVOYÉS ──────────────────────────────── */}
+      {step === 'form' && mesPreavis.length > 0 && (
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: '#37474F', marginBottom: 12 }}>{t('ongletPreavisDash.mes.titre')}</div>
+          {mesPreavis.map(function(p) {
+            var accuse = p.statut === 'accuse' && p.accuse_at;
+            return (
+              <div key={p.id} style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 10, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderLeft: '4px solid ' + (accuse ? '#1B6B3A' : '#F5A623') }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{p.logement_titre}</div>
+                <div style={{ fontSize: 12, color: '#666', margin: '4px 0 10px' }}>
+                  {t('ongletPreavisDash.mes.depart', { date: p.date_sortie_estimee ? new Date(p.date_sortie_estimee).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : '' })}
+                  {' · '}
+                  <b style={{ color: accuse ? '#1B6B3A' : '#8A4F05' }}>
+                    {accuse ? t('ongletPreavisDash.mes.accuse', { date: new Date(p.accuse_at).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' }) }) : t('ongletPreavisDash.mes.enAttente')}
+                  </b>
+                </div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <button onClick={function() { telechargerDocumentPreavis(p.document_id, 'Preavis'); }} disabled={!p.document_id}
+                    style={{ padding: '7px 14px', borderRadius: 8, border: 'none', background: '#37474F', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+                    {t('ongletPreavisDash.mes.pdf')}
+                  </button>
+                  {p.statut === 'envoye' && p.document_id && (
+                    <button onClick={function() { setAnnulation({ documentId: p.document_id, motif: '' }); }}
+                      style={{ padding: '7px 14px', borderRadius: 8, border: '1px solid #F0C9C5', background: '#fff', color: '#B3261E', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                      {t('ongletPreavisDash.mes.annuler')}
+                    </button>
+                  )}
+                </div>
+                {annulation && annulation.documentId === p.document_id && (
+                  <div style={{ marginTop: 12 }}>
+                    <input type="text" maxLength={300} autoFocus value={annulation.motif} placeholder={t('ongletPreavisDash.mes.annulerMotif')}
+                      onChange={function(e) { setAnnulation({ documentId: annulation.documentId, motif: e.target.value }); }}
+                      style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #D9E3DC', fontSize: 13, boxSizing: 'border-box', marginBottom: 8 }} />
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button onClick={function() { setAnnulation(null); }} style={{ padding: '7px 14px', borderRadius: 8, border: 'none', background: '#F0F0F0', color: '#555', fontSize: 12, cursor: 'pointer' }}>{t('ongletLocataires.form.annuler')}</button>
+                      <button onClick={confirmerAnnulationPreavis} disabled={annulation.motif.trim().length < 3}
+                        style={{ padding: '7px 14px', borderRadius: 8, border: 'none', background: annulation.motif.trim().length < 3 ? '#E0B5B1' : '#B3261E', color: '#fff', fontSize: 12, fontWeight: 700, cursor: annulation.motif.trim().length < 3 ? 'not-allowed' : 'pointer' }}>
+                        {t('ongletPreavisDash.mes.confirmerAnnulation')}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
 
@@ -2734,7 +2793,6 @@ function repondre(preavisId, reponse) {
           <div style={{ background: '#FFF8E1', borderRadius: 10, padding: 12, marginBottom: 14 }}>
             {[
               [t('ongletPreavisDash.sent.motif'),               p.motif],
-              [t('ongletPreavis.locataire.confirm.labels.delai'),               t('ongletPaiementsDash.delaiMois', { n: p.delai_mois })],
               [t('ongletPreavisDash.recus.dateDeSortie'),      dateSortie],
               [t('ongletPreavisDash.renouv.recuLe'),             new Date(p.created_at).toLocaleDateString('fr-FR')],
             ].map(function(row) {
@@ -2746,6 +2804,13 @@ function repondre(preavisId, reponse) {
               );
             })}
           </div>
+
+          {p.document_id && (
+            <button onClick={function() { telechargerDocumentPreavis(p.document_id, 'Preavis'); }}
+              style={{ width: '100%', marginBottom: 10, padding: 10, borderRadius: 10, border: '1px solid #CFD8DC', background: '#fff', color: '#37474F', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+              {t('ongletPreavisDash.recus.lireDocument')}
+            </button>
+          )}
 
           {reponseModal === p.id ? (
             <div>
@@ -2832,27 +2897,17 @@ function repondre(preavisId, reponse) {
             })}
           </div>
 
-          {/* Délai */}
+          {/* Date de départ */}
           <div style={{ marginBottom: 18 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>
-              {estProprietaire ? t('ongletPreavis.proprio.form.delaiLabel') : t('ongletPreavis.locataire.form.delaiLabel')}
+              {t('ongletPreavisDash.form.dateDepart')}
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-              {['1', '2', '3'].map(function(n) {
-                return (
-                  <button key={n} onClick={function() { setDelai(n); }}
-                    style={{ padding: 10, borderRadius: 10, border: delai === n ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: delai === n ? '#E8F5E9' : '#FAFAFA', color: delai === n ? '#1B5E20' : '#555', fontSize: 13, fontWeight: delai === n ? 700 : 400, cursor: 'pointer' }}>
-                    {t('ongletPaiementsDash.delaiMois', { n: n })}
-                  </button>
-                );
-              })}
+            <input type="date" value={dateDepart} min={minDate()} max={maxDate()}
+              onChange={function(e) { setDateDepart(e.target.value); }}
+              style={{ width: '100%', padding: '11px 12px', borderRadius: 10, border: '1px solid #E0E0E0', fontSize: 14, boxSizing: 'border-box', background: '#FAFAFA' }} />
+            <div style={{ background: '#ECEFF1', borderRadius: 10, padding: '10px 14px', marginTop: 10, fontSize: 12, color: '#546E7A' }}>
+              {t('ongletPreavisDash.form.delaiMinimum', { n: estProprietaire ? delais.proprietaire : delais.locataire, date: new Date(minDate() + 'T00:00:00').toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) })}
             </div>
-            {delai && (
-              <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginTop: 10, display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
-                <span style={{ color: '#555' }}>{t('ongletPreavisDash.sent.dateSortieEstimee')}</span>
-                <span style={{ fontWeight: 700, color: '#1B6B3A' }}>{addDays(parseInt(delai) * 30)}</span>
-              </div>
-            )}
           </div>
 
           {/* Note */}
@@ -2864,13 +2919,9 @@ function repondre(preavisId, reponse) {
           </div>
 
           <button
-            onClick={function() {
-              var ok = motif && delai && (!estProprietaire || bien);
-              if (!ok) { toast.error(t('ongletPreavisDash.form.selectionnez', { bien: estProprietaire && !bien ? t('ongletPreavisDash.form.unBienVirgule') : '', motif: motif ? '' : t('ongletPreavisDash.form.unMotifEt'), delai: !delai ? t('ongletPreavisDash.form.unDelai') : '' })); return; }
-              setStep('confirm');
-            }}
+            onClick={ouvrirApercu} disabled={apercuLoading}
             style={{ width: '100%', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-            {t('ongletPreavisDash.form.preparerBouton')}
+            {apercuLoading ? t('ongletPreavisDash.apercu.chargement') : t('ongletPreavisDash.form.preparerBouton')}
           </button>
         </div>
       )}
@@ -2978,8 +3029,7 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
   function generer(e) {
     e.preventDefault();
     var payload = { reservation_id: genForm.reservation_id, type: genForm.type };
-    if (genForm.type === 'preavis' && genForm.date_depart) payload.date_depart = genForm.date_depart;
-    if (genForm.type === 'etat_lieux') payload.type_etat = genForm.type_etat || 'entree';
+        if (genForm.type === 'etat_lieux') payload.type_etat = genForm.type_etat || 'entree';
     if (genForm.periode && /^\d{4}-\d{2}$/.test(genForm.periode)) {
       payload.annee = parseInt(genForm.periode.slice(0, 4), 10);
       payload.mois = parseInt(genForm.periode.slice(5, 7), 10);
@@ -3045,7 +3095,11 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
               <button
                 className="doc-card-btn"
                 style={{ background: d.color }}
-                onClick={function() { setGenForm(Object.assign({}, genForm, { type: d.type })); setShowForm(true); setShowUpload(false); }}
+                onClick={function() {
+                  // Les préavis passent par leur onglet (date limite, aperçu, accusé de réception)
+                  if (d.type === 'preavis' && props.setOnglet) { props.setOnglet('/dashboard/preavis'); return; }
+                  setGenForm(Object.assign({}, genForm, { type: d.type })); setShowForm(true); setShowUpload(false);
+                }}
               >{t('ongletDocuments.generer')}</button>
             </div>
           );
@@ -3060,7 +3114,7 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
               <div className="form-group">
                 <label>{t('ongletDocuments.typeDeDocument')}</label>
                 <select value={genForm.type} onChange={function(e) { setGenForm(Object.assign({}, genForm, { type: e.target.value })); }}>
-                  {typesAffiches.map(function(d) { return <option key={d.type} value={d.type}>{t('ongletDocuments.docsTypes.' + d.labelKey + '.titre')}</option>; })}
+                  {typesAffiches.filter(function(d) { return d.type !== 'preavis'; }).map(function(d) { return <option key={d.type} value={d.type}>{t('ongletDocuments.docsTypes.' + d.labelKey + '.titre')}</option>; })}
                 </select>
               </div>
               <div className="form-group">
@@ -3073,13 +3127,6 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
                 </select>
               </div>
             </div>
-            {genForm.type === 'preavis' && (
-              <div className="form-group">
-                <label>{t('ongletDocuments.dateDepart')}</label>
-                <input type="date" required min={new Date().toISOString().slice(0, 10)} value={genForm.date_depart || ''}
-                  onChange={function(e) { setGenForm(Object.assign({}, genForm, { date_depart: e.target.value })); }} />
-              </div>
-            )}
             {genForm.type === 'etat_lieux' && (
               <div className="form-group">
                 <label>{t('ongletDocuments.typeEtat')}</label>
@@ -5329,7 +5376,7 @@ function chargerDonnees() {
     if (onglet === '/dashboard/reservations') return <OngletReservations stats={stats} traiter={traiterReservation} user={user} navigate={navigate} recharger={chargerDonnees} />;
     if (onglet === '/dashboard/paiements') return <OngletPaiements stats={stats} user={user} plan={monPlan} />;
     if (onglet === '/dashboard/preavis') return <OngletPreavis user={user} setOnglet={setOnglet} />;
-    if (onglet === '/dashboard/documents')  return <OngletDocuments user={user} plan={monPlan} />;
+    if (onglet === '/dashboard/documents')  return <OngletDocuments user={user} plan={monPlan} setOnglet={setOnglet} />;
     if (onglet === '/dashboard/alertes') return <OngletAlertes />;
     if (onglet === '/dashboard/messages') return <OngletMessages />;
     if (onglet === '/dashboard/reclamations') return <OngletReclamations />;

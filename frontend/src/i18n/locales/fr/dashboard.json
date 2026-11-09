@@ -802,7 +802,10 @@
       "infoLocataire": "Continuez à payer vos loyers normalement jusqu'à la date de sortie. Un état des lieux de sortie sera planifié avec le propriétaire.",
       "contacterLocataire": "Contacter le locataire",
       "contacterProprio": "Contacter le proprio",
-      "telechargerPdf": "Télécharger PDF"
+      "telechargerPdf": "Télécharger PDF",
+      "infoProprioDate": "Continuez à encaisser les loyers normalement jusqu'au {{date}}. Un état des lieux de sortie sera à réaliser à cette date.",
+      "dateDepart": "Date de départ",
+      "document": "Document"
     },
     "confirm": {
       "actionIrreversible": "Action officielle et irréversible. Le destinataire recevra un email + une notification sur la plateforme.",
@@ -819,8 +822,11 @@
       "dateDeSortie": "Date de sortie",
       "messageOptionnel": "Message optionnel pour expliquer votre réponse...",
       "demanderRenouvellement": "Demander le renouvellement",
-      "accepterDepart": "Accepter le départ",
-      "repondreAuPreavis": "Répondre au préavis →"
+      "accepterDepart": "Accuser réception du préavis",
+      "repondreAuPreavis": "Accuser réception ou répondre →",
+      "lireDocument": "Lire le document du préavis",
+      "toastAccuse": "Accusé de réception enregistré",
+      "toastRenouvellement": "Demande de renouvellement envoyée !"
     },
     "form": {
       "alerteInfo": "Le préavis sera envoyé officiellement par email et notification à la partie concernée.",
@@ -831,7 +837,27 @@
       "unBienVirgule": "un bien, ",
       "unMotifEt": "un motif et ",
       "unDelai": "un délai",
-      "preparerBouton": "Préparer le préavis officiel →"
+      "preparerBouton": "Préparer le préavis officiel →",
+      "dateDepart": "Date de départ (date limite du préavis)",
+      "delaiMinimum": "Délai minimum : {{n}} jours, soit au plus tôt le {{date}}.",
+      "champsManquants": "Choisissez le bien, le motif et la date de départ"
+    },
+    "apercu": {
+      "titre": "Aperçu du préavis avant envoi",
+      "avertissement": "Relisez bien : une fois envoyé, le préavis est signé et verrouillé. Vous ne pourrez plus le modifier, seulement le télécharger ou l'annuler tant que le destinataire n'a pas accusé réception.",
+      "chargement": "Préparation de l'aperçu…",
+      "envoyer": "Signer et envoyer le préavis"
+    },
+    "mes": {
+      "titre": "Mes préavis envoyés",
+      "depart": "Départ le {{date}}",
+      "enAttente": "En attente d'accusé de réception",
+      "accuse": "Accusé de réception le {{date}}",
+      "pdf": "Télécharger le PDF",
+      "annuler": "Annuler le préavis",
+      "annulerMotif": "Motif de l'annulation",
+      "confirmerAnnulation": "Confirmer l'annulation",
+      "toastAnnule": "Préavis annulé"
     }
   },
   "ongletPaiementsDash": {
