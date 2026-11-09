@@ -15,15 +15,15 @@ const multer = require('multer');
 // ================================================
 var TYPES_PROPRIO = [
   'facture', 'quittance', 'contrat_bail',
-  'etat_lieux', 'mise_en_demeure',
+  'mise_en_demeure',
   'rapport_financier', 'caution'
 ];
 
 var TYPES_LOCATAIRE = [
-  'quittance', 'etat_lieux'
+  'quittance'
 ];
-// Les préavis ne se génèrent plus ici : ils passent par l'onglet Préavis
-// (aperçu, date limite, accusé de réception) qui crée le document.
+// Les préavis et les états des lieux ne se génèrent plus ici : ils passent par
+// leur propre parcours (aperçu, signatures, accusé de réception) qui crée le document.
 
 // Réservation avec les infos du logement, du propriétaire et du locataire,
 // nécessaires à tous les modèles de documents.

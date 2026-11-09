@@ -8,6 +8,7 @@ import Sidebar from '../components/dashboard/Sidebar';
 import toast from 'react-hot-toast';
 import GestionPhotos from '../components/GestionPhotos';
 import OngletPreavisComponent from '../components/OngletPreavis';
+import EtatDesLieux from '../components/EtatDesLieux';
 import OngletPaiementsComponent from '../components/OngletPaiements';
 import ModalPaiementMobile from '../components/ModalPaiementMobile';
 import ModalSignatureBail from '../components/ModalSignatureBail';
@@ -3015,11 +3016,17 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
   var [fichier, setFichier] = useState(null);
   var [aAnnuler, setAAnnuler] = useState(null);
   var [motifAnnul, setMotifAnnul] = useState('');
+  var [edlOuvert, setEdlOuvert] = useState(false);
+  var [edlResa, setEdlResa] = useState('');
+  var [toutesResa, setToutesResa] = useState([]);
 
   useEffect(function() {
     api.get('/documents').then(function(res) { setDocuments(res.data.documents || []); }).catch(console.error);
     var ep = user && user.role === 'locataire' ? '/reservations/mes-reservations' : '/reservations/proprietaire';
         api.get(ep).then(function(res) {
+      setToutesResa((res.data.reservations || []).filter(function(r) {
+        return ['bail_en_cours', 'bail_signe_proprio', 'confirmee', 'terminee'].includes(r.statut);
+      }));
       setReservations((res.data.reservations || []).filter(function(r) {
         return ['confirmee', 'active', 'bail_signe', 'bail_signe_proprio', 'bail_signe_locataire', 'terminee'].includes(r.statut);
       }));
@@ -3085,6 +3092,24 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
         </div>
       </div>
 
+      {edlOuvert && (
+        <div className="dash-form-card" style={{ marginBottom: 16 }}>
+          {!edlResa ? (
+            <div>
+              <h3 style={{ marginBottom: 10 }}>{t('edl.choisirLocation')}</h3>
+              {toutesResa.length === 0 && <p style={{ color: '#888', fontSize: 13 }}>{t('edl.aucuneLocation')}</p>}
+              <select value={edlResa} onChange={function(e) { setEdlResa(e.target.value); }} style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #E0E0E0', marginBottom: 10 }}>
+                <option value="">{t('ongletDocuments.selectionnezReservation')}</option>
+                {toutesResa.map(function(r) { return <option key={r.id} value={r.id}>{r.logement_titre} - {new Date(r.date_debut).toLocaleDateString('fr-FR')}</option>; })}
+              </select>
+              <button className="btn-outline-green" onClick={function() { setEdlOuvert(false); }}>{t('edl.fermer')}</button>
+            </div>
+          ) : (
+            <EtatDesLieux key={edlResa} reservationId={edlResa} onFermer={function() { setEdlOuvert(false); setEdlResa(''); api.get('/documents').then(function(res) { setDocuments(res.data.documents || []); }); }} />
+          )}
+        </div>
+      )}
+
       <div className="docs-grid-proto">
         {typesAffiches.map(function(d, i) {
           return (
@@ -3098,6 +3123,12 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
                 onClick={function() {
                   // Les préavis passent par leur onglet (date limite, aperçu, accusé de réception)
                   if (d.type === 'preavis' && props.setOnglet) { props.setOnglet('/dashboard/preavis'); return; }
+                  // Les états des lieux ont leur parcours (grille, signatures des deux parties)
+                  if (d.type === 'etat_lieux') {
+                    setEdlOuvert(true); setShowForm(false); setShowUpload(false);
+                    if (toutesResa.length === 1) setEdlResa(toutesResa[0].id);
+                    return;
+                  }
                   setGenForm(Object.assign({}, genForm, { type: d.type })); setShowForm(true); setShowUpload(false);
                 }}
               >{t('ongletDocuments.generer')}</button>
@@ -3114,7 +3145,7 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
               <div className="form-group">
                 <label>{t('ongletDocuments.typeDeDocument')}</label>
                 <select value={genForm.type} onChange={function(e) { setGenForm(Object.assign({}, genForm, { type: e.target.value })); }}>
-                  {typesAffiches.filter(function(d) { return d.type !== 'preavis'; }).map(function(d) { return <option key={d.type} value={d.type}>{t('ongletDocuments.docsTypes.' + d.labelKey + '.titre')}</option>; })}
+                  {typesAffiches.filter(function(d) { return d.type !== 'preavis' && d.type !== 'etat_lieux'; }).map(function(d) { return <option key={d.type} value={d.type}>{t('ongletDocuments.docsTypes.' + d.labelKey + '.titre')}</option>; })}
                 </select>
               </div>
               <div className="form-group">

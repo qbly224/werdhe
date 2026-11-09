@@ -80,7 +80,7 @@ const genererDocument = async ({
   duree_mois, type_location,
   mois, annee,
   date_depart, type_etat, mois_retard, paiements,
-  auteur, motif, note, delai_minimum_jours,
+  auteur, motif, note, delai_minimum_jours, edl,
   auteur_id = null,
   envoyer_email = true
 }) => {
@@ -103,7 +103,7 @@ const genererDocument = async ({
       duree_mois: duree_mois, type_location: type_location,
       mois: mois, annee: annee,
       date_depart: date_depart, type_etat: type_etat, mois_retard: mois_retard, paiements: paiements,
-      auteur: auteur, motif: motif, note: note, delai_minimum_jours: delai_minimum_jours
+      auteur: auteur, motif: motif, note: note, delai_minimum_jours: delai_minimum_jours, edl: edl
     };
 
     var htmlAvecJeton = modele(donnees);
