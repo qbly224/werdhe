@@ -67,7 +67,7 @@ var DOCS_TYPES = [
   { icon: <Banknote      size={32} strokeWidth={1.5} color="#2E7D32"/>, labelKey: 'decompte',        color: '#2E7D32', type: 'decompte'         },
   { icon: <Shield        size={32} strokeWidth={1.5} color="#AD1457"/>, labelKey: 'cautionnement',   color: '#AD1457', type: 'cautionnement'    },
 ];
-var TYPES_ACTES = ['avenant', 'decompte', 'cautionnement'];
+var TYPES_ACTES = ['avenant', 'decompte', 'cautionnement', 'bail'];
 
 // ================================================
 // Composant UpgradeBanner
@@ -1477,6 +1477,18 @@ function OngletReservationsProprio(props) {
   var [bailSigne, setBailSigne] = useState(false);
   var [showSignatureProprio, setShowSignatureProprio] = useState(false);
   var [signatureProcessing, setSignatureProcessing] = useState(false);
+  var [bailPanel, setBailPanel] = useState(false);
+  var [acteBail, setActeBail] = useState(null);
+
+  // Le bail se prépare et se signe avec ses conditions particulières (acte « bail »).
+  useEffect(function() {
+    setBailPanel(false); setActeBail(null);
+    if (selectionne && ['caution_payee', 'bail_en_cours', 'bail_signe_proprio'].includes(selectionne.statut)) {
+      api.get('/actes/reservation/' + selectionne.id)
+        .then(function(res) { setActeBail((res.data.actes || []).some(function(a) { return a.type === 'bail'; })); })
+        .catch(function() { setActeBail(false); });
+    }
+  }, [selectionne && selectionne.id, selectionne && selectionne.statut]);
 
   // Polling toutes les 10s pour mettre à jour le statut
 
@@ -1868,62 +1880,22 @@ useEffect(function() {
               })}
             </div>
             <button
-              onClick={function() { action('/statut', { statut: 'bail_en_cours' }, t('ongletReservationsProprio.toastBailGenere')); }}
+              onClick={function() { setBailPanel(true); }}
               style={{ width: '100%', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
               {t('ongletReservationsProprio.genererPreparerBail')}
             </button>
           </div>
         )}
 
-        {/* ─ BAIL À SIGNER ─ */}
-        {r.statut === 'bail_en_cours' && (
-          <div style={{ background: '#fff', borderRadius: 14, padding: 18, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}><FileSignature size={15} strokeWidth={1.75} /> {t('ongletReservationsProprio.bailASigner.titre')}</div>
-            <div style={{ background: '#F8F8F8', borderRadius: 10, padding: 12, marginBottom: 16, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-              {[
-                [t('ongletReservationsProprio.infosCandidat.locataireLabel'), r.locataire_prenom + ' ' + r.locataire_nom],
-                [t('ongletReservationsProprio.demandeRecue.labels.logement'), r.logement_titre],
-                [t('ongletReservationsProprio.demandeRecue.labels.loyer'), new Intl.NumberFormat('fr-FR').format(loyer) + ' GNF/mois'],
-                [t('ongletReservationsProprio.bailASigner.debut'), r.date_debut ? new Date(r.date_debut).toLocaleDateString('fr-FR') : t('ongletReservationsProprio.na')],
-                [t('ongletReservationsProprio.demandeRecue.labels.duree'), r.duree_mois ? t('ongletReservationsProprio.nMois', { n: r.duree_mois }) : t('ongletReservationsProprio.na')],
-                [t('ongletReservationsProprio.bailASigner.caution'), <span key="caution-ok" style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}>{new Intl.NumberFormat('fr-FR').format(loyer)} GNF <Check size={11} strokeWidth={2} color="#1B6B3A" /></span>],
-              ].map(function(row) {
-                return (
-                  <div key={row[0]} style={{ fontSize: 11, color: '#666' }}>
-                    <b>{row[0]} :</b> {row[1]}
-                  </div>
-                );
-              })}
-            </div>
-            <div onClick={function() { if (!bailSigne) setShowSignatureProprio(true); }}
-              style={{ padding: 16, border: bailSigne ? '1.5px solid #1B6B3A' : '1.5px dashed #1B6B3A', background: bailSigne ? '#E8F5E9' : '#F0FBF0', borderRadius: 12, textAlign: 'center', cursor: bailSigne ? 'default' : 'pointer', marginBottom: 14 }}>
-              {bailSigne ? (
-                <div>
-                  <CheckCircle size={22} strokeWidth={1.5} color="#1B6B3A" style={{ marginBottom: 4 }} />
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#1B6B3A' }}>{t('ongletReservationsProprio.bailASigner.vousAvezSigne')}</div>
-                  <div style={{ fontSize: 12, color: '#2E7D32', marginTop: 4 }}>{t('ongletReservationsProprio.bailASigner.attenteSignatureLocataire')}</div>
-                </div>
-              ) : (
-                <div>
-                  <div style={{ marginBottom: 6, display: 'flex', justifyContent: 'center' }}><FileSignature size={26} strokeWidth={1.5} color="#1B6B3A" /></div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#1B6B3A' }}>{t('ongletReservationsProprio.bailASigner.appuyerPourSigner')}</div>
-                  <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{t('ongletReservationsProprio.bailASigner.signatureSecurisee')}</div>
-                </div>
-              )}
-            </div>
-            {showSignatureProprio && (
-              <ModalSignatureBail
-                nomSuggere={((user && user.prenom) || '') + ' ' + ((user && user.nom) || '')}
-                loading={signatureProcessing}
-                onClose={function() { if (!signatureProcessing) setShowSignatureProprio(false); }}
-                onConfirm={signerBail}
-              />
-            )}
+        {/* ─ BAIL : conditions particulières, signatures, document ─ */}
+        {(bailPanel || acteBail || r.statut === 'bail_en_cours') && ['caution_payee', 'bail_en_cours', 'bail_signe_proprio'].includes(r.statut) && (
+          <div style={{ marginTop: 14 }}>
+            <ActesSignature key={r.id} reservationId={r.id} type="bail" onFermer={function() { setBailPanel(false); }} onChange={function() { if (recharger) recharger(); }} />
           </div>
         )}
 
         {/* ─ EN ATTENTE SIGNATURE LOCATAIRE ─ */}
-        {r.statut === 'bail_signe_proprio' && (
+        {r.statut === 'bail_signe_proprio' && acteBail === false && (
           <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}><Clock size={32} strokeWidth={1.5} color="#888" /></div>
             <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>
@@ -3086,7 +3058,7 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
 
   // Types selon le rôle
   var typesAffiches = user && user.role === 'locataire'
-    ? DOCS_TYPES.filter(function(d) { return ['quittance', 'etat_lieux', 'preavis'].concat(TYPES_ACTES).includes(d.type); })
+    ? DOCS_TYPES.filter(function(d) { return ['quittance', 'etat_lieux', 'preavis', 'contrat_bail'].concat(TYPES_ACTES).includes(d.type); })
     : DOCS_TYPES;
 
   return (
@@ -3149,8 +3121,8 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
                   // Les préavis passent par leur onglet (date limite, aperçu, accusé de réception)
                   if (d.type === 'preavis' && props.setOnglet) { props.setOnglet('/dashboard/preavis'); return; }
                   // Les états des lieux ont leur parcours (grille, signatures des deux parties)
-                  if (TYPES_ACTES.indexOf(d.type) !== -1) {
-                    setActeType(d.type); setEdlOuvert(false); setShowForm(false); setShowUpload(false);
+                  if (TYPES_ACTES.indexOf(d.type) !== -1 || d.type === 'contrat_bail') {
+                    setActeType(d.type === 'contrat_bail' ? 'bail' : d.type); setEdlOuvert(false); setShowForm(false); setShowUpload(false);
                     setActeResa(toutesResa.length === 1 ? toutesResa[0].id : '');
                     return;
                   }
@@ -3175,7 +3147,7 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
               <div className="form-group">
                 <label>{t('ongletDocuments.typeDeDocument')}</label>
                 <select value={genForm.type} onChange={function(e) { setGenForm(Object.assign({}, genForm, { type: e.target.value })); }}>
-                  {typesAffiches.filter(function(d) { return d.type !== 'preavis' && d.type !== 'etat_lieux' && TYPES_ACTES.indexOf(d.type) === -1; }).map(function(d) { return <option key={d.type} value={d.type}>{t('ongletDocuments.docsTypes.' + d.labelKey + '.titre')}</option>; })}
+                  {typesAffiches.filter(function(d) { return d.type !== 'preavis' && d.type !== 'etat_lieux' && d.type !== 'contrat_bail' && TYPES_ACTES.indexOf(d.type) === -1; }).map(function(d) { return <option key={d.type} value={d.type}>{t('ongletDocuments.docsTypes.' + d.labelKey + '.titre')}</option>; })}
                 </select>
               </div>
               <div className="form-group">

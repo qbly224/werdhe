@@ -14,7 +14,7 @@ const multer = require('multer');
 // Locataire peut générer : quittance, etat_lieux, preavis
 // ================================================
 var TYPES_PROPRIO = [
-  'facture', 'quittance', 'contrat_bail',
+  'facture', 'quittance',
   'mise_en_demeure',
   'rapport_financier', 'caution'
 ];
@@ -24,6 +24,7 @@ var TYPES_LOCATAIRE = [
 ];
 // Les préavis et les états des lieux ne se génèrent plus ici : ils passent par
 // leur propre parcours (aperçu, signatures, accusé de réception) qui crée le document.
+// Le bail aussi : il se prépare et se signe depuis la location (acte « bail »).
 
 // Réservation avec les infos du logement, du propriétaire et du locataire,
 // nécessaires à tous les modèles de documents.
@@ -315,6 +316,13 @@ const signerBail = async (req, res) => {
   try {
     const { reservation_id } = req.body;
 
+    const acteBail = await db.query(
+      `SELECT 1 FROM actes WHERE type = 'bail' AND reservation_id = $1 AND statut <> 'annule' LIMIT 1`, [reservation_id]
+    ).catch(function() { return { rows: [] }; });
+    if (acteBail.rows.length > 0) {
+      return res.status(409).json({ erreur: 'Ce bail se signe avec ses conditions particulières, depuis la location' });
+    }
+
     // Vérifier que la réservation existe et appartient au proprio
     const resa = await db.query(
       `SELECT r.*, l.proprietaire_id
@@ -476,6 +484,12 @@ const telechargerBailReservation = async (req, res) => {
     const signatures = await db.query(
       'SELECT 1 FROM signatures_bail WHERE reservation_id = $1 LIMIT 1', [reservationId]
     ).catch(function() { return { rows: [] }; });
+    const acteBail = await db.query(
+      `SELECT statut FROM actes WHERE type = 'bail' AND reservation_id = $1 AND statut <> 'annule' LIMIT 1`, [reservationId]
+    ).catch(function() { return { rows: [] }; });
+    if (acteBail.rows.length > 0 && acteBail.rows[0].statut !== 'genere') {
+      return res.status(409).json({ erreur: "Le bail est en cours de préparation ou de signature : il sera téléchargeable une fois signé par les deux parties" });
+    }
     if (!r.bail_signe && signatures.rows.length === 0) {
       return res.status(409).json({ erreur: "Le bail n'a pas encore été signé" });
     }

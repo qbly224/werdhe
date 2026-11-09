@@ -239,6 +239,7 @@ function quittance(d) {
 // Les signatures électroniques sont insérées dans les zones prévues au
 // téléchargement (SIG_PROPRIETAIRE / SIG_LOCATAIRE) à partir de signatures_bail.
 function bail(d) {
+  if (d.acte) return bailActe(d);
   var debut = d.periode && d.periode.debut ? dateFR(d.periode.debut) : d.date;
   var duree = d.duree_mois ? d.duree_mois + ' mois' : 'durée indéterminée';
   var rectoCorps = '<div class="corps">' +
@@ -275,6 +276,58 @@ function bail(d) {
   var verso = page(entete('CONTRAT DE BAIL · verso', d.numero, 'Conditions générales') + versoCorps);
 
   return document_('Contrat de bail ' + d.numero, [recto, verso]);
+}
+
+// Bail préparé et signé dans Werdhe (acte « bail ») : conditions particulières choisies
+// par le bailleur, identités des parties, signatures des deux côtés.
+function blocIdentite(nom, id, contact) {
+  id = id || {};
+  return '<b>' + nom + '</b><br>' +
+    (id.naissance ? 'Né(e) le ' + esc(dateFR(id.naissance + 'T00:00:00Z')) + ' · pièce n° ' + cl(id.cni, 30) + '<br>' : '') +
+    (id.adresse ? cl(id.adresse, 70) + '<br>' : '') +
+    (id.profession ? cl(id.profession, 40) + ' · ' : '') + cl(contact, 60);
+}
+
+function bailActe(d) {
+  var x = d.acte.donnees, sg = d.acte.signatures || {}, l = d.logement;
+  var idLoc = (sg.locataire && sg.locataire.identite) || null;
+  var equip = [];
+  if (l.parking) equip.push('parking'); if (l.jardin) equip.push('jardin'); if (l.climatisation) equip.push('climatisation'); if (l.gardien) equip.push('gardien');
+  var cb = function (on, lib) { return '<span class="cb' + (on ? ' on' : '') + '"></span> ' + lib; };
+  var charges = Number(x.charges) || 0;
+  var fin = x.date_fin_prevue ? dateFR(x.date_fin_prevue + 'T00:00:00Z') : '';
+
+  var recto = '<div class="corps">' +
+    '<div class="grid2"><div class="box"><small>Le bailleur</small>' + blocIdentite(nomComplet(d.proprietaire), x.identite_proprietaire, (d.proprietaire.telephone || '') + (d.proprietaire.email ? ' · ' + d.proprietaire.email : '')) + '</div>' +
+    '<div class="box"><small>Le preneur</small>' + (idLoc ? blocIdentite(nomComplet(d.locataire), idLoc, (d.locataire.telephone || idLoc.telephone || '') + (d.locataire.email ? ' · ' + d.locataire.email : '')) : '<b>' + nomComplet(d.locataire) + '</b><br>' + cl(d.locataire.telephone || '', 24) + (d.locataire.email ? ' · ' + cl(d.locataire.email, 40) : '') + '<br><span class="note">Identité renseignée par le preneur à la signature.</span>') + '</div></div>' +
+    '<div class="h">Le bien loué</div><p>' + bienLigne(l) + (l.categorie || l.quartier ? '<br>' + (l.categorie ? cl(l.categorie, 30) : '') + (l.categorie && l.quartier ? ' · ' : '') + (l.quartier ? 'quartier ' + cl(l.quartier, 40) : '') : '') + (equip.length ? '<br>Équipements : ' + equip.join(', ') : '') + '<br>Usage d\'habitation.</p>' +
+    '<div class="h">Durée, loyer et charges</div><table>' +
+    '<tr><td>Nature de la location</td><td class="r">' + (x.type_location === 'courte_duree' ? 'Courte durée' : 'Longue durée') + '</td></tr>' +
+    '<tr><td>Durée</td><td class="r">' + esc(x.duree_mois) + ' mois</td></tr>' +
+    '<tr><td>Date de début</td><td class="r">' + esc(dateFR(x.date_debut + 'T00:00:00Z')) + (fin ? ' · fin prévue le ' + esc(fin) : '') + '</td></tr>' +
+    '<tr><td>Loyer mensuel</td><td class="r"><b>' + gnf(x.loyer) + '</b></td></tr>' +
+    '<tr><td>Charges mensuelles</td><td class="r">' + gnf(charges) + (charges ? ' · total ' + gnf(Number(x.loyer) + charges) : '') + '</td></tr>' +
+    '<tr><td>Paiement</td><td class="r">le ' + esc(x.jour_paiement) + ' de chaque mois, via Werdhe ou en espèces</td></tr>' +
+    '<tr><td>Dépôt de garantie</td><td class="r">1 mois de loyer, soit ' + gnf(x.depot) + '</td></tr></table>' +
+    '<div class="h">Clauses particulières</div>' +
+    '<p>' + cb(x.clauses && x.clauses.meuble, 'Logement meublé') + ' &nbsp; ' + cb(x.clauses && x.clauses.animaux, 'Animaux admis') + ' &nbsp; ' + cb(x.clauses && x.clauses.sous_location, 'Sous-location autorisée') + ' &nbsp; ' + cb(x.clauses && x.clauses.assurance, 'Assurance habitation exigée') + '</p>' +
+    (x.clause_libre ? '<p><b>Clause libre :</b> ' + cl(x.clause_libre, 200) + '</p>' : '') +
+    '<p class="note">Le bail prend effet à la signature des deux parties. Les conditions générales (verso) font partie intégrante du contrat ; en cas de contradiction, les conditions particulières prévalent. Un état des lieux d\'entrée contradictoire sera établi à la remise des clés. Fait à ' + cl(l.ville, 40) + ', le ' + esc(d.date) + '.</p>' +
+    '<div class="sign">' + boiteSignature(sg.proprietaire, 'Le bailleur · lu et approuvé') + boiteSignature(sg.locataire, 'Le preneur · lu et approuvé') + '</div></div>';
+  var p1 = page(entete('CONTRAT DE BAIL · recto', d.numero, d.date) + recto + pied(Object.assign({}, d, { pied_note: 'Feuille recto-verso : conditions générales au verso.' })));
+
+  var verso = '<div class="corps art">' +
+    '<div class="h">Article 1 · Usage et jouissance</div><p>Le logement est loué à usage d\'habitation. Le bailleur remet le bien en bon état d\'usage et en assure la jouissance paisible pendant toute la durée du bail.</p>' +
+    '<div class="h">Article 2 · Loyer, charges et quittances</div><p>Le loyer et les charges sont payables le ' + esc(x.jour_paiement) + ' de chaque mois. Une quittance est délivrée pour chaque loyer payé. Tout retard peut donner lieu à relance puis à mise en demeure par la plateforme Werdhe.</p>' +
+    '<div class="h">Article 3 · Dépôt de garantie</div><p>Le dépôt de garantie est versé avant la signature. Il est restitué dans un délai de 30 jours après la remise des clés, déduction faite des loyers ou charges impayés et des réparations locatives justifiées par la comparaison des états des lieux d\'entrée et de sortie.</p>' +
+    '<div class="h">Article 4 · Obligations du locataire</div><ul><li>Payer le loyer et les charges aux échéances convenues ;</li><li>user paisiblement du logement et l\'entretenir en bon père de famille ;</li><li>signaler sans délai toute panne ou dégradation au bailleur ;</li><li>ne pas sous-louer ni céder le bail, sauf si la clause particulière l\'autorise ;</li><li>respecter le voisinage et les règles de l\'immeuble.</li></ul>' +
+    '<div class="h">Article 5 · Obligations du bailleur</div><ul><li>Délivrer le logement en bon état d\'usage et conforme à sa description ;</li><li>assurer la jouissance paisible du logement ;</li><li>effectuer les réparations urgentes et celles qui ne sont pas locatives ;</li><li>délivrer une quittance de loyer à chaque paiement.</li></ul>' +
+    '<div class="h">Article 6 · Préavis et fin du bail</div><p>Chaque partie peut mettre fin au bail en notifiant un préavis, via la plateforme Werdhe ou par écrit, dans les délais prévus par la loi applicable et, à défaut, au moins un mois avant la date de départ. À la fin du bail, un état des lieux de sortie est établi et les clés sont restituées.</p>' +
+    '<div class="h">Article 7 · Renouvellement et modification</div><p>Le bail peut être renouvelé ou modifié d\'un commun accord, par avenant signé des deux parties avant la fin du bail en cours.</p>' +
+    '<div class="h">Article 8 · Preuve et signature électronique</div><p>Les parties reconnaissent la valeur de preuve des signatures électroniques recueillies sur Werdhe (signature dessinée ou nom saisi, date et heure, adresse IP, empreinte du document). Le présent contrat est soumis au droit guinéen ; à défaut d\'accord amiable, les tribunaux compétents de Guinée sont seuls compétents.</p>' +
+    '<div style="flex:1"></div><div class="foot"><div>Contrat ' + esc(d.numero) + ' · verso · conditions générales · werdhe.com</div></div></div>';
+  var p2 = page(entete('CONTRAT DE BAIL · verso', d.numero, 'Conditions générales') + verso);
+  return document_('Contrat de bail ' + d.numero, [p1, p2]);
 }
 
 // ── 4. ÉTAT DES LIEUX (grille à remplir, une page) ─────────

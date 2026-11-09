@@ -8,6 +8,7 @@ const E = require('../services/etatDesLieuxService');
 const { genererDocument, apercuDocument, enregistrerEvenement } = require('../services/documentService');
 const { envoyerEmailDocument } = require('../services/emailService');
 const { esc } = require('../services/documentTemplates');
+const { activerLocation } = require('../services/bailService');
 
 // ================================================
 // ACTES À SIGNER : avenant, décompte de restitution, cautionnement.
@@ -22,6 +23,7 @@ const { esc } = require('../services/documentTemplates');
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const SITE = process.env.FRONTEND_URL || 'https://www.werdhe.com';
 const STATUTS_RESA = {
+  bail: ['caution_payee', 'bail_en_cours'],
   avenant: ['confirmee', 'terminee'],
   decompte: ['confirmee', 'terminee'],
   cautionnement: ['acceptee', 'caution_requise', 'caution_payee', 'bail_en_cours', 'bail_signe_proprio', 'confirmee']
@@ -30,7 +32,7 @@ const STATUTS_RESA = {
 const SQL_ACTE = `SELECT a.*,
     r.locataire_id, r.statut AS resa_statut, r.date_debut, r.date_fin, r.montant_total, r.duree_mois,
     l.id AS logement_pk, l.proprietaire_id, l.titre AS logement_titre, l.adresse, l.ville,
-    l.superficie, l.nb_chambres, l.nb_salles_bain,
+    l.superficie, l.nb_chambres, l.nb_salles_bain, l.categorie, l.quartier, l.parking, l.jardin, l.climatisation, l.gardien,
     u_prop.nom AS prop_nom, u_prop.prenom AS prop_prenom, u_prop.email AS prop_email, u_prop.telephone AS prop_tel,
     u_loc.nom AS loc_nom, u_loc.prenom AS loc_prenom, u_loc.email AS loc_email, u_loc.telephone AS loc_tel
   FROM actes a
@@ -40,7 +42,7 @@ const SQL_ACTE = `SELECT a.*,
   JOIN users u_loc ON u_loc.id = r.locataire_id`;
 
 const SQL_RESERVATION = `SELECT r.*, l.id AS logement_pk, l.proprietaire_id, l.titre AS logement_titre, l.adresse, l.ville,
-    l.superficie, l.nb_chambres, l.nb_salles_bain,
+    l.superficie, l.nb_chambres, l.nb_salles_bain, l.categorie, l.quartier, l.parking, l.jardin, l.climatisation, l.gardien,
     u_prop.nom AS prop_nom, u_prop.prenom AS prop_prenom, u_prop.email AS prop_email, u_prop.telephone AS prop_tel,
     u_loc.nom AS loc_nom, u_loc.prenom AS loc_prenom, u_loc.email AS loc_email, u_loc.telephone AS loc_tel
   FROM reservations r
@@ -72,7 +74,8 @@ function droitsDe(a, userId) {
     signer: !redacteur && st === 'a_valider' && attendu && !(a.signatures || {})[role],
     corriger: !redacteur && st === 'a_valider',
     generer: redacteur && st === 'signe',
-    annuler: redacteur && ['brouillon', 'a_valider', 'signe'].includes(st),
+    // Un bail signé par les deux parties active la location : il ne s'abandonne plus.
+    annuler: redacteur && (a.type === 'bail' ? ['brouillon', 'a_valider'] : ['brouillon', 'a_valider', 'signe']).includes(st),
     telecharger: st === 'genere' && !!a.document_id,
     renvoyer_lien: redacteur && a.type === 'cautionnement' && st === 'a_valider' && !(a.signatures || {}).garant
   };
@@ -113,17 +116,29 @@ async function alerter(a, destinataireId, titre, description) {
   } catch (err) { console.warn('[actes] alerte non créée:', err.message); }
 }
 
-const LIBELLE = { avenant: 'Avenant au bail', decompte: 'Décompte de restitution', cautionnement: 'Acte de cautionnement' };
+const LIBELLE = { avenant: 'Avenant au bail', decompte: 'Décompte de restitution', cautionnement: 'Acte de cautionnement', bail: 'Contrat de bail' };
 
 function paramsDocument(a, extra) {
   return Object.assign({
     type: A.TYPES[a.type].doc, reservation_id: a.reservation_id,
-    logement: { id: a.logement_pk, titre: a.logement_titre, adresse: a.adresse, ville: a.ville, superficie: a.superficie, nb_chambres: a.nb_chambres, nb_salles_bain: a.nb_salles_bain },
+    logement: { id: a.logement_pk, titre: a.logement_titre, adresse: a.adresse, ville: a.ville, superficie: a.superficie, nb_chambres: a.nb_chambres, nb_salles_bain: a.nb_salles_bain,
+      categorie: a.categorie, quartier: a.quartier, parking: a.parking, jardin: a.jardin, climatisation: a.climatisation, gardien: a.gardien },
     proprietaire: { id: a.proprietaire_id, nom: a.prop_nom, prenom: a.prop_prenom, email: a.prop_email, telephone: a.prop_tel },
     locataire: { id: a.locataire_id, nom: a.loc_nom, prenom: a.loc_prenom, email: a.loc_email, telephone: a.loc_tel },
     acte: { type: a.type, donnees: a.donnees, signatures: a.signatures || {}, signataires: a.signataires },
     envoyer_email: false
   }, extra || {});
+}
+
+// Le bail signé reste consigné dans signatures_bail (preuve historique lue par d'autres parties du code).
+async function consignerSignatureBail(a, role, userId, sig, ip) {
+  try {
+    await db.query(
+      `INSERT INTO signatures_bail (reservation_id, signataire_id, role, nom_complet, ip_adresse, user_agent, hash_signature)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [a.reservation_id, userId, role, sig.nom_complet, ip || '', 'acte-bail', sig.hash]
+    );
+  } catch (err) { console.warn('[bail] signatures_bail non écrite:', err.message); }
 }
 
 function erreurMetier(res, err) { return res.status(400).json({ erreur: err.message }); }
@@ -195,7 +210,7 @@ router.get('/reservation/:reservation_id', verifierToken, async (req, res) => {
     const liste = await db.query(SQL_ACTE + ` WHERE a.reservation_id = $1 AND a.statut <> 'annule' ORDER BY a.created_at DESC`, [rid]);
     const actes = liste.rows.map(function (a) { return vue(a, req.user.id); });
 
-    let suggestions = { avenants: [], decompte: null, cautionnement: false };
+    let suggestions = { avenants: [], decompte: null, cautionnement: false, bail: false };
     if (role === 'proprietaire') {
       const dejaAvenant = new Set(actes.filter(function (x) { return x.type === 'avenant'; }).map(function (x) { return x.donnees.renouvellement_id; }));
       if (STATUTS_RESA.avenant.includes(r.statut)) {
@@ -208,6 +223,7 @@ router.get('/reservation/:reservation_id', verifierToken, async (req, res) => {
         if (edl.rows.length) suggestions.decompte = { edl_id: edl.rows[0].id };
       }
       suggestions.cautionnement = STATUTS_RESA.cautionnement.includes(r.statut);
+      suggestions.bail = STATUTS_RESA.bail.includes(r.statut) && !actes.some(function (x) { return x.type === 'bail'; });
     }
     res.json({ actes: actes, suggestions: suggestions, logement: { titre: r.logement_titre }, ma_role: role });
   } catch (err) {
@@ -272,6 +288,16 @@ router.post('/public/:jeton/signer', limiteurPublic, async (req, res) => {
   }
 });
 
+// ─── MON IDENTITÉ (préremplit les formulaires de bail) ───────────
+router.get('/identite', verifierToken, async (req, res) => {
+  try {
+    const r = await db.query('SELECT identite FROM public.users WHERE id = $1', [req.user.id]);
+    res.json({ identite: (r.rows[0] && r.rows[0].identite) || null });
+  } catch (err) {
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+});
+
 // ─── DÉTAIL ET APERÇU ────────────────────────────────────────────
 router.get('/:id', verifierToken, async (req, res) => {
   try {
@@ -323,6 +349,10 @@ router.post('/', verifierToken, async (req, res) => {
       if (edl.rows.length === 0) return res.status(409).json({ erreur: 'Le décompte s\'appuie sur l\'état des lieux de sortie : générez-le d\'abord' });
       donnees = A.donneesDecompte(r.montant_total, edl.rows[0]);
       source = edl.rows[0].id;
+    } else if (type === 'bail') {
+      const prof = await db.query('SELECT identite FROM public.users WHERE id = $1', [req.user.id]);
+      donnees = A.donneesBail(r, prof.rows[0] && prof.rows[0].identite);
+      source = r.id; // un seul bail actif par location (index unique type + source)
     } else {
       donnees = A.donneesCautionnement(r);
     }
@@ -338,6 +368,10 @@ router.post('/', verifierToken, async (req, res) => {
     } catch (e) {
       if (e.code === '23505') return res.status(409).json({ erreur: 'Cet acte existe déjà pour cette origine' });
       throw e;
+    }
+    // Le bail en préparation fait passer la location à « bail en cours ».
+    if (type === 'bail' && r.statut === 'caution_payee') {
+      await db.query(`UPDATE reservations SET statut = 'bail_en_cours', updated_at = NOW() WHERE id = $1`, [r.id]);
     }
     const a = (await db.query(SQL_ACTE + ' WHERE a.id = $1', [id])).rows[0];
     res.status(201).json({ acte: vue(a, req.user.id) });
@@ -395,6 +429,13 @@ router.post('/:id/envoyer', verifierToken, async (req, res) => {
 
     await alerter(a, a.locataire_id, LIBELLE[a.type] + ' à signer · ' + a.logement_titre,
       a.prop_prenom + ' ' + a.prop_nom + ' a préparé et signé ce document. Relisez-le puis signez.');
+    if (a.type === 'bail') {
+      // Le bailleur a signé : la location passe à « bail signé par le propriétaire »,
+      // et son identité est conservée pour les prochains baux.
+      await db.query(`UPDATE reservations SET statut = 'bail_signe_proprio', updated_at = NOW() WHERE id = $1`, [a.reservation_id]);
+      await db.query('UPDATE public.users SET identite = $2 WHERE id = $1', [req.user.id, JSON.stringify(a.donnees.identite_proprietaire || {})]).catch(function () {});
+      await consignerSignatureBail(a, 'proprietaire', req.user.id, sig, req.ip);
+    }
     let lienEnvoye = false;
     if (jeton) lienEnvoye = await envoyerLienGarant(a, jeton);
 
@@ -439,6 +480,10 @@ async function retourBrouillon(a, correction) {
      WHERE id = $1 AND statut = 'a_valider'`,
     [a.id, JSON.stringify(correction ? [correction] : [])]
   );
+  if (a.type === 'bail') {
+    await db.query(`UPDATE reservations SET statut = 'bail_en_cours', updated_at = NOW() WHERE id = $1 AND statut = 'bail_signe_proprio'`, [a.reservation_id]);
+    await db.query(`DELETE FROM signatures_bail WHERE reservation_id = $1 AND user_agent = 'acte-bail'`, [a.reservation_id]).catch(function () {});
+  }
 }
 
 router.post('/:id/retirer', verifierToken, async (req, res) => {
@@ -477,13 +522,39 @@ router.post('/:id/signer', verifierToken, async (req, res) => {
     if (!droitsDe(a, req.user.id).signer) return res.status(403).json({ erreur: 'Signature impossible à cette étape' });
     const role = roleDe(a, req.user.id);
     const utilisateur = role === 'proprietaire' ? { prenom: a.prop_prenom, nom: a.prop_nom } : { prenom: a.loc_prenom, nom: a.loc_nom };
+
+    // Bail : le locataire renseigne son identité (elle fait partie de ce qu'il signe).
+    let identite = null;
+    if (a.type === 'bail' && role === 'locataire') {
+      try { identite = A.identiteGarant(Object.assign({}, (req.body && req.body.identite) || {}, { nom: a.loc_prenom + ' ' + a.loc_nom })); }
+      catch (err) { return erreurMetier(res, err); }
+    }
+
+    let sigPosee = null;
     const resultat = await ajouterSignature(a.id, role, function (acte) {
-      return E.validerSignature(req.body && req.body.signature, utilisateur, req.ip, role, A.empreinteActe(acte, role));
+      const sig = E.validerSignature(req.body && req.body.signature, utilisateur, req.ip, role, A.empreinteActe(acte, role, identite ? { identite: identite } : null));
+      if (identite) sig.identite = identite;
+      sigPosee = sig;
+      return sig;
     }).catch(function (err) { return { erreur: 400, message: err.message }; });
     if (!resultat.ok) return res.status(resultat.erreur).json({ erreur: resultat.message });
 
-    await alerter(a, a.redacteur_id, LIBELLE[a.type] + ' signé · ' + a.logement_titre,
-      a.loc_prenom + ' ' + a.loc_nom + ' a signé.' + (resultat.complet ? ' Toutes les signatures sont là : générez le document final.' : ''));
+    if (a.type === 'bail') {
+      // Dernière signature du bail : la location est confirmée, puis le document est généré.
+      const prof = Object.assign({}, identite); delete prof.nom;
+      await db.query('UPDATE public.users SET identite = $2 WHERE id = $1', [req.user.id, JSON.stringify(prof)]).catch(function () {});
+      await consignerSignatureBail(a, 'locataire', req.user.id, sigPosee, req.ip);
+      if (resultat.complet) {
+        await activerLocation({ id: a.reservation_id, locataire_id: a.locataire_id, logement_id: a.logement_pk });
+        await alerter(a, a.redacteur_id, 'Bail signé : location confirmée · ' + a.logement_titre,
+          a.loc_prenom + ' ' + a.loc_nom + ' a signé le bail. La location est active.');
+        const gen = await genererActe(a.id, a.redacteur_id, req.ip);
+        if (!gen.ok) console.warn('[bail] génération automatique différée:', gen.erreur);
+      }
+    } else {
+      await alerter(a, a.redacteur_id, LIBELLE[a.type] + ' signé · ' + a.logement_titre,
+        a.loc_prenom + ' ' + a.loc_nom + ' a signé.' + (resultat.complet ? ' Toutes les signatures sont là : générez le document final.' : ''));
+    }
     const frais = (await db.query(SQL_ACTE + ' WHERE a.id = $1', [a.id])).rows[0];
     res.json({ acte: vue(frais, req.user.id) });
   } catch (err) {
@@ -493,33 +564,35 @@ router.post('/:id/signer', verifierToken, async (req, res) => {
 });
 
 // ─── GÉNÉRER LE DOCUMENT FINAL (verrouillé) ──────────────────────
-router.post('/:id/generer', verifierToken, async (req, res) => {
+// Logique partagée entre la route et la génération automatique du bail.
+async function genererActe(acteId, userId, ip) {
   const client = await db.connect();
   try {
     await client.query('BEGIN');
-    const verrou = await client.query('SELECT id FROM actes WHERE id = $1 FOR UPDATE', [UUID.test(String(req.params.id || '')) ? req.params.id : '00000000-0000-0000-0000-000000000000']);
-    const a = verrou.rows.length ? (await client.query(SQL_ACTE + ' WHERE a.id = $1', [req.params.id])).rows[0] : null;
-    if (!a || !roleDe(a, req.user.id)) { await client.query('ROLLBACK'); return res.status(404).json({ erreur: 'Acte non trouvé' }); }
-    if (!droitsDe(a, req.user.id).generer) { await client.query('ROLLBACK'); return res.status(403).json({ erreur: 'Génération impossible à cette étape' }); }
-    if (!A.toutesSignatures(a)) { await client.query('ROLLBACK'); return res.status(409).json({ erreur: 'Toutes les signatures sont nécessaires' }); }
+    const verrou = await client.query('SELECT id FROM actes WHERE id = $1 FOR UPDATE', [UUID.test(String(acteId || '')) ? acteId : '00000000-0000-0000-0000-000000000000']);
+    const a = verrou.rows.length ? (await client.query(SQL_ACTE + ' WHERE a.id = $1', [acteId])).rows[0] : null;
+    if (!a || !roleDe(a, userId)) { await client.query('ROLLBACK'); return { status: 404, erreur: 'Acte non trouvé' }; }
+    if (!droitsDe(a, userId).generer) { await client.query('ROLLBACK'); return { status: 403, erreur: 'Génération impossible à cette étape' }; }
+    if (!A.toutesSignatures(a)) { await client.query('ROLLBACK'); return { status: 409, erreur: 'Toutes les signatures sont nécessaires' }; }
 
     // Chaque signature doit porter sur le contenu actuel.
     for (const role of a.signataires) {
       const s = a.signatures[role];
-      const extra = role === 'garant' ? { identite: s.identite, mention: s.mention } : null;
+      const extra = role === 'garant' ? { identite: s.identite, mention: s.mention } : (s.identite ? { identite: s.identite } : null);
       if (s.hash !== A.empreinteActe(a, role, extra)) {
         await client.query('ROLLBACK');
-        return res.status(409).json({ erreur: 'Le contenu a changé depuis les signatures : elles doivent être refaites' });
+        return { status: 409, erreur: 'Le contenu a changé depuis les signatures : elles doivent être refaites' };
       }
     }
 
-    const gen = await genererDocument(paramsDocument(a, { auteur_id: req.user.id }));
-    if (!gen.success) { await client.query('ROLLBACK'); return res.status(500).json({ erreur: 'Le document n\'a pas pu être généré, réessayez' }); }
+    const gen = await genererDocument(paramsDocument(a, { auteur_id: userId }));
+    if (!gen.success) { await client.query('ROLLBACK'); return { status: 500, erreur: 'Le document n\'a pas pu être généré, réessayez' }; }
     await client.query(`UPDATE actes SET statut = 'genere', document_id = $2, genere_at = NOW(), updated_at = NOW() WHERE id = $1`, [a.id, gen.document.id]);
     await client.query('COMMIT');
 
     // Envoi du document aux autres parties (non bloquant)
     const destinataires = [{ email: a.loc_email, prenom: a.loc_prenom }];
+    if (a.type === 'bail') destinataires.push({ email: a.prop_email, prenom: a.prop_prenom });
     const garantEmail = ((a.donnees || {}).garant || {}).email;
     if (a.type === 'cautionnement' && garantEmail) destinataires.push({ email: garantEmail, prenom: (a.signatures.garant.identite || {}).nom || '' });
     for (const d of destinataires) {
@@ -527,19 +600,25 @@ router.post('/:id/generer', verifierToken, async (req, res) => {
         const envoye = await envoyerEmailDocument({ email: d.email, prenom: d.prenom, typeDocument: gen.document.type, numeroDocument: gen.numero, htmlDocument: gen.document.contenu_html, nomFichier: gen.numero + '.html' });
         if (envoye !== false) {
           await db.query('UPDATE documents SET email_envoye = TRUE, email_envoye_at = NOW() WHERE id = $1', [gen.document.id]);
-          await enregistrerEvenement(gen.document.id, 'envoye_email', req.user.id, { destinataire: d.email }, req.ip);
+          await enregistrerEvenement(gen.document.id, 'envoye_email', userId, { destinataire: d.email }, ip);
         }
       } catch (mailErr) { console.warn('[actes] e-mail non envoyé:', mailErr.message); }
     }
     await alerter(a, a.locataire_id, LIBELLE[a.type] + ' finalisé · ' + a.logement_titre, 'Le document ' + gen.numero + ' est disponible dans vos documents.');
 
     const frais = (await db.query(SQL_ACTE + ' WHERE a.id = $1', [a.id])).rows[0];
-    res.json({ acte: vue(frais, req.user.id), numero: gen.numero });
+    return { ok: true, acte: frais, numero: gen.numero };
   } catch (err) {
     try { await client.query('ROLLBACK'); } catch (x) { /* déjà annulé */ }
-    console.error('[POST /actes/:id/generer]', err.message);
-    res.status(500).json({ erreur: 'Erreur serveur' });
+    console.error('[actes] génération:', err.message);
+    return { status: 500, erreur: 'Erreur serveur' };
   } finally { client.release(); }
+}
+
+router.post('/:id/generer', verifierToken, async (req, res) => {
+  const r = await genererActe(req.params.id, req.user.id, req.ip);
+  if (!r.ok) return res.status(r.status).json({ erreur: r.erreur });
+  res.json({ acte: vue(r.acte, req.user.id), numero: r.numero });
 });
 
 // ─── ABANDONNER (avant génération) ───────────────────────────────
@@ -548,6 +627,10 @@ router.post('/:id/annuler', verifierToken, async (req, res) => {
     const a = await charger(req, res); if (!a) return;
     if (!droitsDe(a, req.user.id).annuler) return res.status(403).json({ erreur: 'Abandon impossible à cette étape' });
     await db.query(`UPDATE actes SET statut = 'annule', garant = NULL, updated_at = NOW() WHERE id = $1 AND statut IN ('brouillon','a_valider','signe')`, [a.id]);
+    if (a.type === 'bail') {
+      await db.query(`UPDATE reservations SET statut = 'caution_payee', updated_at = NOW() WHERE id = $1 AND statut IN ('bail_en_cours', 'bail_signe_proprio')`, [a.reservation_id]);
+      await db.query(`DELETE FROM signatures_bail WHERE reservation_id = $1 AND user_agent = 'acte-bail'`, [a.reservation_id]).catch(function () {});
+    }
     if (a.statut !== 'brouillon') await alerter(a, a.locataire_id, LIBELLE[a.type] + ' abandonné · ' + a.logement_titre, 'Le bailleur a abandonné ce document avant sa finalisation.');
     res.json({ message: 'Acte abandonné' });
   } catch (err) {

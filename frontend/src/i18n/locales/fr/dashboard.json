@@ -778,7 +778,8 @@
     "type": {
       "avenant": "Avenant de renouvellement",
       "decompte": "Restitution de la caution",
-      "cautionnement": "Acte de cautionnement"
+      "cautionnement": "Acte de cautionnement",
+      "bail": "Contrat de bail"
     },
     "statut": {
       "brouillon": "Brouillon",
@@ -796,12 +797,14 @@
     "preparer": {
       "avenant": "Préparer l'avenant",
       "decompte": "Préparer le décompte",
-      "cautionnement": "Préparer l'acte de cautionnement"
+      "cautionnement": "Préparer l'acte de cautionnement",
+      "bail": "Préparer le bail"
     },
     "rien": {
       "avenant": "Aucun renouvellement accepté en attente d'avenant pour cette location.",
       "decompte": "Le décompte est disponible une fois l'état des lieux de sortie généré.",
-      "cautionnement": "L'acte de cautionnement se prépare avant ou pendant la location."
+      "cautionnement": "L'acte de cautionnement se prépare avant ou pendant la location.",
+      "bail": "Le bail se prépare une fois la caution payée."
     },
     "rienDuTout": "Rien à faire pour le moment.",
     "preparePar": "préparé par {{nom}}",
@@ -882,7 +885,33 @@
     "relireEtSigner": "Signer",
     "correctionExplication": "Le document repasse en brouillon, les signatures sont effacées et le bailleur est prévenu.",
     "genererAvertissement": "Une fois généré, le document ne peut plus être modifié : vous pourrez seulement le télécharger. Vérifiez une dernière fois.",
-    "abandonner": "Abandonner ce document"
+    "abandonner": "Abandonner ce document",
+    "bailExplication": "Choisissez les charges, le jour de paiement et les clauses, puis signez : le locataire relit exactement ce texte et signe à son tour. La location démarre à sa signature.",
+    "bail": {
+      "duree": "Durée",
+      "debut": "Période",
+      "loyer": "Loyer mensuel",
+      "depot": "Dépôt de garantie (1 mois)",
+      "fixes": "Durée, début, loyer et dépôt viennent de la candidature acceptée. Pour les changer plus tard, utilisez un avenant.",
+      "charges": "Charges mensuelles (GNF)",
+      "jourPaiement": "Jour de paiement du loyer",
+      "clauses": "Clauses particulières",
+      "clause": {
+        "meuble": "Logement meublé",
+        "animaux": "Animaux admis",
+        "sous_location": "Sous-location autorisée",
+        "assurance": "Assurance habitation exigée"
+      },
+      "clauseLibre": "Clause libre (200 caractères)",
+      "identiteBailleur": "Votre identité de bailleur (conservée pour vos prochains baux)",
+      "identiteLocataire": "Votre identité de locataire",
+      "identiteLocataireExplication": "Ces informations figurent dans le bail que vous signez. Elles sont conservées sur votre profil pour vos prochaines locations.",
+      "naissance": "Date de naissance",
+      "cni": "N° de pièce d'identité",
+      "adresse": "Adresse",
+      "profession": "Profession",
+      "telephone": "Téléphone"
+    }
   },
   "ongletDocuments": {
     "titre": "Documents",

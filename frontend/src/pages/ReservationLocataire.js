@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import EtatDesLieux from '../components/EtatDesLieux';
 import ModalSignatureBail from '../components/ModalSignatureBail';
+import ActesSignature from '../components/ActesSignature';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -126,6 +127,7 @@ export default function ReservationLocataire() {
   var [payMode, setPayMode]         = useState('om');
   var [payProcessing, setPayProcessing] = useState(false);
   var [signed, setSigned]           = useState(false);
+  var [acteBail, setActeBail]       = useState(null); // null = inconnu, true = bail signé via l'acte, false = ancien parcours
   var [signProcessing, setSignProcessing] = useState(false);
   var [showSignature, setShowSignature] = useState(false);
   var chatRef = useRef(null);
@@ -170,6 +172,14 @@ export default function ReservationLocataire() {
       clearInterval(interval);
     };
   }, [reservationId]);
+
+  // ── BAIL : le parcours avec conditions particulières (acte « bail ») ─
+  useEffect(function() {
+    if (!reservation || !['bail_en_cours', 'bail_signe_proprio'].includes(reservation.statut)) return;
+    api.get('/actes/reservation/' + reservationId)
+      .then(function(res) { setActeBail((res.data.actes || []).some(function(a) { return a.type === 'bail'; })); })
+      .catch(function() { setActeBail(false); });
+  }, [reservation && reservation.statut]);
 
   // ── MESSAGES : recharger quand le statut change ───────────────────
   useEffect(function() {
@@ -635,7 +645,12 @@ export default function ReservationLocataire() {
       )}
 
       {/* ═══ ÉTAPE 6 : BAIL ═════════════════════════════════════════ */}
-      {(statut === 'bail_en_cours' || statut === 'bail_signe_proprio') && (
+      {(statut === 'bail_en_cours' || statut === 'bail_signe_proprio') && acteBail === true && (
+        <div style={{ marginBottom: 14 }}>
+          <ActesSignature key={statut} reservationId={reservationId} type="bail" />
+        </div>
+      )}
+      {(statut === 'bail_en_cours' || statut === 'bail_signe_proprio') && acteBail === false && (
         <div>
           <div style={{ background: '#F3E5F5', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
             <FileSignature size={18} strokeWidth={1.6} color="#6A1B9A" />

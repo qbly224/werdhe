@@ -778,7 +778,8 @@
     "type": {
       "avenant": "Lease renewal addendum",
       "decompte": "Deposit refund statement",
-      "cautionnement": "Guarantee agreement"
+      "cautionnement": "Guarantee agreement",
+      "bail": "Lease agreement"
     },
     "statut": {
       "brouillon": "Draft",
@@ -796,12 +797,14 @@
     "preparer": {
       "avenant": "Prepare the addendum",
       "decompte": "Prepare the statement",
-      "cautionnement": "Prepare the guarantee agreement"
+      "cautionnement": "Prepare the guarantee agreement",
+      "bail": "Prepare the lease"
     },
     "rien": {
       "avenant": "No accepted renewal awaiting an addendum for this tenancy.",
       "decompte": "The statement is available once the move-out inspection is generated.",
-      "cautionnement": "The guarantee agreement is prepared before or during the tenancy."
+      "cautionnement": "The guarantee agreement is prepared before or during the tenancy.",
+      "bail": "The lease is prepared once the deposit is paid."
     },
     "rienDuTout": "Nothing to do for now.",
     "preparePar": "prepared by {{nom}}",
@@ -882,7 +885,33 @@
     "relireEtSigner": "Sign",
     "correctionExplication": "The document goes back to draft, signatures are cleared and the landlord is notified.",
     "genererAvertissement": "Once generated, the document can no longer be edited: you can only download it. Check one last time.",
-    "abandonner": "Abandon this document"
+    "abandonner": "Abandon this document",
+    "bailExplication": "Choose the charges, the payment day and the clauses, then sign: the tenant reads exactly this text and signs in turn. The tenancy starts when they sign.",
+    "bail": {
+      "duree": "Duration",
+      "debut": "Period",
+      "loyer": "Monthly rent",
+      "depot": "Security deposit (1 month)",
+      "fixes": "Duration, start, rent and deposit come from the accepted application. To change them later, use an addendum.",
+      "charges": "Monthly charges (GNF)",
+      "jourPaiement": "Rent payment day",
+      "clauses": "Special clauses",
+      "clause": {
+        "meuble": "Furnished",
+        "animaux": "Pets allowed",
+        "sous_location": "Subletting allowed",
+        "assurance": "Home insurance required"
+      },
+      "clauseLibre": "Free clause (200 characters)",
+      "identiteBailleur": "Your identity as landlord (kept for your next leases)",
+      "identiteLocataire": "Your identity as tenant",
+      "identiteLocataireExplication": "This information appears in the lease you sign. It is kept on your profile for your next tenancies.",
+      "naissance": "Date of birth",
+      "cni": "ID document no.",
+      "adresse": "Address",
+      "profession": "Occupation",
+      "telephone": "Phone"
+    }
   },
   "ongletDocuments": {
     "titre": "Documents",

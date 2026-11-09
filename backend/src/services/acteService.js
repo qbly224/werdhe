@@ -12,7 +12,8 @@ const T = require('./documentTemplates');
 const TYPES = {
   avenant:       { doc: 'avenant',       signataires: ['proprietaire', 'locataire'] },
   decompte:      { doc: 'decompte',      signataires: ['proprietaire', 'locataire'] },
-  cautionnement: { doc: 'cautionnement', signataires: ['proprietaire', 'locataire', 'garant'] }
+  cautionnement: { doc: 'cautionnement', signataires: ['proprietaire', 'locataire', 'garant'] },
+  bail:          { doc: 'contrat_bail',  signataires: ['proprietaire', 'locataire'] }
 };
 
 const LIM = {
@@ -92,6 +93,33 @@ function donneesDecompte(depot, edlSortie) {
   };
 }
 
+// Bail : durée, début, loyer et dépôt viennent de la candidature acceptée (négociés
+// avant ; un changement ultérieur passe par un avenant). Le bailleur choisit les
+// charges, le jour de paiement, les clauses et renseigne son identité.
+function donneesBail(resa, identiteProprio) {
+  var debut = resa.date_debut ? new Date(resa.date_debut) : new Date();
+  var duree = parseInt(resa.duree_mois, 10) || 12;
+  var loyer = Math.round(Number(resa.montant_total) || 0);
+  var id = identiteProprio || {};
+  return {
+    reservation_id: resa.id,
+    type_location: resa.type_location || 'longue_duree',
+    duree_mois: duree,
+    date_debut: debut.toISOString().slice(0, 10),
+    date_fin_prevue: ajouterMois(debut, duree).toISOString().slice(0, 10),
+    loyer: loyer,
+    depot: loyer,
+    charges: 0,
+    jour_paiement: 1,
+    clauses: { meuble: false, animaux: false, sous_location: false, assurance: false },
+    clause_libre: '',
+    identite_proprietaire: {
+      naissance: id.naissance || '', cni: id.cni || '', adresse: id.adresse || '',
+      profession: id.profession || '', telephone: id.telephone || ''
+    }
+  };
+}
+
 function donneesCautionnement(resa) {
   var loyer = Math.round(Number(resa.montant_total) || 0);
   return {
@@ -162,11 +190,30 @@ function normaliserDonnees(type, client, actuel) {
     return d;
   }
 
+  if (type === 'bail') {
+    if (client.charges !== undefined) d.charges = entierPositif(client.charges === '' ? 0 : client.charges, 1000000000, 'Charges');
+    if (client.jour_paiement !== undefined) {
+      d.jour_paiement = entierPositif(client.jour_paiement, 28, 'Jour de paiement');
+      if (d.jour_paiement < 1) throw new Error('Jour de paiement invalide (1 à 28)');
+    }
+    if (client.clauses !== undefined) {
+      var c = client.clauses || {};
+      d.clauses = { meuble: c.meuble === true, animaux: c.animaux === true, sous_location: c.sous_location === true, assurance: c.assurance === true };
+    }
+    if (client.clause_libre !== undefined) d.clause_libre = propre(client.clause_libre, LIM.clauseLibre);
+    if (client.identite_proprietaire !== undefined) d.identite_proprietaire = identiteSansNom(client.identite_proprietaire, true);
+    return d;
+  }
+
   throw new Error('Type d\'acte inconnu');
 }
 
 // Message d'erreur si l'acte n'est pas prêt à être envoyé à signature.
 function erreurAvantEnvoi(type, d) {
+  if (type === 'bail') {
+    try { identiteSansNom(d.identite_proprietaire, false); }
+    catch (err) { return 'Complétez votre identité de bailleur : ' + err.message.charAt(0).toLowerCase() + err.message.slice(1); }
+  }
   if (type === 'cautionnement') {
     if (!d.garant || !REGEX_EMAIL.test(d.garant.email || '')) return 'Indiquez l\'adresse e-mail du garant : il reçoit le lien pour signer';
     if (!(d.montant_max >= 1) || !(d.duree_mois >= 1)) return 'Indiquez le montant maximal et la durée de la caution';
@@ -216,6 +263,32 @@ function mentionValide(saisie, d) {
   return normaliserMention(saisie) === normaliserMention(mentionAttendue(d));
 }
 
+// Identité d'une partie sans le nom (déjà connu par le compte). `tolerant` : accepte
+// les champs vides (brouillon en cours de saisie) mais refuse les valeurs invalides.
+function identiteSansNom(raw, tolerant) {
+  raw = raw || {};
+  var vide = function (v) { return v === undefined || v === null || String(v).trim() === ''; };
+  var out = { naissance: '', cni: '', adresse: '', profession: '', telephone: '' };
+  if (!vide(raw.naissance)) {
+    var naissance = dateValide(raw.naissance);
+    if (!naissance) throw new Error('Date de naissance invalide');
+    var age = (Date.now() - naissance.getTime()) / (365.25 * 86400000);
+    if (age < 18 || age > 110) throw new Error('Date de naissance invalide (majeur requis)');
+    out.naissance = raw.naissance;
+  } else if (!tolerant) throw new Error('Indiquez votre date de naissance');
+  var champ = function (cle, min, max, msg) {
+    if (vide(raw[cle])) { if (!tolerant) throw new Error(msg); return ''; }
+    var v = propre(raw[cle], max);
+    if (v.length < min) throw new Error(msg);
+    return v;
+  };
+  out.cni = champ('cni', 3, 30, 'Indiquez le numéro de votre pièce d\'identité');
+  out.adresse = champ('adresse', 5, 120, 'Indiquez votre adresse');
+  out.profession = champ('profession', 2, 50, 'Indiquez votre profession');
+  out.telephone = champ('telephone', 6, LIM.telephone, 'Indiquez votre numéro de téléphone');
+  return out;
+}
+
 function identiteGarant(raw) {
   raw = raw || {};
   var nom = propre(raw.nom, 80);
@@ -244,6 +317,6 @@ module.exports = {
   TYPES, LIM,
   donneesAvenant, donneesDecompte, donneesCautionnement,
   normaliserDonnees, erreurAvantEnvoi, empreinteActe,
-  nouveauJeton, hashJeton, mentionAttendue, mentionValide, identiteGarant, toutesSignatures,
+  nouveauJeton, hashJeton, mentionAttendue, mentionValide, identiteGarant, identiteSansNom, donneesBail, toutesSignatures,
   REGEX_EMAIL
 };
