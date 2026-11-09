@@ -1,4 +1,5 @@
 const express = require('express');
+const { activerLocation } = require('../services/bailService');
 const router = express.Router();
 const crypto = require('crypto');
 const db = require('../database');
@@ -222,6 +223,15 @@ router.patch('/:id/signer-bail', verifierToken, async (req, res) => {
 
     const role = estProprio ? 'proprietaire' : 'locataire';
 
+    // Le bail se signe désormais avec ses conditions particulières (acte « bail ») :
+    // l'ancienne signature simple est refusée dès qu'un tel acte existe.
+    const acteBail = await db.query(
+      `SELECT 1 FROM actes WHERE type = 'bail' AND reservation_id = $1 AND statut <> 'annule' LIMIT 1`, [id]
+    ).catch(function() { return { rows: [] }; });
+    if (acteBail.rows.length > 0) {
+      return res.status(409).json({ erreur: 'Ce bail se signe avec ses conditions particulières : ouvrez le bail depuis la location.' });
+    }
+
     const dejaSigne = await db.query(
       `SELECT id FROM signatures_bail WHERE reservation_id = $1 AND signataire_id = $2`,
       [id, req.user.id]
@@ -237,31 +247,7 @@ router.patch('/:id/signer-bail', verifierToken, async (req, res) => {
       // Locataire signe en dernier → location confirmée
       nouveauStatut = 'confirmee';
 
-      // Recalculer le score du locataire
-      calculerScore(r.locataire_id).catch(console.warn);
-
-      // Mettre le logement en "loué" automatiquement
-      await db.query(
-        'UPDATE logements SET statut = $1 WHERE id = $2',
-        ['loue', r.logement_id]
-      ).catch(function(err) {
-        console.warn('[Sync] Logement statut non mis à jour:', err.message);
-      });
-
-      // Vérifier si le locataire mérite le badge après 3 locations
-      var nbLocations = await db.query(
-        `SELECT COUNT(*) FROM reservations
-         WHERE locataire_id = $1 AND statut = 'confirmee'`,
-        [r.locataire_id]
-      );
-      if (parseInt(nbLocations.rows[0].count) >= 3) {
-        await db.query(
-          `UPDATE users SET locataire_verifie = TRUE,
-             nb_locations_terminees = $1
-           WHERE id = $2`,
-          [parseInt(nbLocations.rows[0].count), r.locataire_id]
-        );
-      }
+      await activerLocation(r);
     }
 
     await db.query(

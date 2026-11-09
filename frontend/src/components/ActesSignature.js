@@ -21,7 +21,7 @@ function erreurServeur(err, defaut) {
 function gnf(n) { return new Intl.NumberFormat('fr-FR').format(Math.round(Number(n) || 0)) + ' GNF'; }
 function dateFr(d) { return d ? new Date(d.length === 10 ? d + 'T00:00:00' : d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : '—'; }
 
-export default function ActesSignature({ reservationId, type, onFermer }) {
+export default function ActesSignature({ reservationId, type, onFermer, onChange }) {
   var t = useTranslation('dashboard').t;
   var [liste, setListe] = useState(null);
   var [courant, setCourant] = useState(null);
@@ -33,16 +33,36 @@ export default function ActesSignature({ reservationId, type, onFermer }) {
   var [motif, setMotif] = useState('');
   var [apercu, setApercu] = useState(null);
   var [lienGarant, setLienGarant] = useState(null);
+  var [identiteSign, setIdentiteSign] = useState({ naissance: '', cni: '', adresse: '', profession: '', telephone: '' });
 
-  function chargerListe() {
+  function chargerListe(autoOuvrir) {
     return api.get('/actes/reservation/' + reservationId)
-      .then(function(res) { setListe(res.data); })
+      .then(function(res) {
+        setListe(res.data);
+        // Le bail est unique par location : on l'ouvre directement au premier affichage.
+        var cibles = (res.data.actes || []).filter(function(a) { return !type || a.type === type; });
+        if (autoOuvrir === true && type === 'bail' && cibles.length === 1) ouvrir(cibles[0].id);
+      })
       .catch(function(err) { toast.error(erreurServeur(err, t('actes.erreurChargement'))); })
       .finally(function() { setCharge(false); });
   }
-  useEffect(function() { chargerListe(); }, [reservationId]);
+  useEffect(function() { chargerListe(true); }, [reservationId]);
+
+  // Rafraîchit l'acte ouvert toutes les 12 s (l'autre partie peut avoir signé), sans écraser une saisie en cours.
+  useEffect(function() {
+    if (!courant || courant.statut === 'genere') return undefined;
+    var id = setInterval(function() {
+      if (sale || modal || action) return;
+      api.get('/actes/' + courant.id).then(function(res) {
+        var n = res.data.acte;
+        if (n.version !== courant.version || n.statut !== courant.statut || Object.keys(n.signatures || {}).length !== Object.keys(courant.signatures || {}).length) appliquer(n);
+      }).catch(function() {});
+    }, 12000);
+    return function() { clearInterval(id); };
+  }, [courant, sale, modal, action]);
 
   function appliquer(acte) {
+    if (onChange) onChange(acte);
     setCourant(acte);
     setLocal(acte.droits.modifier ? JSON.parse(JSON.stringify(acte.donnees)) : null);
     setSale(false); setModal(null); setApercu(null);
@@ -102,7 +122,13 @@ export default function ActesSignature({ reservationId, type, onFermer }) {
     });
   }
 
-  function signer(signature) { simple('signer', { signature: signature }, 'actes.toastSigne'); }
+  function signer(signature) { simple('signer', { signature: signature, identite: courant.type === 'bail' ? identiteSign : undefined }, 'actes.toastSigne'); }
+  function ouvrirSignature() {
+    if (courant.type === 'bail') api.get('/actes/identite').then(function(res) { if (res.data.identite) setIdentiteSign(Object.assign({ naissance: '', cni: '', adresse: '', profession: '', telephone: '' }, res.data.identite)); }).catch(function() {});
+    setModal('signer');
+  }
+  function identiteComplete() { return identiteSign.naissance && identiteSign.cni.trim().length >= 3 && identiteSign.adresse.trim().length >= 5 && identiteSign.profession.trim().length >= 2 && identiteSign.telephone.trim().length >= 6; }
+  function majIdentite(champ, valeur) { setLocal(function(l) { return Object.assign({}, l, { identite_proprietaire: Object.assign({}, l.identite_proprietaire, { [champ]: valeur }) }); }); setSale(true); }
   function corriger() { lancer(function() { return api.post('/actes/' + courant.id + '/corriger', { motif: motif }).then(function(res) { appliquer(res.data.acte); setMotif(''); toast.success(t('actes.toastCorrection')); }); }); }
   function generer() { simple('generer', {}, 'actes.toastGenere'); }
   function abandonner() { lancer(function() { return api.post('/actes/' + courant.id + '/annuler').then(function() { toast.success(t('actes.toastAbandonne')); retourListe(); }); }); }
@@ -143,9 +169,9 @@ export default function ActesSignature({ reservationId, type, onFermer }) {
 
   // ── Liste ──
   if (!courant) {
-    var sug = (liste && liste.suggestions) || { avenants: [], decompte: null, cautionnement: false };
+    var sug = (liste && liste.suggestions) || { avenants: [], decompte: null, cautionnement: false, bail: false };
     var actes = ((liste && liste.actes) || []).filter(function(a) { return !type || a.type === type; });
-    var aucuneCreation = !(type ? (type === 'avenant' ? sug.avenants.length : type === 'decompte' ? sug.decompte : sug.cautionnement) : (sug.avenants.length || sug.decompte || sug.cautionnement));
+    var aucuneCreation = !(type ? (type === 'avenant' ? sug.avenants.length : type === 'decompte' ? sug.decompte : type === 'bail' ? sug.bail : sug.cautionnement) : (sug.avenants.length || sug.decompte || sug.cautionnement || sug.bail));
     return (
       <div style={{ fontFamily: 'system-ui, sans-serif' }}>
         <div style={{ background: '#37474F', borderRadius: 14, padding: '14px 18px', marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
@@ -185,6 +211,12 @@ export default function ActesSignature({ reservationId, type, onFermer }) {
           <div style={carte}>
             <div style={{ fontSize: 13, color: '#444', marginBottom: 8 }}>{t('actes.decompteExplication')}</div>
             <button disabled={action} onClick={function() { creer('decompte'); }} style={{ padding: '10px 16px', borderRadius: 10, border: 'none', background: '#37474F', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Plus size={14} strokeWidth={2} /> {t('actes.preparer.decompte')}</span></button>
+          </div>
+        )}
+        {(!type || type === 'bail') && sug.bail && (
+          <div style={carte}>
+            <div style={{ fontSize: 13, color: '#444', marginBottom: 8 }}>{t('actes.bailExplication')}</div>
+            <button disabled={action} onClick={function() { creer('bail'); }} style={{ padding: '10px 16px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Plus size={14} strokeWidth={2} /> {t('actes.preparer.bail')}</span></button>
           </div>
         )}
         {(!type || type === 'cautionnement') && sug.cautionnement && (
@@ -280,6 +312,43 @@ export default function ActesSignature({ reservationId, type, onFermer }) {
           </div>
         )}
 
+        {a.type === 'bail' && (
+          <div>
+            {ligne(t('actes.bail.duree'), t('actes.caution.moisN', { n: a.donnees.duree_mois }))}
+            {ligne(t('actes.bail.debut'), dateFr(a.donnees.date_debut) + ' → ' + dateFr(a.donnees.date_fin_prevue))}
+            {ligne(t('actes.bail.loyer'), gnf(a.donnees.loyer))}
+            {ligne(t('actes.bail.depot'), gnf(a.donnees.depot))}
+            <div style={{ fontSize: 11, color: '#888', margin: '6px 0 10px' }}>{t('actes.bail.fixes')}</div>
+            {edition ? (
+              <div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10, marginBottom: 10 }}>
+                  <label style={etiquette}>{t('actes.bail.charges')}<input type="number" min={0} value={x.charges} onChange={function(e) { maj('charges', e.target.value); }} style={champ} /></label>
+                  <label style={etiquette}>{t('actes.bail.jourPaiement')}<select value={x.jour_paiement} onChange={function(e) { maj('jour_paiement', e.target.value); }} style={champ}>{Array.from({ length: 28 }, function(_, i) { return <option key={i + 1} value={i + 1}>{i + 1}</option>; })}</select></label>
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 700, margin: '4px 0 6px' }}>{t('actes.bail.clauses')}</div>
+                {['meuble', 'animaux', 'sous_location', 'assurance'].map(function(k) {
+                  return <label key={k} style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 13, marginBottom: 4 }}><input type="checkbox" checked={!!(x.clauses && x.clauses[k])} onChange={function(e) { var v = e.target.checked; maj('clauses', Object.assign({}, x.clauses, { [k]: v })); }} /> {t('actes.bail.clause.' + k)}</label>;
+                })}
+                <label style={Object.assign({}, etiquette, { marginTop: 10 })}>{t('actes.bail.clauseLibre')}<textarea value={x.clause_libre || ''} maxLength={200} onChange={function(e) { maj('clause_libre', e.target.value); }} style={Object.assign({}, champ, { height: 64, resize: 'none', fontFamily: 'inherit' })} /></label>
+                <div style={{ fontSize: 11, color: '#999', textAlign: 'right' }}>{(x.clause_libre || '').length}/200</div>
+                <div style={{ fontSize: 12, fontWeight: 700, margin: '10px 0 6px' }}>{t('actes.bail.identiteBailleur')}</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 10 }}>
+                  {[['naissance', 'date', 10], ['cni', 'text', 30], ['adresse', 'text', 120], ['profession', 'text', 50], ['telephone', 'tel', 24]].map(function(c) {
+                    return <label key={c[0]} style={etiquette}>{t('actes.bail.' + c[0])}<input type={c[1]} maxLength={c[2]} value={(x.identite_proprietaire || {})[c[0]] || ''} onChange={function(e) { majIdentite(c[0], e.target.value); }} style={champ} /></label>;
+                  })}
+                </div>
+              </div>
+            ) : (
+              <div>
+                {ligne(t('actes.bail.charges'), gnf(a.donnees.charges))}
+                {ligne(t('actes.bail.jourPaiement'), a.donnees.jour_paiement)}
+                {ligne(t('actes.bail.clauses'), ['meuble', 'animaux', 'sous_location', 'assurance'].filter(function(k) { return a.donnees.clauses && a.donnees.clauses[k]; }).map(function(k) { return t('actes.bail.clause.' + k); }).join(', ') || t('actes.aucune'))}
+                {a.donnees.clause_libre ? ligne(t('actes.bail.clauseLibre'), a.donnees.clause_libre) : null}
+              </div>
+            )}
+          </div>
+        )}
+
         {a.type === 'cautionnement' && (
           <div>
             {edition ? (
@@ -350,7 +419,18 @@ export default function ActesSignature({ reservationId, type, onFermer }) {
 
       {/* Formulaires d'action */}
       {modal === 'envoyer' && <SignatureForm titre={t('actes.signature.titreEnvoi')} nomCompte="" envoi={action} libelleBouton={t('edl.signature.signerEtEnvoyer')} onAnnuler={function() { setModal(null); }} onValider={envoyer} />}
-      {modal === 'signer' && <SignatureForm titre={t('actes.signature.titreSigner', { type: t('actes.type.' + a.type) })} nomCompte="" envoi={action} libelleBouton={t('edl.signature.signer')} onAnnuler={function() { setModal(null); }} onValider={signer} />}
+      {modal === 'signer' && a.type === 'bail' && (
+        <div style={carte}>
+          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>{t('actes.bail.identiteLocataire')}</div>
+          <div style={{ fontSize: 12, color: '#666', marginBottom: 10 }}>{t('actes.bail.identiteLocataireExplication')}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 10 }}>
+            {[['naissance', 'date', 10], ['cni', 'text', 30], ['adresse', 'text', 120], ['profession', 'text', 50], ['telephone', 'tel', 24]].map(function(c) {
+              return <label key={c[0]} style={etiquette}>{t('actes.bail.' + c[0])}<input type={c[1]} maxLength={c[2]} value={identiteSign[c[0]]} onChange={function(e) { var v = e.target.value; setIdentiteSign(function(i) { return Object.assign({}, i, { [c[0]]: v }); }); }} style={champ} /></label>;
+            })}
+          </div>
+        </div>
+      )}
+      {modal === 'signer' && (a.type !== 'bail' || identiteComplete()) && <SignatureForm titre={t('actes.signature.titreSigner', { type: t('actes.type.' + a.type) })} nomCompte="" envoi={action} libelleBouton={t('edl.signature.signer')} onAnnuler={function() { setModal(null); }} onValider={signer} />}
       {modal === 'corriger' && (
         <div style={carte}>
           <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{t('edl.correction.titre')}</div>
@@ -385,7 +465,7 @@ export default function ActesSignature({ reservationId, type, onFermer }) {
           {d.signer && (
             <div style={{ display: 'flex', gap: 8 }}>
               <button onClick={function() { setModal('corriger'); }} style={{ flex: 1, padding: 12, borderRadius: 10, border: '1px solid #F0C9C5', background: '#fff', color: '#B3261E', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>{t('edl.demanderCorrection')}</button>
-              <button onClick={function() { setModal('signer'); }} style={{ flex: 2, padding: 12, borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>{t('actes.relireEtSigner')}</button>
+              <button onClick={ouvrirSignature} style={{ flex: 2, padding: 12, borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>{t('actes.relireEtSigner')}</button>
             </div>
           )}
           {d.retirer && <button onClick={function() { simple('retirer'); }} disabled={action} style={{ padding: 12, borderRadius: 10, border: '1px solid #CFD8DC', background: '#fff', color: '#37474F', fontSize: 13, cursor: 'pointer' }}>{t('edl.retirer')}</button>}
