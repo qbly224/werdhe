@@ -90,7 +90,7 @@ const envoyerEmailDocument = async ({
   };
 
   try {
-    await resend.emails.send({
+    const envoi = await resend.emails.send({
       from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
       to: email,
       subject: `${titres[typeDocument] || 'Document Werdhe'} - ${numeroDocument}`,
@@ -147,6 +147,7 @@ const envoyerEmailDocument = async ({
         }
       ]
     });
+    if (envoi && envoi.error) throw new Error(envoi.error.message || 'Envoi refusé');
     return true;
   } catch (err) {
     console.error('Erreur email document:', err);
