@@ -21,7 +21,7 @@ function erreurServeur(err, defaut) {
 }
 
 // ─── SIGNATURE : dessinée ou nom tapé ─────────────────────────────
-function SignatureForm({ titre, nomCompte, onValider, onAnnuler, envoi, libelleBouton }) {
+export function SignatureForm({ titre, nomCompte, onValider, onAnnuler, envoi, libelleBouton }) {
   var t = useTranslation('dashboard').t;
   var canvasRef = useRef(null);
   var [mode, setMode] = useState('dessin');

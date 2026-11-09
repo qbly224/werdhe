@@ -142,6 +142,8 @@ function styles() {
   .grille th { padding: 3px 6px; }
   tr.deg td { background: #FFF3E0; }
   .sigimg { display: block; height: 44px; max-width: 100%; object-fit: contain; margin: 3px 0 1px; }
+  .sign.trois { grid-template-columns: 1fr 1fr 1fr; }
+  .sign.trois .sig { padding: 7px 9px; }
   .lines span { display: block; border-bottom: 1px solid #C9D1CC; height: 21px; }
   .sign { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: auto; padding-top: 12px; flex: none; }
   .sig { border: 1px solid #DDE3DF; border-radius: 6px; padding: 8px 11px; min-height: 92px; font-size: 11px; overflow: hidden; }
@@ -460,9 +462,90 @@ function injecterSignaturesBail(html, signatures) {
   return out;
 }
 
+// ── Boîte de signature d'un acte (dessinée ou nom tapé) ─────
+function boiteSignature(sig, libelle) {
+  if (!sig) return '<div class="sig"><small>' + libelle + '</small><div class="vide"></div></div>';
+  var quand = new Date(sig.signe_at).toLocaleString('fr-FR', { timeZone: 'Africa/Conakry', dateStyle: 'short', timeStyle: 'short' });
+  return '<div class="sig"><small>' + libelle + '</small>' +
+    (sig.mode === 'dessin' && sig.image ? '<img class="sigimg" alt="" src="' + esc(sig.image) + '"><div class="nom">' + cl(sig.nom_complet, 36) + '</div>' : '<div class="ink">' + cl(sig.nom_complet, 36) + '</div>') +
+    '<div class="meta">' + esc(quand) + ' · IP ' + cl(sig.ip || '—', 40) + '<br>empreinte ' + esc(String(sig.hash || '').slice(0, 14)) + '…</div></div>';
+}
+
+// ── 9. AVENANT DE RENOUVELLEMENT ────────────────────────────
+function avenant(d) {
+  var a = d.acte, x = a.donnees, sg = a.signatures || {};
+  var lib = function (par) { return par === 'proprietaire' ? 'du bailleur' : 'du preneur'; };
+  var loyerAvant = x.loyer_avant == null ? '—' : gnf(x.loyer_avant);
+  var loyerLigne = x.loyer_avant != null && Number(x.loyer_avant) === Number(x.loyer_apres) ? 'inchangé (' + gnf(x.loyer_apres) + ')' : '<b>' + gnf(x.loyer_apres) + '</b>';
+  var histo = (x.historique || []).map(function (h) {
+    return '<tr><td>' + esc(dateFR(h.at)) + '</td><td>Proposition ' + lib(h.par) + ' : ' + esc(h.duree) + ' mois' + (h.prix != null ? ' à ' + gnf(h.prix) : '') + '</td><td class="r">' +
+      (h.issue === 'accepte' ? '<span class="pill">acceptée</span>' : (h.issue === 'contre_propose' ? 'contre-proposée' : esc(h.issue))) + '</td></tr>';
+  }).join('');
+  var corps = '<div class="corps">' +
+    boitesParties(d.proprietaire, d.locataire, 'Le bailleur', 'Le preneur') +
+    '<p>Les parties conviennent de modifier le bail du logement <b>' + cl(d.logement.titre, 70) + '</b> (' + cl(d.logement.adresse, 70) + ', ' + cl(d.logement.ville, 40) + ') comme suit. <b>Toutes les autres clauses du bail restent inchangées.</b></p>' +
+    '<table><tr><th>Point modifié</th><th>Avant</th><th>Après</th></tr>' +
+    '<tr><td>Durée</td><td>—</td><td><b>prolongation de ' + esc(x.duree_ajoutee_mois) + ' mois</b></td></tr>' +
+    '<tr><td>Fin du bail</td><td>' + (x.date_fin_avant ? esc(dateFR(x.date_fin_avant)) : '—') + '</td><td><b>' + (x.date_fin_apres ? esc(dateFR(x.date_fin_apres)) : '—') + '</b></td></tr>' +
+    '<tr><td>Loyer mensuel</td><td>' + loyerAvant + '</td><td>' + loyerLigne + '</td></tr></table>' +
+    '<p style="margin-top:8px">Date d\'effet de l\'avenant : <b>' + esc(dateLongue(x.date_effet + 'T00:00:00Z')) + '</b>.</p>' +
+    (x.clause_libre ? '<div class="h">Clause particulière</div><p>' + cl(x.clause_libre, 200) + '</p>' : '') +
+    (histo ? '<div class="h">Historique de la négociation (sur Werdhe)</div><table>' + histo + '</table>' : '') +
+    '<div class="sign">' + boiteSignature(sg.proprietaire, 'Le bailleur · lu et approuvé') + boiteSignature(sg.locataire, 'Le preneur · lu et approuvé') + '</div></div>';
+  return document_('Avenant ' + d.numero, [page(entete('AVENANT AU BAIL', d.numero, d.date) + corps + pied(d))]);
+}
+
+// ── 10. DÉCOMPTE DE RESTITUTION DE CAUTION ──────────────────
+function decompte(d) {
+  var a = d.acte, x = a.donnees, sg = a.signatures || {};
+  var LIB = { neuf: 'Neuf', bon: 'Bon', use: 'Usé', mauvais: 'Mauvais' };
+  var constats = {}; (x.constats || []).forEach(function (c) { constats[c.item_id] = c; });
+  var lignes = (x.retenues || []).map(function (r) {
+    var c = r.item_id ? constats[r.item_id] : null;
+    return '<tr><td>' + cl(r.libelle, 40) + '</td><td>' + (c ? esc(LIB[c.entree] || '') + ' → ' + esc(LIB[c.sortie] || '') : '—') + '</td><td>' + cl(r.commentaire || '', 60) + '</td><td class="r">' + gnf(r.montant) + '</td></tr>';
+  }).join('');
+  var corps = '<div class="corps">' +
+    boitesParties(d.proprietaire, d.locataire, 'Le bailleur', 'L\'ancien locataire') +
+    '<p>Logement : ' + cl(d.logement.titre, 70) + ', ' + cl(d.logement.adresse, 60) + ', ' + cl(d.logement.ville, 40) + '.</p>' +
+    '<div class="h">Dépôt de garantie versé</div><table><tr><td>Dépôt de garantie (1 mois de loyer)</td><td class="r"><b>' + gnf(x.depot) + '</b></td></tr></table>' +
+    '<div class="h">Retenues justifiées par l\'état des lieux de sortie (comparé à l\'entrée)</div>' +
+    (lignes ? '<table><tr><th>Élément</th><th>Entrée → sortie</th><th>Commentaire</th><th class="r">Retenue</th></tr>' + lignes +
+      '<tr><td colspan="3"><b>Total des retenues</b></td><td class="r"><b>' + gnf(x.total_retenues) + '</b></td></tr></table>'
+      : '<p class="note">Aucune retenue : aucun élément dégradé ni somme due.</p>') +
+    '<div class="big"><small>Somme à restituer au locataire</small><b>' + gnf(x.a_restituer) + '</b><small>= ' + gnf(x.depot) + ' − ' + gnf(x.total_retenues) + ' · à virer sous ' + esc(x.delai_jours) + ' jours après la remise des clés</small></div>' +
+    (x.note ? '<p>' + cl(x.note, 120) + '</p>' : '') +
+    '<p class="note">Les photos et constats d\'entrée et de sortie sont consultables dans Werdhe, avec les états des lieux signés.</p>' +
+    '<div class="sign">' + boiteSignature(sg.proprietaire, 'Le bailleur · établit le décompte') + boiteSignature(sg.locataire, 'Le locataire · accepte le décompte') + '</div></div>';
+  return document_('Décompte de restitution ' + d.numero, [page(entete('DÉCOMPTE DE RESTITUTION', d.numero, d.date) + corps + pied(d))]);
+}
+
+// ── 11. ACTE DE CAUTIONNEMENT (garant) ──────────────────────
+function cautionnement(d) {
+  var a = d.acte, x = a.donnees, sg = a.signatures || {};
+  var g = sg.garant, id = (g && g.identite) || {};
+  var prevu = x.garant || {};
+  var identite = '<b>' + cl(id.nom || prevu.nom || '—', 50) + '</b><br>' +
+    (id.naissance ? 'Né(e) le ' + esc(dateFR(id.naissance + 'T00:00:00Z')) + ' · pièce n° ' + cl(id.cni, 30) + '<br>' + cl(id.adresse, 70) + '<br>' + cl(id.profession, 40) + ' · ' + cl(id.telephone, 24) : '') +
+    (x.lien ? '<br>Lien avec le preneur : ' + cl(x.lien, 30) : '');
+  var corps = '<div class="corps">' +
+    '<div class="grid2"><div class="box"><small>La caution (garant)</small>' + identite + '</div>' +
+    '<div class="box"><small>Le preneur garanti et le bail</small><b>' + nomComplet(d.locataire) + '</b><br>Bailleur : ' + nomComplet(d.proprietaire) + '<br>' + cl(d.logement.titre, 60) + ', ' + cl(d.logement.adresse, 50) + ', ' + cl(d.logement.ville, 30) + '</div></div>' +
+    '<div class="h">Engagement</div><table>' +
+    '<tr><td>Nature</td><td class="r">Caution <b>' + (x.nature === 'simple' ? 'simple' : 'solidaire') + '</b></td></tr>' +
+    '<tr><td>Montant maximal garanti</td><td class="r"><b>' + gnf(x.montant_max) + '</b></td></tr>' +
+    '<tr><td>En toutes lettres</td><td class="r">' + esc(enLettres(x.montant_max)) + ' francs guinéens</td></tr>' +
+    '<tr><td>Durée de l\'engagement</td><td class="r">' + esc(x.duree_mois) + ' mois</td></tr>' +
+    '<tr><td>Sommes couvertes</td><td class="r">loyers, charges, réparations locatives</td></tr></table>' +
+    '<p style="margin-top:10px">Je soussigné(e) <b>' + cl(id.nom || prevu.nom || '—', 50) + '</b> me porte caution' + (x.nature === 'simple' ? '' : ' solidaire') + ' des obligations de <b>' + nomComplet(d.locataire) + '</b> envers <b>' + nomComplet(d.proprietaire) + '</b>, dans la limite du montant et de la durée ci-dessus. J\'ai pris connaissance du bail et de ses conditions.</p>' +
+    '<div class="box" style="margin-top:6px"><small>Mention recopiée par la caution</small><span style="font-family:Georgia,serif;font-style:italic;font-size:12.5px">' + cl((g && g.mention) || '—', 300) + '</span></div>' +
+    '<div class="sign trois">' + boiteSignature(g, 'La caution') + boiteSignature(sg.locataire, 'Le preneur') + boiteSignature(sg.proprietaire, 'Le bailleur') + '</div></div>';
+  return document_('Acte de cautionnement ' + d.numero, [page(entete('ACTE DE CAUTIONNEMENT', d.numero, d.date) + corps + pied(d))]);
+}
+
 var MODELES = {
   facture: facture, quittance: quittance, contrat_bail: bail, etat_lieux: etatDesLieux,
-  mise_en_demeure: miseEnDemeure, preavis: preavis, rapport_financier: rapportFinancier, caution: caution
+  mise_en_demeure: miseEnDemeure, preavis: preavis, rapport_financier: rapportFinancier, caution: caution,
+  avenant: avenant, decompte: decompte, cautionnement: cautionnement
 };
 
 module.exports = {

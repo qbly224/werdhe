@@ -14,7 +14,8 @@ const T = require('./documentTemplates');
 
 var PREFIXES = {
   facture: 'FAC', quittance: 'QUI', contrat_bail: 'BAIL', etat_lieux: 'EDL',
-  mise_en_demeure: 'MED', rapport_financier: 'RAP', caution: 'CAU', preavis: 'PRE'
+  mise_en_demeure: 'MED', rapport_financier: 'RAP', caution: 'CAU', preavis: 'PRE',
+  avenant: 'AVE', decompte: 'RES', cautionnement: 'CTN'
 };
 
 function sha256(texte) {
@@ -65,7 +66,10 @@ function titreDocument(type, numero, p) {
     mise_en_demeure: 'Mise en demeure ' + numero,
     rapport_financier: 'Rapport financier ' + numero,
     caution: 'Dépôt de garantie ' + numero,
-    preavis: preavisLib + numero
+    preavis: preavisLib + numero,
+    avenant: 'Avenant au bail ' + numero,
+    decompte: 'Décompte de restitution ' + numero,
+    cautionnement: 'Acte de cautionnement ' + numero
   };
   return libelles[type];
 }
@@ -80,7 +84,7 @@ const genererDocument = async ({
   duree_mois, type_location,
   mois, annee,
   date_depart, type_etat, mois_retard, paiements,
-  auteur, motif, note, delai_minimum_jours, edl,
+  auteur, motif, note, delai_minimum_jours, edl, acte,
   auteur_id = null,
   envoyer_email = true
 }) => {
@@ -103,7 +107,7 @@ const genererDocument = async ({
       duree_mois: duree_mois, type_location: type_location,
       mois: mois, annee: annee,
       date_depart: date_depart, type_etat: type_etat, mois_retard: mois_retard, paiements: paiements,
-      auteur: auteur, motif: motif, note: note, delai_minimum_jours: delai_minimum_jours, edl: edl
+      auteur: auteur, motif: motif, note: note, delai_minimum_jours: delai_minimum_jours, edl: edl, acte: acte
     };
 
     var htmlAvecJeton = modele(donnees);

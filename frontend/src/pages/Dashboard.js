@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import GestionPhotos from '../components/GestionPhotos';
 import OngletPreavisComponent from '../components/OngletPreavis';
 import EtatDesLieux from '../components/EtatDesLieux';
+import ActesSignature from '../components/ActesSignature';
 import OngletPaiementsComponent from '../components/OngletPaiements';
 import ModalPaiementMobile from '../components/ModalPaiementMobile';
 import ModalSignatureBail from '../components/ModalSignatureBail';
@@ -62,7 +63,11 @@ var DOCS_TYPES = [
   { icon: <TrendingUp    size={32} strokeWidth={1.5} color="#4A148C"/>, labelKey: 'rapportFinancier', color: '#4A148C', type: 'rapport_financier' },
   { icon: <Shield        size={32} strokeWidth={1.5} color="#00695C"/>, labelKey: 'caution',         color: '#00695C', type: 'caution'          },
   { icon: <Send          size={32} strokeWidth={1.5} color="#37474F"/>, labelKey: 'preavis',         color: '#37474F', type: 'preavis'          },
+  { icon: <FileSignature size={32} strokeWidth={1.5} color="#6A1B9A"/>, labelKey: 'avenant',         color: '#6A1B9A', type: 'avenant'          },
+  { icon: <Banknote      size={32} strokeWidth={1.5} color="#2E7D32"/>, labelKey: 'decompte',        color: '#2E7D32', type: 'decompte'         },
+  { icon: <Shield        size={32} strokeWidth={1.5} color="#AD1457"/>, labelKey: 'cautionnement',   color: '#AD1457', type: 'cautionnement'    },
 ];
+var TYPES_ACTES = ['avenant', 'decompte', 'cautionnement'];
 
 // ================================================
 // Composant UpgradeBanner
@@ -3018,6 +3023,8 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
   var [motifAnnul, setMotifAnnul] = useState('');
   var [edlOuvert, setEdlOuvert] = useState(false);
   var [edlResa, setEdlResa] = useState('');
+  var [acteType, setActeType] = useState(null);
+  var [acteResa, setActeResa] = useState('');
   var [toutesResa, setToutesResa] = useState([]);
 
   useEffect(function() {
@@ -3025,7 +3032,7 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
     var ep = user && user.role === 'locataire' ? '/reservations/mes-reservations' : '/reservations/proprietaire';
         api.get(ep).then(function(res) {
       setToutesResa((res.data.reservations || []).filter(function(r) {
-        return ['bail_en_cours', 'bail_signe_proprio', 'confirmee', 'terminee'].includes(r.statut);
+        return ['acceptee', 'caution_requise', 'caution_payee', 'bail_en_cours', 'bail_signe_proprio', 'confirmee', 'terminee'].includes(r.statut);
       }));
       setReservations((res.data.reservations || []).filter(function(r) {
         return ['confirmee', 'active', 'bail_signe', 'bail_signe_proprio', 'bail_signe_locataire', 'terminee'].includes(r.statut);
@@ -3079,7 +3086,7 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
 
   // Types selon le rôle
   var typesAffiches = user && user.role === 'locataire'
-    ? DOCS_TYPES.filter(function(d) { return ['quittance', 'etat_lieux', 'preavis'].includes(d.type); })
+    ? DOCS_TYPES.filter(function(d) { return ['quittance', 'etat_lieux', 'preavis'].concat(TYPES_ACTES).includes(d.type); })
     : DOCS_TYPES;
 
   return (
@@ -3110,6 +3117,24 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
         </div>
       )}
 
+      {acteType && (
+        <div className="dash-form-card" style={{ marginBottom: 16 }}>
+          {!acteResa ? (
+            <div>
+              <h3 style={{ marginBottom: 10 }}>{t('edl.choisirLocation')}</h3>
+              {toutesResa.length === 0 && <p style={{ color: '#888', fontSize: 13 }}>{t('edl.aucuneLocation')}</p>}
+              <select value={acteResa} onChange={function(e) { setActeResa(e.target.value); }} style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid #E0E0E0', marginBottom: 10 }}>
+                <option value="">{t('ongletDocuments.selectionnezReservation')}</option>
+                {toutesResa.map(function(r) { return <option key={r.id} value={r.id}>{r.logement_titre} - {new Date(r.date_debut).toLocaleDateString('fr-FR')}</option>; })}
+              </select>
+              <button className="btn-outline-green" onClick={function() { setActeType(null); }}>{t('edl.fermer')}</button>
+            </div>
+          ) : (
+            <ActesSignature key={acteResa + acteType} reservationId={acteResa} type={acteType} onFermer={function() { setActeType(null); setActeResa(''); api.get('/documents').then(function(res) { setDocuments(res.data.documents || []); }); }} />
+          )}
+        </div>
+      )}
+
       <div className="docs-grid-proto">
         {typesAffiches.map(function(d, i) {
           return (
@@ -3124,6 +3149,11 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
                   // Les préavis passent par leur onglet (date limite, aperçu, accusé de réception)
                   if (d.type === 'preavis' && props.setOnglet) { props.setOnglet('/dashboard/preavis'); return; }
                   // Les états des lieux ont leur parcours (grille, signatures des deux parties)
+                  if (TYPES_ACTES.indexOf(d.type) !== -1) {
+                    setActeType(d.type); setEdlOuvert(false); setShowForm(false); setShowUpload(false);
+                    setActeResa(toutesResa.length === 1 ? toutesResa[0].id : '');
+                    return;
+                  }
                   if (d.type === 'etat_lieux') {
                     setEdlOuvert(true); setShowForm(false); setShowUpload(false);
                     if (toutesResa.length === 1) setEdlResa(toutesResa[0].id);
@@ -3145,7 +3175,7 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
               <div className="form-group">
                 <label>{t('ongletDocuments.typeDeDocument')}</label>
                 <select value={genForm.type} onChange={function(e) { setGenForm(Object.assign({}, genForm, { type: e.target.value })); }}>
-                  {typesAffiches.filter(function(d) { return d.type !== 'preavis' && d.type !== 'etat_lieux'; }).map(function(d) { return <option key={d.type} value={d.type}>{t('ongletDocuments.docsTypes.' + d.labelKey + '.titre')}</option>; })}
+                  {typesAffiches.filter(function(d) { return d.type !== 'preavis' && d.type !== 'etat_lieux' && TYPES_ACTES.indexOf(d.type) === -1; }).map(function(d) { return <option key={d.type} value={d.type}>{t('ongletDocuments.docsTypes.' + d.labelKey + '.titre')}</option>; })}
                 </select>
               </div>
               <div className="form-group">
@@ -3196,6 +3226,9 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
               preavis:         { icon: Send,            color: '#37474F', bg: '#ECEFF1', label: t('ongletDocuments.cfgDoc.preavis')              },
               facture:         { icon: Banknote,        color: '#7B1FA2', bg: '#F3E5F5', label: t('ongletDocuments.cfgDoc.facture')              },
               caution:         { icon: Lock,            color: '#1B6B3A', bg: '#E8F5E9', label: t('ongletDocuments.cfgDoc.caution')     },
+              avenant:         { icon: FileSignature,   color: '#6A1B9A', bg: '#F3E5F5', label: t('ongletDocuments.cfgDoc.avenant')     },
+              decompte:        { icon: Banknote,        color: '#2E7D32', bg: '#E8F5E9', label: t('ongletDocuments.cfgDoc.decompte')    },
+              cautionnement:   { icon: Shield,          color: '#AD1457', bg: '#FCE4EC', label: t('ongletDocuments.cfgDoc.cautionnement') },
             }[doc.type] || { icon: FileText, color: '#888', bg: '#F5F5F5', label: t('ongletDocuments.cfgDoc.document') };
             var CfgDocIcon = cfgDoc.icon;
             return (
