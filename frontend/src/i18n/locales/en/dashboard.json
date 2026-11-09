@@ -646,6 +646,126 @@
     "renouveler": "Renew",
     "traiter": "Handle"
   },
+  "edl": {
+    "titre": "Inspection report",
+    "fermer": "Close",
+    "retour": "Back",
+    "chargement": "Loading…",
+    "enCours": "Working…",
+    "annuler": "Cancel",
+    "explication": "Fill in the grid, add your remarks and photos, then sign. The other party reviews, adds their reservations and signs in turn. The final document is only generated after both signatures, then it can no longer be edited.",
+    "erreurChargement": "Could not load the inspection report",
+    "erreur": "Something went wrong",
+    "erreurTelechargement": "Download error",
+    "redigePar": "written by {{nom}}",
+    "brouillonEnregistre": "Draft saved",
+    "toastEnvoye": "Sent and signed: the other party has been notified",
+    "toastCorrection": "Correction requested: the author has been notified",
+    "toastSigne": "Signature recorded",
+    "toastGenere": "Document generated and locked",
+    "toastAbandonne": "Inspection report abandoned",
+    "photoAjoutee": "Photo added",
+    "ligneIncomplete": "Enter the room and the item",
+    "tropDeLignes": "{{n}} lines maximum to fit on one page",
+    "type": {
+      "entree": "Move-in inspection report",
+      "sortie": "Move-out inspection report"
+    },
+    "statut": {
+      "brouillon": "Draft",
+      "a_valider": "Awaiting signature",
+      "signe": "Signed by both parties",
+      "genere": "Generated and locked",
+      "annule": "Abandoned"
+    },
+    "aVousDeSigner": "Your turn to sign",
+    "consulter": "View",
+    "continuer": "Continue",
+    "commencer": {
+      "entree": "Start the move-in inspection",
+      "sortie": "Start the move-out inspection"
+    },
+    "indisponible": {
+      "entree": "Available once the lease is signed.",
+      "sortie": "Available once the tenancy is active."
+    },
+    "etat": {
+      "neuf": "New",
+      "bon": "Good",
+      "use": "Worn",
+      "mauvais": "Poor"
+    },
+    "entreeLabel": "Move-in",
+    "observationPlaceholder": "Remark (optional)",
+    "photo": "Photo",
+    "ajouterLigne": "Add a line to the grid",
+    "piecePlaceholder": "Room (e.g. Balcony)",
+    "elementPlaceholder": "Item (e.g. railing)",
+    "ajouter": "Add",
+    "retirerLigne": "Remove this line",
+    "releves": {
+      "titre": "Meter readings and keys",
+      "eau": "Water (m³)",
+      "electricite": "Electricity (kWh)",
+      "cles": "Keys handed over",
+      "badge": "Badge / remote"
+    },
+    "observationsGenerales": "General remarks",
+    "aucune": "None",
+    "reserves": {
+      "titre": "Reservations",
+      "placeholder": "Any reservations (what is not in order, to be repaired…)"
+    },
+    "signatures": "Signatures",
+    "role": {
+      "proprietaire": "landlord",
+      "locataire": "tenant"
+    },
+    "msg": {
+      "brouillonAutre": "{{nom}} is filling in the inspection report. You will be notified when it is ready to review and sign.",
+      "correctionDemandee": "Correction requested:",
+      "aSigner": "{{nom}} filled in and signed this inspection report. Review it, add your reservations if needed, then sign, or request a correction.",
+      "attenteAutre": "Waiting for {{nom}} to review and sign.",
+      "pretAGenerer": "Both parties have signed. Generate the final document: it can no longer be edited afterwards.",
+      "attenteGeneration": "Both parties have signed. {{nom}} will generate the final document.",
+      "genere": "The document is generated and locked: you can download it, it can no longer be edited."
+    },
+    "correction": {
+      "titre": "Request a correction",
+      "explication": "The report goes back to draft, the author's signature is cleared and they will be notified.",
+      "placeholder": "What needs to be corrected",
+      "envoyer": "Request the correction"
+    },
+    "generer": {
+      "titre": "Generate the final document?",
+      "avertissement": "Once generated, the inspection report can no longer be edited: you can only download it. Check one last time.",
+      "confirmer": "Generate and lock",
+      "bouton": "Generate the final document"
+    },
+    "enregistrer": "Save draft",
+    "renseignezTout": "Fill in the condition of every line before sending",
+    "signerEtEnvoyer": "Sign and send to {{nom}}",
+    "demanderCorrection": "Request a correction",
+    "relireEtSigner": "Sign the inspection report",
+    "retirer": "Withdraw my submission (take back control)",
+    "telecharger": "Download the PDF",
+    "abandonner": "Abandon this inspection report",
+    "choisirLocation": "For which tenancy?",
+    "aucuneLocation": "No tenancy concerned for now.",
+    "signature": {
+      "dessin": "Draw",
+      "texte": "Type my name",
+      "signezIci": "Sign here",
+      "effacer": "Clear",
+      "nomPlaceholder": "Your full name",
+      "luEtApprouve": "I have reviewed this inspection report and approve it. I sign in my own name.",
+      "preuve": "Your signature is recorded with the date, time, your IP address and a fingerprint of the signed content.",
+      "titreEnvoi": "Your signature before sending",
+      "titreSigner": "Your signature",
+      "signerEtEnvoyer": "Sign and send",
+      "signer": "Sign"
+    }
+  },
   "ongletDocuments": {
     "titre": "Documents",
     "nbDocuments": "{{count}} document(s)",

@@ -198,6 +198,7 @@ app.use('/scores',            scoresRoutes);
 app.use('/admin',             adminRoutes);
 app.use('/admin',             adminAbonnementsRoutes);
 app.use('/preavis',           preavisRoutes);
+app.use('/etats-des-lieux',   require('./routes/etatsDesLieux'));
 app.use('/abonnements', abonnementRoutes);
 app.use('/notations', notationsRoutes);
 app.use('/blog', blogRoutes);

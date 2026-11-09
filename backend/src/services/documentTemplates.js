@@ -136,6 +136,12 @@ function styles() {
   .pill.a { background: #FBEBD0; color: #8A4F05; } .pill.r { background: #FADAD6; color: #9A1E17; }
   .note { font-size: 10px; color: #6B766F; }
   .cb { display: inline-block; width: 12px; height: 12px; border: 1.5px solid #1A211D; border-radius: 3px; vertical-align: -2px; }
+  .cb.on { background: #1B6B3A; border-color: #1B6B3A; position: relative; }
+  .cb.on::after { content: ''; position: absolute; left: 3px; top: 0px; width: 3px; height: 7px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .grille td { padding: 2.5px 6px; font-size: 11px; line-height: 1.3; }
+  .grille th { padding: 3px 6px; }
+  tr.deg td { background: #FFF3E0; }
+  .sigimg { display: block; height: 44px; max-width: 100%; object-fit: contain; margin: 3px 0 1px; }
   .lines span { display: block; border-bottom: 1px solid #C9D1CC; height: 21px; }
   .sign { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: auto; padding-top: 12px; flex: none; }
   .sig { border: 1px solid #DDE3DF; border-radius: 6px; padding: 8px 11px; min-height: 92px; font-size: 11px; overflow: hidden; }
@@ -270,7 +276,7 @@ function bail(d) {
 }
 
 // ── 4. ÉTAT DES LIEUX (grille à remplir, une page) ─────────
-function etatDesLieux(d) {
+function etatDesLieuxVierge(d) {
   var sortie = d.type_etat === 'sortie';
   var l = d.logement, lignes = [];
   function piece(nom, elements) { elements.forEach(function (e) { lignes.push(nom + ' · ' + e); }); }
@@ -294,6 +300,48 @@ function etatDesLieux(d) {
     '<div class="sign"><div class="sig"><small>Le bailleur</small><div class="vide"></div><div class="meta">' + nomComplet(d.proprietaire) + '</div></div>' +
     '<div class="sig"><small>Le preneur</small><div class="vide"></div><div class="meta">' + nomComplet(d.locataire) + '</div></div></div></div>';
   return document_('État des lieux ' + d.numero, [page(entete('ÉTAT DES LIEUX D\'' + (sortie ? 'SORTIE' : 'ENTRÉE'), d.numero, d.date) + corps + pied(d))]);
+}
+
+// État des lieux rempli et signé (généré depuis le parcours interactif).
+function etatDesLieuxRempli(d) {
+  var sortie = d.type_etat === 'sortie';
+  var edl = d.edl, l = d.logement, rel = edl.releves || {};
+  var grille = edl.grille || [];
+  var compare = grille.some(function (it) { return it.entree; });
+  var degr = edl.degradations || [];
+  var LIB = { neuf: 'Neuf', bon: 'Bon', use: 'Usé', mauvais: 'Mauvais' };
+
+  var rows = grille.slice(0, 20).map(function (it) {
+    var deg = degr.indexOf(it.id) !== -1;
+    return '<tr' + (deg ? ' class="deg"' : '') + '><td>' + cl(it.piece + ' · ' + it.element, 40) + '</td>' +
+      ['neuf', 'bon', 'use', 'mauvais'].map(function (k) { return '<td class="c"><span class="cb' + (it.etat === k ? ' on' : '') + '"></span></td>'; }).join('') +
+      (compare ? '<td class="c note">' + (it.entree ? esc(LIB[it.entree] || '') : '—') + '</td>' : '') +
+      '<td>' + cl(it.obs || '', 40) + (deg ? '<span class="pill a" style="margin-left:4px">▼</span>' : '') + '</td></tr>';
+  }).join('');
+
+  var sig = function (role, libelle) {
+    var s = (edl.signatures || {})[role];
+    if (!s) return '<div class="sig"><small>' + libelle + '</small><div class="vide"></div></div>';
+    var quand = new Date(s.signe_at).toLocaleString('fr-FR', { timeZone: 'Africa/Conakry', dateStyle: 'short', timeStyle: 'short' });
+    return '<div class="sig"><small>' + libelle + ' · lu et approuvé</small>' +
+      (s.mode === 'dessin' && s.image ? '<img class="sigimg" alt="" src="' + esc(s.image) + '"><div class="nom">' + cl(s.nom_complet, 40) + '</div>' : '<div class="ink">' + cl(s.nom_complet, 40) + '</div>') +
+      '<div class="meta">' + esc(quand) + ' · IP ' + cl(s.ip || '—', 40) + '<br>empreinte ' + esc(String(s.hash || '').slice(0, 14)) + '…</div></div>';
+  };
+  var libReserves = edl.reserves ? 'Réserves ' + (edl.reserves_role === 'proprietaire' ? 'du bailleur' : (edl.reserves_role === 'locataire' ? 'du preneur' : '')) : '';
+  var corps = '<div class="corps">' +
+    '<div class="grid2" style="margin-bottom:6px"><div class="box"><small>Bien</small>' + bienLigne(l) + '<br>Bailleur : ' + cl((d.proprietaire.prenom || '') + ' ' + (d.proprietaire.nom || ''), 30) + '<br>Preneur : ' + cl((d.locataire.prenom || '') + ' ' + (d.locataire.nom || ''), 30) + '</div>' +
+    '<div class="box"><small>Relevés et remise des clés</small>Eau : <b>' + cl(rel.eau || '—', 16) + '</b> m³ · Électricité : <b>' + cl(rel.electricite || '—', 16) + '</b> kWh<br>Clés remises : <b>' + (rel.cles == null ? '—' : esc(rel.cles)) + '</b> · Badge / télécommande : <b>' + (rel.badge == null ? '—' : esc(rel.badge)) + '</b>' +
+    (edl.nb_photos ? '<br>' + esc(edl.nb_photos) + ' photo' + (edl.nb_photos > 1 ? 's' : '') + ' jointe' + (edl.nb_photos > 1 ? 's' : '') + ' (dans Werdhe)' : '') + '</div></div>' +
+    '<table class="grille" style="table-layout:fixed"><colgroup><col style="width:' + (compare ? '28' : '30') + '%"><col style="width:6%"><col style="width:6%"><col style="width:6%"><col style="width:8%">' + (compare ? '<col style="width:9%">' : '') + '<col></colgroup><tr><th>Pièce · élément</th><th class="c">Neuf</th><th class="c">Bon</th><th class="c">Usé</th><th class="c">Mauvais</th>' + (compare ? '<th class="c">Entrée</th>' : '') + '<th>Observation</th></tr>' + rows + '</table>' +
+    (sortie && compare ? '<p class="note" style="margin-top:4px">' + (degr.length ? '<b>' + degr.length + ' élément' + (degr.length > 1 ? 's' : '') + ' dégradé' + (degr.length > 1 ? 's' : '') + '</b> par rapport à l\'état des lieux d\'entrée (surlignés, ▼).' : 'Aucune dégradation par rapport à l\'état des lieux d\'entrée.') + '</p>' : '') +
+    '<div class="h" style="margin-top:7px">Observations générales</div><p style="margin-bottom:3px">' + (edl.observations_generales ? cl(edl.observations_generales, 160) : '<span class="note">Aucune observation.</span>') + '</p>' +
+    '<div class="h" style="margin-top:5px">Réserves</div><p style="margin-bottom:3px">' + (edl.reserves ? '<b>' + libReserves + ' :</b> ' + cl(edl.reserves, 160) : '<span class="note">Aucune réserve.</span>') + '</p>' +
+    '<div class="sign">' + sig('proprietaire', 'Le bailleur') + sig('locataire', 'Le preneur') + '</div></div>';
+  return document_('État des lieux ' + d.numero, [page(entete('ÉTAT DES LIEUX D\'' + (sortie ? 'SORTIE' : 'ENTRÉE'), d.numero, d.date) + corps + pied(d))]);
+}
+
+function etatDesLieux(d) {
+  return d.edl ? etatDesLieuxRempli(d) : etatDesLieuxVierge(d);
 }
 
 // ── 5. MISE EN DEMEURE ─────────────────────────────────────

@@ -646,6 +646,126 @@
     "renouveler": "Renouveler",
     "traiter": "Traiter"
   },
+  "edl": {
+    "titre": "État des lieux",
+    "fermer": "Fermer",
+    "retour": "Retour",
+    "chargement": "Chargement…",
+    "enCours": "En cours…",
+    "annuler": "Annuler",
+    "explication": "Remplissez la grille, ajoutez vos observations et vos photos, puis signez. L'autre partie relit, ajoute ses réserves et signe à son tour. Le document final n'est généré qu'après les deux signatures, puis il ne peut plus être modifié.",
+    "erreurChargement": "Impossible de charger l'état des lieux",
+    "erreur": "Une erreur est survenue",
+    "erreurTelechargement": "Erreur de téléchargement",
+    "redigePar": "rédigé par {{nom}}",
+    "brouillonEnregistre": "Brouillon enregistré",
+    "toastEnvoye": "Envoyé et signé : l'autre partie a été prévenue",
+    "toastCorrection": "Correction demandée : le rédacteur a été prévenu",
+    "toastSigne": "Signature enregistrée",
+    "toastGenere": "Document généré et verrouillé",
+    "toastAbandonne": "État des lieux abandonné",
+    "photoAjoutee": "Photo ajoutée",
+    "ligneIncomplete": "Indiquez la pièce et l'élément",
+    "tropDeLignes": "{{n}} lignes maximum pour tenir sur une page",
+    "type": {
+      "entree": "État des lieux d'entrée",
+      "sortie": "État des lieux de sortie"
+    },
+    "statut": {
+      "brouillon": "Brouillon",
+      "a_valider": "En attente de signature",
+      "signe": "Signé par les deux parties",
+      "genere": "Généré et verrouillé",
+      "annule": "Abandonné"
+    },
+    "aVousDeSigner": "À vous de signer",
+    "consulter": "Consulter",
+    "continuer": "Continuer",
+    "commencer": {
+      "entree": "Commencer l'état des lieux d'entrée",
+      "sortie": "Commencer l'état des lieux de sortie"
+    },
+    "indisponible": {
+      "entree": "Disponible à partir de la signature du bail.",
+      "sortie": "Disponible une fois la location active."
+    },
+    "etat": {
+      "neuf": "Neuf",
+      "bon": "Bon",
+      "use": "Usé",
+      "mauvais": "Mauvais"
+    },
+    "entreeLabel": "Entrée",
+    "observationPlaceholder": "Observation (facultatif)",
+    "photo": "Photo",
+    "ajouterLigne": "Ajouter une ligne à la grille",
+    "piecePlaceholder": "Pièce (ex. Balcon)",
+    "elementPlaceholder": "Élément (ex. garde-corps)",
+    "ajouter": "Ajouter",
+    "retirerLigne": "Retirer cette ligne",
+    "releves": {
+      "titre": "Relevés et clés",
+      "eau": "Eau (m³)",
+      "electricite": "Électricité (kWh)",
+      "cles": "Clés remises",
+      "badge": "Badge / télécommande"
+    },
+    "observationsGenerales": "Observations générales",
+    "aucune": "Aucune",
+    "reserves": {
+      "titre": "Réserves",
+      "placeholder": "Vos réserves éventuelles (ce qui n'est pas conforme, à réparer…)"
+    },
+    "signatures": "Signatures",
+    "role": {
+      "proprietaire": "bailleur",
+      "locataire": "preneur"
+    },
+    "msg": {
+      "brouillonAutre": "{{nom}} est en train de remplir l'état des lieux. Vous serez prévenu(e) quand il sera prêt à relire et à signer.",
+      "correctionDemandee": "Correction demandée :",
+      "aSigner": "{{nom}} a rempli et signé cet état des lieux. Relisez-le, ajoutez vos réserves si besoin, puis signez, ou demandez une correction.",
+      "attenteAutre": "En attente de la relecture et de la signature de {{nom}}.",
+      "pretAGenerer": "Les deux parties ont signé. Générez le document final : il ne pourra plus être modifié.",
+      "attenteGeneration": "Les deux parties ont signé. {{nom}} va générer le document final.",
+      "genere": "Le document est généré et verrouillé : vous pouvez le télécharger, il ne peut plus être modifié."
+    },
+    "correction": {
+      "titre": "Demander une correction",
+      "explication": "L'état des lieux repasse en brouillon, la signature du rédacteur est effacée et il sera prévenu.",
+      "placeholder": "Ce qu'il faut corriger",
+      "envoyer": "Demander la correction"
+    },
+    "generer": {
+      "titre": "Générer le document final ?",
+      "avertissement": "Une fois généré, l'état des lieux ne peut plus être modifié : vous pourrez seulement le télécharger. Vérifiez une dernière fois.",
+      "confirmer": "Générer et verrouiller",
+      "bouton": "Générer le document final"
+    },
+    "enregistrer": "Enregistrer le brouillon",
+    "renseignezTout": "Renseignez l'état de chaque ligne avant d'envoyer",
+    "signerEtEnvoyer": "Signer et envoyer à {{nom}}",
+    "demanderCorrection": "Demander une correction",
+    "relireEtSigner": "Signer l'état des lieux",
+    "retirer": "Retirer mon envoi (reprendre la main)",
+    "telecharger": "Télécharger le PDF",
+    "abandonner": "Abandonner cet état des lieux",
+    "choisirLocation": "Pour quelle location ?",
+    "aucuneLocation": "Aucune location concernée pour le moment.",
+    "signature": {
+      "dessin": "Dessiner",
+      "texte": "Taper mon nom",
+      "signezIci": "Signez ici",
+      "effacer": "Effacer",
+      "nomPlaceholder": "Votre nom complet",
+      "luEtApprouve": "J'ai relu cet état des lieux et je l'approuve. Je signe en mon nom.",
+      "preuve": "Votre signature est enregistrée avec la date, l'heure, votre adresse IP et l'empreinte du contenu signé.",
+      "titreEnvoi": "Votre signature avant envoi",
+      "titreSigner": "Votre signature",
+      "signerEtEnvoyer": "Signer et envoyer",
+      "signer": "Signer"
+    }
+  },
   "ongletDocuments": {
     "titre": "Documents",
     "nbDocuments": "{{count}} document(s)",
