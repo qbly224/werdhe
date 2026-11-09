@@ -7,6 +7,7 @@ const {
   signerBail,
   getMesDocuments,
   telechargerDocument,
+  telechargerBailReservation,
   renvoyerEmail,
   uploadManuel,
   uploaderDocumentManuel
@@ -25,6 +26,9 @@ router.post('/quittances-mensuelles', verifierToken, genererQuittancesMensuelles
 // Signer un bail (proprio uniquement)
 // Active officiellement la location
 router.post('/signer-bail', verifierToken, signerBail);
+
+// Télécharger le bail d'une location (généré à la demande s'il n'existe pas)
+router.get('/bail/:reservation_id/telecharger', verifierToken, telechargerBailReservation);
 
 // Télécharger un document
 router.get('/:id/telecharger', verifierToken, telechargerDocument);

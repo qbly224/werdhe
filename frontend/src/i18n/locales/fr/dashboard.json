@@ -184,6 +184,22 @@
       "preavis": "Préavis",
       "renouveler": "Renouveler"
     },
+    "renouvNego": {
+      "contrePropositionDe": "Contre-proposition de {{nom}}",
+      "resume": "{{n}} mois · loyer {{loyer}} GNF/mois",
+      "accepter": "Accepter",
+      "contreProposer": "Contre-proposer",
+      "refuser": "Refuser",
+      "enAttenteLocataire": "Proposition envoyée ({{n}} mois · {{loyer}} GNF/mois) : en attente de la réponse du locataire",
+      "aucuneLocation": "Aucune location active à renouveler",
+      "toastEnvoyee": "Proposition de renouvellement envoyée !",
+      "toastContreEnvoyee": "Contre-proposition envoyée !",
+      "toastAccepte": "Renouvellement accepté !",
+      "toastRefuse": "Proposition refusée.",
+      "erreur": "Une erreur est survenue",
+      "titreContre": "Contre-proposition de renouvellement",
+      "envoyerContre": "Envoyer la contre-proposition"
+    },
     "renouvModal": {
       "titre": "Proposer un renouvellement",
       "logement": "Logement :",
@@ -736,7 +752,16 @@
       "inchange": "Inchangé",
       "recuLe": "Reçu le",
       "refuser": "Refuser",
-      "accepter": "Accepter"
+      "accepter": "Accepter",
+      "contreProposer": "Contre-proposer",
+      "contreTitre": "Votre contre-proposition",
+      "contreDuree": "Durée souhaitée",
+      "contreLoyer": "Loyer souhaité (GNF/mois)",
+      "contreMessage": "Message (facultatif)",
+      "contreMessagePlaceholder": "Ex. : je souhaite renouveler 12 mois, avec un loyer inchangé",
+      "contreEnvoyer": "Envoyer la contre-proposition",
+      "contreEnvoyee": "Contre-proposition envoyée !",
+      "annuler": "Annuler"
     },
     "sent": {
       "titreOfficiel": "Préavis officiel envoyé",

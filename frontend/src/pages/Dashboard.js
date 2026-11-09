@@ -588,6 +588,7 @@ function OngletBiens(props) {
   var [showRenouv, setShowRenouv]       = useState(null);
   var [renouvForm, setRenouvForm]       = useState({ duree: '12', prix: '', message: '' });
   var [renouvLoading, setRenouvLoading] = useState(false);
+  var [renouvList, setRenouvList] = useState([]);
 
   // Charger les réservations pour avoir les infos locataires
   useEffect(function() {
@@ -617,6 +618,65 @@ function OngletBiens(props) {
     api.put('/logements/' + id, formEdit)
       .then(function() { toast.success(t('ongletBiens.toastBienModifie')); setModeEdit(null); recharger(); })
       .catch(function() { toast.error(t('ongletBiens.toastErreurModification')); });
+  }
+
+  function chargerRenouvellements() {
+    if (!estProprio) return;
+    api.get('/renouvellements/en-cours')
+      .then(function(res) { setRenouvList(res.data.renouvellements || []); })
+      .catch(console.error);
+  }
+
+  useEffect(chargerRenouvellements, [estProprio]);
+
+  function renouvPour(locataire) {
+    if (!locataire) return null;
+    return renouvList.find(function(p) { return String(p.reservation_id) === String(locataire.id); }) || null;
+  }
+
+  function proposerRenouvellement(bien) {
+    if (!bien.reservation_id) { toast.error(t('ongletBiens.renouvNego.aucuneLocation')); return; }
+    setShowRenouv(bien);
+    setRenouvForm({ duree: String(bien.duree || '12'), prix: String(bien.prix || bien.loyer || ''), message: '' });
+  }
+
+  function contreProposerRenouv(proposition, bien, locataire) {
+    setShowRenouv({
+      nom: bien.titre, reservation_id: locataire.id, contreDe: proposition.id,
+      loyer: locataire.montant_total || bien.prix_mensuel,
+    });
+    setRenouvForm({ duree: String(proposition.nouvelle_duree_mois), prix: String(proposition.nouveau_prix || ''), message: '' });
+  }
+
+  function envoyerRenouvellement() {
+    if (!showRenouv) return;
+    setRenouvLoading(true);
+    var corps = {
+      nouvelle_duree_mois: parseInt(renouvForm.duree, 10),
+      nouveau_prix:        renouvForm.prix ? Number(renouvForm.prix) : null,
+      message:             renouvForm.message || null
+    };
+    var requete = showRenouv.contreDe
+      ? api.post('/renouvellements/' + showRenouv.contreDe + '/contre-proposer', corps)
+      : api.post('/renouvellements', Object.assign({ reservation_id: showRenouv.reservation_id }, corps));
+    requete
+      .then(function() {
+        toast.success(showRenouv.contreDe ? t('ongletBiens.renouvNego.toastContreEnvoyee') : t('ongletBiens.renouvNego.toastEnvoyee'));
+        setShowRenouv(null);
+        chargerRenouvellements();
+      })
+      .catch(function(err) { toast.error((err.response && err.response.data && err.response.data.erreur) || t('ongletBiens.renouvNego.erreur')); })
+      .finally(function() { setRenouvLoading(false); });
+  }
+
+  function repondreRenouv(id, reponse) {
+    api.patch('/renouvellements/' + id + '/repondre', { reponse: reponse })
+      .then(function() {
+        toast.success(reponse === 'accepte' ? t('ongletBiens.renouvNego.toastAccepte') : t('ongletBiens.renouvNego.toastRefuse'));
+        chargerRenouvellements();
+        if (reponse === 'accepte' && recharger) recharger();
+      })
+      .catch(function(err) { toast.error((err.response && err.response.data && err.response.data.erreur) || t('ongletBiens.renouvNego.erreur')); });
   }
 
   function libererBien(id) {
@@ -776,6 +836,7 @@ function OngletBiens(props) {
         {stats.logements.map(function(b) {
         var estOccupe    = b.statut === 'loue';
           var locataire    = estOccupe ? getLocataireInfo(b.id) : null;
+          var renouvEnCours = renouvPour(locataire);
           var preavisActif = b.preavis_statut === 'envoye';
           var joursRestants = preavisActif && b.date_sortie_estimee
             ? Math.ceil((new Date(b.date_sortie_estimee) - new Date()) / (1000 * 60 * 60 * 24))
@@ -878,6 +939,38 @@ function OngletBiens(props) {
 
               {/* Boutons selon statut */}
               {estOccupe ? (
+                <div>
+                  {renouvEnCours && renouvEnCours.a_traiter && (
+                    <div style={{ background: '#E3F2FD', border: '1px solid #90CAF9', borderRadius: 12, padding: 14, marginBottom: 10 }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#1565C0', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <RefreshCw size={14} strokeWidth={1.5} /> {t('ongletBiens.renouvNego.contrePropositionDe', { nom: renouvEnCours.auteur_prenom + ' ' + renouvEnCours.auteur_nom })}
+                      </div>
+                      <div style={{ fontSize: 13, color: '#1B2B22' }}>
+                        {t('ongletBiens.renouvNego.resume', { n: renouvEnCours.nouvelle_duree_mois, loyer: new Intl.NumberFormat('fr-FR').format(renouvEnCours.nouveau_prix || renouvEnCours.loyer_actuel) })}
+                      </div>
+                      {renouvEnCours.message && <div style={{ fontSize: 12, color: '#666', marginTop: 6, fontStyle: 'italic' }}>"{renouvEnCours.message}"</div>}
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 10 }}>
+                        <button type="button" onClick={function() { repondreRenouv(renouvEnCours.id, 'accepte'); }}
+                          style={{ padding: '9px', borderRadius: 10, border: 'none', background: '#1565C0', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+                          {t('ongletBiens.renouvNego.accepter')}
+                        </button>
+                        <button type="button" onClick={function() { contreProposerRenouv(renouvEnCours, b, locataire); }}
+                          style={{ padding: '9px', borderRadius: 10, border: '1px solid #90CAF9', background: '#fff', color: '#1565C0', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+                          {t('ongletBiens.renouvNego.contreProposer')}
+                        </button>
+                        <button type="button" onClick={function() { repondreRenouv(renouvEnCours.id, 'refuse'); }}
+                          style={{ padding: '9px', borderRadius: 10, border: '1px solid #E0E0E0', background: '#fff', color: '#888', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                          {t('ongletBiens.renouvNego.refuser')}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {renouvEnCours && !renouvEnCours.a_traiter && (
+                    <div style={{ background: '#F3F8FF', border: '1px solid #BBDEFB', borderRadius: 12, padding: '10px 14px', marginBottom: 10, fontSize: 12, color: '#1565C0', display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <RefreshCw size={13} strokeWidth={1.5} />
+                      {t('ongletBiens.renouvNego.enAttenteLocataire', { n: renouvEnCours.nouvelle_duree_mois, loyer: new Intl.NumberFormat('fr-FR').format(renouvEnCours.nouveau_prix || renouvEnCours.loyer_actuel) })}
+                    </div>
+                  )}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                   <button onClick={function() { if (setOnglet) setOnglet('/dashboard/messages'); }}
                     style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#E8F5E9', color: '#1B5E20', border: '0.5px solid #A5D6A7', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
@@ -898,56 +991,18 @@ function OngletBiens(props) {
                       {t('ongletBiens.preavisEnvoye')}
                     </button>
                   )}
-                  {estOccupe && (
-  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 8 }}>
-    {/* ... boutons existants Messagerie, Documents, Préavis ... */}
-    <button
-      onClick={function() { proposerRenouvellement(b); }}
-      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', border: '0.5px solid #90CAF9', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-      <RefreshCw size={13} strokeWidth={1.5} /> {t('ongletBiens.boutons.renouveler')}
-    </button>
-    <button
-      onClick={function() { setShowLiberer(b.id); }}
-      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#FFEBEE', color: '#C62828', border: '0.5px solid #FFCDD2', fontSize: 12, fontWeight: 600, cursor: 'pointer', gridColumn: '1 / -1' }}>
-      {t('ongletBiens.libererModal.libererMaintenant')}
-    </button>
-  </div>
-)}
-
-{showRenouv && (
-  <div className="modal-overlay">
-    <div className="modal-box">
-      <h3 style={{ color: '#1565C0' }}>{t('ongletBiens.renouvModal.titre')}</h3>
-      <p style={{ fontSize: 13, color: '#555', marginBottom: 16 }}>
-        {t('ongletBiens.renouvModal.logement')} <b>{showRenouv.nom}</b>
-      </p>
-      <div className="form-group">
-        <label>{t('ongletBiens.renouvModal.dureeLabel')}</label>
-        <select value={renouvForm.duree} onChange={function(e) { setRenouvForm(Object.assign({}, renouvForm, { duree: e.target.value })); }}>
-          {['3','6','12','18','24'].map(function(d) { return <option key={d} value={d}>{t('ongletBiens.renouvModal.dureeMois', { n: d })}</option>; })}
-        </select>
-      </div>
-      <div className="form-group">
-        <label>{t('ongletBiens.renouvModal.nouveauLoyerLabel')}</label>
-        <input type="number" placeholder={showRenouv.loyer} value={renouvForm.prix}
-          onChange={function(e) { setRenouvForm(Object.assign({}, renouvForm, { prix: e.target.value })); }} />
-      </div>
-      <div className="form-group">
-        <label>{t('ongletBiens.renouvModal.messageLabel')}</label>
-        <textarea value={renouvForm.message} onChange={function(e) { setRenouvForm(Object.assign({}, renouvForm, { message: e.target.value })); }}
-          placeholder={t('ongletBiens.renouvModal.messagePlaceholder')} rows="2"
-          style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 13, resize: 'none', fontFamily: 'inherit', outline: 'none' }} />
-      </div>
-      <div className="modal-actions">
-        <button onClick={envoyerRenouvellement} disabled={renouvLoading}
-          style={{ background: '#1565C0', color: '#fff', border: 'none', borderRadius: 10, padding: '11px 20px', fontWeight: 700, cursor: 'pointer', flex: 1 }}>
-          {renouvLoading ? t('ongletBiens.renouvModal.envoiEnCours') : t('ongletBiens.renouvModal.envoyerLaProposition')}
-        </button>
-        <button className="btn-outline-green" onClick={function() { setShowRenouv(null); }}>{t('ongletBiens.confirmSuppression.annuler')}</button>
-      </div>
-    </div>
-  </div>
-)}
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 8 }}>
+                    <button type="button" disabled={!locataire}
+                      onClick={function() { proposerRenouvellement({ nom: b.titre, reservation_id: locataire.id, loyer: locataire.montant_total || b.prix_mensuel }); }}
+                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#E3F2FD', color: '#1565C0', border: '0.5px solid #90CAF9', fontSize: 12, fontWeight: 600, cursor: locataire ? 'pointer' : 'not-allowed', opacity: locataire ? 1 : 0.5 }}>
+                      <RefreshCw size={14} strokeWidth={1.5} /> {t('ongletBiens.boutons.renouveler')}
+                    </button>
+                    <button type="button" onClick={function() { setShowLiberer(b.id); }}
+                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '9px', borderRadius: 10, background: '#FFEBEE', color: '#C62828', border: '0.5px solid #FFCDD2', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                      {t('ongletBiens.libererModal.libererMaintenant')}
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -966,31 +1021,43 @@ function OngletBiens(props) {
           );
         })}
       </div>
+
+      {showRenouv && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <h3 style={{ color: '#1565C0' }}>{showRenouv.contreDe ? t('ongletBiens.renouvNego.titreContre') : t('ongletBiens.renouvModal.titre')}</h3>
+            <p style={{ fontSize: 13, color: '#555', marginBottom: 16 }}>
+              {t('ongletBiens.renouvModal.logement')} <b>{showRenouv.nom}</b>
+            </p>
+            <div className="form-group">
+              <label>{t('ongletBiens.renouvModal.dureeLabel')}</label>
+              <select value={renouvForm.duree} onChange={function(e) { setRenouvForm(Object.assign({}, renouvForm, { duree: e.target.value })); }}>
+                {['1','2','3','6','12','18','24','36'].map(function(d) { return <option key={d} value={d}>{t('ongletBiens.renouvModal.dureeMois', { n: d })}</option>; })}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>{t('ongletBiens.renouvModal.nouveauLoyerLabel')}</label>
+              <input type="number" placeholder={showRenouv.loyer} value={renouvForm.prix}
+                onChange={function(e) { setRenouvForm(Object.assign({}, renouvForm, { prix: e.target.value })); }} />
+            </div>
+            <div className="form-group">
+              <label>{t('ongletBiens.renouvModal.messageLabel')}</label>
+              <textarea value={renouvForm.message} onChange={function(e) { setRenouvForm(Object.assign({}, renouvForm, { message: e.target.value })); }}
+                placeholder={t('ongletBiens.renouvModal.messagePlaceholder')} rows="2"
+                style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 13, resize: 'none', fontFamily: 'inherit', outline: 'none' }} />
+            </div>
+            <div className="modal-actions">
+              <button onClick={envoyerRenouvellement} disabled={renouvLoading}
+                style={{ background: '#1565C0', color: '#fff', border: 'none', borderRadius: 10, padding: '11px 20px', fontWeight: 700, cursor: 'pointer', flex: 1 }}>
+                {renouvLoading ? t('ongletBiens.renouvModal.envoiEnCours') : (showRenouv.contreDe ? t('ongletBiens.renouvNego.envoyerContre') : t('ongletBiens.renouvModal.envoyerLaProposition'))}
+              </button>
+              <button className="btn-outline-green" onClick={function() { setShowRenouv(null); }}>{t('ongletBiens.confirmSuppression.annuler')}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
-
-function proposerRenouvellement(bien) {
-  if (!bien.reservation_id) { toast.error('Aucune réservation active'); return; }
-  setShowRenouv(bien);
-  setRenouvForm({ duree: '12', prix: String(bien.loyer || ''), message: '' });
-}
-
-function envoyerRenouvellement() {
-  if (!showRenouv) return;
-  setRenouvLoading(true);
-  api.post('/renouvellements', {
-    reservation_id:      showRenouv.reservation_id,
-    nouvelle_duree_mois: parseInt(renouvForm.duree),
-    nouveau_prix:        renouvForm.prix ? Number(renouvForm.prix) : null,
-    message:             renouvForm.message || null
-  })
-    .then(function() {
-      toast.success('Proposition de renouvellement envoyée !');
-      setShowRenouv(null);
-    })
-    .catch(function(err) { toast.error(err.response?.data?.erreur || 'Erreur'); })
-    .finally(function() { setRenouvLoading(false); });
 }
 
 // ================================================
@@ -1468,23 +1535,18 @@ useEffect(function() {
   }
 
   function telechargerBailSigne(reservationId) {
-    api.get('/documents?type=contrat_bail')
-      .then(function(res) {
-        var docs = (res.data.documents || []).filter(function(d) { return d.reservation_id === reservationId; });
-        if (docs.length === 0) { toast.error(t('ongletReservationsProprio.toastBailNonTrouve')); return; }
-        return api.get('/documents/' + docs[0].id + '/telecharger?format=pdf', { responseType: 'blob' })
-          .then(function(res2) {
-            var typePdf = (res2.headers && res2.headers['content-type'] || '').indexOf('pdf') !== -1;
-            var blob = new Blob([res2.data], { type: typePdf ? 'application/pdf' : 'text/html; charset=utf-8' });
-            var url  = window.URL.createObjectURL(blob);
-            var link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'Bail_' + reservationId.slice(0, 8) + (typePdf ? '.pdf' : '.html'));
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            toast.success(t('ongletReservationsProprio.toastBailTelecharge'));
-          });
+    api.get('/documents/bail/' + reservationId + '/telecharger?format=pdf', { responseType: 'blob' })
+      .then(function(res2) {
+        var typePdf = (res2.headers && res2.headers['content-type'] || '').indexOf('pdf') !== -1;
+        var blob = new Blob([res2.data], { type: typePdf ? 'application/pdf' : 'text/html; charset=utf-8' });
+        var url  = window.URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Bail_' + reservationId.slice(0, 8) + (typePdf ? '.pdf' : '.html'));
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        toast.success(t('ongletReservationsProprio.toastBailTelecharge'));
       })
       .catch(function() { toast.error(t('ongletReservationsProprio.toastErreurTelechargement')); });
   }
@@ -2002,6 +2064,24 @@ function OngletPaiements(props) {
   return <PaiementsProprietaire stats={stats} />;
 }
 
+// Statut du loyer du mois en cours pour un bail. Un paiement se rattache au bail
+// (reservation_id) ; seuls ceux du mois comptent : payé s'il existe un paiement
+// complet ce mois-ci, en retard si un paiement est en attente, impayé sinon.
+function statutLoyerDuMois(paiements, reservationId) {
+  var maintenant = new Date();
+  var duMois = (paiements || []).filter(function(p) {
+    if (!reservationId || String(p.reservation_id) !== String(reservationId)) return false;
+    var d = new Date(p.date_paiement || p.created_at);
+    return d.getFullYear() === maintenant.getFullYear() && d.getMonth() === maintenant.getMonth();
+  });
+  if (duMois.some(function(p) { return p.statut === 'complete'; })) return { statut: 'paye', jours: 0 };
+  var attente = duMois.filter(function(p) { return p.statut === 'en_attente'; })[0];
+  if (attente) {
+    return { statut: 'en_retard', jours: Math.max(0, Math.floor((maintenant - new Date(attente.created_at)) / 86400000)) };
+  }
+  return { statut: 'impaye', jours: 0 };
+}
+
 function PaiementsProprietaire(props) {
   var t = useTranslation('dashboard').t;
   var stats = props.stats;
@@ -2018,27 +2098,25 @@ function PaiementsProprietaire(props) {
     { id: 'bank', label: t('ongletPaiementsDash.payModes.bank.label'), sub: t('ongletPaiementsDash.payModes.bank.sub'), abbr: 'VIR' }
   ];
   useEffect(function() {
-    var bl = stats.logements.map(function(l) {
-      var dp = stats.paiements.find(function(p) { return String(p.logement_id) === String(l.id) && p.statut === 'complete'; });
-      var ea = stats.paiements.find(function(p) { return String(p.logement_id) === String(l.id) && p.statut === 'en_attente'; });
-      var resaActive = stats.reservations.find(function(r) { return r.logement_id === l.id && r.statut === 'confirmee'; });
-return {
-  id:            l.id,
-  nom:           l.titre,
-  locataire:     resaActive ? (resaActive.locataire_prenom + ' ' + resaActive.locataire_nom) : '-',
-  reservation_id: resaActive ? resaActive.id : null,
-  quartier:      l.ville,
-  loyer:         Number(l.prix_mensuel),
-  statut:        l.statut === 'loue' ? (dp ? 'paye' : ea ? 'en_retard' : 'impaye') : 'impaye',
-  jours:         ea ? 5 : 0,
-  icon:          <Home size={24} strokeWidth={1.5} />
-};
+    // Seuls les biens loués ont un loyer à encaisser. Un paiement se rattache
+    // au bail (reservation_id) : la table des paiements n'a pas de logement_id.
+    var bl = (stats.logements || []).filter(function(l) { return l.statut === 'loue'; }).map(function(l) {
+      var resaActive = (stats.reservations || []).find(function(r) { return String(r.logement_id) === String(l.id) && r.statut === 'confirmee'; });
+      var etat = resaActive
+        ? statutLoyerDuMois(stats.paiements, resaActive.id)
+        : { statut: 'impaye', jours: 0 };
+      return {
+        id:            l.id,
+        nom:           l.titre,
+        locataire:     resaActive ? (resaActive.locataire_prenom + ' ' + resaActive.locataire_nom) : '-',
+        reservation_id: resaActive ? resaActive.id : null,
+        quartier:      l.ville,
+        loyer:         Number(resaActive && resaActive.montant_total ? resaActive.montant_total : l.prix_mensuel),
+        statut:        etat.statut,
+        jours:         etat.jours,
+        icon:          <Home size={24} strokeWidth={1.5} />
+      };
     });
-    if (bl.length === 0) bl = [
-      { id: '1', nom: 'Villa Ratoma', locataire: 'Mamadou Diallo', quartier: 'Ratoma', loyer: 2500000, statut: 'en_retard', jours: 12, icon: <Home size={24} strokeWidth={1.5} /> },
-      { id: '2', nom: 'Appart Kaloum 2', locataire: 'Fatoumata Camara', quartier: 'Kaloum', loyer: 1800000, statut: 'impaye', jours: 3, icon: <Building2 size={24} strokeWidth={1.5} /> },
-      { id: '3', nom: 'Studio Matam', locataire: 'Sekou Konate', quartier: 'Matam', loyer: 900000, statut: 'paye', jours: 0, icon: <Home size={24} strokeWidth={1.5} /> }
-    ];
     setBiensList(bl);
   }, [stats]);
   if (!biensList) return null;
@@ -2072,16 +2150,7 @@ return {
           var paiementsfrais = res.data.paiements || [];
           setBiensList(function(prev) {
             return prev.map(function(b) {
-              var dp = paiementsfrais.find(function(p) {
-                return String(p.logement_id) === String(b.id) && p.statut === 'complete';
-              });
-              var ea = paiementsfrais.find(function(p) {
-                return String(p.logement_id) === String(b.id) && p.statut === 'en_attente';
-              });
-              return Object.assign({}, b, {
-                statut: dp ? 'paye' : ea ? 'en_retard' : 'impaye',
-                jours:  ea ? 5 : 0,
-              });
+              return Object.assign({}, b, statutLoyerDuMois(paiementsfrais, b.reservation_id));
             });
           });
         })
@@ -2256,6 +2325,7 @@ function PaiementsLocataire(props) {
 function OngletPreavis(props) {
   var t = useTranslation('dashboard').t;
   var [renouvellements, setRenouvellements] = useState([]);
+  var [contre, setContre] = useState(null); // { id, duree, prix, message, envoi }
 
 useEffect(function() {
   if (user && user.role === 'locataire') {
@@ -2272,6 +2342,30 @@ function repondreRenouvellement(id, reponse) {
       setRenouvellements(function(prev) { return prev.filter(function(r) { return r.id !== id; }); });
     })
     .catch(function(err) { toast.error(err.response?.data?.erreur || t('ongletPreavisDash.erreur')); });
+}
+
+function ouvrirContreProposition(rn) {
+  setContre({ id: rn.id, duree: String(rn.nouvelle_duree_mois), prix: String(rn.nouveau_prix || rn.loyer_actuel || ''), message: '', envoi: false });
+}
+
+function envoyerContreProposition() {
+  if (!contre) return;
+  setContre(Object.assign({}, contre, { envoi: true }));
+  api.post('/renouvellements/' + contre.id + '/contre-proposer', {
+    nouvelle_duree_mois: parseInt(contre.duree, 10),
+    nouveau_prix:        contre.prix ? Number(contre.prix) : null,
+    message:             contre.message || null
+  })
+    .then(function() {
+      toast.success(t('ongletPreavisDash.renouv.contreEnvoyee'));
+      var idEnvoye = contre.id;
+      setContre(null);
+      setRenouvellements(function(prev) { return prev.filter(function(r) { return r.id !== idEnvoye; }); });
+    })
+    .catch(function(err) {
+      setContre(function(c) { return c && Object.assign({}, c, { envoi: false }); });
+      toast.error((err.response && err.response.data && err.response.data.erreur) || t('ongletPreavisDash.erreur'));
+    });
 }
   var user      = props.user;
   var setOnglet = props.setOnglet;
@@ -2438,7 +2532,7 @@ function repondre(preavisId, reponse) {
                 </div>
                 <div style={{ background: '#E3F2FD', borderRadius: 10, padding: 12, marginBottom: 14 }}>
                   {[
-                    [t('ongletPreavisDash.renouv.proposePar'), rn.prop_prenom + ' ' + rn.prop_nom],
+                    [t('ongletPreavisDash.renouv.proposePar'), (rn.auteur_prenom || rn.prop_prenom) + ' ' + (rn.auteur_nom || rn.prop_nom)],
                     [t('ongletPreavisDash.renouv.duree'), t('ongletPreavisDash.renouv.moisSupplementaires', { n: rn.nouvelle_duree_mois })],
                     [t('ongletPreavisDash.renouv.nouveauLoyer'), rn.nouveau_prix ? new Intl.NumberFormat('fr-FR').format(rn.nouveau_prix) + ' GNF/mois' : t('ongletPreavisDash.renouv.inchange')],
                     [t('ongletPreavisDash.renouv.recuLe'), new Date(rn.created_at).toLocaleDateString('fr-FR')],
@@ -2452,10 +2546,45 @@ function repondre(preavisId, reponse) {
                   })}
                   {rn.message && <div style={{ fontSize: 12, color: '#666', marginTop: 8, fontStyle: 'italic' }}>"{rn.message}"</div>}
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                {contre && contre.id === rn.id && (
+                  <div style={{ border: '1px solid #90CAF9', borderRadius: 12, padding: 14, marginBottom: 12, background: '#F8FBFF' }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: '#1565C0', marginBottom: 10 }}>{t('ongletPreavisDash.renouv.contreTitre')}</div>
+                    <div className="form-group">
+                      <label>{t('ongletPreavisDash.renouv.contreDuree')}</label>
+                      <select value={contre.duree} onChange={function(e) { setContre(Object.assign({}, contre, { duree: e.target.value })); }}>
+                        {['1','2','3','6','12','18','24','36'].map(function(d) { return <option key={d} value={d}>{t('ongletBiens.renouvModal.dureeMois', { n: d })}</option>; })}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>{t('ongletPreavisDash.renouv.contreLoyer')}</label>
+                      <input type="number" value={contre.prix} onChange={function(e) { setContre(Object.assign({}, contre, { prix: e.target.value })); }} />
+                    </div>
+                    <div className="form-group">
+                      <label>{t('ongletPreavisDash.renouv.contreMessage')}</label>
+                      <textarea rows="2" value={contre.message} placeholder={t('ongletPreavisDash.renouv.contreMessagePlaceholder')}
+                        onChange={function(e) { setContre(Object.assign({}, contre, { message: e.target.value })); }}
+                        style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 13, resize: 'none', fontFamily: 'inherit', outline: 'none' }} />
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                      <button type="button" onClick={function() { setContre(null); }}
+                        style={{ padding: 11, borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#888', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                        {t('ongletPreavisDash.renouv.annuler')}
+                      </button>
+                      <button type="button" disabled={contre.envoi} onClick={envoyerContreProposition}
+                        style={{ padding: 11, borderRadius: 10, border: 'none', background: '#1565C0', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', opacity: contre.envoi ? 0.6 : 1 }}>
+                        {t('ongletPreavisDash.renouv.contreEnvoyer')}
+                      </button>
+                    </div>
+                  </div>
+                )}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
                   <button onClick={function() { repondreRenouvellement(rn.id, 'refuse'); }}
                     style={{ padding: 12, borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#888', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                     {t('ongletPreavisDash.renouv.refuser')}
+                  </button>
+                  <button onClick={function() { ouvrirContreProposition(rn); }}
+                    style={{ padding: 12, borderRadius: 10, border: '1.5px solid #90CAF9', background: '#fff', color: '#1565C0', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                    {t('ongletPreavisDash.renouv.contreProposer')}
                   </button>
                   <button onClick={function() { repondreRenouvellement(rn.id, 'accepte'); }}
                     style={{ padding: 12, borderRadius: 10, border: 'none', background: '#1565C0', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
