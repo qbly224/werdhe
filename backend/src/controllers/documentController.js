@@ -1,5 +1,9 @@
 const db = require('../database');
-const { genererDocument, genererPdfDepuisHtml, genererHTMLCertificatSignature } = require('../services/documentService');
+const crypto = require('crypto');
+const {
+  genererDocument, genererPdfDepuisHtml, injecterSignaturesBail,
+  verifierIntegrite, enregistrerEvenement
+} = require('../services/documentService');
 const { envoyerEmailDocument } = require('../services/emailService');
 const { obtenirDroits } = require('../middleware/verifierPlan');
 const multer = require('multer');
@@ -48,7 +52,8 @@ const SQL_RESERVATION_DOCUMENT = `SELECT
   JOIN users u_loc ON r.locataire_id = u_loc.id
   WHERE r.id = $1`;
 
-function paramsGeneration(r, type, mois, annee) {
+function paramsGeneration(r, type, mois, annee, extra) {
+  extra = extra || {};
   return {
     type,
     reservation_id: r.id,
@@ -86,8 +91,35 @@ function paramsGeneration(r, type, mois, annee) {
     // Pour quittance mensuelle : mois/année spécifique
     mois: mois || new Date().getMonth() + 1,
     annee: annee || new Date().getFullYear(),
+    date_depart: extra.date_depart,
+    type_etat: extra.type_etat,
+    mois_retard: extra.mois_retard,
+    auteur_id: extra.auteur_id || null,
     envoyer_email: true
   };
+}
+
+// HTML servi au téléchargement / à l'e-mail : le document stocké est figé,
+// on y insère seulement ce qui vit ailleurs (signatures électroniques du
+// bail, tampon « ANNULÉ »). L'empreinte reste celle du document stocké.
+async function htmlPourSortie(doc) {
+  var html = doc.contenu_html;
+
+  if (doc.type === 'contrat_bail' && doc.reservation_id) {
+    const signatures = await db.query(
+      `SELECT role, nom_complet, ip_adresse, signe_at, hash_signature FROM signatures_bail
+       WHERE reservation_id = $1 ORDER BY signe_at`,
+      [doc.reservation_id]
+    ).catch(function() { return { rows: [] }; });
+    html = injecterSignaturesBail(html, signatures.rows);
+  }
+
+  if (doc.statut === 'annule') {
+    var tampon = '<div style="position:fixed;top:42%;left:0;right:0;text-align:center;font:800 120px Arial,sans-serif;' +
+      'color:rgba(179,38,30,.22);transform:rotate(-22deg);pointer-events:none;z-index:99">ANNULÉ</div>';
+    html = html.includes('</body>') ? html.replace('</body>', tampon + '</body>') : html + tampon;
+  }
+  return html;
 }
 
 // ================================================
@@ -96,6 +128,24 @@ function paramsGeneration(r, type, mois, annee) {
 const genererDocumentManuel = async (req, res) => {
   try {
     const { reservation_id, type, mois, annee } = req.body;
+    var extra = { auteur_id: req.user.id };
+
+    if (type === 'preavis' && req.body.date_depart) {
+      var dep = new Date(req.body.date_depart);
+      var aujourdhui = new Date(); aujourdhui.setHours(0, 0, 0, 0);
+      if (isNaN(dep.getTime()) || dep < aujourdhui) {
+        return res.status(400).json({ erreur: 'La date de départ doit être une date à venir' });
+      }
+      extra.date_depart = dep;
+    }
+    if (type === 'etat_lieux') {
+      extra.type_etat = req.body.type_etat === 'sortie' ? 'sortie' : 'entree';
+    }
+    var moisNum = mois ? parseInt(mois, 10) : null;
+    var anneeNum = annee ? parseInt(annee, 10) : null;
+    if ((moisNum !== null && (moisNum < 1 || moisNum > 12)) || (anneeNum !== null && (anneeNum < 2020 || anneeNum > 2100))) {
+      return res.status(400).json({ erreur: 'Période invalide' });
+    }
 
     // Vérifier que le type est valide selon le rôle
     var typesAutorises = req.user.role === 'locataire'
@@ -136,7 +186,7 @@ const genererDocumentManuel = async (req, res) => {
     }
 
     // Construire les données pour la génération
-    const genResult = await genererDocument(paramsGeneration(r, type, mois, annee));
+    const genResult = await genererDocument(paramsGeneration(r, type, moisNum, anneeNum, extra));
 
     if (!genResult.success) {
       return res.status(500).json({ erreur: genResult.erreur });
@@ -144,14 +194,14 @@ const genererDocumentManuel = async (req, res) => {
 
     // Message de succès selon le type
     var messages = {
-      facture: 'Facture generee et envoyee !',
-      quittance: 'Quittance generee et envoyee !',
-      contrat_bail: 'Contrat de bail genere et envoye !',
-      etat_lieux: 'Etat des lieux genere !',
-      mise_en_demeure: 'Mise en demeure generee !',
-      rapport_financier: 'Rapport financier genere !',
-      caution: 'Contrat de caution genere !',
-      preavis: 'Preavis genere et envoye !'
+      facture: 'Facture générée et envoyée !',
+      quittance: 'Quittance générée et envoyée !',
+      contrat_bail: 'Contrat de bail généré et envoyé !',
+      etat_lieux: 'État des lieux généré !',
+      mise_en_demeure: 'Mise en demeure générée !',
+      rapport_financier: 'Rapport financier généré !',
+      caution: 'Attestation de dépôt de garantie générée !',
+      preavis: 'Préavis généré et envoyé !'
     };
 
     res.status(201).json({
@@ -315,7 +365,10 @@ const getMesDocuments = async (req, res) => {
     const { type } = req.query;
 
     let query = `
-      SELECT d.*,
+      SELECT d.id, d.type, d.titre, d.numero, d.statut, d.reservation_id, d.paiement_id,
+        d.logement_id, d.proprietaire_id, d.locataire_id, d.est_manuel, d.nom_fichier,
+        d.email_envoye, d.email_envoye_at, d.created_at, d.verrouille_at, d.annule_at,
+        d.annule_motif, d.hash_sha256,
         l.titre as logement_titre,
         l.ville as logement_ville
        FROM documents d
@@ -368,25 +421,10 @@ const telechargerDocument = async (req, res) => {
       return res.status(404).json({ erreur: 'Contenu du document non disponible' });
     }
 
-    var html = doc.contenu_html;
+    var html = await htmlPourSortie(doc);
 
-    // Pour un contrat de bail, ajouter le certificat de signature électronique
-    if (doc.type === 'contrat_bail' && doc.reservation_id) {
-      const signatures = await db.query(
-        `SELECT role, nom_complet, ip_adresse, signe_at FROM signatures_bail
-         WHERE reservation_id = $1 ORDER BY signe_at`,
-        [doc.reservation_id]
-      ).catch(function() { return { rows: [] }; });
-
-      const certificat = genererHTMLCertificatSignature(signatures.rows);
-      if (certificat) {
-        html = html.includes('</body>')
-          ? html.replace('</body>', certificat + '</body>')
-          : html + certificat;
-      }
-    }
-
-    const nomFichier = doc.titre.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const nomFichier = doc.titre.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_-]/g, '_');
+    enregistrerEvenement(doc.id, 'telecharge', req.user.id, { format: format }, req.ip);
 
     if (format === 'pdf') {
       try {
@@ -440,7 +478,7 @@ const telechargerBailReservation = async (req, res) => {
 
     var doc = (await db.query(
       `SELECT id FROM documents
-       WHERE reservation_id = $1 AND type = 'contrat_bail'
+       WHERE reservation_id = $1 AND type = 'contrat_bail' AND statut <> 'annule'
        ORDER BY created_at DESC LIMIT 1`, [reservationId]
     )).rows[0];
 
@@ -461,43 +499,140 @@ const telechargerBailReservation = async (req, res) => {
 };
 
 // ================================================
-// RENVOYER PAR EMAIL
+// ENVOYER PAR E-MAIL
+// Un document verrouillé ne se modifie pas : on peut seulement le renvoyer.
+// Destinataire par défaut : l'autre partie ; à défaut (rapport financier,
+// par exemple), l'utilisateur lui-même.
 // ================================================
 const renvoyerEmail = async (req, res) => {
   try {
     const { id } = req.params;
 
     const result = await db.query(
-      `SELECT d.*, u.email, u.prenom
-       FROM documents d
-       JOIN users u ON d.locataire_id = u.id
-       WHERE d.id = $1
-       AND (d.proprietaire_id = $2 OR d.locataire_id = $2)`,
+      `SELECT * FROM documents
+       WHERE id = $1 AND (proprietaire_id = $2 OR locataire_id = $2)`,
       [id, req.user.id]
     );
-
     if (result.rows.length === 0) {
-      return res.status(404).json({ erreur: 'Document non trouve' });
+      return res.status(404).json({ erreur: 'Document non trouvé' });
+    }
+    const doc = result.rows[0];
+    if (doc.est_manuel || !doc.contenu_html) {
+      return res.status(400).json({ erreur: 'Ce document importé ne peut pas être renvoyé par e-mail' });
     }
 
-    const doc = result.rows[0];
+    const autreId = doc.proprietaire_id === req.user.id ? doc.locataire_id : doc.proprietaire_id;
+    const dest = await db.query(
+      'SELECT email, prenom FROM users WHERE id = $1',
+      [autreId || req.user.id]
+    );
+    if (dest.rows.length === 0 || !dest.rows[0].email) {
+      return res.status(400).json({ erreur: 'Aucune adresse e-mail pour ce document' });
+    }
 
-    await envoyerEmailDocument({
-      email: doc.email,
-      prenom: doc.prenom,
+    const envoye = await envoyerEmailDocument({
+      email: dest.rows[0].email,
+      prenom: dest.rows[0].prenom,
       typeDocument: doc.type,
-      numeroDocument: doc.titre,
-      htmlDocument: doc.contenu_html,
-      nomFichier: doc.titre.replace(/\s+/g, '_') + '.html'
+      numeroDocument: doc.numero || doc.titre,
+      htmlDocument: await htmlPourSortie(doc),
+      nomFichier: (doc.numero || 'document') + '.html'
     });
+    if (envoye === false) {
+      return res.status(502).json({ erreur: "L'e-mail n'a pas pu être envoyé, réessayez plus tard" });
+    }
 
     await db.query(
       'UPDATE documents SET email_envoye = TRUE, email_envoye_at = NOW() WHERE id = $1',
       [id]
     );
+    await enregistrerEvenement(doc.id, 'envoye_email', req.user.id, { destinataire: dest.rows[0].email }, req.ip);
 
-    res.json({ message: 'Document renvoye par email !' });
+    res.json({ message: 'Document envoyé par e-mail !' });
 
+  } catch (err) {
+    console.error('Erreur envoi e-mail document:', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+};
+
+// ================================================
+// ANNULER UN DOCUMENT
+// Un document généré ne se corrige pas : on l'annule (il reste visible,
+// marqué « annulé ») puis on en génère un nouveau.
+// ================================================
+const annulerDocument = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const motif = String(req.body.motif || '').trim().slice(0, 300);
+    if (motif.length < 3) {
+      return res.status(400).json({ erreur: "Indiquez le motif de l'annulation" });
+    }
+
+    const result = await db.query(
+      `SELECT d.*, r.bail_signe FROM documents d
+       LEFT JOIN reservations r ON r.id = d.reservation_id
+       WHERE d.id = $1 AND (d.proprietaire_id = $2 OR d.locataire_id = $2)`,
+      [id, req.user.id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ erreur: 'Document non trouvé' });
+    }
+    const doc = result.rows[0];
+    if (doc.statut === 'annule') {
+      return res.status(409).json({ erreur: 'Ce document est déjà annulé' });
+    }
+    if (doc.est_manuel) {
+      return res.status(400).json({ erreur: 'Un fichier importé ne peut pas être annulé ici' });
+    }
+    if (doc.type === 'contrat_bail' && doc.bail_signe) {
+      return res.status(409).json({ erreur: 'Un bail signé par les deux parties ne peut pas être annulé' });
+    }
+
+    const maj = await db.query(
+      `UPDATE documents SET statut = 'annule', annule_at = NOW(), annule_motif = $2
+       WHERE id = $1 RETURNING id, statut, annule_at, annule_motif`,
+      [id, motif]
+    );
+    await enregistrerEvenement(doc.id, 'annule', req.user.id, { motif: motif }, req.ip);
+
+    res.json({ message: 'Document annulé', document: maj.rows[0] });
+  } catch (err) {
+    console.error('Erreur annulation document:', err.message);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+};
+
+// ================================================
+// VÉRIFIER L'AUTHENTICITÉ D'UN DOCUMENT (public, via le QR code)
+// Ne renvoie aucune donnée personnelle : type, date, statut, intégrité.
+// ================================================
+const verifierDocument = async (req, res) => {
+  try {
+    const numero = String(req.params.numero || '').toUpperCase().slice(0, 40);
+    if (!/^[A-Z]{3,4}-\d{4}-\d{5,}$/.test(numero)) {
+      return res.status(404).json({ trouve: false });
+    }
+    const result = await db.query(
+      `SELECT type, numero, statut, created_at, verrouille_at, annule_at, hash_sha256, contenu_html, est_manuel
+       FROM documents WHERE numero = $1`,
+      [numero]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ trouve: false });
+    }
+    const d = result.rows[0];
+    res.json({
+      trouve: true,
+      numero: d.numero,
+      type: d.type,
+      statut: d.statut,
+      annule: d.statut === 'annule',
+      genere_le: d.verrouille_at || d.created_at,
+      annule_le: d.annule_at,
+      integre: d.est_manuel ? null : verifierIntegrite(d),
+      empreinte: d.hash_sha256 ? d.hash_sha256.slice(0, 16) + '…' : null
+    });
   } catch (err) {
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
@@ -537,8 +672,8 @@ const uploaderDocumentManuel = async (req, res) => {
     const result = await db.query(
       `INSERT INTO documents
         (type, titre, logement_id, proprietaire_id, locataire_id,
-         nom_fichier, est_manuel, statut, contenu_html)
-       VALUES ($1, $2, $3, $4, $5, $6, TRUE, 'genere', $7)
+         nom_fichier, est_manuel, statut, contenu_html, hash_sha256, verrouille_at)
+       VALUES ($1, $2, $3, $4, $5, $6, TRUE, 'genere', $7, $8, NOW())
        RETURNING *`,
       [
         type || 'autre',
@@ -547,7 +682,8 @@ const uploaderDocumentManuel = async (req, res) => {
         req.user.id,
         locataire_id || null,
         nomFichier,
-        contenu
+        contenu,
+        crypto.createHash('sha256').update(contenu, 'utf8').digest('hex')
       ]
     );
 
@@ -570,6 +706,8 @@ module.exports = {
   telechargerDocument,
   telechargerBailReservation,
   renvoyerEmail,
+  annulerDocument,
+  verifierDocument,
   uploadManuel,
   uploaderDocumentManuel
 };

@@ -2962,6 +2962,8 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
   var [showUpload, setShowUpload] = useState(false);
   var [uploadForm, setUploadForm] = useState({ titre: '', type: 'autre' });
   var [fichier, setFichier] = useState(null);
+  var [aAnnuler, setAAnnuler] = useState(null);
+  var [motifAnnul, setMotifAnnul] = useState('');
 
   useEffect(function() {
     api.get('/documents').then(function(res) { setDocuments(res.data.documents || []); }).catch(console.error);
@@ -2975,10 +2977,28 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
 
   function generer(e) {
     e.preventDefault();
-    api.post('/documents/generer', genForm)
+    var payload = { reservation_id: genForm.reservation_id, type: genForm.type };
+    if (genForm.type === 'preavis' && genForm.date_depart) payload.date_depart = genForm.date_depart;
+    if (genForm.type === 'etat_lieux') payload.type_etat = genForm.type_etat || 'entree';
+    if (genForm.periode && /^\d{4}-\d{2}$/.test(genForm.periode)) {
+      payload.annee = parseInt(genForm.periode.slice(0, 4), 10);
+      payload.mois = parseInt(genForm.periode.slice(5, 7), 10);
+    }
+    api.post('/documents/generer', payload)
       .then(function() {
         toast.success(t('ongletDocuments.toastDocumentGenere'));
         setShowForm(false);
+        api.get('/documents').then(function(res) { setDocuments(res.data.documents || []); });
+      })
+      .catch(function(err) { toast.error(err.response && err.response.data ? err.response.data.erreur : t('ongletDocuments.toastErreur')); });
+  }
+
+  function confirmerAnnulation() {
+    if (!aAnnuler) return;
+    api.post('/documents/' + aAnnuler.id + '/annuler', { motif: motifAnnul })
+      .then(function() {
+        toast.success(t('ongletDocuments.toastAnnule'));
+        setAAnnuler(null); setMotifAnnul('');
         api.get('/documents').then(function(res) { setDocuments(res.data.documents || []); });
       })
       .catch(function(err) { toast.error(err.response && err.response.data ? err.response.data.erreur : t('ongletDocuments.toastErreur')); });
@@ -3053,6 +3073,31 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
                 </select>
               </div>
             </div>
+            {genForm.type === 'preavis' && (
+              <div className="form-group">
+                <label>{t('ongletDocuments.dateDepart')}</label>
+                <input type="date" required min={new Date().toISOString().slice(0, 10)} value={genForm.date_depart || ''}
+                  onChange={function(e) { setGenForm(Object.assign({}, genForm, { date_depart: e.target.value })); }} />
+              </div>
+            )}
+            {genForm.type === 'etat_lieux' && (
+              <div className="form-group">
+                <label>{t('ongletDocuments.typeEtat')}</label>
+                <select value={genForm.type_etat || 'entree'} onChange={function(e) { setGenForm(Object.assign({}, genForm, { type_etat: e.target.value })); }}>
+                  <option value="entree">{t('ongletDocuments.etatEntree')}</option>
+                  <option value="sortie">{t('ongletDocuments.etatSortie')}</option>
+                </select>
+              </div>
+            )}
+            {['quittance', 'facture', 'rapport_financier'].includes(genForm.type) && (
+              <div className="form-group">
+                <label>{t('ongletDocuments.periode')}</label>
+                <input type="month" value={genForm.periode || ''} onChange={function(e) { setGenForm(Object.assign({}, genForm, { periode: e.target.value })); }} />
+              </div>
+            )}
+            <p style={{ fontSize: 12.5, color: '#8A4F05', background: '#FBEFD9', borderRadius: 8, padding: '8px 12px', margin: '4px 0 12px' }}>
+              <Lock size={12} strokeWidth={2} style={{ verticalAlign: -1, marginRight: 6 }} />{t('ongletDocuments.avertissementVerrou')}
+            </p>
             <div style={{ display: 'flex', gap: 10 }}>
               <button type="submit" className="btn-green">{t('ongletDocuments.genererEtEnvoyer')}</button>
               <button type="button" className="btn-outline-green" onClick={function() { setShowForm(false); }}>{t('ongletLocataires.form.annuler')}</button>
@@ -3081,10 +3126,13 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
                   <CfgDocIcon size={20} strokeWidth={1.5} color={cfgDoc.color} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{doc.titre}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: doc.statut === 'annule' ? '#9AA39E' : '#1B2B22', textDecoration: doc.statut === 'annule' ? 'line-through' : 'none' }}>{doc.titre}</div>
                   <div style={{ display: 'flex', gap: 8, marginTop: 3, alignItems: 'center' }}>
                     <span style={{ background: cfgDoc.bg, color: cfgDoc.color, borderRadius: 20, padding: '1px 8px', fontSize: 10, fontWeight: 700 }}>{cfgDoc.label}</span>
                     <span style={{ fontSize: 11, color: '#aaa' }}>{new Date(doc.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                    {doc.statut === 'annule'
+                      ? <span style={{ background: '#FBE6E4', color: '#B3261E', borderRadius: 20, padding: '1px 8px', fontSize: 10, fontWeight: 700 }} title={doc.annule_motif || ''}>{t('ongletDocuments.annule')}</span>
+                      : doc.verrouille_at && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, color: '#55655B', fontSize: 10, fontWeight: 600 }}><Lock size={10} strokeWidth={2} />{t('ongletDocuments.verrouille')}</span>}
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
@@ -3095,15 +3143,43 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
                   <button onClick={function() {
                     api.post('/documents/' + doc.id + '/renvoyer-email')
                       .then(function() { toast.success(t('ongletDocuments.toastEmailEnvoye')); })
-                      .catch(function() { toast.error(t('ongletDocuments.toastErreur')); });
+                      .catch(function(err) { toast.error(err.response && err.response.data && err.response.data.erreur ? err.response.data.erreur : t('ongletDocuments.toastEmailErreur')); });
                   }}
                     style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
                     <Mail size={13} strokeWidth={2} /> {t('ongletDocuments.email')}
                   </button>
+                  {!doc.est_manuel && doc.statut !== 'annule' && (
+                    <button onClick={function() { setAAnnuler(doc); setMotifAnnul(''); }}
+                      style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid #F0C9C5', background: '#fff', color: '#B3261E', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                      {t('ongletDocuments.annuler')}
+                    </button>
+                  )}
                 </div>
               </div>
             ); 
           })}
+        </div>
+      )}
+
+      {aAnnuler && (
+        <div role="dialog" aria-modal="true" onClick={function() { setAAnnuler(null); }}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(10,20,14,.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 1000 }}>
+          <div onClick={function(e) { e.stopPropagation(); }} style={{ background: '#fff', borderRadius: 16, padding: 22, width: '100%', maxWidth: 440 }}>
+            <h3 style={{ marginBottom: 6 }}>{t('ongletDocuments.annulerTitre')}</h3>
+            <p style={{ fontSize: 13, color: '#55655B', marginBottom: 12 }}>{aAnnuler.titre}</p>
+            <p style={{ fontSize: 13, color: '#55655B', marginBottom: 12 }}>{t('ongletDocuments.annulerExplication')}</p>
+            <label style={{ fontSize: 12, fontWeight: 700, color: '#55655B' }}>{t('ongletDocuments.annulerMotif')}</label>
+            <input type="text" maxLength={300} autoFocus value={motifAnnul} placeholder={t('ongletDocuments.annulerMotifPlaceholder')}
+              onChange={function(e) { setMotifAnnul(e.target.value); }}
+              style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #D9E3DC', margin: '4px 0 14px', fontSize: 14 }} />
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+              <button type="button" className="btn-outline-green" onClick={function() { setAAnnuler(null); }}>{t('ongletDocuments.annulerRetour')}</button>
+              <button type="button" disabled={motifAnnul.trim().length < 3} onClick={confirmerAnnulation}
+                style={{ padding: '9px 16px', borderRadius: 8, border: 'none', background: motifAnnul.trim().length < 3 ? '#E0B5B1' : '#B3261E', color: '#fff', fontWeight: 700, cursor: motifAnnul.trim().length < 3 ? 'not-allowed' : 'pointer' }}>
+                {t('ongletDocuments.annulerConfirmer')}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

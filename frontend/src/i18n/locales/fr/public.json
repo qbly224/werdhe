@@ -927,5 +927,26 @@
     "refuser": "Refuser",
     "personnaliser": "Personnaliser",
     "accepter": "Accepter"
+  },
+  "verifierDocument": {
+    "titre": "Vérification d'un document Werdhe",
+    "chargement": "Vérification en cours…",
+    "introuvable": "Aucun document Werdhe ne correspond à ce numéro.",
+    "introuvableAide": "Vérifiez le numéro indiqué en bas du document, ou scannez à nouveau son QR code.",
+    "authentique": "Document authentique",
+    "authentiqueTexte": "Ce document a bien été généré par Werdhe et son contenu n'a pas été modifié depuis sa génération.",
+    "altere": "Contenu modifié",
+    "alterTexte": "L'empreinte de ce document ne correspond plus à son contenu : ne lui accordez aucune valeur.",
+    "annuleTexte": "Ce document a été annulé le {{date}} : il n'est plus valable.",
+    "numero": "Numéro",
+    "type": "Type",
+    "genereLe": "Généré le",
+    "empreinte": "Empreinte (SHA-256)",
+    "accueil": "Retour à l'accueil",
+    "types": {
+      "facture": "Facture", "quittance": "Quittance de loyer", "contrat_bail": "Contrat de bail",
+      "etat_lieux": "État des lieux", "mise_en_demeure": "Mise en demeure", "preavis": "Préavis",
+      "rapport_financier": "Rapport financier", "caution": "Dépôt de garantie", "autre": "Document"
+    }
   }
 }
