@@ -953,7 +953,7 @@
       "quittance": { "titre": "Quittance de loyer", "desc": "Générer une quittance officielle" },
       "etatLieux": { "titre": "État des lieux", "desc": "Entrée ou sortie du locataire" },
       "miseEnDemeure": { "titre": "Mise en demeure", "desc": "Pour loyer impayé" },
-      "rapportFinancier": { "titre": "Rapport financier", "desc": "Revenus du mois ou de l'annee" },
+      "rapportFinancier": { "titre": "Rapport financier", "desc": "Revenus du mois ou de l'année" },
       "caution": { "titre": "Dépôt de garantie", "desc": "Attestation de dépôt de garantie" },
       "preavis": { "titre": "Préavis de départ", "desc": "Lettre de préavis" },
       "avenant": {"titre": "Avenant de renouvellement", "desc": "Acter le renouvellement accepté"},
