@@ -16,8 +16,6 @@ import useLimitesPlans from '../hooks/useLimitesPlans';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import OdometerNumber from '../components/OdometerNumber';
 
-var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
-
 function getStats(t) {
   return [
     { valeur: '100+', label: t('landingPage.stats.logementsDisponibles') },
@@ -82,63 +80,6 @@ function getFonctionnalites(t, limites) {
     { icon: <TrendingUp size={20} strokeWidth={1.5} />,   titre: t('landingPage.features.5.titre'),    desc: t('landingPage.features.5.desc') },
     { icon: <Star size={20} strokeWidth={1.5} />,         titre: t('landingPage.features.6.titre'),    desc: t('landingPage.features.6.desc') },
     { icon: <Building2 size={20} strokeWidth={1.5} />,    titre: t('landingPage.features.7.titre'),        desc: t('landingPage.features.7.desc', limites) },
-  ];
-}
-
-function getPlans(t, limites) {
-  return [
-    {
-      nom: t('landingPage.plans.tenant.nom'),
-      prix: 0,
-      sousTitre: t('landingPage.plans.tenant.sousTitre'),
-      couleur: '#1565C0',
-      bg: '#E3F2FD',
-      features: [
-        t('landingPage.plans.tenant.features.0'),
-        t('landingPage.plans.tenant.features.1'),
-        t('landingPage.plans.tenant.features.2'),
-        t('landingPage.plans.tenant.features.3'),
-        t('landingPage.plans.tenant.features.4'),
-      ],
-      cta: t('landingPage.plans.tenant.cta'),
-      role: 'locataire',
-      recommande: false
-    },
-    {
-      nom: t('landingPage.plans.pro.nom'),
-      prix: 120000,
-      sousTitre: t('landingPage.plans.pro.sousTitre', limites),
-      couleur: '#1B6B3A',
-      bg: '#E8F5E9',
-      features: [
-        t('landingPage.plans.pro.features.0'),
-        t('landingPage.plans.pro.features.1'),
-        t('landingPage.plans.pro.features.2'),
-        t('landingPage.plans.pro.features.3'),
-        t('landingPage.plans.pro.features.4'),
-      ],
-      cta: t('landingPage.plans.pro.cta'),
-      role: 'proprietaire',
-      plan: 'pro',
-      recommande: true
-    },
-    {
-      nom: t('landingPage.plans.agency.nom'),
-      prix: 300000,
-      sousTitre: t('landingPage.plans.agency.sousTitre'),
-      couleur: '#7B1FA2',
-      bg: '#F3E5F5',
-      features: [
-        t('landingPage.plans.agency.features.0'),
-        t('landingPage.plans.agency.features.1'),
-        t('landingPage.plans.agency.features.2'),
-        t('landingPage.plans.agency.features.3'),
-      ],
-      cta: t('landingPage.plans.agency.cta'),
-      role: 'proprietaire',
-      plan: 'agence',
-      recommande: false
-    },
   ];
 }
 
@@ -249,7 +190,6 @@ export default function LandingPage() {
   var { user }             = useAuth();
   var [mobileMenu, setMobileMenu] = useState(false);
   var [ongletEtapes, setOngletEtapes] = useState('proprio');
-  var [essaiEnCours, setEssaiEnCours] = useState(null);
   var heroRef             = useRef(null);
   var [compteurs, setCompteurs] = useState({ logements: 0, utilisateurs: 0 });
   var [slideActif, setSlideActif] = useState(0);
@@ -262,7 +202,6 @@ export default function LandingPage() {
   var ETAPES_LOCATAIRE     = getEtapesLocataire(t);
   var limitesPlans         = useLimitesPlans();
   var FONCTIONNALITES      = getFonctionnalites(t, limitesPlans);
-  var PLANS                = getPlans(t, limitesPlans);
 
 useEffect(function() {
   function handleMouse(e) {
@@ -274,27 +213,6 @@ useEffect(function() {
   window.addEventListener('mousemove', handleMouse);
   return function() { window.removeEventListener('mousemove', handleMouse); };
 }, []);
-
-  function choisirPlan(plan) {
-    if (plan.role === 'locataire') {
-      navigate('/inscription?role=locataire');
-      return;
-    }
-    if (!user) {
-      navigate('/inscription?role=proprietaire&plan=' + plan.plan);
-      return;
-    }
-    setEssaiEnCours(plan.plan);
-    api.post('/abonnements/essai', { plan: plan.plan })
-      .then(function() {
-        toast.success(t('landingPage.essaiToast', { plan: plan.nom }));
-        navigate('/dashboard');
-      })
-      .catch(function() {
-        navigate('/pricing');
-      })
-      .finally(function() { setEssaiEnCours(null); });
-  }
 
 useEffect(function() {
   var interval = setInterval(function() {
@@ -352,7 +270,7 @@ useEffect(function() {
         <Logo size={36} showText={true} darkBg={false} />
 
         <div style={{ display: 'flex', gap: 28, alignItems: 'center' }} className="nav-desktop">
-          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.carte'), '/logements?vue=carte'], [t('landingPage.nav.tarifs'), '#tarifs'], [t('landingPage.nav.faq'), '#faq']].map(function(l) {
+          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.carte'), '/logements?vue=carte'], [t('landingPage.nav.tarifs'), '/pricing'], [t('landingPage.nav.faq'), '#faq']].map(function(l) {
             return l[1].charAt(0) === '#'
               ? <a key={l[1]} href={l[1]} style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontWeight: 500 }}>{l[0]}</a>
               : <a key={l[1]} href={l[1]} onClick={function(e) { e.preventDefault(); navigate(l[1]); }} style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontWeight: 500 }}>{l[0]}</a>;
@@ -382,7 +300,7 @@ useEffect(function() {
       {/* Menu mobile */}
       {mobileMenu && (
         <div style={{ position: 'fixed', inset: 0, top: 60, background: '#fff', zIndex: 99, padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.carte'), '/logements?vue=carte'], [t('landingPage.nav.tarifs'), '#tarifs']].map(function(l) {
+          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.carte'), '/logements?vue=carte'], [t('landingPage.nav.tarifs'), '/pricing']].map(function(l) {
             return (
               <a key={l[1]} href={l[1]} onClick={function(e) {
                   setMobileMenu(false);
@@ -599,62 +517,6 @@ useEffect(function() {
               );
             })}
           </div>
-        </div>
-      </section>
-
-      {/* ─── TARIFS ─────────────────────────────────────────────── */}
-      <section id="tarifs" style={{ padding: 'clamp(50px, 8vw, 90px) 24px', maxWidth: 1000, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.pricingSection.overline')}</div>
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 650, margin: '0 0 12px', color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.pricingSection.title')}</h2>
-          <p style={{ color: '#666', fontSize: 16, margin: 0 }}>{t('landingPage.pricingSection.subtitle')}</p>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
-          {PLANS.map(function(plan, i) {
-            return (
-              <div key={i} style={{ background: '#fff', borderRadius: 18, padding: '28px 24px', border: plan.recommande ? '2px solid #1B6B3A' : '1px solid #E8E8E8', position: 'relative', boxShadow: plan.recommande ? '0 8px 32px rgba(27,107,58,0.12)' : 'none' }}>
-                {plan.recommande && (
-                  <div style={{ position: 'absolute', top: -13, left: '50%', transform: 'translateX(-50%)', background: '#1B6B3A', color: '#fff', borderRadius: 20, padding: '4px 16px', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap' }}>
-                    {t('landingPage.pricingSection.recommande')}
-                  </div>
-                )}
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                  <div style={{ width: 36, height: 36, background: plan.bg, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {plan.role === 'locataire' ? <Users size={18} strokeWidth={1.5} color={plan.couleur} /> : <Building2 size={18} strokeWidth={1.5} color={plan.couleur} />}
-                  </div>
-                  <span style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{plan.nom}</span>
-                </div>
-
-                <div style={{ marginBottom: 6 }}>
-                  <span style={{ fontSize: 32, fontWeight: 900, color: '#1B2B22' }}>
-                    {plan.prix === 0 ? t('landingPage.pricingSection.gratuit') : GNF(plan.prix)}
-                  </span>
-                  {plan.prix > 0 && <span style={{ fontSize: 13, color: '#888', marginLeft: 4 }}>{t('landingPage.pricingSection.parMois')}</span>}
-                </div>
-                <div style={{ fontSize: 12, color: '#888', marginBottom: 20 }}>{plan.sousTitre}</div>
-
-                <button
-                  onClick={function() { choisirPlan(plan); }}
-                  disabled={essaiEnCours === plan.plan}
-                  style={{ width: '100%', padding: '12px', borderRadius: 10, border: plan.recommande ? 'none' : '1.5px solid ' + plan.couleur, background: essaiEnCours === plan.plan ? '#aaa' : (plan.recommande ? plan.couleur : 'transparent'), color: plan.recommande ? '#fff' : plan.couleur, fontSize: 14, fontWeight: 700, cursor: essaiEnCours === plan.plan ? 'not-allowed' : 'pointer', marginBottom: 20 }}>
-                  {essaiEnCours === plan.plan ? t('landingPage.pricingSection.demarrage') : plan.cta}
-                </button>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {plan.features.map(function(f) {
-                    return (
-                      <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#1B2B22' }}>
-                        <Check size={14} strokeWidth={2.5} color={plan.couleur} style={{ flexShrink: 0 }} />
-                        {f}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
         </div>
       </section>
 
