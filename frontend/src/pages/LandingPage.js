@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import useLimitesPlans from '../hooks/useLimitesPlans';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import OdometerNumber from '../components/OdometerNumber';
+import CommentCaMarche from '../components/CommentCaMarche';
 
 function getStats(t) {
   return [
@@ -51,22 +52,6 @@ function getTemoignages(t) {
       initiales: 'IB',
       couleur:   '#7B1FA2'
     },
-  ];
-}
-
-function getEtapesProprietaire(t) {
-  return [
-    { icon: <Home size={22} strokeWidth={1.5} />,        titre: t('landingPage.steps.owner.0.titre'),     desc: t('landingPage.steps.owner.0.desc') },
-    { icon: <Users size={22} strokeWidth={1.5} />,       titre: t('landingPage.steps.owner.1.titre'), desc: t('landingPage.steps.owner.1.desc') },
-    { icon: <FileText size={22} strokeWidth={1.5} />,    titre: t('landingPage.steps.owner.2.titre'),    desc: t('landingPage.steps.owner.2.desc') },
-  ];
-}
-
-function getEtapesLocataire(t) {
-  return [
-    { icon: <MapPin size={22} strokeWidth={1.5} />,      titre: t('landingPage.steps.tenant.0.titre'),               desc: t('landingPage.steps.tenant.0.desc') },
-    { icon: <MessageCircle size={22} strokeWidth={1.5} />, titre: t('landingPage.steps.tenant.1.titre'),           desc: t('landingPage.steps.tenant.1.desc') },
-    { icon: <Key size={22} strokeWidth={1.5} />,         titre: t('landingPage.steps.tenant.2.titre'),              desc: t('landingPage.steps.tenant.2.desc') },
   ];
 }
 
@@ -189,7 +174,6 @@ export default function LandingPage() {
   var navigate            = useNavigate();
   var { user }             = useAuth();
   var [mobileMenu, setMobileMenu] = useState(false);
-  var [ongletEtapes, setOngletEtapes] = useState('proprio');
   var heroRef             = useRef(null);
   var [compteurs, setCompteurs] = useState({ logements: 0, utilisateurs: 0 });
   var [slideActif, setSlideActif] = useState(0);
@@ -198,8 +182,6 @@ export default function LandingPage() {
   var SLIDES              = getSlides(t);
   var STATS                = getStats(t);
   var TEMOIGNAGES          = getTemoignages(t);
-  var ETAPES_PROPRIETAIRE  = getEtapesProprietaire(t);
-  var ETAPES_LOCATAIRE     = getEtapesLocataire(t);
   var limitesPlans         = useLimitesPlans();
   var FONCTIONNALITES      = getFonctionnalites(t, limitesPlans);
 
@@ -456,44 +438,7 @@ useEffect(function() {
           <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 650, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.howItWorks.title')}</h2>
         </div>
 
-        {/* Toggle proprio / locataire */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
-          <div style={{ display: 'flex', background: '#F0F0F0', borderRadius: 12, padding: 4, gap: 4 }}>
-            {[['proprio', t('landingPage.howItWorks.tabProprio')], ['locataire', t('landingPage.howItWorks.tabLocataire')]].map(function(tab) {
-              var actif = ongletEtapes === tab[0];
-              return (
-                <button key={tab[0]} onClick={function() { setOngletEtapes(tab[0]); }}
-                  style={{ padding: '10px 20px', borderRadius: 9, border: 'none', background: actif ? '#1B6B3A' : 'transparent', color: actif ? '#fff' : '#888', fontSize: 14, fontWeight: actif ? 700 : 500, cursor: 'pointer', transition: 'all .2s' }}>
-                  {tab[1]}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
-          {(ongletEtapes === 'proprio' ? ETAPES_PROPRIETAIRE : ETAPES_LOCATAIRE).map(function(e, i) {
-            return (
-              <div key={i} style={{ background: '#fff', borderRadius: 16, padding: '28px 24px', border: '1px solid #F0F0F0', position: 'relative' }}>
-                <div style={{ position: 'absolute', top: -12, left: 24, background: '#1B6B3A', color: '#fff', borderRadius: 20, width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800 }}>
-                  {i + 1}
-                </div>
-                <div style={{ width: 44, height: 44, background: '#E8F5E9', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1B6B3A', marginBottom: 16 }}>
-                  {e.icon}
-                </div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>{e.titre}</div>
-                <div style={{ fontSize: 14, color: '#666', lineHeight: 1.6 }}>{e.desc}</div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div style={{ textAlign: 'center', marginTop: 32 }}>
-          <button onClick={function() { navigate(ongletEtapes === 'proprio' ? '/inscription' : '/logements'); }}
-            style={{ padding: '13px 28px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-            {ongletEtapes === 'proprio' ? t('landingPage.howItWorks.ctaProprio') : t('landingPage.howItWorks.ctaLocataire')} <ChevronRight size={16} strokeWidth={2} />
-          </button>
-        </div>
+        <CommentCaMarche />
       </section>
 
       {/* ─── FONCTIONNALITÉS ─────────────────────────────────────── */}

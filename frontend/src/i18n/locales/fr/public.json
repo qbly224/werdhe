@@ -96,7 +96,108 @@
       "tabProprio": "Je suis propriétaire",
       "tabLocataire": "Je cherche un logement",
       "ctaProprio": "Ajouter mon premier bien",
-      "ctaLocataire": "Voir les logements disponibles"
+      "ctaLocataire": "Voir les logements disponibles",
+      "exemple": "Exemple",
+      "chips": {
+        "owner": [
+          [
+            "≈ 5 minutes",
+            "Visible tout de suite"
+          ],
+          [
+            "Messagerie intégrée",
+            "Vous choisissez"
+          ],
+          [
+            "Document verrouillé",
+            "QR de vérification"
+          ]
+        ],
+        "tenant": [
+          [
+            "Vue carte",
+            "Photos et prix"
+          ],
+          [
+            "Sans intermédiaire",
+            "Dossier en ligne"
+          ],
+          [
+            "État des lieux signé",
+            "Gratuit pour vous"
+          ]
+        ]
+      },
+      "panels": {
+        "owner": {
+          "p0": {
+            "titre": "Nouveau logement",
+            "champTitre": "Titre",
+            "valTitre": "Appartement F3, Kipé",
+            "champLoyer": "Loyer",
+            "valLoyer": "1 850 000 GNF",
+            "champCaution": "Caution",
+            "valCaution": "2 mois",
+            "ok": "Publié sur la carte"
+          },
+          "p1": {
+            "titre": "Candidatures",
+            "complet": "Dossier complet",
+            "incomplet": "Pièces manquantes",
+            "accepter": "Accepter",
+            "voir": "Voir"
+          },
+          "p2": {
+            "titre": "Contrat de bail",
+            "bailleur": "Bailleur",
+            "locataire": "Locataire",
+            "signe": "Signé",
+            "ok": "Quittances automatiques activées"
+          }
+        },
+        "tenant": {
+          "p0": {
+            "titre": "Logements",
+            "studio": "Studio meublé",
+            "appart": "Appartement F3",
+            "villa": "Villa F4"
+          },
+          "p1": {
+            "titre": "Mon dossier",
+            "identite": "Pièce d'identité",
+            "revenus": "Justificatif de revenus",
+            "message": "Message au bailleur",
+            "ok": "Candidature envoyée"
+          },
+          "p2": {
+            "titre": "État des lieux d'entrée",
+            "murs": "Murs et plafonds",
+            "cuisine": "Cuisine et sanitaires",
+            "signe": "Signé",
+            "ok": "Clés remises"
+          }
+        }
+      },
+      "trust": [
+        {
+          "titre": "Documents verrouillés",
+          "desc": "Une fois signés, on ne peut plus les modifier."
+        },
+        {
+          "titre": "QR de vérification",
+          "desc": "Chaque document se vérifie en ligne."
+        },
+        {
+          "titre": "Paiement mobile",
+          "desc": "Orange Money, MTN MoMo, Kulu, carte."
+        },
+        {
+          "titre": "Gratuit pour les locataires",
+          "desc": "Aucun frais, aucune commission."
+        }
+      ],
+      "etapesAria": "Étapes",
+      "profilAria": "Profil"
     },
     "steps": {
       "owner": [
