@@ -637,7 +637,7 @@
         "questions": [
           { "q": "Combien coûte Werdhe pour les propriétaires ?", "r": "Le plan Gratuit permet de gérer jusqu'à {{gratuit}} biens. Le plan Pro (120 000 GNF/mois) permet jusqu'à {{pro}} biens avec des fonctionnalités avancées. Le plan Agence (300 000 GNF/mois) offre des biens illimités. Essai Pro d'1 mois gratuit sans engagement." },
           { "q": "Comment publier mon premier bien ?", "r": "Dans votre dashboard, cliquez sur \"+ Ajouter un bien\", remplissez les informations (titre, adresse, prix, superficie) et ajoutez des photos. Votre logement est publié immédiatement." },
-          { "q": "Comment fonctionne la commission Werdhe ?", "r": "Werdhe perçoit 5% sur chaque loyer encaissé via la plateforme. Cette commission est automatiquement calculée. Elle couvre l'ensemble des services : génération de documents, alertes, messagerie, etc." },
+          { "q": "Werdhe prélève-t-il une commission sur mes loyers ?", "r": "Non. Vous payez uniquement votre abonnement (ou utilisez le plan Gratuit). Werdhe ne prélève aucun supplément sur les loyers que vous encaissez." },
           { "q": "Puis-je gérer plusieurs logements ?", "r": "Oui. Avec le plan Pro, gérez jusqu'à {{pro}} biens. Le plan Agence offre des biens illimités avec gestion multi-utilisateurs. Depuis votre dashboard, chaque bien a sa propre fiche avec ses locataires et paiements." },
           { "q": "Comment générer une quittance de loyer ?", "r": "Dans l'onglet \"Documents\", sélectionnez le bien et le locataire, choisissez \"Quittance de loyer\" et cliquez \"Générer\". La quittance est créée en PDF et envoyée automatiquement au locataire par email." },
           { "q": "Que se passe-t-il si un locataire ne paie pas ?", "r": "Le système envoie automatiquement une alerte à J+3 et une mise en demeure à J+5. Vous recevez une notification et un email. Des modèles de lettres officielles sont disponibles dans la section Documents." }
@@ -715,15 +715,15 @@
       },
       "5": {
         "titre": "5. Obligations des propriétaires",
-        "contenu": "Les propriétaires s'engagent à :\n• Publier uniquement des biens dont ils sont légalement propriétaires ou mandataires\n• Fournir des informations exactes sur leurs logements (superficie, prix, état)\n• Respecter la réglementation en vigueur en matière de location en Guinée\n• Répondre aux candidatures dans un délai raisonnable\n• Ne pas pratiquer de discrimination dans la sélection des locataires\n• Payer les commissions dues à Werdhe (5% sur chaque loyer encaissé)"
+        "contenu": "Les propriétaires s'engagent à :\n• Publier uniquement des biens dont ils sont légalement propriétaires ou mandataires\n• Fournir des informations exactes sur leurs logements (superficie, prix, état)\n• Respecter la réglementation en vigueur en matière de location en Guinée\n• Répondre aux candidatures dans un délai raisonnable\n• Ne pas pratiquer de discrimination dans la sélection des locataires\n• Régler leur abonnement Werdhe lorsqu'ils choisissent un plan payant"
       },
       "6": {
         "titre": "6. Obligations des locataires",
         "contenu": "Les locataires s'engagent à :\n• Fournir des documents authentiques lors de la soumission de leur dossier\n• Respecter les conditions du bail signé\n• Payer leur loyer dans les délais convenus\n• Entretenir le logement en bon état\n• Signaler tout problème au propriétaire dans les meilleurs délais"
       },
       "7": {
-        "titre": "7. Paiements et commissions",
-        "contenu": "Werdhe perçoit une commission de 5% sur chaque loyer encaissé par les propriétaires utilisant la plateforme. Cette commission est automatiquement calculée lors de l'enregistrement des paiements.\n\nLes plans d'abonnement (Pro : 120 000 GNF/mois, Agence : 300 000 GNF/mois) sont facturés mensuellement. Le défaut de paiement entraîne la suspension des fonctionnalités premium.\n\nWerdhe utilise des prestataires de paiement tiers (Orange Money, MTN MoMo) et ne stocke aucune information bancaire sur ses serveurs."
+        "titre": "7. Paiements et abonnements",
+        "contenu": "Werdhe ne prélève aucune commission ni aucun supplément sur les loyers encaissés par les propriétaires : seul l'abonnement choisi est facturé.\n\nLes plans d'abonnement (Pro : 120 000 GNF/mois, Agence : 300 000 GNF/mois) sont facturés mensuellement. Le défaut de paiement entraîne la suspension des fonctionnalités premium.\n\nWerdhe utilise des prestataires de paiement tiers (Orange Money, MTN MoMo) et ne stocke aucune information bancaire sur ses serveurs."
       },
       "8": {
         "titre": "8. Documents et signatures électroniques",
@@ -853,7 +853,7 @@
       { "q": "Quels rythmes de paiement sont proposés ?", "r": "Mensuel, tous les 6 mois (-10%) ou annuel (-20%). Vous choisissez ce qui vous convient." },
       { "q": "Que se passe-t-il si je ne paie pas à temps ?", "r": "Vous recevez une relance 3 jours après l'échéance, puis une dernière relance à 5 jours. Sans règlement, l'accès est bloqué jusqu'à régularisation." },
       { "q": "Puis-je changer de plan à tout moment ?", "r": "Oui. Vous pouvez upgrader ou downgrader depuis vos paramètres. Le changement prend effet immédiatement." },
-      { "q": "Quelle est la commission Werdhe ?", "r": "Werdhe prélève 5% sur chaque loyer encaissé via la plateforme." }
+      { "q": "Werdhe prélève-t-il une commission sur les loyers ?", "r": "Non. Seul l'abonnement choisi est facturé, Werdhe ne prend aucun supplément sur les loyers." }
     ],
     "codeValide": "Code valide !",
     "codeInvalide": "Code invalide",
