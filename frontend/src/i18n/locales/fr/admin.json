@@ -137,18 +137,18 @@
     },
     "revenus": {
       "titre": "Revenus Werdhe",
-      "sousTitre": "Commissions et abonnements",
+      "sousTitre": "Paiements et abonnements",
       "chargement": "Chargement des revenus...",
       "kpi": {
-        "commissionsMois": "Commissions ce mois",
-        "commissionsEncaissees": "Commissions encaissées",
-        "commissionsEnAttente": "Commissions en attente",
+        "commissionsMois": "Paiements ce mois",
+        "commissionsEncaissees": "Paiements encaissés",
+        "commissionsEnAttente": "Paiements en attente",
         "revenusAbonnements": "Revenus abonnements",
         "abonnesPro": "Abonnés Pro",
         "abonnesAgence": "Abonnés Agence"
       },
-      "evolutionTitre": "Évolution des commissions (6 mois)",
-      "aucuneCommission": "Aucune commission pour le moment."
+      "evolutionTitre": "Évolution des paiements (6 mois)",
+      "aucuneCommission": "Aucun paiement pour le moment."
     },
     "alertes": {
       "titre": "Alertes plateforme",

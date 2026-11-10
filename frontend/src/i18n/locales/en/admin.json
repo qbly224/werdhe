@@ -137,18 +137,18 @@
     },
     "revenus": {
       "titre": "Werdhe Revenue",
-      "sousTitre": "Commissions and subscriptions",
+      "sousTitre": "Payments and subscriptions",
       "chargement": "Loading revenue...",
       "kpi": {
-        "commissionsMois": "Commissions this month",
-        "commissionsEncaissees": "Commissions collected",
-        "commissionsEnAttente": "Commissions pending",
+        "commissionsMois": "Payments this month",
+        "commissionsEncaissees": "Payments collected",
+        "commissionsEnAttente": "Payments pending",
         "revenusAbonnements": "Subscription revenue",
         "abonnesPro": "Pro subscribers",
         "abonnesAgence": "Agency subscribers"
       },
-      "evolutionTitre": "Commission trend (6 months)",
-      "aucuneCommission": "No commissions yet."
+      "evolutionTitre": "Payments trend (6 months)",
+      "aucuneCommission": "No payments yet."
     },
     "alertes": {
       "titre": "Platform alerts",

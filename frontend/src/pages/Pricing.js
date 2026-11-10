@@ -6,15 +6,13 @@ import api from '../services/api';
 import toast from 'react-hot-toast';
 import ModalPaiementMobile from '../components/ModalPaiementMobile';
 import { useAuth } from '../context/AuthContext';
-import { Check, X, ChevronDown, ChevronUp, Zap, Building2, Users, ArrowRight, Home, Info } from 'lucide-react';
+import { Check, X, ChevronDown, ChevronUp, Zap, Building2, Users, ArrowRight, Info } from 'lucide-react';
 import Logo from '../components/Logo';
 import { useTranslation } from 'react-i18next';
-import BlueprintPattern, { PlanMasseMotif } from '../components/BlueprintPattern';
 import OdometerNumber from '../components/OdometerNumber';
 import useLimitesPlans from '../hooks/useLimitesPlans';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n); };
-var gradientOr = { background: 'linear-gradient(135deg, #F5A623 0%, #FFD98E 55%, #F5A623 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' };
 
 function getCycles(t) {
   return {
@@ -345,14 +343,11 @@ export default function Pricing() {
       </div>
 
       {/* CTA */}
-      <div style={{ background: 'linear-gradient(160deg, #0F1E14 0%, #1B2B22 55%, #16321F 100%)', padding: 'clamp(40px, 6vw, 64px) 24px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        <BlueprintPattern opacity={0.05} color="#F5A623" size={56} />
-        <PlanMasseMotif opacity={0.1} color="#F5A623" width={200} height={170} style={{ position: 'absolute', top: -10, left: -10, display: window.innerWidth < 640 ? 'none' : 'block' }} />
-        <PlanMasseMotif opacity={0.1} color="#F5A623" width={200} height={170} style={{ position: 'absolute', bottom: -10, right: -10, transform: 'scaleX(-1)', display: window.innerWidth < 640 ? 'none' : 'block' }} />
-        <h2 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 900, margin: '0 0 12px', position: 'relative', ...gradientOr }}>{t('pricing.pretACommencer')}</h2>
-        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', margin: '0 0 28px', position: 'relative' }}>{t('pricing.ctaSousTitre')}</p>
+      <div style={{ background: 'linear-gradient(160deg, #0F1E14 0%, #1B2B22 55%, #16321F 100%)', padding: 'clamp(32px, 5vw, 48px) 24px', textAlign: 'center' }}>
+        <h2 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 800, margin: '0 0 10px', color: '#fff' }}>{t('pricing.pretACommencer')}</h2>
+        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', margin: '0 0 22px' }}>{t('pricing.ctaSousTitre')}</p>
         <button onClick={function() { choisirPlan('pro'); }}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, border: 'none', background: '#F5A623', color: '#1B2B22', fontWeight: 800, fontSize: 15, cursor: 'pointer', position: 'relative', boxShadow: '0 8px 24px rgba(245,166,35,0.3)' }}>
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, border: 'none', background: '#F5A623', color: '#1B2B22', fontWeight: 800, fontSize: 15, cursor: 'pointer' }}>
           {t('pricing.demarrerEssai')} <ArrowRight size={16} strokeWidth={2.5} />
         </button>
       </div>
