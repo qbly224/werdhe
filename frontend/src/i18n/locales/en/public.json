@@ -96,7 +96,108 @@
       "tabProprio": "I'm a landlord",
       "tabLocataire": "I'm looking for a home",
       "ctaProprio": "List my first property",
-      "ctaLocataire": "See available listings"
+      "ctaLocataire": "See available listings",
+      "exemple": "Example",
+      "chips": {
+        "owner": [
+          [
+            "≈ 5 minutes",
+            "Live right away"
+          ],
+          [
+            "Built-in messaging",
+            "You choose"
+          ],
+          [
+            "Locked document",
+            "Verification QR"
+          ]
+        ],
+        "tenant": [
+          [
+            "Map view",
+            "Photos and prices"
+          ],
+          [
+            "No middleman",
+            "Online file"
+          ],
+          [
+            "Signed inspection",
+            "Free for you"
+          ]
+        ]
+      },
+      "panels": {
+        "owner": {
+          "p0": {
+            "titre": "New listing",
+            "champTitre": "Title",
+            "valTitre": "3-bed apartment, Kipé",
+            "champLoyer": "Rent",
+            "valLoyer": "1,850,000 GNF",
+            "champCaution": "Deposit",
+            "valCaution": "2 months",
+            "ok": "Published on the map"
+          },
+          "p1": {
+            "titre": "Applications",
+            "complet": "Complete file",
+            "incomplet": "Missing documents",
+            "accepter": "Accept",
+            "voir": "View"
+          },
+          "p2": {
+            "titre": "Lease agreement",
+            "bailleur": "Landlord",
+            "locataire": "Tenant",
+            "signe": "Signed",
+            "ok": "Automatic receipts enabled"
+          }
+        },
+        "tenant": {
+          "p0": {
+            "titre": "Listings",
+            "studio": "Furnished studio",
+            "appart": "3-bed apartment",
+            "villa": "4-bed villa"
+          },
+          "p1": {
+            "titre": "My file",
+            "identite": "ID document",
+            "revenus": "Proof of income",
+            "message": "Message to the landlord",
+            "ok": "Application sent"
+          },
+          "p2": {
+            "titre": "Move-in inspection",
+            "murs": "Walls and ceilings",
+            "cuisine": "Kitchen and bathrooms",
+            "signe": "Signed",
+            "ok": "Keys handed over"
+          }
+        }
+      },
+      "trust": [
+        {
+          "titre": "Locked documents",
+          "desc": "Once signed, they can no longer be changed."
+        },
+        {
+          "titre": "Verification QR",
+          "desc": "Every document can be checked online."
+        },
+        {
+          "titre": "Mobile payment",
+          "desc": "Orange Money, MTN MoMo, Kulu, card."
+        },
+        {
+          "titre": "Free for tenants",
+          "desc": "No fees, no commission."
+        }
+      ],
+      "etapesAria": "Steps",
+      "profilAria": "Profile"
     },
     "steps": {
       "owner": [
