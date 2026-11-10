@@ -182,33 +182,25 @@ export default function Pricing() {
       </nav>
 
       {/* Hero */}
-      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(160deg, #0F1E14 0%, #1B2B22 55%, #16321F 100%)', textAlign: 'center', padding: 'clamp(48px, 7vw, 76px) 24px 40px' }}>
-        <BlueprintPattern opacity={0.055} color="#F5A623" size={60} />
-        <PlanMasseMotif opacity={0.08} width={300} height={260} style={{ position: 'absolute', top: -20, left: -40, display: window.innerWidth < 640 ? 'none' : 'block' }} />
-        <PlanMasseMotif opacity={0.08} width={300} height={260} style={{ position: 'absolute', bottom: -40, right: -40, transform: 'scaleX(-1)', display: window.innerWidth < 640 ? 'none' : 'block' }} />
-
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(245,166,35,0.12)', border: '1px solid rgba(245,166,35,0.3)', borderRadius: 20, padding: '5px 14px', marginBottom: 18 }}>
-            <Home size={13} strokeWidth={2} color="#F5A623" />
-            <span style={{ fontSize: 12, fontWeight: 700, color: '#F5A623' }}>{t('pricing.badgeOverline')}</span>
-          </div>
-          <h1 style={{ fontSize: 'clamp(26px, 5vw, 46px)', fontWeight: 900, color: '#fff', margin: '0 0 12px', letterSpacing: -1 }}>
+      <div style={{ background: 'linear-gradient(160deg, #0F1E14 0%, #1B2B22 55%, #16321F 100%)', textAlign: 'center', padding: 'clamp(28px, 4vw, 44px) 24px 28px' }}>
+        <div style={{ maxWidth: 640, margin: '0 auto' }}>
+          <h1 style={{ fontSize: 'clamp(24px, 4vw, 34px)', fontWeight: 800, color: '#fff', margin: '0 0 8px', letterSpacing: -0.5 }}>
             {t('pricing.titre')}
           </h1>
-          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.65)', margin: '0 0 6px' }}>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', margin: '0 0 4px' }}>
             {t('pricing.sousTitre')}
           </p>
-          <p style={{ fontSize: 13, ...gradientOr, fontWeight: 700, margin: '0 0 28px' }}>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', fontWeight: 500, margin: '0 0 20px' }}>
             {t('pricing.paiementMobileMoney')}
           </p>
 
           {/* Toggle cycle de facturation */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#fff', borderRadius: 30, padding: '6px 8px', boxShadow: '0 12px 32px rgba(0,0,0,0.35)', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: '#fff', borderRadius: 30, padding: '4px 6px', flexWrap: 'wrap', justifyContent: 'center' }}>
             {Object.keys(CYCLES).map(function(c) {
               var actif = cycle === c;
               return (
                 <button key={c} onClick={function() { setCycle(c); }}
-                  style={{ padding: '8px 16px', borderRadius: 22, border: 'none', background: actif ? '#1B6B3A' : 'transparent', color: actif ? '#fff' : '#888', fontSize: 13, fontWeight: actif ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, transition: 'all .2s' }}>
+                  style={{ padding: '7px 14px', borderRadius: 22, border: 'none', background: actif ? '#1B6B3A' : 'transparent', color: actif ? '#fff' : '#888', fontSize: 13, fontWeight: actif ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, transition: 'all .2s' }}>
                   {CYCLES[c].label}
                   {CYCLES[c].reduction > 0 && (
                     <span style={{ background: '#F5A623', color: '#1B2B22', borderRadius: 20, padding: '2px 7px', fontSize: 10, fontWeight: 800 }}>
@@ -234,7 +226,7 @@ export default function Pricing() {
       )}
 
       {/* Cartes des plans */}
-      <div style={{ maxWidth: 1080, margin: '0 auto 40px', padding: '0 20px' }}>
+      <div style={{ maxWidth: 1080, margin: '32px auto 40px', padding: '0 20px' }}>
         <div style={{ textAlign: 'center', marginBottom: 30 }}>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: '#1B6B3A', marginBottom: 8 }}>{t('pricing.registreOverline')}</div>
           <h2 style={{ fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 'clamp(24px, 3.4vw, 36px)', color: '#1B2B22', margin: 0 }}>{t('pricing.comparaison')}</h2>
