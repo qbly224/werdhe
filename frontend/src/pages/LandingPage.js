@@ -16,6 +16,7 @@ import useLimitesPlans from '../hooks/useLimitesPlans';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import OdometerNumber from '../components/OdometerNumber';
 import CommentCaMarche from '../components/CommentCaMarche';
+import HeroQuittance from '../components/HeroQuittance';
 
 function getStats(t) {
   return [
@@ -377,6 +378,8 @@ useEffect(function() {
             })}
           </div>
         </div>
+
+        <HeroQuittance />
 
         {/* Slides nav points */}
         <div style={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 10, zIndex: 2 }}>

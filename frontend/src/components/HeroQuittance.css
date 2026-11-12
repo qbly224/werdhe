@@ -1,0 +1,36 @@
+/* Carte « quittance » animée du héros : se remplit, se signe, se verrouille, affiche son QR. CSS pur, cycle de 9 s en boucle. */
+.hq { display: none; position: absolute; right: clamp(24px, 3vw, 56px); bottom: 150px; z-index: 2; width: 270px; pointer-events: none; }
+@media (min-width: 1366px) { .hq { display: block; } }
+.hq-card { position: relative; background: #fff; color: #1B2B22; border-radius: 12px; padding: 16px; display: grid; gap: 9px; box-shadow: 0 18px 48px rgba(0,0,0,.38); transform: rotate(-2deg); font-size: 12.5px; animation: hq-card 9s var(--hq-ease, cubic-bezier(.2,.7,.2,1)) infinite; }
+.hq-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.hq-titre { font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 15px; line-height: 1.2; }
+.hq-num { font-size: 10px; letter-spacing: .04em; color: #5B6E5F; font-variant-numeric: tabular-nums; }
+.hq-ex { font-size: 9.5px; color: #8A5200; background: #FCEBC8; border-radius: 99px; padding: 1px 7px; font-weight: 600; white-space: nowrap; }
+.hq-row { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dashed #DDE3DA; padding-bottom: 5px; font-variant-numeric: tabular-nums; opacity: 0; }
+.hq-row span { color: #5B6E5F; } .hq-row b { font-weight: 600; text-align: right; }
+.hq-row.total { border-bottom: 0; font-size: 14px; }
+.hq-row.total b { color: #1B6B3A; }
+.hq-r1 { animation: hq-r1 9s ease infinite; } .hq-r2 { animation: hq-r2 9s ease infinite; } .hq-r3 { animation: hq-r3 9s ease infinite; }
+.hq-zone { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; min-height: 58px; position: relative; }
+.hq-sig { width: 118px; height: 40px; }
+.hq-sig path { fill: none; stroke: #1B6B3A; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 420; stroke-dashoffset: 420; animation: hq-draw 9s ease-in-out infinite; }
+.hq-lbl { font-size: 10px; color: #5B6E5F; }
+.hq-qr { width: 52px; height: 52px; border: 1px solid #DDE3DA; border-radius: 6px; padding: 3px; opacity: 0; animation: hq-qr 9s ease infinite; }
+.hq-stamp { position: absolute; right: 58px; top: 2px; border: 2px solid #1B6B3A; color: #1B6B3A; border-radius: 7px; padding: 2px 8px; font-weight: 700; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; display: flex; gap: 5px; align-items: center; background: rgba(255,255,255,.9); opacity: 0; transform: rotate(-8deg); animation: hq-stamp 9s ease infinite; }
+.hq-stamp svg { width: 12px; height: 12px; }
+
+@keyframes hq-card { 0% { opacity: 0; transform: translateY(18px) rotate(-2deg); } 6%, 93% { opacity: 1; transform: translateY(0) rotate(-2deg); } 99%, 100% { opacity: 0; transform: translateY(0) rotate(-2deg); } }
+@keyframes hq-r1 { 0%, 8% { opacity: 0; transform: translateY(8px); } 14%, 100% { opacity: 1; transform: none; } }
+@keyframes hq-r2 { 0%, 14% { opacity: 0; transform: translateY(8px); } 20%, 100% { opacity: 1; transform: none; } }
+@keyframes hq-r3 { 0%, 20% { opacity: 0; transform: translateY(8px); } 26%, 100% { opacity: 1; transform: none; } }
+@keyframes hq-draw { 0%, 36% { stroke-dashoffset: 420; } 58%, 100% { stroke-dashoffset: 0; } }
+@keyframes hq-stamp { 0%, 62% { opacity: 0; transform: rotate(-8deg) scale(1.7); } 68%, 100% { opacity: 1; transform: rotate(-8deg) scale(1); } }
+@keyframes hq-qr { 0%, 74% { opacity: 0; transform: scale(.7); } 80%, 100% { opacity: 1; transform: scale(1); } }
+
+/* Mouvement réduit : la quittance s'affiche signée, immobile. */
+@media (prefers-reduced-motion: reduce) {
+  .hq-card, .hq-row, .hq-sig path, .hq-stamp, .hq-qr { animation: none; }
+  .hq-row, .hq-qr { opacity: 1; }
+  .hq-sig path { stroke-dashoffset: 0; }
+  .hq-stamp { opacity: 1; }
+}

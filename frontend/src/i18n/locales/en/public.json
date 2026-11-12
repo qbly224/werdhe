@@ -90,6 +90,7 @@
       "locatairesSatisfaits": "Satisfied tenants",
       "pourLesLocataires": "For tenants"
     },
+    "heroDoc": { "titre": "Rent receipt", "exemple": "Example", "locataire": "Tenant", "logement": "Property", "valLogement": "3-bed apartment, Kipé", "loyer": "Rent received", "valLoyer": "1,850,000 GNF", "signature": "Landlord's signature", "signe": "Signed" },
     "howItWorks": {
       "overline": "How it works",
       "title": "Simple for everyone",
