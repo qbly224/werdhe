@@ -785,31 +785,60 @@ var NAV = [
       <div style={{ textAlign: 'center', padding: 40, color: '#888' }}>{t('admin.revenus.chargement')}</div>
     )}
 
-    {revenus && (
-      <div>
-        {/* KPIs */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 24 }}>
-          {[
-            { label: t('admin.revenus.kpi.commissionsMois'),     val: GNF(revenus.commissions.total_commissions || 0),   icon: Wallet, color: '#1B6B3A', bg: '#E8F5E9' },
-            { label: t('admin.revenus.kpi.commissionsEncaissees'),   val: GNF(revenus.commissions.encaisse || 0),            icon: CheckCircle2, color: '#1B6B3A', bg: '#E8F5E9' },
-            { label: t('admin.revenus.kpi.commissionsEnAttente'),   val: GNF(revenus.commissions.en_attente || 0),          icon: Clock, color: '#E65100', bg: '#FFF3E0' },
-            { label: t('admin.revenus.kpi.revenusAbonnements'),      val: GNF(revenus.abonnements.revenus_abonnements || 0), icon: ClipboardList, color: '#1565C0', bg: '#E3F2FD' },
-            { label: t('admin.revenus.kpi.abonnesPro'),              val: revenus.abonnements.nb_pro || 0,                   icon: Star, color: '#1B6B3A', bg: '#E8F5E9' },
-            { label: t('admin.revenus.kpi.abonnesAgence'),           val: revenus.abonnements.nb_agence || 0,                icon: Building2, color: '#7B1FA2', bg: '#F3E5F5' },
-          ].map(function(s, i) {
-            return (
-              <div key={i} style={{ background: s.bg, borderRadius: 14, padding: 16, borderLeft: '4px solid ' + s.color }}>
-                <div style={{ marginBottom: 6 }}><s.icon size={24} strokeWidth={1.5} color={s.color} /></div>
-                <div style={{ fontSize: 20, fontWeight: 800, color: s.color }}>{s.val}</div>
-                <div style={{ fontSize: 11, color: '#555', marginTop: 4 }}>{s.label}</div>
+    {revenus && (function() {
+      // Barres d'évolution sur 6 mois (même rendu pour les deux blocs)
+      function evolution(lignes, vide, degrade, couleur) {
+        if (!lignes || lignes.length === 0) return <div style={{ color: '#888', fontSize: 13 }}>{vide}</div>;
+        var max = Math.max.apply(null, lignes.map(function(x) { return Number(x.montant); }));
+        return lignes.map(function(m, i) {
+          var pct = max > 0 ? Math.round(Number(m.montant) / max * 100) : 0;
+          var moisLabel = new Date(m.mois).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+          return (
+            <div key={i} style={{ marginBottom: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5, fontSize: 12 }}>
+                <span style={{ color: '#555', textTransform: 'capitalize' }}>{moisLabel}</span>
+                <span style={{ fontWeight: 700, color: couleur }}>{GNF(m.montant)}</span>
               </div>
-            );
-          })}
-        </div>
+              <div style={{ background: '#F0F0F0', borderRadius: 4, height: 10, overflow: 'hidden' }}>
+                <div style={{ background: degrade, width: pct + '%', height: '100%', borderRadius: 4, transition: 'width .5s' }} />
+              </div>
+            </div>
+          );
+        });
+      }
+      function tuiles(liste) {
+        return (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 20 }}>
+            {liste.map(function(s, i) {
+              return (
+                <div key={i} style={{ background: s.bg, borderRadius: 14, padding: 16, borderLeft: '4px solid ' + s.color }}>
+                  <div style={{ marginBottom: 6 }}><s.icon size={24} strokeWidth={1.5} color={s.color} /></div>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: s.color }}>{s.val}</div>
+                  <div style={{ fontSize: 11, color: '#555', marginTop: 4 }}>{s.label}</div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      }
+      return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+
+        {/* ─── Bloc 1 : ce que Werdhe gagne ─── */}
+        <section>
+          <div style={{ marginBottom: 14 }}>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('admin.revenus.revenusWerdhe.titre')}</h2>
+            <p style={{ fontSize: 12.5, color: '#666', margin: '4px 0 0', lineHeight: 1.5 }}>{t('admin.revenus.revenusWerdhe.desc')}</p>
+          </div>
+          {tuiles([
+            { label: t('admin.revenus.kpi.revenusAbonnements'), val: GNF(revenus.abonnements.revenus_abonnements || 0), icon: ClipboardList, color: '#1565C0', bg: '#E3F2FD' },
+            { label: t('admin.revenus.kpi.abonnesPro'),         val: revenus.abonnements.nb_pro || 0,                   icon: Star,          color: '#1B6B3A', bg: '#E8F5E9' },
+            { label: t('admin.revenus.kpi.abonnesAgence'),      val: revenus.abonnements.nb_agence || 0,                icon: Building2,     color: '#7B1FA2', bg: '#F3E5F5' },
+          ])}
 
         {/* Répartition des comptes et comptes offerts (hors chiffre d'affaires) */}
         {(revenus.comptes || revenus.offerts) && (
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: 20 }}>
             {revenus.comptes && (
               <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginBottom: 14 }}>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 12 }}>Répartition des comptes</div>
@@ -866,31 +895,35 @@ var NAV = [
           </div>
         )}
 
-        {/* Évolution 6 mois */}
-        <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>{t('admin.revenus.evolutionTitre')}</div>
-          {revenus.evolution.length === 0 && (
-            <div style={{ color: '#888', fontSize: 13 }}>{t('admin.revenus.aucuneCommission')}</div>
-          )}
-          {revenus.evolution.map(function(m, i) {
-            var max = Math.max.apply(null, revenus.evolution.map(function(x) { return Number(x.commissions); }));
-            var pct = max > 0 ? Math.round(Number(m.commissions) / max * 100) : 0;
-            var moisLabel = new Date(m.mois).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
-            return (
-              <div key={i} style={{ marginBottom: 12 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5, fontSize: 12 }}>
-                  <span style={{ color: '#555', textTransform: 'capitalize' }}>{moisLabel}</span>
-                  <span style={{ fontWeight: 700, color: '#1B6B3A' }}>{GNF(m.commissions)}</span>
-                </div>
-                <div style={{ background: '#F0F0F0', borderRadius: 4, height: 10, overflow: 'hidden' }}>
-                  <div style={{ background: 'linear-gradient(90deg, #1B6B3A, #34A853)', width: pct + '%', height: '100%', borderRadius: 4, transition: 'width .5s' }} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
+
+          <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>{t('admin.revenus.evolutionAbonnementsTitre')}</div>
+            {evolution(revenus.evolution_abonnements, t('admin.revenus.aucunRevenu'), 'linear-gradient(90deg, #1565C0, #42A5F5)', '#1565C0')}
+          </div>
+        </section>
+
+        {/* ─── Bloc 2 : ce qui transite entre propriétaires et locataires ─── */}
+        <section style={{ background: '#F7F8F7', border: '1px dashed #D5DBD6', borderRadius: 16, padding: 20 }}>
+          <div style={{ marginBottom: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+              <h2 style={{ fontSize: 17, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('admin.revenus.paiementsPlateforme.titre')}</h2>
+              <span style={{ background: '#ECEFEC', color: '#555', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>{t('admin.revenus.paiementsPlateforme.badge')}</span>
+            </div>
+            <p style={{ fontSize: 12.5, color: '#666', margin: '6px 0 0', lineHeight: 1.5 }}>{t('admin.revenus.paiementsPlateforme.desc')}</p>
+          </div>
+          {tuiles([
+            { label: t('admin.revenus.kpi.paiements'), val: GNF(revenus.paiements.total_paiements || 0), icon: Wallet,       color: '#555',    bg: '#fff' },
+            { label: t('admin.revenus.kpi.encaisses'), val: GNF(revenus.paiements.encaisse || 0),         icon: CheckCircle2, color: '#555',    bg: '#fff' },
+            { label: t('admin.revenus.kpi.enAttente'), val: GNF(revenus.paiements.en_attente || 0),       icon: Clock,        color: '#E65100', bg: '#fff' },
+          ])}
+          <div style={{ background: '#fff', borderRadius: 14, padding: 20 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>{t('admin.revenus.evolutionTitre')}</div>
+            {evolution(revenus.evolution_paiements, t('admin.revenus.aucunPaiement'), 'linear-gradient(90deg, #9AA59D, #C5CCC7)', '#555')}
+          </div>
+        </section>
       </div>
-    )}
+      );
+    })()}
   </div>
 )}
 

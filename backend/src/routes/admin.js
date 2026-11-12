@@ -580,13 +580,14 @@ router.get('/preavis', verifierToken, verifierAdmin, async (req, res) => {
 // Revenus et statistiques financières
 router.get('/revenus', verifierToken, verifierAdmin, async (req, res) => {
   try {
-    var [commissions, abonnements, comptes, offerts, evolution] = await Promise.all([
+    var [paiements, abonnements, comptes, offerts, evolutionPaiements, evolutionAbonnements] = await Promise.all([
 
-      // Total paiements
+      // Paiements entre locataires et propriétaires enregistrés sur la plateforme :
+      // information, ce n'est pas un revenu de Werdhe
       db.query(`
         SELECT
-          COUNT(*) as nb_commissions,
-          COALESCE(SUM(montant), 0) as total_commissions,
+          COUNT(*) as nb_paiements,
+          COALESCE(SUM(montant), 0) as total_paiements,
           COALESCE(SUM(CASE WHEN statut = 'complete' THEN montant END), 0) as encaisse,
           COALESCE(SUM(CASE WHEN statut = 'en_attente' THEN montant END), 0) as en_attente
         FROM paiements
@@ -630,14 +631,27 @@ router.get('/revenus', verifierToken, verifierAdmin, async (req, res) => {
         WHERE a.source = 'offert' AND (a.offert_jusqu_au IS NULL OR a.offert_jusqu_au >= CURRENT_DATE)
       `),
 
-      // Évolution sur 6 mois
+      // Évolution des paiements sur 6 mois (information)
       db.query(`
         SELECT
           DATE_TRUNC('month', created_at) as mois,
-          COALESCE(SUM(montant), 0) as commissions,
+          COALESCE(SUM(montant), 0) as montant,
           COUNT(*) as nb_paiements
         FROM paiements
         WHERE created_at >= NOW() - INTERVAL '6 months'
+        GROUP BY DATE_TRUNC('month', created_at)
+        ORDER BY mois ASC
+      `),
+
+      // Évolution des revenus Werdhe (abonnements payés) sur 6 mois
+      db.query(`
+        SELECT
+          DATE_TRUNC('month', created_at) as mois,
+          COALESCE(SUM(montant), 0) as montant,
+          COUNT(*) as nb_factures
+        FROM factures_abonnements
+        WHERE statut = 'payee'
+          AND created_at >= NOW() - INTERVAL '6 months'
         GROUP BY DATE_TRUNC('month', created_at)
         ORDER BY mois ASC
       `)
@@ -645,7 +659,7 @@ router.get('/revenus', verifierToken, verifierAdmin, async (req, res) => {
 
     var o = offerts.rows[0];
     res.json({
-      commissions:        commissions.rows[0],
+      paiements:          paiements.rows[0],
       abonnements:        abonnements.rows[0],
       comptes:            comptes.rows[0],
       offerts: {
@@ -654,7 +668,8 @@ router.get('/revenus', verifierToken, verifierAdmin, async (req, res) => {
         par_motif: { collaborateur: o.collaborateur, partenaire: o.partenaire, pilote: o.pilote, geste_commercial: o.geste_commercial },
         valeur_mensuelle_non_facturee: o.pro * PRIX_MENSUEL.pro + o.agence * PRIX_MENSUEL.agence,
       },
-      evolution:          evolution.rows,
+      evolution_paiements:   evolutionPaiements.rows,
+      evolution_abonnements: evolutionAbonnements.rows,
     });
 
   } catch (err) {
