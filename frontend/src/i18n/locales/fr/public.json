@@ -90,6 +90,7 @@
       "locatairesSatisfaits": "Locataires satisfaits",
       "pourLesLocataires": "Pour les locataires"
     },
+    "heroDoc": { "titre": "Quittance de loyer", "exemple": "Exemple", "locataire": "Locataire", "logement": "Logement", "valLogement": "Appartement F3, Kipé", "loyer": "Loyer reçu", "valLoyer": "1 850 000 GNF", "signature": "Signature du bailleur", "signe": "Signé" },
     "howItWorks": {
       "overline": "Comment ça marche",
       "title": "Simple pour tous",
