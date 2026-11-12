@@ -515,8 +515,8 @@ function OngletOverview(props) {
                     </div>
                   )}
                 </div>
-                <span style={{ background: estLoue ? '#E8F5E9' : '#FFF8E1', color: estLoue ? '#1B5E20' : '#7B4F00', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
-                  {estLoue ? t('ongletOverview.mesBiens.loue') : t('ongletOverview.mesBiens.libre')}
+                <span style={{ background: estLoue ? '#E8F5E9' : (b.statut === 'reserve' ? '#E3F2FD' : '#FFF8E1'), color: estLoue ? '#1B5E20' : (b.statut === 'reserve' ? '#0D47A1' : '#7B4F00'), borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
+                  {estLoue ? t('ongletOverview.mesBiens.loue') : (b.statut === 'reserve' ? t('ongletOverview.mesBiens.reserve') : t('ongletOverview.mesBiens.libre'))}
                 </span>
               </div>
             );
@@ -863,6 +863,7 @@ function OngletBiens(props) {
                     <label>{t('ongletBiens.editForm.statut')}</label>
                     <select value={formEdit.statut} onChange={function(e) { setFormEdit(Object.assign({}, formEdit, { statut: e.target.value })); }}>
                       <option value="disponible">{t('ongletBiens.editForm.statutDisponible')}</option>
+                      <option value="reserve">{t('ongletBiens.editForm.statutReserve')}</option>
                       <option value="loue">{t('ongletBiens.editForm.statutLoue')}</option>
                       <option value="suspendu">{t('ongletBiens.editForm.statutSuspendu')}</option>
                     </select>
@@ -913,6 +914,10 @@ function OngletBiens(props) {
                   ) : estOccupe ? (
                     <div style={{ background: '#E8F5E9', color: '#1B5E20', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
                       {t('ongletBiens.occupe')}
+                    </div>
+                  ) : b.statut === 'reserve' ? (
+                    <div style={{ background: '#E3F2FD', color: '#0D47A1', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
+                      {t('ongletBiens.reserve')}
                     </div>
                   ) : (
                     <div style={{ background: '#FFF8E1', color: '#C8860A', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700 }}>
@@ -1472,6 +1477,7 @@ function OngletReservationsProprio(props) {
   var user = props.user;
   var [selectionne, setSelectionne] = useState(null);
   var [motifRefus, setMotifRefus] = useState('');
+  var [annulerResa, setAnnulerResa] = useState(null);
   var [msgs, setMsgs] = useState([]);
   var [newMsg, setNewMsg] = useState('');
   var [bailSigne, setBailSigne] = useState(false);
@@ -1884,6 +1890,28 @@ useEffect(function() {
               style={{ width: '100%', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
               {t('ongletReservationsProprio.genererPreparerBail')}
             </button>
+            {r.statut === 'caution_payee' && (
+              annulerResa === r.id ? (
+                <div style={{ background: '#FFEBEE', border: '0.5px solid #FFCDD2', borderRadius: 12, padding: 14, marginTop: 10 }}>
+                  <div style={{ fontSize: 13, color: '#B71C1C', marginBottom: 10 }}>{t('ongletReservationsProprio.cautionRecue.annulerConfirmation')}</div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button onClick={function() { setAnnulerResa(null); action('/decision', { decision: 'refusee', motif: t('ongletReservationsProprio.cautionRecue.motifAnnulation') }, t('ongletReservationsProprio.cautionRecue.toastAnnulee')); }}
+                      style={{ background: '#C62828', color: '#fff', border: 'none', borderRadius: 10, padding: '9px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                      {t('ongletReservationsProprio.cautionRecue.annulerOui')}
+                    </button>
+                    <button onClick={function() { setAnnulerResa(null); }}
+                      style={{ background: '#fff', color: '#555', border: '0.5px solid #E0E0E0', borderRadius: 10, padding: '9px 14px', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                      {t('ongletReservationsProprio.cautionRecue.annulerNon')}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button onClick={function() { setAnnulerResa(r.id); }}
+                  style={{ width: '100%', background: 'transparent', color: '#B71C1C', border: 'none', padding: '10px 0 0', fontSize: 13, fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}>
+                  {t('ongletReservationsProprio.cautionRecue.annulerBouton')}
+                </button>
+              )
+            )}
           </div>
         )}
 

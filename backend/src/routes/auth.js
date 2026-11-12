@@ -458,7 +458,7 @@ router.get('/profil-public/:id', async (req, res) => {
               nb_chambres, superficie, categorie, statut, photos
        FROM logements
        WHERE proprietaire_id = $1
-         AND statut IN ('disponible', 'loue')
+         AND statut IN ('disponible', 'reserve', 'loue')
        ORDER BY created_at DESC
        LIMIT 12`,
       [id]
@@ -817,10 +817,14 @@ router.delete('/compte', verifierToken, async (req, res) => {
          AND statut NOT IN ('terminee', 'annulee', 'refusee')`,
       [userId]
     );
+    // Les logements que ces réservations retenaient redeviennent disponibles
+    await require('../services/logementService').libererLogementsOrphelins(db).catch(function(err) {
+      console.warn('[Compte] Libération des logements réservés:', err.message);
+    });
 
     // 2. Masquer les logements du proprio
     await db.query(
-      `UPDATE logements SET statut = 'indisponible' WHERE proprietaire_id = $1`,
+      `UPDATE logements SET statut = 'suspendu' WHERE proprietaire_id = $1`,
       [userId]
     );
 

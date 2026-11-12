@@ -196,6 +196,7 @@
     "appeler": "Appeler",
     "logementsTitre": "Logements ({{count}})",
     "occupe": "Occupé",
+    "reserve": "Réservé",
     "disponible": "Disponible",
     "avisLocatairesTitre": "Avis des locataires ({{count}})",
     "aucunLogementPublie": "Ce propriétaire n'a pas encore de logements publiés.",
