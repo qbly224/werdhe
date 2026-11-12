@@ -9,7 +9,7 @@
       "users": "Utilisateurs",
       "logements": "Logements",
       "reservations": "Réservations",
-      "revenus": "Revenus",
+      "revenus": "Finances",
       "abonnements": "Abonnements",
       "documents": "Documents",
       "signalements": "Signalements",
@@ -77,7 +77,7 @@
         "logementsLoues": "Logements loués",
         "reservations": "Réservations",
         "locationsActives": "Locations actives",
-        "revenus": "Revenus (5%)"
+        "revenus": "Paiements encaissés"
       },
       "abonnementsActifs": "Abonnements actifs",
       "inscriptions6Mois": "Inscriptions (6 mois)",
@@ -136,19 +136,30 @@
       "colDate": "Date"
     },
     "revenus": {
-      "titre": "Revenus Werdhe",
-      "sousTitre": "Paiements et abonnements",
       "chargement": "Chargement des revenus...",
+      "titre": "Activité financière",
+      "sousTitre": "Ce que Werdhe encaisse, et ce qui transite entre propriétaires et locataires",
+      "revenusWerdhe": {
+        "titre": "Revenus Werdhe",
+        "desc": "Abonnements Pro et Agence payés sur les 30 derniers jours. C'est le seul revenu de Werdhe : aucune commission n'est prélevée sur les loyers."
+      },
+      "paiementsPlateforme": {
+        "titre": "Paiements sur la plateforme",
+        "badge": "Information, pas du revenu",
+        "desc": "Paiements entre locataires et propriétaires enregistrés sur Werdhe. Cet argent revient aux propriétaires : Werdhe n'en garde rien."
+      },
       "kpi": {
-        "commissionsMois": "Paiements ce mois",
-        "commissionsEncaissees": "Paiements encaissés",
-        "commissionsEnAttente": "Paiements en attente",
-        "revenusAbonnements": "Revenus abonnements",
+        "paiements": "Paiements (30 jours)",
+        "encaisses": "Paiements encaissés (30 jours)",
+        "enAttente": "Paiements en attente (30 jours)",
+        "revenusAbonnements": "Revenus abonnements (30 jours)",
         "abonnesPro": "Abonnés Pro",
         "abonnesAgence": "Abonnés Agence"
       },
+      "evolutionAbonnementsTitre": "Évolution des revenus Werdhe (6 mois)",
+      "aucunRevenu": "Aucun abonnement payé pour le moment.",
       "evolutionTitre": "Évolution des paiements (6 mois)",
-      "aucuneCommission": "Aucun paiement pour le moment."
+      "aucunPaiement": "Aucun paiement pour le moment."
     },
     "alertes": {
       "titre": "Alertes plateforme",
