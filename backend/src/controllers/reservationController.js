@@ -1,5 +1,6 @@
 const db = require('../database');
 const emailService = require('../services/emailService');
+const { libererSiPlusReserve } = require('../services/logementService');
 // ================================
 // CRÉER UNE RÉSERVATION
 // ================================
@@ -38,6 +39,10 @@ const creerReservation = async (req, res) => {
     );
 
     if (logement.rows.length === 0) {
+      const reserve = await db.query('SELECT 1 FROM logements WHERE id = $1 AND statut = $2', [logement_id, 'reserve']);
+      if (reserve.rows.length > 0) {
+        return res.status(409).json({ erreur: 'Ce logement est réservé par un autre locataire' });
+      }
       return res.status(404).json({
         erreur: 'Logement non trouvé ou non disponible'
       });
@@ -243,6 +248,13 @@ const traiterReservation = async (req, res) => {
         `UPDATE logements SET statut = 'loue' WHERE id = $1`,
         [reservation.rows[0].logement_id]
       );
+    }
+
+    // Une réservation annulée libère le logement si c'était la seule à le retenir
+    if (statut === 'annulee') {
+      await libererSiPlusReserve(db, reservation.rows[0].logement_id).catch(function(err) {
+        console.warn('[Logement] Libération après annulation:', err.message);
+      });
     }
 
     res.json({

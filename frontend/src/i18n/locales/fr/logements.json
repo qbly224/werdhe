@@ -91,7 +91,8 @@
     },
     "badge": {
       "disponible": "Disponible",
-      "occupe": "Occupé"
+      "occupe": "Occupé",
+      "reserve": "Réservé"
     },
     "compteurPhotos": "{{actuelle}} / {{total}}",
     "caracteristiques": {
@@ -126,6 +127,7 @@
       "candidater": "Candidater",
       "seConnecterPourPostuler": "Se connecter pour postuler",
       "logementOccupe": "Logement actuellement occupé",
+      "logementReserve": "Logement réservé par un autre locataire",
       "lienCopie": "Lien copié !",
       "partagerCeLogement": "Partager ce logement"
     },

@@ -1,5 +1,6 @@
 const express = require('express');
 const { activerLocation } = require('../services/bailService');
+const { reserverLogement, libererSiPlusReserve, STATUTS_RETENANT } = require('../services/logementService');
 const router = express.Router();
 const crypto = require('crypto');
 const db = require('../database');
@@ -371,7 +372,7 @@ router.patch('/:id/decision', verifierToken, async (req, res) => {
     const { decision, motif } = req.body;
 
     const check = await db.query(
-      `SELECT r.id, r.locataire_id, l.proprietaire_id, l.titre as logement_titre,
+      `SELECT r.id, r.locataire_id, r.logement_id, l.proprietaire_id, l.titre as logement_titre,
               l.ville as logement_ville, l.prix_mensuel,
               u_loc.prenom as locataire_prenom, u_loc.nom as locataire_nom, u_loc.email as locataire_email,
               u_prop.prenom as prop_prenom, u_prop.nom as prop_nom
@@ -402,6 +403,13 @@ router.patch('/:id/decision', verifierToken, async (req, res) => {
       `UPDATE reservations SET statut = $1, motif_refus = $2, updated_at = NOW() WHERE id = $3`,
       [nouveauStatut, motif || null, id]
     );
+
+    // Une réservation abandonnée libère le logement si c'était la seule à le retenir.
+    if (['refusee', 'annulee', 'terminee'].includes(nouveauStatut)) {
+      await libererSiPlusReserve(db, check.rows[0].logement_id).catch(function(err) {
+        console.warn('[Logement] Libération après décision:', err.message);
+      });
+    }
 
     // ── Notification pour le LOCATAIRE ──────────────────────────
     var titreNotif = '';
@@ -498,6 +506,12 @@ router.patch('/:id/statut', verifierToken, async (req, res) => {
 
     if (!permis.includes(statut)) {
       return res.status(400).json({ erreur: 'Transition non autorisée vers ' + statut });
+    }
+
+    // La caution ne peut être demandée qu'une fois la candidature acceptée par le
+    // propriétaire : sinon n'importe quel candidat pourrait retenir un logement.
+    if (!estProprietaire && statut === 'caution_requise' && !['acceptee', 'echanges'].includes(r.statut)) {
+      return res.status(409).json({ erreur: 'La caution n\'est possible qu\'après acceptation de votre candidature' });
     }
 
     await db.query(
@@ -637,21 +651,55 @@ router.get('/:id/document/:champ', verifierToken, async (req, res) => {
 });
 
 // ─── LOCATAIRE PAIE LA CAUTION ────────────────────────────────────
+// Le logement passe en « reserve » : il disparaît de la recherche et plus personne
+// ne peut candidater ou verser de caution dessus jusqu'au bail ou à l'abandon.
 router.patch('/:id/payer-caution', verifierToken, async (req, res) => {
+  const client = await db.connect();
   try {
     const { id } = req.params;
     const { mode_paiement } = req.body;
 
-    const check = await db.query(
-      'SELECT id FROM reservations WHERE id = $1 AND locataire_id = $2',
+    await client.query('BEGIN');
+
+    // Verrou sur la réservation puis sur le logement : deux cautions simultanées
+    // sur le même logement ne peuvent pas passer toutes les deux.
+    const resa = await client.query(
+      'SELECT id, logement_id, statut FROM reservations WHERE id = $1 AND locataire_id = $2 FOR UPDATE',
       [id, req.user.id]
     );
-
-    if (check.rows.length === 0) {
+    if (resa.rows.length === 0) {
+      await client.query('ROLLBACK');
       return res.status(403).json({ erreur: 'Non autorisé' });
     }
+    const r = resa.rows[0];
 
-    await db.query(
+    if (r.statut === 'caution_payee') {
+      await client.query('ROLLBACK');
+      return res.json({ message: 'Caution déjà enregistrée', statut: 'caution_payee' });
+    }
+    if (r.statut !== 'caution_requise') {
+      await client.query('ROLLBACK');
+      return res.status(409).json({ erreur: 'La caution n\'est pas demandée pour cette réservation' });
+    }
+
+    const log = await client.query('SELECT id, statut FROM logements WHERE id = $1 FOR UPDATE', [r.logement_id]);
+    const statutLogement = log.rows.length ? log.rows[0].statut : null;
+    if (statutLogement === 'loue' || statutLogement === 'suspendu' || statutLogement === null) {
+      await client.query('ROLLBACK');
+      return res.status(409).json({ erreur: 'Ce logement n\'est plus disponible' });
+    }
+    if (statutLogement === 'reserve') {
+      const autre = await client.query(
+        'SELECT 1 FROM reservations WHERE logement_id = $1 AND id <> $2 AND statut = ANY($3::text[]) LIMIT 1',
+        [r.logement_id, id, STATUTS_RETENANT]
+      );
+      if (autre.rows.length > 0) {
+        await client.query('ROLLBACK');
+        return res.status(409).json({ erreur: 'Ce logement vient d\'être réservé par un autre locataire' });
+      }
+    }
+
+    await client.query(
       `UPDATE reservations
        SET statut                = 'caution_payee',
            mode_paiement_caution = $1,
@@ -660,12 +708,17 @@ router.patch('/:id/payer-caution', verifierToken, async (req, res) => {
        WHERE id = $2`,
       [mode_paiement || 'non_precise', id]
     );
+    await reserverLogement(client, r.logement_id);
 
+    await client.query('COMMIT');
     res.json({ message: 'Caution enregistrée', statut: 'caution_payee' });
 
   } catch (err) {
+    await client.query('ROLLBACK').catch(function() {});
     console.error('PATCH /reservations/:id/payer-caution', err.message);
     res.status(500).json({ erreur: 'Erreur serveur' });
+  } finally {
+    client.release();
   }
 });
 module.exports = router;

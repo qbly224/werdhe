@@ -95,6 +95,7 @@
       "ajouterBien": "+ Ajouter un bien",
       "locataire": "Locataire : {{prenom}} {{nom}}",
       "loue": "Loué",
+      "reserve": "Réservé",
       "libre": "Libre"
     },
     "candidatures": {
@@ -125,6 +126,7 @@
     "toastErreur": "Erreur",
     "preavisEnvoye": "Préavis envoyé",
     "occupe": "• Occupé",
+    "reserve": "• Réservé",
     "locataireDepuisLe": "{{prenom}} {{nom}} · Depuis le {{date}}",
     "limiteAtteinte": "Limite de {{max}} logements atteinte.",
     "passerPlanAgence": "Passer au plan Agence →",
@@ -167,6 +169,7 @@
       "statutDisponible": "Disponible",
       "statutLoue": "Loué",
       "statutSuspendu": "Suspendu",
+      "statutReserve": "Réservé",
       "photosEnregistrees": "{{count}} photo(s) enregistrée(s)",
       "sauvegarder": "Sauvegarder",
       "annuler": "Annuler",
@@ -1320,6 +1323,12 @@
     "cautionRecue": {
       "titre": "Caution reçue : {{montant}} GNF",
       "preparerBail": "Préparez maintenant le bail pour les deux signatures.",
+      "annulerBouton": "Annuler cette réservation",
+      "annulerConfirmation": "Annuler la réservation de ce locataire ? Le logement redevient disponible et le locataire est prévenu.",
+      "annulerOui": "Oui, annuler",
+      "annulerNon": "Garder",
+      "toastAnnulee": "Réservation annulée, le logement est de nouveau disponible",
+      "motifAnnulation": "Réservation annulée par le propriétaire",
       "bailSeraGenere": "Le bail sera généré avec :",
       "items": {
         "identites": "Identités des deux parties",

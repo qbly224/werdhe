@@ -95,6 +95,7 @@
       "ajouterBien": "+ Add a property",
       "locataire": "Tenant: {{prenom}} {{nom}}",
       "loue": "Rented",
+      "reserve": "Reserved",
       "libre": "Vacant"
     },
     "candidatures": {
@@ -125,6 +126,7 @@
     "toastErreur": "Error",
     "preavisEnvoye": "Notice sent",
     "occupe": "• Occupied",
+    "reserve": "• Reserved",
     "locataireDepuisLe": "{{prenom}} {{nom}} · Since {{date}}",
     "limiteAtteinte": "{{max}}-property limit reached.",
     "passerPlanAgence": "Upgrade to Agency plan →",
@@ -167,6 +169,7 @@
       "statutDisponible": "Available",
       "statutLoue": "Rented",
       "statutSuspendu": "Suspended",
+      "statutReserve": "Reserved",
       "photosEnregistrees": "{{count}} photo(s) saved",
       "sauvegarder": "Save",
       "annuler": "Cancel",
@@ -1320,6 +1323,12 @@
     "cautionRecue": {
       "titre": "Deposit received: {{montant}} GNF",
       "preparerBail": "Now prepare the lease for both signatures.",
+      "annulerBouton": "Cancel this reservation",
+      "annulerConfirmation": "Cancel this tenant's reservation? The property becomes available again and the tenant is notified.",
+      "annulerOui": "Yes, cancel",
+      "annulerNon": "Keep",
+      "toastAnnulee": "Reservation cancelled, the property is available again",
+      "motifAnnulation": "Reservation cancelled by the landlord",
       "bailSeraGenere": "The lease will be generated with:",
       "items": {
         "identites": "Identities of both parties",

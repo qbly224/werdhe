@@ -146,7 +146,7 @@ export default function LogementDetail() {
                   <div style={{ position: 'absolute', top: 14, right: 14, background: logement.statut === 'disponible' ? '#1B6B3A' : '#888', color: '#fff', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5 }}>
                     {logement.statut === 'disponible'
                       ? (<><CheckCircle2 size={13} strokeWidth={2} /> {t('logementDetail.badge.disponible')}</>)
-                      : (<><Lock size={13} strokeWidth={2} /> {t('logementDetail.badge.occupe')}</>)}
+                      : (<><Lock size={13} strokeWidth={2} /> {logement.statut === 'reserve' ? t('logementDetail.badge.reserve') : t('logementDetail.badge.occupe')}</>)}
                   </div>
 
                   {/* Compteur photos */}
@@ -359,7 +359,7 @@ export default function LogementDetail() {
               )}
               {logement.statut !== 'disponible' && (
                 <div style={{ background: '#F5F5F5', color: '#888', borderRadius: 12, padding: '14px', textAlign: 'center', fontSize: 14, fontWeight: 600, marginBottom: 10 }}>
-                  {t('logementDetail.actions.logementOccupe')}
+                  {logement.statut === 'reserve' ? t('logementDetail.actions.logementReserve') : t('logementDetail.actions.logementOccupe')}
                 </div>
               )}
 

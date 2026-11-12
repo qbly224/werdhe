@@ -175,8 +175,8 @@ export default function ProfilPublic() {
                       ) : (
                         <Home size={40} strokeWidth={1} color="#A5D6A7" />
                       )}
-                      <div style={{ position: 'absolute', top: 10, right: 10, background: l.statut === 'loue' ? '#1B2B22' : '#1B6B3A', color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
-                        {l.statut === 'loue' ? t('profilPublic.occupe') : t('profilPublic.disponible')}
+                      <div style={{ position: 'absolute', top: 10, right: 10, background: l.statut === 'loue' ? '#1B2B22' : (l.statut === 'reserve' ? '#0D47A1' : '#1B6B3A'), color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
+                        {l.statut === 'loue' ? t('profilPublic.occupe') : (l.statut === 'reserve' ? t('profilPublic.reserve') : t('profilPublic.disponible'))}
                       </div>
                     </div>
 

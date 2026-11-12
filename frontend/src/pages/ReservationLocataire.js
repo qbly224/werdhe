@@ -237,9 +237,10 @@ export default function ReservationLocataire() {
         toast.success(t('reservationLocataire.etape5.toastSucces'));
         setPayProcessing(false);
       })
-      .catch(function() {
+      .catch(function(err) {
         setPayProcessing(false);
-        toast.error(t('reservationLocataire.etape5.toastErreur'));
+        var msg = err.response && err.response.status === 409 && err.response.data ? err.response.data.erreur : null;
+        toast.error(msg || t('reservationLocataire.etape5.toastErreur'));
       });
   }
 

@@ -196,6 +196,7 @@
     "appeler": "Call",
     "logementsTitre": "Listings ({{count}})",
     "occupe": "Occupied",
+    "reserve": "Reserved",
     "disponible": "Available",
     "avisLocatairesTitre": "Tenant reviews ({{count}})",
     "aucunLogementPublie": "This landlord has no published listings yet.",
