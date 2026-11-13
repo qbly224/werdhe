@@ -70,7 +70,7 @@ export default function RechercheGlobale({ stats, onNavigate }) {
           res.push({
             type: 'logement',
             icone: <Home size={16} strokeWidth={1.5} />,
-            couleur: '#1B6B3A', bg: '#E8F5E9',
+            couleur: 'var(--green)', bg: 'var(--green-light)',
             titre: l.titre,
             sous:  l.adresse + ', ' + l.ville + ' · ' + new Intl.NumberFormat('fr-FR').format(l.prix_mensuel) + ' GNF',
             action: '/dashboard/biens',
@@ -86,7 +86,7 @@ export default function RechercheGlobale({ stats, onNavigate }) {
           res.push({
             type: 'reservation',
             icone: <CalendarCheck size={16} strokeWidth={1.5} />,
-            couleur: '#1565C0', bg: '#E3F2FD',
+            couleur: 'var(--green)', bg: 'var(--green-light)',
             titre: nom || r.logement_titre,
             sous:  r.logement_titre + ' · ' + r.statut,
             action: '/dashboard/reservations',
@@ -101,7 +101,7 @@ export default function RechercheGlobale({ stats, onNavigate }) {
           res.push({
             type: 'paiement',
             icone: <CreditCard size={16} strokeWidth={1.5} />,
-            couleur: '#7B1FA2', bg: '#F3E5F5',
+            couleur: 'var(--green)', bg: 'var(--green-light)',
             titre: p.logement_titre,
             sous:  new Intl.NumberFormat('fr-FR').format(p.montant) + ' GNF · ' + new Date(p.created_at).toLocaleDateString('fr-FR'),
             action: '/dashboard/paiements',
@@ -112,18 +112,18 @@ export default function RechercheGlobale({ stats, onNavigate }) {
 
       // ─── Navigation ────────────────────────────────────────
       var pages = [
-        { mots: ['biens','logement','propriete','bien'],     icone: <Home          size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.mesBiens'),     action: '/dashboard/biens',        couleur: '#1B6B3A', bg: '#E8F5E9'  },
-        { mots: ['candidature','reservation','demande'],     icone: <CalendarCheck size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.candidatures'), action: '/dashboard/reservations', couleur: '#1565C0', bg: '#E3F2FD'  },
-        { mots: ['paiement','loyer','argent'],               icone: <CreditCard    size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.paiements'),    action: '/dashboard/paiements',    couleur: '#7B1FA2', bg: '#F3E5F5'  },
-        { mots: ['document','bail','contrat','quittance'],   icone: <FileText      size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.documents'),    action: '/dashboard/documents',    couleur: '#E65100', bg: '#FFF3E0'  },
-        { mots: ['message','chat','conversation'],           icone: <MessageCircle size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.messages'),     action: '/dashboard/messages',     couleur: '#1B6B3A', bg: '#E8F5E9'  },
-        { mots: ['alerte','notification'],                   icone: <Bell          size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.alertes'),      action: '/dashboard/alertes',      couleur: '#E53935', bg: '#FFEBEE'  },
-        { mots: ['rapport','statistique','graphique'],       icone: <TrendingUp    size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.rapports'),     action: '/dashboard/rapports',     couleur: '#1565C0', bg: '#E3F2FD'  },
-        { mots: ['reclamation','panne','probleme'],          icone: <Wrench        size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.reclamations'), action: '/dashboard/reclamations', couleur: '#888',    bg: '#F5F5F5'  },
-        { mots: ['preavis','depart','quitter'],              icone: <Send          size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.preavis'),      action: '/dashboard/preavis',      couleur: '#37474F', bg: '#ECEFF1'  },
-        { mots: ['parametre','profil','compte','mdp'],       icone: <Settings      size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.parametres'),   action: '/dashboard/parametres',   couleur: '#555',    bg: '#F5F5F5'  },
-        { mots: ['historique','ancien','passe'],             icone: <Clock         size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.historique'),   action: '/dashboard/historique',   couleur: '#1B6B3A', bg: '#E8F5E9'  },
-        { mots: ['locataire','tenant'],                      icone: <Users         size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.locataires'),   action: '/dashboard/locataires',   couleur: '#1565C0', bg: '#E3F2FD'  },
+        { mots: ['biens','logement','propriete','bien'],     icone: <Home          size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.mesBiens'),     action: '/dashboard/biens',        couleur: 'var(--green)', bg: 'var(--green-light)'  },
+        { mots: ['candidature','reservation','demande'],     icone: <CalendarCheck size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.candidatures'), action: '/dashboard/reservations', couleur: 'var(--green)', bg: 'var(--green-light)'  },
+        { mots: ['paiement','loyer','argent'],               icone: <CreditCard    size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.paiements'),    action: '/dashboard/paiements',    couleur: 'var(--green)', bg: 'var(--green-light)'  },
+        { mots: ['document','bail','contrat','quittance'],   icone: <FileText      size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.documents'),    action: '/dashboard/documents',    couleur: 'var(--green)', bg: 'var(--green-light)'  },
+        { mots: ['message','chat','conversation'],           icone: <MessageCircle size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.messages'),     action: '/dashboard/messages',     couleur: 'var(--green)', bg: 'var(--green-light)'  },
+        { mots: ['alerte','notification'],                   icone: <Bell          size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.alertes'),      action: '/dashboard/alertes',      couleur: 'var(--green)', bg: 'var(--green-light)'  },
+        { mots: ['rapport','statistique','graphique'],       icone: <TrendingUp    size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.rapports'),     action: '/dashboard/rapports',     couleur: 'var(--green)', bg: 'var(--green-light)'  },
+        { mots: ['reclamation','panne','probleme'],          icone: <Wrench        size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.reclamations'), action: '/dashboard/reclamations', couleur: 'var(--green)',    bg: 'var(--green-light)'  },
+        { mots: ['preavis','depart','quitter'],              icone: <Send          size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.preavis'),      action: '/dashboard/preavis',      couleur: 'var(--green)', bg: 'var(--green-light)'  },
+        { mots: ['parametre','profil','compte','mdp'],       icone: <Settings      size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.parametres'),   action: '/dashboard/parametres',   couleur: 'var(--green)',    bg: 'var(--green-light)'  },
+        { mots: ['historique','ancien','passe'],             icone: <Clock         size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.historique'),   action: '/dashboard/historique',   couleur: 'var(--green)', bg: 'var(--green-light)'  },
+        { mots: ['locataire','tenant'],                      icone: <Users         size={16} strokeWidth={1.5}/>, titre: t('rechercheGlobale.pages.locataires'),   action: '/dashboard/locataires',   couleur: 'var(--green)', bg: 'var(--green-light)'  },
       ];
       pages.forEach(function(p) {
         if (p.mots.some(function(m) { return m.includes(q) || q.includes(m); })) {
@@ -141,7 +141,7 @@ export default function RechercheGlobale({ stats, onNavigate }) {
             return {
               type: 'logement_public',
               icone: <MapPin size={16} strokeWidth={1.5} />,
-              couleur: '#1B6B3A', bg: '#E8F5E9',
+              couleur: 'var(--green)', bg: 'var(--green-light)',
               titre: l.titre,
               sous: l.adresse + ', ' + l.ville + ' · ' + new Intl.NumberFormat('fr-FR').format(l.prix_mensuel) + ' GNF/mois',
               href: '/logements/' + l.id,
@@ -167,12 +167,12 @@ export default function RechercheGlobale({ stats, onNavigate }) {
     return (
       <button
         onClick={function() { setVisible(true); setTimeout(function() { if (inputRef.current) inputRef.current.focus(); }, 100); }}
-        style={{ background: '#F5F6FA', border: '1px solid #E8E8E8', borderRadius: 10, padding: '8px 14px', fontSize: 13, color: '#888', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, transition: 'all .15s' }}
-        onMouseEnter={function(e) { e.currentTarget.style.borderColor = '#1B6B3A'; e.currentTarget.style.color = '#1B6B3A'; }}
-        onMouseLeave={function(e) { e.currentTarget.style.borderColor = '#E8E8E8'; e.currentTarget.style.color = '#888'; }}>
+        style={{ background: 'var(--surface-soft)', border: '1px solid #E8E8E8', borderRadius: 8, padding: '8px 14px', fontSize: 13, color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, transition: 'all .15s' }}
+        onMouseEnter={function(e) { e.currentTarget.style.borderColor = 'var(--green)'; e.currentTarget.style.color = 'var(--green)'; }}
+        onMouseLeave={function(e) { e.currentTarget.style.borderColor = '#E8E8E8'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
         <Search size={14} strokeWidth={1.5} />
         <span>{t('rechercheGlobale.bouton.rechercher')}</span>
-        <span style={{ background: '#E0E0E0', borderRadius: 5, padding: '2px 6px', fontSize: 10, fontWeight: 600, letterSpacing: 0.3 }}>{t('rechercheGlobale.bouton.raccourci')}</span>
+        <span style={{ background: 'var(--bg-tertiary)', borderRadius: 5, padding: '2px 6px', fontSize: 10, fontWeight: 600, letterSpacing: 0.3 }}>{t('rechercheGlobale.bouton.raccourci')}</span>
       </button>
     );
   }
@@ -181,11 +181,11 @@ export default function RechercheGlobale({ stats, onNavigate }) {
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 9999, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: 80 }}
       onClick={function(e) { if (e.target === e.currentTarget) { setVisible(false); setQuery(''); } }}>
-      <div style={{ background: '#fff', borderRadius: 18, width: '100%', maxWidth: 580, boxShadow: '0 24px 64px rgba(0,0,0,0.2)', overflow: 'hidden', margin: '0 16px' }}>
+      <div style={{ background: 'var(--bg-secondary)', borderRadius: 16, width: '100%', maxWidth: 580, boxShadow: '0 24px 64px rgba(0,0,0,0.2)', overflow: 'hidden', margin: '0 16px' }}>
 
         {/* Barre de saisie */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 16px', borderBottom: '1px solid #F0F0F0' }}>
-          <Search size={18} strokeWidth={1.5} color={loading ? '#1B6B3A' : '#888'} style={{ flexShrink: 0 }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 16px', borderBottom: '1px solid var(--border)' }}>
+          <Search size={18} strokeWidth={1.5} color={loading ? 'var(--green)' : 'var(--text-muted)'} style={{ flexShrink: 0 }} />
           <input
             ref={inputRef}
             type="text"
@@ -193,7 +193,7 @@ export default function RechercheGlobale({ stats, onNavigate }) {
             value={query}
             onChange={function(e) { setQuery(e.target.value); }}
             onKeyDown={handleKeyDown}
-            style={{ flex: 1, border: 'none', outline: 'none', fontSize: 15, color: '#1B2B22', background: 'transparent' }}
+            style={{ flex: 1, border: 'none', outline: 'none', fontSize: 15, color: 'var(--text-primary)', background: 'transparent' }}
             autoFocus />
           {query && (
             <button onClick={function() { setQuery(''); setResultats([]); inputRef.current && inputRef.current.focus(); }}
@@ -202,7 +202,7 @@ export default function RechercheGlobale({ stats, onNavigate }) {
             </button>
           )}
           <button onClick={function() { setVisible(false); setQuery(''); }}
-            style={{ background: '#F5F5F5', border: 'none', borderRadius: 6, padding: '4px 8px', fontSize: 11, color: '#888', cursor: 'pointer', flexShrink: 0 }}>
+            style={{ background: 'var(--surface-soft)', border: 'none', borderRadius: 6, padding: '4px 8px', fontSize: 11, color: 'var(--text-muted)', cursor: 'pointer', flexShrink: 0 }}>
             {t('rechercheGlobale.modal.esc')}
           </button>
         </div>
@@ -213,20 +213,20 @@ export default function RechercheGlobale({ stats, onNavigate }) {
             <div style={{ fontSize: 11, color: '#aaa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>{t('rechercheGlobale.modal.raccourcis')}</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
               {[
-                { icone: <Home size={15} strokeWidth={1.5} />,          titre: t('rechercheGlobale.pages.mesBiens'),      action: '/dashboard/biens',        bg: '#E8F5E9', couleur: '#1B6B3A' },
-                { icone: <CalendarCheck size={15} strokeWidth={1.5} />, titre: t('rechercheGlobale.pages.candidatures'),  action: '/dashboard/reservations', bg: '#E3F2FD', couleur: '#1565C0' },
-                { icone: <MessageCircle size={15} strokeWidth={1.5} />, titre: t('rechercheGlobale.pages.messages'),      action: '/dashboard/messages',     bg: '#F3E5F5', couleur: '#7B1FA2' },
-                { icone: <TrendingUp    size={15} strokeWidth={1.5} />, titre: t('rechercheGlobale.pages.rapports'),      action: '/dashboard/rapports',     bg: '#FFF3E0', couleur: '#E65100' },
+                { icone: <Home size={15} strokeWidth={1.5} />,          titre: t('rechercheGlobale.pages.mesBiens'),      action: '/dashboard/biens',        bg: 'var(--green-light)', couleur: 'var(--green)' },
+                { icone: <CalendarCheck size={15} strokeWidth={1.5} />, titre: t('rechercheGlobale.pages.candidatures'),  action: '/dashboard/reservations', bg: 'var(--info-soft)', couleur: 'var(--info)' },
+                { icone: <MessageCircle size={15} strokeWidth={1.5} />, titre: t('rechercheGlobale.pages.messages'),      action: '/dashboard/messages',     bg: 'var(--info-soft)', couleur: 'var(--info)' },
+                { icone: <TrendingUp    size={15} strokeWidth={1.5} />, titre: t('rechercheGlobale.pages.rapports'),      action: '/dashboard/rapports',     bg: 'var(--warn-soft)', couleur: 'var(--warn)' },
               ].map(function(r, i) {
                 return (
                   <button key={i} onClick={function() { onNavigate(r.action); setVisible(false); }}
-                    style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10, border: 'none', background: '#FAFAFA', cursor: 'pointer', textAlign: 'left', transition: 'background .15s' }}
+                    style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 8, border: 'none', background: 'var(--surface-soft)', cursor: 'pointer', textAlign: 'left', transition: 'background .15s' }}
                     onMouseEnter={function(e) { e.currentTarget.style.background = r.bg; }}
-                    onMouseLeave={function(e) { e.currentTarget.style.background = '#FAFAFA'; }}>
+                    onMouseLeave={function(e) { e.currentTarget.style.background = 'var(--surface-soft)'; }}>
                     <div style={{ width: 28, height: 28, background: r.bg, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', color: r.couleur, flexShrink: 0 }}>
                       {r.icone}
                     </div>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>{r.titre}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{r.titre}</span>
                   </button>
                 );
               })}
@@ -236,7 +236,7 @@ export default function RechercheGlobale({ stats, onNavigate }) {
 
         {/* Aucun résultat */}
         {query.length >= 2 && resultats.length === 0 && !loading && (
-          <div style={{ padding: '28px 20px', textAlign: 'center', color: '#888', fontSize: 14 }}>
+          <div style={{ padding: '28px 20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: 14 }}>
             <Search size={28} strokeWidth={1} color="#E0E0E0" style={{ display: 'block', margin: '0 auto 10px' }} />
             {t('rechercheGlobale.modal.aucunResultatPour')} <strong>"{query}"</strong>
           </div>
@@ -251,16 +251,16 @@ export default function RechercheGlobale({ stats, onNavigate }) {
                 <div key={i}
                   onClick={function() { selectionner(r); }}
                   onMouseEnter={function() { setSelIndex(i); }}
-                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 16px', cursor: 'pointer', background: actif ? '#F5F6FA' : 'transparent', borderBottom: '0.5px solid #F5F5F5', transition: 'background .1s' }}>
-                  <div style={{ width: 36, height: 36, borderRadius: 10, background: r.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: r.couleur, flexShrink: 0 }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 16px', cursor: 'pointer', background: actif ? 'var(--surface-soft)' : 'transparent', borderBottom: '0.5px solid #F5F5F5', transition: 'background .1s' }}>
+                  <div style={{ width: 36, height: 36, borderRadius: 8, background: r.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: r.couleur, flexShrink: 0 }}>
                     {r.icone}
                   </div>
                   <div style={{ flex: 1, overflow: 'hidden' }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#1B2B22', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.titre}</div>
-                    <div style={{ fontSize: 12, color: '#888', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.sous}</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.titre}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.sous}</div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-                    <span style={{ background: r.bg, color: r.couleur, borderRadius: 20, padding: '2px 8px', fontSize: 10, fontWeight: 700 }}>{r.badge}</span>
+                    <span style={{ background: r.bg, color: r.couleur, borderRadius: 16, padding: '2px 8px', fontSize: 10, fontWeight: 700 }}>{r.badge}</span>
                     <ArrowRight size={14} strokeWidth={1.5} color="#ccc" />
                   </div>
                 </div>
@@ -270,11 +270,11 @@ export default function RechercheGlobale({ stats, onNavigate }) {
         )}
 
         {/* Footer */}
-        <div style={{ padding: '10px 16px', background: '#FAFAFA', borderTop: '1px solid #F0F0F0', display: 'flex', gap: 16, fontSize: 11, color: '#aaa' }}>
+        <div style={{ padding: '10px 16px', background: 'var(--surface-soft)', borderTop: '1px solid var(--border)', display: 'flex', gap: 16, fontSize: 11, color: '#aaa' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>{t('rechercheGlobale.modal.footer.naviguer')}</span>
           <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>{t('rechercheGlobale.modal.footer.selectionner')}</span>
           <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>{t('rechercheGlobale.modal.footer.fermer')}</span>
-          {loading && <span style={{ marginLeft: 'auto', color: '#1B6B3A', fontWeight: 600 }}>{t('rechercheGlobale.modal.footer.rechercheEnCours')}</span>}
+          {loading && <span style={{ marginLeft: 'auto', color: 'var(--green)', fontWeight: 600 }}>{t('rechercheGlobale.modal.footer.rechercheEnCours')}</span>}
         </div>
       </div>
     </div>
