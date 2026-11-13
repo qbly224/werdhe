@@ -98,7 +98,7 @@ export default function Logements() {
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 12, 0.72)' }} />
 
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: 900, margin: '0 auto' }}>
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
           <h1 style={{ fontFamily: 'var(--font-display)', color: '#fff', fontSize: 'clamp(26px,4.5vw,38px)', fontWeight: 700, margin: '0 0 8px', letterSpacing: -0.5 }}>
             {t('logements.header.titre')}
           </h1>
