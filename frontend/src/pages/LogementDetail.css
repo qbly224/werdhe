@@ -1,6 +1,6 @@
 .detail-page {
   min-height: calc(100vh - 60px);
-  background: var(--gray-light);
+  background: var(--surface-soft);
   padding: 24px 0 60px;
 }
 
@@ -9,7 +9,7 @@
 }
 
 .breadcrumb a {
-  color: var(--primary);
+  color: var(--green);
   text-decoration: none;
   font-size: 14px;
   font-weight: 600;
@@ -89,7 +89,7 @@
 
 .galerie-miniatures img.active,
 .galerie-miniatures img:hover {
-  border-color: var(--primary);
+  border-color: var(--green);
 }
 
 /* Carte détail */

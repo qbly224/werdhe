@@ -1,5 +1,5 @@
 .navbar {
-  background-color: var(--primary);
+  background-color: var(--green);
   padding: 14px 0;
   position: sticky;
   top: 0;
@@ -19,7 +19,7 @@
 .navbar-logo {
   font-size: 24px;
   font-weight: 700;
-  color: var(--white);
+  color: var(--bg-secondary);
   text-decoration: none;
   letter-spacing: 1px;
 }
@@ -31,7 +31,7 @@
 }
 
 .navbar-links a {
-  color: var(--white);
+  color: var(--bg-secondary);
   text-decoration: none;
   font-weight: 500;
   font-size: 15px;
@@ -43,7 +43,7 @@
 }
 
 .navbar-user {
-  color: var(--white);
+  color: var(--bg-secondary);
   font-weight: 600;
   font-size: 14px;
   background: rgba(255,255,255,0.2);

@@ -201,7 +201,7 @@ const Profil = () => {
                   disabled
                   style={{ opacity: 0.6, cursor: 'not-allowed' }}
                 />
-                <small style={{color: 'var(--gray)', fontSize: '12px'}}>
+                <small style={{color: 'var(--text-muted)', fontSize: '12px'}}>
                   {t('profil.infos.emailNonModifiable')}
                 </small>
 
