@@ -257,14 +257,14 @@ export default function OnboardingLocataire() {
                     <div
                       className="auth-doc-item"
                       style={{
-                        borderColor: uploaded ? '#1A4FA0' : '#e0e0e0',
+                        borderColor: uploaded ? '#1B6B3A' : '#e0e0e0',
                         background: uploaded ? '#f0f4fb' : '#fff',
                         transition: 'all 0.2s'
                       }}
                     >
-                      <div className="auth-doc-icon" style={{background: uploaded ? '#E3F2FD' : '#f5f5f5'}}>
+                      <div className="auth-doc-icon" style={{background: uploaded ? '#E8F5E9' : '#f5f5f5'}}>
                         {uploaded ? (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A4FA0" strokeWidth="2.5" aria-hidden="true">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="2.5" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12"/>
                           </svg>
                         ) : (
@@ -277,7 +277,7 @@ export default function OnboardingLocataire() {
                         )}
                       </div>
                       <div style={{flex:1}}>
-                        <div className="auth-doc-title" style={{color: uploaded ? '#1A4FA0' : '#111'}}>
+                        <div className="auth-doc-title" style={{color: uploaded ? '#1B6B3A' : '#111'}}>
                           {doc.titre}
                         </div>
                         <div className="auth-doc-desc">
@@ -290,9 +290,9 @@ export default function OnboardingLocataire() {
                         )}
                         <span style={{
                           fontSize:'11px',
-                          color: uploaded ? '#1A4FA0' : '#1B6B3A',
+                          color: uploaded ? '#1B6B3A' : '#1B6B3A',
                           fontWeight:'600',
-                          background: uploaded ? '#E3F2FD' : '#E8F5E9',
+                          background: uploaded ? '#E8F5E9' : '#E8F5E9',
                           borderRadius:'20px',
                           padding:'2px 10px'
                         }}>
@@ -317,7 +317,7 @@ export default function OnboardingLocataire() {
           </div>
 
           {uploading && (
-            <div style={{textAlign:'center', fontSize:'12px', color:'#1A4FA0', marginBottom:'10px'}}>
+            <div style={{textAlign:'center', fontSize:'12px', color:'#1B6B3A', marginBottom:'10px'}}>
               {t('onboardingLocataire.etape3.chargement')}
             </div>
           )}
@@ -346,7 +346,7 @@ export default function OnboardingLocataire() {
         <Stepper />
         <div style={{textAlign:'center'}}>
           <div className="auth-success-icon blue" style={{margin:'0 auto 14px'}}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1A4FA0" strokeWidth="3" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="3" aria-hidden="true">
               <polyline points="20 6 9 17 4 12"/>
             </svg>
           </div>
@@ -360,7 +360,7 @@ export default function OnboardingLocataire() {
           <div className="auth-quick-grid">
             <div className="auth-quick-action" onClick={function() { navigate('/logements'); }}>
               <div className="auth-quick-action-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A4FA0" strokeWidth="2" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="2" aria-hidden="true">
                   <circle cx="11" cy="11" r="8"/>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                 </svg>
@@ -369,7 +369,7 @@ export default function OnboardingLocataire() {
             </div>
             <div className="auth-quick-action" onClick={function() { navigate('/dashboard'); }}>
               <div className="auth-quick-action-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A4FA0" strokeWidth="2" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="2" aria-hidden="true">
                   <rect x="3" y="3" width="18" height="18" rx="2"/>
                   <path d="M3 9h18M9 21V9"/>
                 </svg>

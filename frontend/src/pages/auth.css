@@ -18,7 +18,7 @@
 .auth-card {
   background: #fff;
   border: 0.5px solid #e0e0e0;
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 28px;
   width: 100%;
   max-width: 420px;
@@ -29,7 +29,7 @@
   width: 42px;
   height: 42px;
   background: #1B6B3A;
-  border-radius: 10px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -130,7 +130,7 @@
 .auth-btn-blue {
   width: 100%;
   padding: 12px;
-  background: #1A4FA0;
+  background: #1B6B3A;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -227,7 +227,7 @@
 .auth-role-card {
   flex: 1;
   border: 0.5px solid #e0e0e0;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 16px 12px;
   cursor: pointer;
   transition: all 0.15s;
@@ -245,8 +245,8 @@
 }
 
 .auth-role-card.selected-blue {
-  border: 2px solid #1A4FA0;
-  background: #E3F2FD;
+  border: 2px solid #1B6B3A;
+  background: #E8F5E9;
 }
 
 .auth-role-icon {
@@ -303,9 +303,9 @@
 }
 
 .auth-step-dot.active-blue {
-  background: #1A4FA0;
+  background: #1B6B3A;
   color: #fff;
-  box-shadow: 0 0 0 4px #BBDEFB;
+  box-shadow: 0 0 0 4px #A5D6A7;
 }
 
 .auth-step-dot.done-green {
@@ -314,7 +314,7 @@
 }
 
 .auth-step-dot.done-blue {
-  background: #1A4FA0;
+  background: #1B6B3A;
   color: #fff;
 }
 
@@ -325,7 +325,7 @@
 }
 
 .auth-step-line.done-green { background: #1B6B3A; }
-.auth-step-line.done-blue { background: #1A4FA0; }
+.auth-step-line.done-blue { background: #1B6B3A; }
 
 /* STEP LABEL */
 .auth-step-label {
@@ -515,7 +515,7 @@
 }
 
 .auth-success-icon.green { background: #E8F5E9; }
-.auth-success-icon.blue { background: #E3F2FD; }
+.auth-success-icon.blue { background: #E8F5E9; }
 
 /* QUICK ACTIONS GRID */
 .auth-quick-grid {
@@ -559,7 +559,7 @@
 
 .auth-equip-tag {
   padding: 5px 12px;
-  border-radius: 20px;
+  border-radius: 16px;
   font-size: 12px;
   cursor: pointer;
   border: 0.5px solid #e0e0e0;
@@ -569,9 +569,9 @@
 }
 
 .auth-equip-tag.selected-blue {
-  border-color: #1A4FA0;
-  background: #E3F2FD;
-  color: #0D47A1;
+  border-color: #1B6B3A;
+  background: #E8F5E9;
+  color: #134F2B;
 }
 
 /* TELEPHONE INPUT */
@@ -698,7 +698,7 @@
   font-size: 10px;
   background: #E8F5E9;
   color: #1B5E20;
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 2px 8px;
   white-space: nowrap;
 }
@@ -715,7 +715,7 @@
 
 /* RESPONSIVE */
 @media (max-width: 480px) {
-  .auth-card { padding: 20px 16px; border-radius: 10px; }
+  .auth-card { padding: 20px 16px; border-radius: 8px; }
   .auth-otp-input { width: 38px; height: 46px; font-size: 18px; }
 }
 

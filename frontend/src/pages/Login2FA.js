@@ -75,19 +75,19 @@ export default function Login2FA() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#0F1A12', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, fontFamily: 'var(--font-body)' }}>
-      <div style={{ background: '#1B2B22', borderRadius: 24, padding: '32px 28px', width: '100%', maxWidth: 380, boxShadow: '0 24px 64px rgba(0,0,0,0.4)' }}>
+      <div style={{ background: '#1B2B22', borderRadius: 16, padding: '32px 28px', width: '100%', maxWidth: 380, boxShadow: '0 24px 64px rgba(0,0,0,0.4)' }}>
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <div style={{ width: 64, height: 64, background: '#F5A623', borderRadius: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+          <div style={{ width: 64, height: 64, background: '#1B6B3A', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
             <Shield size={30} color="#1B2B22" strokeWidth={2} />
           </div>
-          <h2 style={{ color: '#fff', fontSize: 20, fontWeight: 800, margin: '0 0 8px' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', color: '#fff', fontSize: 20, fontWeight: 700, margin: '0 0 8px' }}>
             {t('login2fa.titre')}
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14, margin: 0, lineHeight: 1.5 }}>
             {t('login2fa.codeEnvoyeA')}<br/>
-            <span style={{ color: '#F5A623', fontWeight: 600 }}>{email}</span>
+            <span style={{ color: '#fff', fontWeight: 600 }}>{email}</span>
           </p>
         </div>
 
@@ -115,13 +115,13 @@ export default function Login2FA() {
                   textAlign: 'center',
                   fontSize: 24, fontWeight: 700,
                   borderRadius: 12,
-                  border: digit ? '2px solid #F5A623' : '1.5px solid rgba(255,255,255,0.15)',
+                  border: digit ? '2px solid #4DBA7C' : '1.5px solid rgba(255,255,255,0.15)',
                   background: digit ? 'rgba(245,166,35,0.1)' : 'rgba(255,255,255,0.05)',
                   outline: 'none',
                   color: '#fff',
                   fontFamily: 'var(--font-mono)',
                   transition: 'all .15s',
-                  caretColor: '#F5A623'
+                  caretColor: '#4DBA7C'
                 }} />
             );
           })}
@@ -132,7 +132,7 @@ export default function Login2FA() {
           {timer > 0 ? (
             <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>
               {t('login2fa.codeValideEncore')}{' '}
-              <span style={{ color: timer < 60 ? '#E53935' : '#F5A623', fontWeight: 700 }}>
+              <span style={{ color: timer < 60 ? '#F2867F' : '#4DBA7C', fontWeight: 700 }}>
                 {minutes}:{seconds.toString().padStart(2, '0')}
               </span>
             </span>
@@ -150,10 +150,10 @@ export default function Login2FA() {
             padding: '14px',
             borderRadius: 12,
             border: 'none',
-            background: otp.join('').length === 6 && timer > 0 ? '#F5A623' : 'rgba(255,255,255,0.1)',
+            background: otp.join('').length === 6 && timer > 0 ? '#1B6B3A' : 'rgba(255,255,255,0.1)',
             color: otp.join('').length === 6 && timer > 0 ? '#1B2B22' : 'rgba(255,255,255,0.3)',
             fontSize: 15,
-            fontWeight: 800,
+            fontWeight: 700,
             cursor: otp.join('').length === 6 && timer > 0 ? 'pointer' : 'not-allowed',
             marginBottom: 12,
             transition: 'all .2s',
@@ -167,7 +167,7 @@ export default function Login2FA() {
 
         <button
           onClick={function() { navigate('/login'); }}
-          style={{ width: '100%', padding: '10px', borderRadius: 10, border: 'none', background: 'transparent', color: 'rgba(255,255,255,0.3)', fontSize: 13, cursor: 'pointer' }}>
+          style={{ width: '100%', padding: '10px', borderRadius: 8, border: 'none', background: 'transparent', color: 'rgba(255,255,255,0.3)', fontSize: 13, cursor: 'pointer' }}>
           ← {t('login2fa.retourConnexion')}
         </button>
       </div>

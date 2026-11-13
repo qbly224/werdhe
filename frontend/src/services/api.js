@@ -56,6 +56,13 @@ api.interceptors.request.use(function(config) {
 // Sur une connexion faible/instable, une coupure courte ou un délai
 // dépassé n'est pas forcément une vraie panne : on retente une fois,
 // puis on sert la dernière donnée connue si la lecture est cachable.
+// Un 401 sur ces routes veut dire « identifiants ou code incorrects », pas « session expirée » :
+// on laisse la page afficher son message au lieu de recharger /login et d'effacer le formulaire.
+var ROUTES_IDENTIFIANTS = ['/auth/login', '/auth/connexion', '/auth/changer-mot-de-passe', '/auth/telephone/', '/auth/admin/verifier-2fa'];
+function estEchecIdentifiants(url) {
+  return ROUTES_IDENTIFIANTS.some(function(r) { return (url || '').indexOf(r) !== -1; });
+}
+
 async function gererErreur(error) {
   var config = error.config || {};
   var estTransitoire = !error.response || error.response.status >= 500;
@@ -78,7 +85,7 @@ async function gererErreur(error) {
     }
   }
 
-  if (error.response && error.response.status === 401) {
+  if (error.response && error.response.status === 401 && !estEchecIdentifiants(config.url)) {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     toast.error('Session expirée. Reconnectez-vous.');

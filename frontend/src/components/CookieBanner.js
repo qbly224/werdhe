@@ -34,12 +34,12 @@ export default function CookieBanner() {
 
   return (
     <div style={{ position: 'fixed', bottom: 16, left: 16, right: 16, maxWidth: 480, margin: '0 auto', zIndex: 9998, animation: 'fadeInUp 0.4s ease-out' }}>
-      <div style={{ background: '#1B2B22', borderRadius: 18, padding: '20px 22px', boxShadow: '0 16px 48px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)' }}>
+      <div style={{ background: '#1B2B22', borderRadius: 16, padding: '20px 22px', boxShadow: '0 16px 48px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)' }}>
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-          <div style={{ width: 36, height: 36, background: 'rgba(245,166,35,0.15)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Cookie size={18} strokeWidth={1.5} color="#F5A623" />
+          <div style={{ width: 36, height: 36, background: 'rgba(255,255,255,0.12)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Cookie size={18} strokeWidth={1.5} color="#fff" />
           </div>
           <div>
             <div style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>{t('cookieBanner.titre')}</div>
@@ -55,7 +55,7 @@ export default function CookieBanner() {
         {!details && (
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6, margin: '0 0 16px' }}>
             {t('cookieBanner.message')}{' '}
-            <Link to="/confidentialite" style={{ color: '#F5A623', textDecoration: 'none' }}>{t('cookieBanner.enSavoirPlus')}</Link>
+            <Link to="/confidentialite" style={{ color: '#fff', textDecoration: 'underline' }}>{t('cookieBanner.enSavoirPlus')}</Link>
           </p>
         )}
 
@@ -99,21 +99,21 @@ export default function CookieBanner() {
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {details ? (
             <button onClick={sauvegarderPrefs}
-              style={{ flex: 2, padding: '10px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              style={{ flex: 2, padding: '10px', borderRadius: 8, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
               <Check size={14} strokeWidth={2.5} /> {t('cookieBanner.sauvegarder')}
             </button>
           ) : (
             <>
               <button onClick={refuserTout}
-                style={{ flex: 1, padding: '10px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: 'rgba(255,255,255,0.6)', fontSize: 12, cursor: 'pointer' }}>
+                style={{ flex: 1, padding: '10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: 'rgba(255,255,255,0.6)', fontSize: 12, cursor: 'pointer' }}>
                 {t('cookieBanner.refuser')}
               </button>
               <button onClick={function() { setDetails(true); }}
-                style={{ flex: 1, padding: '10px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: 'rgba(255,255,255,0.6)', fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+                style={{ flex: 1, padding: '10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: 'rgba(255,255,255,0.6)', fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
                 <Settings size={13} strokeWidth={1.5} /> {t('cookieBanner.personnaliser')}
               </button>
               <button onClick={accepterTout}
-                style={{ flex: 1, padding: '10px', borderRadius: 10, border: 'none', background: '#F5A623', color: '#1B2B22', fontSize: 12, fontWeight: 800, cursor: 'pointer' }}>
+                style={{ flex: 1, padding: '10px', borderRadius: 8, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                 {t('cookieBanner.accepter')}
               </button>
             </>

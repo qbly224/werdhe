@@ -135,14 +135,14 @@ export default function LoginTelephone() {
 
   return (
     <div style={{ fontFamily: 'var(--font-body)', minHeight: '100vh', background: '#F7F8F7', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-      <div style={{ background: '#fff', borderRadius: 20, padding: 28, width: '100%', maxWidth: 380, boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
+      <div style={{ background: '#fff', borderRadius: 16, padding: 28, width: '100%', maxWidth: 380, boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <div style={{ width: 56, height: 56, background: '#1B6B3A', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
+          <div style={{ width: 56, height: 56, background: '#1B6B3A', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
             <Home size={26} strokeWidth={1.5} color="#fff" />
           </div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', marginBottom: 6 }}>
+          <div style={{ fontSize: 20, fontWeight: 700, color: '#1B2B22', marginBottom: 6 }}>
             {etape === 'telephone' ? t('loginTelephone.connexionParTelephone')
              : etape === 'otp'      ? t('loginTelephone.entrezVotreCode')
              : t('loginTelephone.creerVotreCompte')}
@@ -166,7 +166,7 @@ export default function LoginTelephone() {
   <select
     value={indicatif}
     onChange={function(e) { setIndicatif(e.target.value); }}
-    style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 13, background: '#FAFAFA', outline: 'none' }}>
+    style={{ width: '100%', padding: '12px 14px', borderRadius: 8, border: '1.5px solid #E0E0E0', fontSize: 13, background: '#FAFAFA', outline: 'none' }}>
     {INDICATIFS.map(function(i) {
       return (
         <option key={i.code} value={i.code}>
@@ -181,7 +181,7 @@ export default function LoginTelephone() {
     value={telephone}
     onChange={function(e) { setTelephone(e.target.value.replace(/\D/g, '')); }}
     onKeyDown={function(e) { if (e.key === 'Enter') envoyerOTP(); }}
-    style={{ width: '100%', padding: '14px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 16, outline: 'none', fontFamily: 'var(--font-mono)', letterSpacing: 2, boxSizing: 'border-box' }}
+    style={{ width: '100%', padding: '14px', borderRadius: 8, border: '1.5px solid #E0E0E0', fontSize: 16, outline: 'none', fontFamily: 'var(--font-mono)', letterSpacing: 2, boxSizing: 'border-box' }}
     autoFocus />
 </div>
 
@@ -233,7 +233,7 @@ export default function LoginTelephone() {
                       width: 44, height: 52,
                       textAlign: 'center',
                       fontSize: 22, fontWeight: 700,
-                      borderRadius: 10,
+                      borderRadius: 8,
                       border: digit ? '2px solid #1B6B3A' : '1.5px solid #E0E0E0',
                       background: digit ? '#F0FBF0' : '#FAFAFA',
                       outline: 'none',
@@ -277,7 +277,7 @@ export default function LoginTelephone() {
         {/* ── ÉTAPE 3 : INFOS COMPTE (nouveau) ────────────── */}
         {etape === 'infos' && (
           <div>
-            <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#1B5E20', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ background: '#E8F5E9', borderRadius: 8, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: '#1B5E20', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
               <CheckCircle2 size={14} strokeWidth={1.5} /> {t('loginTelephone.numeroVerifie', { tel: telComplet })}
             </div>
 
@@ -289,7 +289,7 @@ export default function LoginTelephone() {
                   placeholder="Mamadou"
                   value={prenom}
                   onChange={function(e) { setPrenom(e.target.value); }}
-                  style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
+                  style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
               </div>
               <div>
                 <div style={{ fontSize: 11, color: '#888', marginBottom: 5, fontWeight: 600 }}>{t('loginTelephone.champNom')}</div>
@@ -298,7 +298,7 @@ export default function LoginTelephone() {
                   placeholder="Diallo"
                   value={nom}
                   onChange={function(e) { setNom(e.target.value); }}
-                  style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
+                  style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box' }} />
               </div>
             </div>
 
@@ -311,7 +311,7 @@ export default function LoginTelephone() {
                 ].map(function(r) {
                   return (
                     <div key={r.val} onClick={function() { setRole(r.val); }}
-                      style={{ padding: 12, borderRadius: 10, border: role === r.val ? '2px solid #1B6B3A' : '1.5px solid #E0E0E0', background: role === r.val ? '#E8F5E9' : '#FAFAFA', cursor: 'pointer', textAlign: 'center' }}>
+                      style={{ padding: 12, borderRadius: 8, border: role === r.val ? '2px solid #1B6B3A' : '1.5px solid #E0E0E0', background: role === r.val ? '#E8F5E9' : '#FAFAFA', cursor: 'pointer', textAlign: 'center' }}>
                       <div style={{ fontSize: 14, fontWeight: 700, color: role === r.val ? '#1B5E20' : '#1B2B22', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                         <r.Icon size={16} strokeWidth={2} /> {r.label}
                       </div>
