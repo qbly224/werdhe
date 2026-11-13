@@ -233,8 +233,8 @@ export default function OnboardingProprietaire() {
                     </svg>
                   </div>
                 ) : (
-                  <div className="auth-pay-icon" style={{background:'#E3F2FD'}}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1565C0" strokeWidth="2.5" aria-hidden="true">
+                  <div className="auth-pay-icon" style={{background:'#E8F5E9'}}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="2.5" aria-hidden="true">
                       <rect x="3" y="3" width="18" height="18" rx="2"/>
                       <line x1="3" y1="9" x2="21" y2="9"/>
                     </svg>

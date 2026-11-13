@@ -33,7 +33,7 @@ export default function ResetPassword() {
     : motDePasse.length < 10 ? 2
     : /[A-Z]/.test(motDePasse) && /[0-9]/.test(motDePasse) ? 4 : 3;
   var pwdLabels = ['', t('resetPassword.pwd.tropCourt'), t('resetPassword.pwd.faible'), t('resetPassword.pwd.moyen'), t('resetPassword.pwd.fort')];
-  var pwdColors = ['', '#E53935', '#FB8C00', '#1565C0', '#1B6B3A'];
+  var pwdColors = ['', '#B3261E', '#9A5B00', '#1B6B3A', '#1B6B3A'];
 
   useEffect(function() {
     var interval = setInterval(function() {
@@ -61,7 +61,7 @@ export default function ResetPassword() {
       .finally(function() { setLoading(false); });
   }
 
-  var carteStyle = { position: 'relative', zIndex: 2, width: '100%', maxWidth: 440, margin: '24px', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(20px)', borderRadius: 24, padding: '36px 32px', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' };
+  var carteStyle = { position: 'relative', zIndex: 2, width: '100%', maxWidth: 440, margin: '24px', background: '#fff', borderRadius: 16, padding: '36px 32px', boxShadow: 'var(--shadow-lg)' };
 
   if (!token) {
     return (
@@ -71,12 +71,12 @@ export default function ResetPassword() {
             <Logo size={36} showText={true} darkBg={false} />
           </div>
           <div style={{ textAlign: 'center' }}>
-            <h1 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>{t('resetPassword.lienInvalide')}</h1>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700, color: '#1B2B22', margin: '0 0 10px' }}>{t('resetPassword.lienInvalide')}</h1>
             <p style={{ fontSize: 13, color: '#888', margin: '0 0 22px', lineHeight: 1.6 }}>
               {t('resetPassword.lienPlusValable')}
             </p>
             <Link to="/forgot-password"
-              style={{ width: '100%', padding: '13px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, textDecoration: 'none', boxSizing: 'border-box' }}>
+              style={{ width: '100%', padding: '13px', borderRadius: 8, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, textDecoration: 'none', boxSizing: 'border-box' }}>
               {t('resetPassword.nouvelleDemande')} <ArrowRight size={15} strokeWidth={2.5} />
             </Link>
           </div>
@@ -95,13 +95,13 @@ export default function ResetPassword() {
           </div>
         );
       })}
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.6) 100%)', zIndex: 1 }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 12, 0.5)', zIndex: 1 }} />
 
       <div style={{ position: 'absolute', bottom: 48, left: 48, zIndex: 2, maxWidth: 380 }} className="rp-left-text">
         <div style={{ marginBottom: 16 }}>
           <Logo size={38} showText={true} darkBg={true} variant="gold" />
         </div>
-        <h2 style={{ fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 800, color: '#fff', margin: '0 0 10px', lineHeight: 1.2, textShadow: '0 2px 16px rgba(0,0,0,0.4)' }}>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 700, color: '#fff', margin: '0 0 10px', lineHeight: 1.2 }}>
           {SLIDES[slideActif].titre}
         </h2>
         <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', margin: 0, lineHeight: 1.6 }}>
@@ -118,7 +118,7 @@ export default function ResetPassword() {
           <div style={{ width: 48, height: 48, borderRadius: '50%', background: '#E8F5E9', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
             <ShieldCheck size={24} strokeWidth={2} color="#1B6B3A" />
           </div>
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 4px', letterSpacing: -0.5 }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 700, color: '#1B2B22', margin: '0 0 4px', letterSpacing: -0.5 }}>
             {t('resetPassword.nouveauMotDePasse')}
           </h1>
           <p style={{ fontSize: 13, color: '#888', margin: 0 }}>{t('resetPassword.choisissezSecurise')}</p>
@@ -137,7 +137,7 @@ export default function ResetPassword() {
               <Lock size={14} color="#bbb" strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
               <input type={showPwd ? 'text' : 'password'} placeholder={t('resetPassword.placeholderMotDePasse')} value={motDePasse} autoFocus
                 onChange={function(e) { setMotDePasse(e.target.value); }}
-                style={{ width: '100%', padding: '11px 40px 11px 36px', border: '1.5px solid #E8E8E8', borderRadius: 10, fontSize: 14, outline: 'none', background: '#FAFAFA', boxSizing: 'border-box' }} />
+                style={{ width: '100%', padding: '11px 40px 11px 36px', border: '1.5px solid #E8E8E8', borderRadius: 8, fontSize: 14, outline: 'none', background: '#FAFAFA', boxSizing: 'border-box' }} />
               <button type="button" onClick={function() { setShowPwd(!showPwd); }}
                 style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#bbb', padding: 0 }}>
                 {showPwd ? <EyeOff size={15} strokeWidth={1.5} /> : <Eye size={15} strokeWidth={1.5} />}
@@ -161,12 +161,12 @@ export default function ResetPassword() {
               <Lock size={14} color="#bbb" strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
               <input type={showPwd ? 'text' : 'password'} placeholder={t('resetPassword.placeholderConfirmation')} value={confirmation}
                 onChange={function(e) { setConfirmation(e.target.value); }}
-                style={{ width: '100%', padding: '11px 12px 11px 36px', border: '1.5px solid ' + (confirmation.length > 0 ? (confirmation === motDePasse ? '#1B6B3A' : '#E53935') : '#E8E8E8'), borderRadius: 10, fontSize: 14, outline: 'none', background: '#FAFAFA', boxSizing: 'border-box' }} />
+                style={{ width: '100%', padding: '11px 12px 11px 36px', border: '1.5px solid ' + (confirmation.length > 0 ? (confirmation === motDePasse ? '#1B6B3A' : '#E53935') : '#E8E8E8'), borderRadius: 8, fontSize: 14, outline: 'none', background: '#FAFAFA', boxSizing: 'border-box' }} />
             </div>
           </div>
 
           <button type="submit" disabled={loading}
-            style={{ width: '100%', padding: '13px', borderRadius: 10, border: 'none', background: loading ? '#aaa' : '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 18, boxShadow: loading ? 'none' : '0 4px 16px rgba(27,107,58,0.3)' }}>
+            style={{ width: '100%', padding: '13px', borderRadius: 8, border: 'none', background: loading ? '#aaa' : '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 18, boxShadow: loading ? 'none' : '0 4px 16px rgba(27,107,58,0.3)' }}>
             {loading
               ? <><div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> {t('resetPassword.miseAJourEnCours')}</>
               : <>{t('resetPassword.mettreAJour')} <ArrowRight size={15} strokeWidth={2.5} /></>

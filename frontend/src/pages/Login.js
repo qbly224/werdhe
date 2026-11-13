@@ -108,15 +108,15 @@ export default function Login() {
         );
       })}
 
-      {/* Overlay dégradé */}
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.6) 100%)', zIndex: 1 }} />
+      {/* Voile uni pour la lisibilité du texte */}
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 12, 0.5)', zIndex: 1 }} />
 
       {/* ─── TEXTE BAS GAUCHE ─────────────────────────────────── */}
       <div style={{ position: 'absolute', bottom: 48, left: 48, zIndex: 2, maxWidth: 380 }} className="login-left-text">
         <div style={{ marginBottom: 16 }}>
           <Logo size={38} showText={true} darkBg={true} variant="gold" />
         </div>
-        <h2 style={{ fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 800, color: '#fff', margin: '0 0 10px', lineHeight: 1.2, textShadow: '0 2px 16px rgba(0,0,0,0.4)' }}>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 700, color: '#fff', margin: '0 0 10px', lineHeight: 1.2 }}>
           {SLIDES_LOGIN[slideActif].titre}
         </h2>
         <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', margin: '0 0 24px', lineHeight: 1.6 }}>
@@ -131,8 +131,8 @@ export default function Login() {
             { val: compteurs.villes + ' ' + t('login.compteurs.villesSuffixe'),  label: t('login.compteurs.couvertes')    },
           ].map(function(s, i) {
             return (
-              <div key={i} style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 12, padding: '10px 14px', border: '1px solid rgba(255,255,255,0.15)', textAlign: 'center' }}>
-                <div style={{ fontSize: 18, fontWeight: 900, color: '#F5A623' }}>{s.val}</div>
+              <div key={i} style={{ background: 'rgba(255,255,255,0.12)', borderRadius: 8, padding: '10px 14px', border: '1px solid rgba(255,255,255,0.15)', textAlign: 'center' }}>
+                <div style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>{s.val}</div>
                 <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', marginTop: 3 }}>{s.label}</div>
               </div>
             );
@@ -144,14 +144,14 @@ export default function Login() {
           {SLIDES_LOGIN.map(function(_, i) {
             return (
               <button key={i} onClick={function() { setSlideActif(i); }}
-                style={{ width: slideActif === i ? 24 : 7, height: 7, borderRadius: 4, border: 'none', background: slideActif === i ? '#F5A623' : 'rgba(255,255,255,0.4)', cursor: 'pointer', transition: 'all .4s', padding: 0 }} />
+                style={{ width: slideActif === i ? 24 : 7, height: 7, borderRadius: 4, border: 'none', background: slideActif === i ? '#fff' : 'rgba(255,255,255,0.4)', cursor: 'pointer', transition: 'all .4s', padding: 0 }} />
             );
           })}
         </div>
       </div>
 
       {/* ─── FORMULAIRE FLOTTANT (droite) ─────────────────────── */}
-      <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 440, margin: '24px', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(20px)', borderRadius: 24, padding: '36px 32px', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}
+      <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 440, margin: '24px', background: '#fff', borderRadius: 16, padding: '36px 32px', boxShadow: 'var(--shadow-lg)' }}
         className="login-card">
 
         {/* Logo dans la carte */}
@@ -159,7 +159,7 @@ export default function Login() {
           <Logo size={36} showText={true} darkBg={false} />
         </div>
 
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 4px', letterSpacing: -0.5, textAlign: 'center' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 700, color: '#1B2B22', margin: '0 0 4px', letterSpacing: -0.5, textAlign: 'center' }}>
           {t('login.titre')}
         </h1>
         <p style={{ fontSize: 13, color: '#888', margin: '0 0 22px', textAlign: 'center' }}>
@@ -168,7 +168,7 @@ export default function Login() {
 
         {/* Google */}
         <button onClick={function() { window.location.href = 'https://api.werdhe.com/auth/google'; }}
-          style={{ width: '100%', padding: '12px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontSize: 13, fontWeight: 600, color: '#1B2B22', cursor: 'pointer', marginBottom: 18 }}>
+          style={{ width: '100%', padding: '12px', borderRadius: 8, border: '1.5px solid #E0E0E0', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontSize: 13, fontWeight: 600, color: '#1B2B22', cursor: 'pointer', marginBottom: 18 }}>
           <svg width="17" height="17" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -197,7 +197,7 @@ export default function Login() {
               <Mail size={14} color="#bbb" strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
               <input type="email" placeholder={t('login.placeholderEmail')} value={email} autoComplete="email"
                 onChange={function(e) { setEmail(e.target.value); setErreur(''); }}
-                style={{ width: '100%', padding: '11px 12px 11px 36px', border: '1.5px solid ' + (email.length > 0 ? (emailValide ? '#1B6B3A' : '#E53935') : '#E8E8E8'), borderRadius: 10, fontSize: 14, outline: 'none', background: '#FAFAFA', boxSizing: 'border-box', transition: 'border-color .2s' }} />
+                style={{ width: '100%', padding: '11px 12px 11px 36px', border: '1.5px solid ' + (email.length > 0 ? (emailValide ? '#1B6B3A' : '#E53935') : '#E8E8E8'), borderRadius: 8, fontSize: 14, outline: 'none', background: '#FAFAFA', boxSizing: 'border-box', transition: 'border-color .2s' }} />
             </div>
           </div>
 
@@ -210,7 +210,7 @@ export default function Login() {
               <Lock size={14} color="#bbb" strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
               <input type={showPwd ? 'text' : 'password'} placeholder={t('login.placeholderMotDePasse')} value={password} autoComplete="current-password"
                 onChange={function(e) { setPassword(e.target.value); setErreur(''); }}
-                style={{ width: '100%', padding: '11px 40px 11px 36px', border: '1.5px solid #E8E8E8', borderRadius: 10, fontSize: 14, outline: 'none', background: '#FAFAFA', boxSizing: 'border-box' }} />
+                style={{ width: '100%', padding: '11px 40px 11px 36px', border: '1.5px solid #E8E8E8', borderRadius: 8, fontSize: 14, outline: 'none', background: '#FAFAFA', boxSizing: 'border-box' }} />
               <button type="button" onClick={function() { setShowPwd(!showPwd); }}
                 style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#bbb', padding: 0 }}>
                 {showPwd ? <EyeOff size={15} strokeWidth={1.5} /> : <Eye size={15} strokeWidth={1.5} />}
@@ -225,7 +225,7 @@ export default function Login() {
           </div>
 
           <button type="submit" disabled={loading}
-            style={{ width: '100%', padding: '13px', borderRadius: 10, border: 'none', background: loading ? '#aaa' : '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 16, boxShadow: loading ? 'none' : '0 4px 16px rgba(27,107,58,0.3)' }}>
+            style={{ width: '100%', padding: '13px', borderRadius: 8, border: 'none', background: loading ? '#aaa' : '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 16, boxShadow: loading ? 'none' : '0 4px 16px rgba(27,107,58,0.3)' }}>
             {loading
               ? <><div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> {t('login.connexionEnCours')}</>
               : <>{t('login.seConnecter')} <ArrowRight size={15} strokeWidth={2.5} /></>

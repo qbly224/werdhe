@@ -54,14 +54,14 @@ export default function ForgotPassword() {
           </div>
         );
       })}
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.6) 100%)', zIndex: 1 }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 12, 0.5)', zIndex: 1 }} />
 
       {/* Texte bas gauche */}
       <div style={{ position: 'absolute', bottom: 48, left: 48, zIndex: 2, maxWidth: 380 }} className="fp-left-text">
         <div style={{ marginBottom: 16 }}>
           <Logo size={38} showText={true} darkBg={true} variant="gold" />
         </div>
-        <h2 style={{ fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 800, color: '#fff', margin: '0 0 10px', lineHeight: 1.2, textShadow: '0 2px 16px rgba(0,0,0,0.4)' }}>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 700, color: '#fff', margin: '0 0 10px', lineHeight: 1.2 }}>
           {SLIDES[slideActif].titre}
         </h2>
         <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.75)', margin: 0, lineHeight: 1.6 }}>
@@ -71,14 +71,14 @@ export default function ForgotPassword() {
           {SLIDES.map(function(_, i) {
             return (
               <button key={i} onClick={function() { setSlideActif(i); }}
-                style={{ width: slideActif === i ? 24 : 7, height: 7, borderRadius: 4, border: 'none', background: slideActif === i ? '#F5A623' : 'rgba(255,255,255,0.4)', cursor: 'pointer', transition: 'all .4s', padding: 0 }} />
+                style={{ width: slideActif === i ? 24 : 7, height: 7, borderRadius: 4, border: 'none', background: slideActif === i ? '#fff' : 'rgba(255,255,255,0.4)', cursor: 'pointer', transition: 'all .4s', padding: 0 }} />
             );
           })}
         </div>
       </div>
 
       {/* Carte flottante */}
-      <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 440, margin: '24px', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(20px)', borderRadius: 24, padding: '36px 32px', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}
+      <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 440, margin: '24px', background: '#fff', borderRadius: 16, padding: '36px 32px', boxShadow: 'var(--shadow-lg)' }}
         className="fp-card">
 
         <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'center' }}>
@@ -90,19 +90,19 @@ export default function ForgotPassword() {
             <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#E8F5E9', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px' }}>
               <CheckCircle2 size={28} strokeWidth={2} color="#1B6B3A" />
             </div>
-            <h1 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 8px' }}>{t('forgotPassword.emailEnvoye')}</h1>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700, color: '#1B2B22', margin: '0 0 8px' }}>{t('forgotPassword.emailEnvoye')}</h1>
             <p style={{ fontSize: 13, color: '#666', lineHeight: 1.7, margin: '0 0 4px' }}>
               {t('forgotPassword.verifiezBoiteMail')}<b>{email}</b>{t('forgotPassword.cliquezLien')}
             </p>
             <p style={{ fontSize: 12, color: '#aaa', margin: '0 0 24px' }}>{t('forgotPassword.lienExpire')}</p>
             <Link to="/login"
-              style={{ width: '100%', padding: '13px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, textDecoration: 'none', boxSizing: 'border-box' }}>
+              style={{ width: '100%', padding: '13px', borderRadius: 8, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, textDecoration: 'none', boxSizing: 'border-box' }}>
               {t('forgotPassword.retourConnexion')}
             </Link>
           </div>
         ) : (
           <>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 4px', letterSpacing: -0.5, textAlign: 'center' }}>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 700, color: '#1B2B22', margin: '0 0 4px', letterSpacing: -0.5, textAlign: 'center' }}>
               {t('forgotPassword.titre')}
             </h1>
             <p style={{ fontSize: 13, color: '#888', margin: '0 0 26px', textAlign: 'center' }}>
@@ -122,12 +122,12 @@ export default function ForgotPassword() {
                   <Mail size={14} color="#bbb" strokeWidth={1.5} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                   <input type="email" placeholder={t('forgotPassword.placeholderEmail')} value={email} autoComplete="email" autoFocus
                     onChange={function(e) { setEmail(e.target.value); setErreur(''); }}
-                    style={{ width: '100%', padding: '11px 12px 11px 36px', border: '1.5px solid ' + (email.length > 0 ? (emailValide ? '#1B6B3A' : '#E53935') : '#E8E8E8'), borderRadius: 10, fontSize: 14, outline: 'none', background: '#FAFAFA', boxSizing: 'border-box', transition: 'border-color .2s' }} />
+                    style={{ width: '100%', padding: '11px 12px 11px 36px', border: '1.5px solid ' + (email.length > 0 ? (emailValide ? '#1B6B3A' : '#E53935') : '#E8E8E8'), borderRadius: 8, fontSize: 14, outline: 'none', background: '#FAFAFA', boxSizing: 'border-box', transition: 'border-color .2s' }} />
                 </div>
               </div>
 
               <button type="submit" disabled={loading || !emailValide}
-                style={{ width: '100%', padding: '13px', borderRadius: 10, border: 'none', background: loading || !emailValide ? '#ccc' : '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 800, cursor: loading || !emailValide ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 18, boxShadow: loading || !emailValide ? 'none' : '0 4px 16px rgba(27,107,58,0.3)' }}>
+                style={{ width: '100%', padding: '13px', borderRadius: 8, border: 'none', background: loading || !emailValide ? '#ccc' : '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: loading || !emailValide ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 18, boxShadow: loading || !emailValide ? 'none' : '0 4px 16px rgba(27,107,58,0.3)' }}>
                 {loading
                   ? <><div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.4)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> {t('forgotPassword.envoiEnCours')}</>
                   : <>{t('forgotPassword.envoyerLien')} <ArrowRight size={15} strokeWidth={2.5} /></>
