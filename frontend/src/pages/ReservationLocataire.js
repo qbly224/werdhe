@@ -332,7 +332,7 @@ export default function ReservationLocataire() {
   // ── LOADING ───────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div style={{ fontFamily: 'system-ui, sans-serif', maxWidth: 560, margin: '0 auto', padding: 16, background: '#F7F8F7', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ fontFamily: 'var(--font-body)', maxWidth: 560, margin: '0 auto', padding: 16, background: '#F7F8F7', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center', color: '#888' }}>{t('reservationLocataire.chargement')}</div>
       </div>
     );
@@ -340,7 +340,7 @@ export default function ReservationLocataire() {
 
   if (!reservation) {
     return (
-      <div style={{ fontFamily: 'system-ui, sans-serif', maxWidth: 560, margin: '0 auto', padding: 16 }}>
+      <div style={{ fontFamily: 'var(--font-body)', maxWidth: 560, margin: '0 auto', padding: 16 }}>
         <div style={{ textAlign: 'center', padding: 60 }}>
           <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
             <XCircle size={40} strokeWidth={1.5} color="#E53935" />
@@ -356,7 +356,7 @@ export default function ReservationLocataire() {
   }
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', maxWidth: 560, margin: '0 auto', padding: '12px 16px 80px', background: '#F7F8F7', minHeight: '100vh', width: '100%' }}>
+    <div style={{ fontFamily: 'var(--font-body)', maxWidth: 560, margin: '0 auto', padding: '12px 16px 80px', background: '#F7F8F7', minHeight: '100vh', width: '100%' }}>
 
       {/* HEADER */}
       <div style={{ background: '#1B6B3A', borderRadius: 14, padding: '14px 18px', marginBottom: 18 }}>
@@ -806,7 +806,7 @@ export default function ReservationLocataire() {
       <div>
         <textarea value={commentaireNote} onChange={function(e) { setCommentaireNote(e.target.value); }}
           placeholder={t('reservationLocataire.noter.commentairePlaceholder')}
-          style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 60, fontFamily: 'system-ui', boxSizing: 'border-box', outline: 'none', marginBottom: 8 }} />
+          style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 60, fontFamily: 'var(--font-body)', boxSizing: 'border-box', outline: 'none', marginBottom: 8 }} />
         <button onClick={envoyerNote}
           style={{ width: '100%', background: '#F5A623', color: '#fff', border: 'none', borderRadius: 10, padding: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
           {t('reservationLocataire.noter.envoyerBouton', { note: noteSelectionnee })}

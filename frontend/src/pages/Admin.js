@@ -272,7 +272,7 @@ var NAV = [
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', fontFamily: 'system-ui', flexDirection: 'column', gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', fontFamily: 'var(--font-body)', flexDirection: 'column', gap: 12 }}>
         <Home size={32} strokeWidth={1.5} color="#1B6B3A" />
         <div style={{ color: '#888' }}>{t('admin.loading')}</div>
       </div>
@@ -280,7 +280,7 @@ var NAV = [
   }
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', display: 'flex', minHeight: '100vh', background: '#F7F8F7' }}>
+    <div style={{ fontFamily: 'var(--font-body)', display: 'flex', minHeight: '100vh', background: '#F7F8F7' }}>
 
       {/* ── SIDEBAR ───────────────────────────────────────────── */}
       <div className="admin-sidebar" style={{ width: 220, background: '#1B2B22', minHeight: '100vh', padding: '0', flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
@@ -1053,7 +1053,7 @@ var NAV = [
           </label>
           <textarea rows={10} value={articleForm.contenu}
             onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { contenu: e.target.value })); }}
-            style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box', fontFamily: 'monospace' }} />
+            style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box', fontFamily: 'var(--font-mono)' }} />
         </div>
         <div style={{ marginBottom: 16 }}>
           <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelMetaDescription')}</label>
@@ -1139,7 +1139,7 @@ var NAV = [
             <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.promos.labelCode')}</label>
             <input type="text" placeholder={t('admin.promos.placeholderCode')} value={promoForm.code}
               onChange={function(e) { setPromoForm(Object.assign({}, promoForm, { code: e.target.value.toUpperCase() })); }}
-              style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', fontFamily: 'monospace', letterSpacing: 1 }} />
+              style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', fontFamily: 'var(--font-mono)', letterSpacing: 1 }} />
           </div>
           <div>
             <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.promos.labelReduction')}</label>
@@ -1176,7 +1176,7 @@ var NAV = [
         return (
           <div key={c.id} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap', opacity: c.actif ? 1 : 0.5 }}>
             <div style={{ background: '#F0FBF0', border: '1.5px dashed #A5D6A7', borderRadius: 8, padding: '6px 14px' }}>
-              <span style={{ fontFamily: 'monospace', fontSize: 15, fontWeight: 800, color: '#1B6B3A', letterSpacing: 1 }}>{c.code}</span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 15, fontWeight: 800, color: '#1B6B3A', letterSpacing: 1 }}>{c.code}</span>
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{t('admin.promos.reductionPlan', { pct: c.reduction_pct, plan: c.plan_cible })}</div>

@@ -90,7 +90,7 @@ export default function Logements() {
   }
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'var(--font-body)', background: '#F7F8F7', minHeight: '100vh' }}>
       {/* Navbar */}
       <nav className="site-navbar" style={{ background: 'rgba(247,248,247,0.96)', backdropFilter: 'blur(8px)', borderBottom: '0.5px solid rgba(27,107,58,0.1)', padding: '10px 24px', minHeight: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', rowGap: 8, position: 'sticky', top: 0, zIndex: 100 }}>
                 <Link to="/" style={{ textDecoration: 'none' }}>

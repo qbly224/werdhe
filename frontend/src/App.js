@@ -38,7 +38,7 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui', background: '#F7F8F7', padding: 24, textAlign: 'center' }}>
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-body)', background: '#F7F8F7', padding: 24, textAlign: 'center' }}>
           <div style={{ marginBottom: 20 }}>
             <Logo size={64} showText={false} />
           </div>
@@ -97,7 +97,7 @@ function App() {
           <CookieBanner />
           <ChatbotWidget />
   <Suspense fallback={
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: 'system-ui' }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: 'var(--font-body)' }}>
      <div style={{ textAlign: 'center' }}>
       <div style={{ width: 44, height: 44, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
       <div style={{ fontSize: 14, color: '#888' }}>Chargement...</div>

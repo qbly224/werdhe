@@ -17,7 +17,7 @@ export default function Confidentialite() {
   var navigate = useNavigate();
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'var(--font-body)', background: '#F7F8F7', minHeight: '100vh' }}>
       <SEO
         titre={t('confidentialite.seo.titre')}
         description={t('confidentialite.seo.description')}

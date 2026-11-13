@@ -241,7 +241,7 @@ export default function PanneauAbonnement(props) {
       <div onClick={onClose} aria-hidden="true"
         style={{ position: 'fixed', inset: 0, background: 'rgba(15,30,20,0.45)', zIndex: 1000 }} />
       <aside ref={panneauRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label="Abonnement du propriétaire"
-        style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 'min(480px, 100vw)', background: '#fff', zIndex: 1001, overflowY: 'auto', boxShadow: '-8px 0 32px rgba(0,0,0,0.18)', outline: 'none', fontFamily: 'system-ui, sans-serif', animation: 'panneauAboEntree .22s ease-out' }}>
+        style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 'min(480px, 100vw)', background: '#fff', zIndex: 1001, overflowY: 'auto', boxShadow: '-8px 0 32px rgba(0,0,0,0.18)', outline: 'none', fontFamily: 'var(--font-body)', animation: 'panneauAboEntree .22s ease-out' }}>
         <style>{'@keyframes panneauAboEntree { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }'}</style>
 
         <div style={{ position: 'sticky', top: 0, background: '#1B2B22', color: '#fff', padding: '16px 18px', display: 'flex', alignItems: 'flex-start', gap: 12, zIndex: 2 }}>

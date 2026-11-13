@@ -6,7 +6,7 @@
 .dashboard-wrapper {
   display: flex;
   height: 100vh;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: var(--font-body);
   background: #F0F4F1;
   overflow: hidden;
 }

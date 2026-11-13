@@ -30,12 +30,12 @@ export default function BlogArticle() {
   }, [slug]);
 
   if (loading) {
-    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontFamily: 'system-ui' }}>{t('blogArticle.chargement')}</div>;
+    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontFamily: 'var(--font-body)' }}>{t('blogArticle.chargement')}</div>;
   }
 
   if (erreur || !article) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui', gap: 16 }}>
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-body)', gap: 16 }}>
         <p style={{ color: '#888' }}>{t('blogArticle.introuvable')}</p>
         <Link to="/blog" style={{ color: '#1B6B3A', fontWeight: 700, textDecoration: 'none' }}>{t('blogArticle.retourBlog')}</Link>
       </div>
@@ -43,7 +43,7 @@ export default function BlogArticle() {
   }
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'var(--font-body)', background: '#F7F8F7', minHeight: '100vh' }}>
       <SEO
         titre={article.titre}
         description={article.meta_description || article.extrait}

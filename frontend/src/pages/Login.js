@@ -97,7 +97,7 @@ export default function Login() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', fontFamily: 'system-ui, sans-serif', overflow: 'hidden' }}>
+    <div style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', fontFamily: 'var(--font-body)', overflow: 'hidden' }}>
 
       {/* ─── FOND PLEIN ÉCRAN (slides) ────────────────────────── */}
       {SLIDES_LOGIN.map(function(slide, i) {

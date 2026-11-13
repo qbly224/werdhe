@@ -40,7 +40,7 @@ export default function VerifierDocument() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F2F6F3', fontFamily: 'system-ui, sans-serif', padding: '32px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div style={{ minHeight: '100vh', background: '#F2F6F3', fontFamily: 'var(--font-body)', padding: '32px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <SEO titre={t('verifierDocument.titre')} noIndex={true} />
       <div style={{ marginBottom: 24 }}><Logo size={36} showText={true} /></div>
       <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 6px 24px rgba(10,30,18,.10)', padding: '28px 24px', width: '100%', maxWidth: 460 }}>

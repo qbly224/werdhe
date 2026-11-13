@@ -33,7 +33,7 @@ export default function NotFound() {
 
   return (
     <div style={{
-      fontFamily: 'system-ui, sans-serif',
+      fontFamily: 'var(--font-body)',
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #0F1A12 0%, #1B2B22 50%, #1B6B3A 100%)',
       display: 'flex',

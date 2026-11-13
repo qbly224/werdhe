@@ -61,7 +61,7 @@ export default function LogementDetail() {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: 'system-ui' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: 'var(--font-body)' }}>
         <div style={{ width: 44, height: 44, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
       </div>
@@ -70,7 +70,7 @@ export default function LogementDetail() {
 
   if (!logement) {
     return (
-      <div style={{ textAlign: 'center', padding: '100px 24px', fontFamily: 'system-ui' }}>
+      <div style={{ textAlign: 'center', padding: '100px 24px', fontFamily: 'var(--font-body)' }}>
         <div style={{ fontSize: 64, marginBottom: 16 }}>😕</div>
         <h2>{t('logementDetail.introuvable.titre')}</h2>
         <Link to="/logements" style={{ color: '#1B6B3A' }}>{t('logementDetail.introuvable.retour')}</Link>
@@ -103,7 +103,7 @@ export default function LogementDetail() {
   function nextPhoto() { setPhotoActive(function(i) { return i < photos.length - 1 ? i + 1 : 0; }); }
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'var(--font-body)', background: '#F7F8F7', minHeight: '100vh' }}>
       <SEO
         titre={logement.titre + ' à ' + logement.ville}
         description={t('logementDetail.seo.description', { titre: logement.titre, ville: logement.ville, prix: GNF(logement.prix_mensuel) })}

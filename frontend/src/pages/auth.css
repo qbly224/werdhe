@@ -11,7 +11,7 @@
   justify-content: center;
   background: var(--auth-bg, #f5f6f5);
   padding: 20px;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: var(--font-body);
 }
 
 /* CARD CENTRALE */

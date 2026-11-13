@@ -131,7 +131,7 @@ export default function MapView({ logements, onSelectLogement }) {
               : svgInline('maison', 20, '#9FD8B6')) +
           '</div>' +
           (groupe.length > 1
-            ? '<div style="position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 4px;background:#F5A623;color:#1B1200;font-size:10.5px;font-weight:800;border-radius:10px;display:flex;align-items:center;justify-content:center;border:2px solid #122018;font-family:system-ui;">' + groupe.length + '</div>'
+            ? '<div style="position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 4px;background:#F5A623;color:#1B1200;font-size:10.5px;font-weight:800;border-radius:10px;display:flex;align-items:center;justify-content:center;border:2px solid #122018;font-family:var(--font-body);">' + groupe.length + '</div>'
             : '');
 
         var pinEl = el.firstElementChild;
@@ -154,7 +154,7 @@ export default function MapView({ logements, onSelectLogement }) {
             (representant.superficie ? '<span style="font-size:11px;color:#B9C2B9">' + svgInline('surface', 11) + ' ' + parseFloat(representant.superficie) + 'm²</span>' : '');
 
         var popupHtml = '' +
-          '<div style="font-family:system-ui;width:220px;background:#15241D;border-radius:14px;overflow:hidden;color:#F3EEE2">' +
+          '<div style="font-family:var(--font-body);width:220px;background:#15241D;border-radius:14px;overflow:hidden;color:#F3EEE2">' +
             '<div style="height:112px;position:relative">' +
               photoHtml +
               '<div style="position:absolute;top:8px;left:8px;right:8px;display:flex;justify-content:space-between">' +

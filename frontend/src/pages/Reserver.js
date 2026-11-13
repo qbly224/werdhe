@@ -73,7 +73,7 @@ export default function Reserver() {
   // ── Chargement ─────────────────────────────────────────────────
   if (loading) {
     return (
-      <div style={{ fontFamily: 'system-ui, sans-serif', maxWidth: 560, margin: '0 auto', padding: 20, textAlign: 'center', paddingTop: 80 }}>
+      <div style={{ fontFamily: 'var(--font-body)', maxWidth: 560, margin: '0 auto', padding: 20, textAlign: 'center', paddingTop: 80 }}>
         <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
           <Loader2 size={36} strokeWidth={1.5} color="#1B6B3A" className="spin-loader" />
         </div>
@@ -87,7 +87,7 @@ export default function Reserver() {
   var loyer = Number(logement.prix_mensuel || 0);
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', maxWidth: 560, margin: '0 auto', padding: '12px 16px', background: '#F7F8F7', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'var(--font-body)', maxWidth: 560, margin: '0 auto', padding: '12px 16px', background: '#F7F8F7', minHeight: '100vh' }}>
 
       {/* ── HEADER ──────────────────────────────────────────────── */}
       <div style={{ background: '#1B6B3A', borderRadius: 14, padding: '14px 18px', marginBottom: 20 }}>
@@ -226,7 +226,7 @@ export default function Reserver() {
               placeholder={t('reserver.formulaire.messagePlaceholder')}
               rows={4}
               required
-              style={{ width: '100%', padding: '11px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', fontFamily: 'system-ui', boxSizing: 'border-box', outline: 'none', background: '#FAFAFA' }} />
+              style={{ width: '100%', padding: '11px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', fontFamily: 'var(--font-body)', boxSizing: 'border-box', outline: 'none', background: '#FAFAFA' }} />
           </div>
 
           {/* Info */}

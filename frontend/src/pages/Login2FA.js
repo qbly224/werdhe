@@ -74,7 +74,7 @@ export default function Login2FA() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0F1A12', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, fontFamily: 'system-ui' }}>
+    <div style={{ minHeight: '100vh', background: '#0F1A12', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, fontFamily: 'var(--font-body)' }}>
       <div style={{ background: '#1B2B22', borderRadius: 24, padding: '32px 28px', width: '100%', maxWidth: 380, boxShadow: '0 24px 64px rgba(0,0,0,0.4)' }}>
 
         {/* Header */}
@@ -119,7 +119,7 @@ export default function Login2FA() {
                   background: digit ? 'rgba(245,166,35,0.1)' : 'rgba(255,255,255,0.05)',
                   outline: 'none',
                   color: '#fff',
-                  fontFamily: 'monospace',
+                  fontFamily: 'var(--font-mono)',
                   transition: 'all .15s',
                   caretColor: '#F5A623'
                 }} />

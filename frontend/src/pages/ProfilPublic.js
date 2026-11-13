@@ -27,7 +27,7 @@ export default function ProfilPublic() {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: 'system-ui', flexDirection: 'column', gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: 'var(--font-body)', flexDirection: 'column', gap: 12 }}>
         <div style={{ width: 40, height: 40, border: '3px solid #E8F5E9', borderTop: '3px solid #1B6B3A', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         <span style={{ color: '#888', fontSize: 14 }}>{t('profilPublic.chargement')}</span>
         <style>{`@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }`}</style>
@@ -37,7 +37,7 @@ export default function ProfilPublic() {
 
   if (erreur) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: 'system-ui', flexDirection: 'column', gap: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: 'var(--font-body)', flexDirection: 'column', gap: 16 }}>
         <div style={{ fontSize: 48 }}>😕</div>
         <h2 style={{ color: '#1B2B22', margin: 0 }}>{t('profilPublic.introuvable')}</h2>
         <p style={{ color: '#888' }}>{erreur}</p>
@@ -54,7 +54,7 @@ export default function ProfilPublic() {
   var initiales  = [p.prenom, p.nom].filter(Boolean).map(function(n) { return n.charAt(0); }).join('').toUpperCase();
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'var(--font-body)', background: '#F7F8F7', minHeight: '100vh' }}>
 
       {/* Header */}
       <div style={{ background: 'linear-gradient(135deg, #1B6B3A, #134F2B)', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center' }}>

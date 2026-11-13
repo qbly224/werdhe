@@ -1,5 +1,24 @@
 /* ─── THÈME CLAIR (défaut) ─────────────────────────────────────── */
 :root {
+  /* ═══ Système de design Werdhe ═══════════════════════════════════
+     Une seule source pour les couleurs, polices, angles et ombres.
+     Les noms historiques plus bas (--primary, --gray…) en sont des alias. */
+  --font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-mono:    'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+
+  --ink:          #1B2B22;   /* texte principal, bandeaux sombres */
+  --line:         #E3E8E0;   /* filets, bordures */
+  --surface-soft: #F7F8F7;   /* fond doux des pages et cartes */
+  --green-dark:   #134F2B;   /* survol du vert */
+  --info:         #1565C0;
+  --info-soft:    #E3F2FD;
+  --warn:         #9A5B00;
+  --warn-soft:    #FFF4E0;
+  --danger:       #B3261E;
+  --danger-soft:  #FDECEA;
+  --radius-full:  999px;
+
   --bg-primary:    #F5F6FA;
   --bg-secondary:  #fff;
   --bg-tertiary:   #F0F0F0;
@@ -12,15 +31,26 @@
   --green-light:   #E8F5E9;
   --green-border:  #A5D6A7;
   --gold:          #F5A623;
-  --shadow-sm:     0 1px 4px rgba(0,0,0,0.06);
+  --shadow-sm:     0 1px 3px rgba(0,0,0,0.12);   /* discrète */
   --shadow-md:     0 2px 12px rgba(0,0,0,0.08);
-  --shadow-lg:     0 8px 32px rgba(0,0,0,0.12);
+  --shadow-lg:     0 8px 24px rgba(0,0,0,0.16);  /* fenêtres, menus */
   --radius-sm:     8px;
   --radius-md:     12px;
   --radius-lg:     16px;
 }
 /* ─── THÈME SOMBRE ─────────────────────────────────────────────── */
 [data-theme="dark"] {
+  --ink:          #E8F0E9;
+  --line:         #2D3E31;
+  --surface-soft: #172419;
+  --green-dark:   #2E8F57;
+  --info:         #7FB3F5;
+  --info-soft:    #16283D;
+  --warn:         #F5B84D;
+  --warn-soft:    #3A2D12;
+  --danger:       #F2867F;
+  --danger-soft:  #3A1B19;
+
   --bg-primary:    #0F1A12;
   --bg-secondary:  #1A2B1E;
   --bg-tertiary:   #243328;
@@ -44,14 +74,14 @@
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-body);
   background-color: #f5f5f5;
   color: #333;
 }
 
 /* Police éditoriale pour les grands titres (identité "carnet d'architecte") */
 .font-serif-display {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--font-display);
 }
 
 /* Chiffres "odomètre" (composants OdometerNumber) : chaque chiffre
@@ -76,18 +106,17 @@ body {
   line-height: 1em;
 }
 
-/* Couleurs principales Werdhè */
+/* Noms historiques : alias du système ci-dessus (à retirer une fois les pages migrées). */
 :root {
-  --primary: #2E7D32;      /* Vert Werdhè */
-  --primary-light: #4CAF50;
-  --primary-dark: #1B5E20;
-  --secondary: #FF8F00;    /* Orange accent */
-  --white: #ffffff;
-  --gray-light: #f5f5f5;
-  --gray: #9e9e9e;
-  --danger: #c62828;
-  --shadow: 0 2px 8px rgba(0,0,0,0.1);
-  --radius: 8px;
+  --primary:       var(--green);
+  --primary-light: var(--green);
+  --primary-dark:  var(--green-dark);
+  --secondary:     var(--green);
+  --white:         #ffffff;
+  --gray-light:    #f5f5f5;
+  --gray:          #9e9e9e;
+  --shadow:        var(--shadow-sm);
+  --radius:        var(--radius-sm);
 }
 
 /* Utilitaires */
@@ -117,8 +146,9 @@ body {
 }
 
 .btn-secondary {
-  background-color: var(--secondary);
-  color: var(--white);
+  background-color: transparent;
+  color: var(--green);
+  box-shadow: inset 0 0 0 1.5px var(--green);
 }
 
 .btn-danger {

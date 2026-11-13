@@ -17,7 +17,7 @@ export default function CGU() {
   var navigate = useNavigate();
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'var(--font-body)', background: '#F7F8F7', minHeight: '100vh' }}>
       <SEO
         titre={t('cgu.seo.titre')}
         description={t('cgu.seo.description')}

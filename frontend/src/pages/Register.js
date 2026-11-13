@@ -97,7 +97,7 @@ export default function Register() {
   var ETAPES = [t('register.etapes.role'), t('register.etapes.infos'), t('register.etapes.securite')];
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F7F8F7', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: '#F7F8F7', display: 'flex', flexDirection: 'column', fontFamily: 'var(--font-body)' }}>
 
       {/* Header */}
       <div style={{ background: '#fff', borderBottom: '0.5px solid #E0E0E0', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -281,7 +281,7 @@ export default function Register() {
                   </label>
                   <input type="text" placeholder={t('register.placeholderParrainage')} value={codeParrainage}
                     onChange={function(e) { setCodeParrainage(e.target.value.toUpperCase()); }}
-                    style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'monospace', letterSpacing: 1, boxSizing: 'border-box' }} />
+                    style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'var(--font-mono)', letterSpacing: 1, boxSizing: 'border-box' }} />
                   {codeParrainage && (
                     <div style={{ fontSize: 12, color: '#1B6B3A', marginTop: 4, display: 'flex', alignItems: 'center', gap: 5 }}>
                       <Gift size={13} strokeWidth={1.5} /> {t('register.creditParrainage')}
