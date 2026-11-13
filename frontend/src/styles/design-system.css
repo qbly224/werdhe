@@ -58,3 +58,6 @@
 .ds-band .ds-title { color: #fff; font-size: clamp(24px, 4vw, 34px); margin: 0 0 8px; }
 .ds-band p { margin: 0 auto; max-width: 640px; font-size: 14px; color: rgba(255,255,255,.72); }
 [data-theme="dark"] .ds-band { background: #172419; }
+
+/* Les ancres ne passent pas sous l'en-tête collant. */
+section[id] { scroll-margin-top: 72px; }

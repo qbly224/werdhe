@@ -21,6 +21,14 @@ export default function useDarkMode() {
     }
   }, [darkMode]);
 
+  // Le mode sombre ne vaut que dans l'espace connecté : les pages publiques restent claires.
+  useEffect(function() {
+    return function() {
+      document.documentElement.removeAttribute('data-theme');
+      document.documentElement.style.colorScheme = 'light';
+    };
+  }, []);
+
   function toggleDarkMode() { setDarkMode(function(d) { return !d; }); }
 
   return { darkMode, toggleDarkMode, setDarkMode };
