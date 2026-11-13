@@ -106,12 +106,12 @@
             "Live right away"
           ],
           [
-            "Built-in messaging",
-            "You choose"
+            "You choose",
+            ""
           ],
           [
-            "Locked document",
-            "Verification QR"
+            "Online signature",
+            ""
           ]
         ],
         "tenant": [
@@ -124,8 +124,8 @@
             "Online file"
           ],
           [
-            "Signed inspection",
-            "Free for you"
+            "Online signature",
+            ""
           ]
         ]
       },
@@ -179,24 +179,6 @@
           }
         }
       },
-      "trust": [
-        {
-          "titre": "Locked documents",
-          "desc": "Once signed, they can no longer be changed."
-        },
-        {
-          "titre": "Verification QR",
-          "desc": "Every document can be checked online."
-        },
-        {
-          "titre": "Mobile payment",
-          "desc": "Orange Money, MTN MoMo, Kulu, card."
-        },
-        {
-          "titre": "Free for tenants",
-          "desc": "No fees, no commission."
-        }
-      ],
       "etapesAria": "Steps",
       "profilAria": "Profile"
     },
@@ -214,7 +196,88 @@
     },
     "featuresSection": {
       "overline": "Features",
-      "title": "Everything to manage your rentals"
+      "title": "Everything to manage your rentals",
+      "subtitle": "Follow-up, figures and documents in one place.",
+      "exemple": "Example",
+      "vedettes": [
+        {
+          "titre": "Rent follow-up",
+          "desc": "Rent alerts warn you before the due date and when a payment is late. Receipts are generated automatically.",
+          "mini": {
+            "titre": "Rent this year",
+            "m1": "October",
+            "m2": "November",
+            "m3": "December",
+            "paye": "Paid",
+            "retard": "Late",
+            "avenir": "Upcoming",
+            "rappel": "Reminder sent"
+          }
+        },
+        {
+          "titre": "Clear reports",
+          "desc": "Your income month by month, with readable charts and an export of your reports (depending on your plan).",
+          "mini": {
+            "titre": "Income over 6 months",
+            "export": "PDF export"
+          }
+        },
+        {
+          "titre": "Your whole portfolio in one place",
+          "desc": "Your properties, their status and your tenants in a single dashboard. Agencies invite their team.",
+          "mini": {
+            "titre": "My properties",
+            "b1": "3-bed apartment, Kipé",
+            "b2": "Studio, Ratoma",
+            "b3": "4-bed villa, Lambanyi",
+            "loue": "Rented",
+            "reserve": "Reserved",
+            "libre": "Vacant"
+          }
+        }
+      ],
+      "grille": [
+        {
+          "titre": "Locked documents",
+          "desc": "No changes after signing, verification QR."
+        },
+        {
+          "titre": "Lease guarantee with guarantor",
+          "desc": "The guarantor signs without creating an account."
+        },
+        {
+          "titre": "Negotiated renewal",
+          "desc": "Term and rent discussed online."
+        },
+        {
+          "titre": "Claims",
+          "desc": "Report with a photo and follow-up."
+        },
+        {
+          "titre": "Rent estimate",
+          "desc": "An indicative price by neighbourhood."
+        },
+        {
+          "titre": "Secure files",
+          "desc": "ID, income and contracts kept safe."
+        },
+        {
+          "titre": "Messaging and notifications",
+          "desc": "Built-in chat, alerts on your phone."
+        },
+        {
+          "titre": "Mutual ratings",
+          "desc": "Trust on both sides."
+        },
+        {
+          "titre": "Compared inspections",
+          "desc": "Move-in and move-out side by side."
+        },
+        {
+          "titre": "Notice with acknowledgement",
+          "desc": "Date of your choice, acknowledgement of receipt."
+        }
+      ]
     },
     "features": [
       { "titre": "Secure files", "desc": "ID cards, pay stubs and contracts stored and accessed securely." },

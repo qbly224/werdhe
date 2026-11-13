@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Check, Home, Lock, QrCode, Smartphone, Users, ChevronRight } from 'lucide-react';
+import { Check, Home, ChevronRight } from 'lucide-react';
 import './CommentCaMarche.css';
 
 // Durée d'affichage de chaque étape avant de passer à la suivante (ms).
@@ -140,8 +140,6 @@ export default function CommentCaMarche() {
   function changerProfil(p) { setProfil(p); setEtape(0); setFige(false); }
   function choisirEtape(i) { setEtape(i); setFige(true); }
 
-  var confiance = [Lock, QrCode, Smartphone, Users];
-
   return (
     <div className="ccm" ref={racine}>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -164,7 +162,7 @@ export default function CommentCaMarche() {
                   <span className="ccm-d">{t('landingPage.steps.' + role + '.' + i + '.desc')}</span>
                   <span className="ccm-more"><span>
                     <span className="ccm-chip">{t(PREFIX + 'chips.' + role + '.' + i + '.0')}</span>
-                    <span className="ccm-chip g">{t(PREFIX + 'chips.' + role + '.' + i + '.1')}</span>
+                    {t(PREFIX + 'chips.' + role + '.' + i + '.1') ? <span className="ccm-chip g">{t(PREFIX + 'chips.' + role + '.' + i + '.1')}</span> : null}
                   </span></span>
                 </span>
                 <span key={role + etape + (auto ? 'a' : 'p')} className={'ccm-prog' + (actif && auto ? ' run' : '')} style={{ '--ccm-dur': DUREE_ETAPE + 'ms' }} />
@@ -184,17 +182,6 @@ export default function CommentCaMarche() {
         <button onClick={function() { navigate(profil === 0 ? '/inscription' : '/logements'); }}>
           {profil === 0 ? t(PREFIX + 'ctaProprio') : t(PREFIX + 'ctaLocataire')} <ChevronRight size={16} strokeWidth={2} />
         </button>
-      </div>
-
-      <div className="ccm-trust">
-        {confiance.map(function(Icone, i) {
-          return (
-            <div className="ccm-tr" key={i}>
-              <Icone size={34} strokeWidth={1.8} aria-hidden="true" />
-              <div><b>{t(PREFIX + 'trust.' + i + '.titre')}</b><span>{t(PREFIX + 'trust.' + i + '.desc')}</span></div>
-            </div>
-          );
-        })}
       </div>
     </div>
   );
