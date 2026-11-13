@@ -256,31 +256,31 @@ var NAV = [
 ];
 
   var cfgStatuts = {
-    en_attente:         { label: t('admin.statutsReservation.enAttente'),     color: '#F5A623', bg: '#FFF8E1' },
-    dossier_requis:     { label: t('admin.statutsReservation.dossierRequis'), color: '#1565C0', bg: '#E3F2FD' },
-    en_examen:          { label: t('admin.statutsReservation.enExamen'),      color: '#7B1FA2', bg: '#F3E5F5' },
-    acceptee:           { label: t('admin.statutsReservation.acceptee'),      color: '#1B6B3A', bg: '#E8F5E9' },
-    echanges:           { label: t('admin.statutsReservation.echanges'),      color: '#1565C0', bg: '#E3F2FD' },
-    caution_requise:    { label: t('admin.statutsReservation.cautionRequise'), color: '#E65100', bg: '#FFF3E0' },
-    caution_payee:      { label: t('admin.statutsReservation.cautionPayee'),  color: '#1B6B3A', bg: '#E8F5E9' },
-    bail_en_cours:      { label: t('admin.statutsReservation.bailEnCours'),   color: '#7B1FA2', bg: '#F3E5F5' },
-    bail_signe_proprio: { label: t('admin.statutsReservation.bailSigne'),     color: '#7B1FA2', bg: '#F3E5F5' },
-    confirmee:          { label: t('admin.statutsReservation.active'),       color: '#1B6B3A', bg: '#E8F5E9' },
-    refusee:            { label: t('admin.statutsReservation.refusee'),      color: '#B71C1C', bg: '#FFEBEE' },
-    terminee:           { label: t('admin.statutsReservation.terminee'),     color: '#888',    bg: '#F5F5F5' },
+    en_attente:         { label: t('admin.statutsReservation.enAttente'),     color: 'var(--warn)', bg: 'var(--warn-soft)' },
+    dossier_requis:     { label: t('admin.statutsReservation.dossierRequis'), color: 'var(--info)', bg: 'var(--info-soft)' },
+    en_examen:          { label: t('admin.statutsReservation.enExamen'),      color: 'var(--info)', bg: 'var(--info-soft)' },
+    acceptee:           { label: t('admin.statutsReservation.acceptee'),      color: 'var(--green)', bg: 'var(--green-light)' },
+    echanges:           { label: t('admin.statutsReservation.echanges'),      color: 'var(--info)', bg: 'var(--info-soft)' },
+    caution_requise:    { label: t('admin.statutsReservation.cautionRequise'), color: 'var(--warn)', bg: 'var(--warn-soft)' },
+    caution_payee:      { label: t('admin.statutsReservation.cautionPayee'),  color: 'var(--green)', bg: 'var(--green-light)' },
+    bail_en_cours:      { label: t('admin.statutsReservation.bailEnCours'),   color: 'var(--info)', bg: 'var(--info-soft)' },
+    bail_signe_proprio: { label: t('admin.statutsReservation.bailSigne'),     color: 'var(--info)', bg: 'var(--info-soft)' },
+    confirmee:          { label: t('admin.statutsReservation.active'),       color: 'var(--green)', bg: 'var(--green-light)' },
+    refusee:            { label: t('admin.statutsReservation.refusee'),      color: 'var(--danger)', bg: 'var(--danger-soft)' },
+    terminee:           { label: t('admin.statutsReservation.terminee'),     color: 'var(--text-muted)',    bg: 'var(--surface-soft)' },
   };
 
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', fontFamily: 'var(--font-body)', flexDirection: 'column', gap: 12 }}>
-        <Home size={32} strokeWidth={1.5} color="#1B6B3A" />
-        <div style={{ color: '#888' }}>{t('admin.loading')}</div>
+        <Home size={32} strokeWidth={1.5} color="var(--green)" />
+        <div style={{ color: 'var(--text-muted)' }}>{t('admin.loading')}</div>
       </div>
     );
   }
 
   return (
-    <div style={{ fontFamily: 'var(--font-body)', display: 'flex', minHeight: '100vh', background: '#F7F8F7' }}>
+    <div style={{ fontFamily: 'var(--font-body)', display: 'flex', minHeight: '100vh', background: 'var(--surface-soft)' }}>
 
       {/* ── SIDEBAR ───────────────────────────────────────────── */}
       <div className="admin-sidebar" style={{ width: 220, background: '#1B2B22', minHeight: '100vh', padding: '0', flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
@@ -288,7 +288,7 @@ var NAV = [
           <Logo size={26} showText={true} darkBg={true} />
           <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11, marginTop: 3 }}>{t('admin.sidebar.panneauAdmin')}</div>
           <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
-            <div style={{ width: 8, height: 8, background: '#34A853', borderRadius: '50%' }} />
+            <div style={{ width: 8, height: 8, background: 'var(--green)', borderRadius: '50%' }} />
             <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11 }}>{t('admin.sidebar.syncInfo')}</span>
           </div>
         </div>
@@ -298,7 +298,7 @@ var NAV = [
             var actif = onglet === n.id;
             return (
               <button key={n.id} onClick={function() { setOnglet(n.id); }}
-                style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10, border: 'none', background: actif ? 'rgba(255,255,255,0.12)' : 'transparent', color: actif ? '#fff' : 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: actif ? 700 : 400, cursor: 'pointer', marginBottom: 4, textAlign: 'left' }}>
+                style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 8, border: 'none', background: actif ? 'rgba(255,255,255,0.12)' : 'transparent', color: actif ? '#fff' : 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: actif ? 700 : 400, cursor: 'pointer', marginBottom: 4, textAlign: 'left' }}>
                 <n.icon size={16} strokeWidth={1.5} />
                 {n.label}
               </button>
@@ -322,7 +322,7 @@ var NAV = [
       <div style={{ flex: 1, padding: 'clamp(12px, 3vw, 24px)', overflowY: 'auto', width: '100%', minWidth: 0 }}>
   {/* Menu mobile admin */}
   <div style={{ display: 'none' }} className="admin-mobile-menu">
-    <div style={{ background: '#1B2B22', padding: '12px 16px', display: 'flex', gap: 8, overflowX: 'auto', marginBottom: 16, borderRadius: 10 }}>
+    <div style={{ background: '#1B2B22', padding: '12px 16px', display: 'flex', gap: 8, overflowX: 'auto', marginBottom: 16, borderRadius: 8 }}>
       {NAV.map(function(n) {
         return (
           <button key={n.id} onClick={function() { setOnglet(n.id); }}
@@ -336,25 +336,25 @@ var NAV = [
   {onglet === 'stats' && (
   <div>
   {/* ─── BARRE TEMPS RÉEL ─────────────────────────────────────── */}
-<div style={{ background: '#fff', borderRadius: 14, padding: '14px 20px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+<div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: '14px 20px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-    <div style={{ width: 10, height: 10, background: autoRefresh ? '#1B6B3A' : '#aaa', borderRadius: '50%', animation: autoRefresh ? 'pulse 2s ease infinite' : 'none' }} />
-    <span style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>
+    <div style={{ width: 10, height: 10, background: autoRefresh ? 'var(--green)' : '#aaa', borderRadius: '50%', animation: autoRefresh ? 'pulse 2s ease infinite' : 'none' }} />
+    <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>
       {autoRefresh ? t('admin.stats.tempsReelActif') : t('admin.stats.pause')}
     </span>
     {lastUpdate && (
-      <span style={{ fontSize: 12, color: '#888' }}>
+      <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
         {t('admin.stats.misAJour', { heure: lastUpdate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) })}
       </span>
     )}
     {autoRefresh && (
-      <span style={{ fontSize: 12, color: '#888' }}>
-        {t('admin.stats.rafraichissementDans')} <span style={{ color: countdown <= 10 ? '#E53935' : '#1B6B3A', fontWeight: 700 }}>{countdown}s</span>
+      <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+        {t('admin.stats.rafraichissementDans')} <span style={{ color: countdown <= 10 ? 'var(--danger)' : 'var(--green)', fontWeight: 700 }}>{countdown}s</span>
       </span>
     )}
   </div>
   <button onClick={function() { setAutoRefresh(!autoRefresh); }}
-    style={{ padding: '6px 14px', borderRadius: 20, border: '1px solid #E0E0E0', background: autoRefresh ? '#FFEBEE' : '#E8F5E9', color: autoRefresh ? '#B71C1C' : '#1B6B3A', fontSize: 12, fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+    style={{ padding: '6px 14px', borderRadius: 16, border: '1px solid var(--border)', background: autoRefresh ? 'var(--danger-soft)' : 'var(--green-light)', color: autoRefresh ? 'var(--danger)' : 'var(--green)', fontSize: 12, fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
     {autoRefresh ? <Pause size={13} strokeWidth={2} /> : <Play size={13} strokeWidth={2} />}
     {autoRefresh ? t('admin.stats.boutonPause') : t('admin.stats.boutonReprendre')}
   </button>
@@ -362,13 +362,13 @@ var NAV = [
 
 {/* ─── ALERTES CRITIQUES ───────────────────────────────────── */}
 {liveData && liveData.alertes_critiques > 0 && (
-  <div style={{ background: '#FFEBEE', border: '1px solid #FFCDD2', borderRadius: 12, padding: '14px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
-    <AlertTriangle size={24} strokeWidth={1.5} color="#B71C1C" />
+  <div style={{ background: 'var(--danger-soft)', border: '1px solid var(--danger)', borderRadius: 12, padding: '14px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
+    <AlertTriangle size={24} strokeWidth={1.5} color="var(--danger)" />
     <div>
-      <div style={{ fontSize: 14, fontWeight: 700, color: '#B71C1C' }}>
+      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--danger)' }}>
         {t('admin.stats.alerteCritique', { count: liveData.alertes_critiques })}
       </div>
-      <div style={{ fontSize: 12, color: '#E53935' }}>{t('admin.stats.actionRequise')}</div>
+      <div style={{ fontSize: 12, color: 'var(--danger)' }}>{t('admin.stats.actionRequise')}</div>
     </div>
   </div>
 )}
@@ -377,16 +377,16 @@ var NAV = [
 {liveData && (
   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 16 }}>
     {[
-      { label: t('admin.stats.kpi.inscriptionsAujourdhui'), val: liveData.inscriptions_aujourdhui, icon: UserPlus, color: '#1B6B3A', bg: '#E8F5E9' },
-      { label: t('admin.stats.kpi.candidaturesAujourdhui'), val: liveData.candidatures_aujourdhui, icon: CalendarCheck, color: '#1565C0', bg: '#E3F2FD' },
-      { label: t('admin.stats.kpi.paiementsAujourdhui'),    val: liveData.paiements_aujourdhui.nb, icon: CreditCard, color: '#7B1FA2', bg: '#F3E5F5' },
-      { label: t('admin.stats.kpi.volumeAujourdhui'),       val: new Intl.NumberFormat('fr-FR').format(liveData.paiements_aujourdhui.total) + ' GNF', icon: Wallet, color: '#E65100', bg: '#FFF3E0' },
+      { label: t('admin.stats.kpi.inscriptionsAujourdhui'), val: liveData.inscriptions_aujourdhui, icon: UserPlus, color: 'var(--green)', bg: 'var(--green-light)' },
+      { label: t('admin.stats.kpi.candidaturesAujourdhui'), val: liveData.candidatures_aujourdhui, icon: CalendarCheck, color: 'var(--green)', bg: 'var(--green-light)' },
+      { label: t('admin.stats.kpi.paiementsAujourdhui'),    val: liveData.paiements_aujourdhui.nb, icon: CreditCard, color: 'var(--green)', bg: 'var(--green-light)' },
+      { label: t('admin.stats.kpi.volumeAujourdhui'),       val: new Intl.NumberFormat('fr-FR').format(liveData.paiements_aujourdhui.total) + ' GNF', icon: Wallet, color: 'var(--green)', bg: 'var(--green-light)' },
     ].map(function(k, i) {
       return (
         <div key={i} style={{ background: k.bg, borderRadius: 12, padding: '14px 16px', borderLeft: '4px solid ' + k.color }}>
           <div style={{ marginBottom: 6 }}><k.icon size={22} strokeWidth={1.5} color={k.color} /></div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: k.color }}>{k.val}</div>
-          <div style={{ fontSize: 11, color: '#555', marginTop: 4 }}>{k.label}</div>
+          <div style={{ fontSize: 20, fontWeight: 700, color: k.color }}>{k.val}</div>
+          <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 4 }}>{k.label}</div>
         </div>
       );
     })}
@@ -395,18 +395,18 @@ var NAV = [
 
 {/* ─── ACTIVITÉ EN TEMPS RÉEL ──────────────────────────────── */}
 {liveData && liveData.activite && liveData.activite.length > 0 && (
-  <div style={{ background: '#fff', borderRadius: 14, padding: '18px 20px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-    <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+  <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: '18px 20px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+    <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
       <Zap size={16} strokeWidth={1.5} /> {t('admin.stats.activiteRecente')}
     </div>
     <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
       {liveData.activite.map(function(a, i) {
         var cfg = {
-          inscription: { icon: UserPlus, color: '#1B6B3A', bg: '#E8F5E9', label: t('admin.stats.activiteType.inscription') },
-          candidature: { icon: CalendarCheck, color: '#1565C0', bg: '#E3F2FD', label: t('admin.stats.activiteType.candidature') },
-          logement:    { icon: Home, color: '#7B1FA2', bg: '#F3E5F5', label: t('admin.stats.activiteType.logement')    },
-          paiement:    { icon: Wallet, color: '#E65100', bg: '#FFF3E0', label: t('admin.stats.activiteType.paiement')    },
-        }[a.type] || { icon: HelpCircle, color: '#888', bg: '#F5F5F5', label: a.type };
+          inscription: { icon: UserPlus, color: 'var(--green)', bg: 'var(--green-light)', label: t('admin.stats.activiteType.inscription') },
+          candidature: { icon: CalendarCheck, color: 'var(--green)', bg: 'var(--green-light)', label: t('admin.stats.activiteType.candidature') },
+          logement:    { icon: Home, color: 'var(--green)', bg: 'var(--green-light)', label: t('admin.stats.activiteType.logement')    },
+          paiement:    { icon: Wallet, color: 'var(--green)', bg: 'var(--green-light)', label: t('admin.stats.activiteType.paiement')    },
+        }[a.type] || { icon: HelpCircle, color: 'var(--text-muted)', bg: 'var(--surface-soft)', label: a.type };
 
         return (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: i < liveData.activite.length - 1 ? '0.5px solid #F5F5F5' : 'none' }}>
@@ -415,7 +415,7 @@ var NAV = [
             </div>
             <div style={{ flex: 1 }}>
               <span style={{ fontSize: 12, fontWeight: 700, color: cfg.color, marginRight: 8 }}>{cfg.label}</span>
-              <span style={{ fontSize: 13, color: '#1B2B22' }}>{a.detail}</span>
+              <span style={{ fontSize: 13, color: 'var(--text-primary)' }}>{a.detail}</span>
             </div>
             <div style={{ fontSize: 11, color: '#aaa', flexShrink: 0 }}>
               {new Date(a.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}
@@ -435,15 +435,15 @@ var NAV = [
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
               <div>
-                <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
                   <LayoutDashboard size={18} strokeWidth={1.8} /> {t('admin.stats.titre')}
                 </h1>
-                <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>
+                <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '4px 0 0' }}>
                   {t('admin.stats.derniereMiseAJour', { heure: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) })}
                 </p>
               </div>
               <button onClick={charger}
-                style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '8px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                style={{ background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
                 <RefreshCw size={14} strokeWidth={2} /> {t('admin.stats.actualiser')}
               </button>
             </div>
@@ -451,38 +451,38 @@ var NAV = [
             {/* KPIs principaux */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14, marginBottom: 24 }}>
               {[
-                { label: t('admin.stats.kpiPrincipaux.utilisateurs'),      val: stats.total_users,         icon: Users, color: '#1565C0', bg: '#E3F2FD' },
-                { label: t('admin.stats.kpiPrincipaux.proprietaires'),     val: stats.total_proprietaires, icon: KeyRound, color: '#1B6B3A', bg: '#E8F5E9' },
-                { label: t('admin.stats.kpiPrincipaux.locataires'),        val: stats.total_locataires,    icon: Home, color: '#7B1FA2', bg: '#F3E5F5' },
-                { label: t('admin.stats.kpiPrincipaux.logementsPublies'), val: stats.total_logements,     icon: Building2, color: '#E65100', bg: '#FFF3E0' },
-                { label: t('admin.stats.kpiPrincipaux.logementsLoues'),   val: stats.logements_loues,     icon: CheckCircle2, color: '#1B6B3A', bg: '#E8F5E9' },
-                { label: t('admin.stats.kpiPrincipaux.reservations'),      val: stats.total_reservations,  icon: CalendarCheck, color: '#1565C0', bg: '#E3F2FD' },
-                { label: t('admin.stats.kpiPrincipaux.locationsActives'), val: stats.total_confirmees,    icon: DoorOpen, color: '#1B6B3A', bg: '#E8F5E9' },
-                { label: t('admin.stats.kpiPrincipaux.revenus'),      val: GNF(stats.revenus_plateforme || 0), icon: Wallet, color: '#C8860A', bg: '#FFF8E1' },
+                { label: t('admin.stats.kpiPrincipaux.utilisateurs'),      val: stats.total_users,         icon: Users, color: 'var(--green)', bg: 'var(--green-light)' },
+                { label: t('admin.stats.kpiPrincipaux.proprietaires'),     val: stats.total_proprietaires, icon: KeyRound, color: 'var(--green)', bg: 'var(--green-light)' },
+                { label: t('admin.stats.kpiPrincipaux.locataires'),        val: stats.total_locataires,    icon: Home, color: 'var(--green)', bg: 'var(--green-light)' },
+                { label: t('admin.stats.kpiPrincipaux.logementsPublies'), val: stats.total_logements,     icon: Building2, color: 'var(--green)', bg: 'var(--green-light)' },
+                { label: t('admin.stats.kpiPrincipaux.logementsLoues'),   val: stats.logements_loues,     icon: CheckCircle2, color: 'var(--green)', bg: 'var(--green-light)' },
+                { label: t('admin.stats.kpiPrincipaux.reservations'),      val: stats.total_reservations,  icon: CalendarCheck, color: 'var(--green)', bg: 'var(--green-light)' },
+                { label: t('admin.stats.kpiPrincipaux.locationsActives'), val: stats.total_confirmees,    icon: DoorOpen, color: 'var(--green)', bg: 'var(--green-light)' },
+                { label: t('admin.stats.kpiPrincipaux.revenus'),      val: GNF(stats.revenus_plateforme || 0), icon: Wallet, color: 'var(--green)', bg: 'var(--green-light)' },
               ].map(function(s, i) {
                 return (
-                  <div key={i} style={{ background: s.bg, borderRadius: 14, padding: 16, borderLeft: '4px solid ' + s.color }}>
+                  <div key={i} style={{ background: s.bg, borderRadius: 12, padding: 16, borderLeft: '4px solid ' + s.color }}>
                     <div style={{ marginBottom: 6 }}><s.icon size={24} strokeWidth={1.5} color={s.color} /></div>
-                    <div style={{ fontSize: 20, fontWeight: 800, color: s.color }}>{s.val}</div>
-                    <div style={{ fontSize: 11, color: '#555', marginTop: 4 }}>{s.label}</div>
+                    <div style={{ fontSize: 20, fontWeight: 700, color: s.color }}>{s.val}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 4 }}>{s.label}</div>
                   </div>
                 );
               })}
             </div>
             {/* Abonnements */}
-<div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: 16 }}>
-  <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>{t('admin.stats.abonnementsActifs')}</div>
+<div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: 16 }}>
+  <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 14 }}>{t('admin.stats.abonnementsActifs')}</div>
   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
     {[
-      { label: t('admin.plans.gratuit'),  val: stats.abonnements.gratuit, color: '#888',    bg: '#F5F5F5' },
-      { label: t('admin.plans.essai'),    val: stats.abonnements.essai,   color: '#E65100', bg: '#FFF3E0' },
-      { label: t('admin.plans.pro'),      val: stats.abonnements.pro,     color: '#1B6B3A', bg: '#E8F5E9' },
-      { label: t('admin.plans.agence'),   val: stats.abonnements.agence,  color: '#7B1FA2', bg: '#F3E5F5' },
+      { label: t('admin.plans.gratuit'),  val: stats.abonnements.gratuit, color: 'var(--text-muted)',    bg: 'var(--surface-soft)' },
+      { label: t('admin.plans.essai'),    val: stats.abonnements.essai,   color: 'var(--warn)', bg: 'var(--warn-soft)' },
+      { label: t('admin.plans.pro'),      val: stats.abonnements.pro,     color: 'var(--green)', bg: 'var(--green-light)' },
+      { label: t('admin.plans.agence'),   val: stats.abonnements.agence,  color: 'var(--info)', bg: 'var(--info-soft)' },
     ].map(function(a, i) {
       return (
-        <div key={i} style={{ background: a.bg, borderRadius: 10, padding: 14, textAlign: 'center' }}>
-          <div style={{ fontSize: 26, fontWeight: 800, color: a.color }}>{a.val}</div>
-          <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{a.label}</div>
+        <div key={i} style={{ background: a.bg, borderRadius: 8, padding: 14, textAlign: 'center' }}>
+          <div style={{ fontSize: 26, fontWeight: 700, color: a.color }}>{a.val}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>{a.label}</div>
         </div>
       );
     })}
@@ -491,17 +491,17 @@ var NAV = [
 
 {/* Graphique inscriptions */}
 {stats.evolution && stats.evolution.length > 0 && (
-  <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: 16 }}>
-    <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>{t('admin.stats.inscriptions6Mois')}</div>
+  <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: 16 }}>
+    <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 14 }}>{t('admin.stats.inscriptions6Mois')}</div>
     <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end', height: 100 }}>
       {stats.evolution.map(function(m, i) {
         var max = Math.max.apply(null, stats.evolution.map(function(x) { return Number(x.nb_users); }));
         var pct = max > 0 ? Number(m.nb_users) / max : 0;
         return (
           <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-            <div style={{ fontSize: 10, color: '#1B6B3A', fontWeight: 700 }}>{m.nb_users}</div>
-            <div style={{ width: '100%', background: '#1B6B3A', borderRadius: '4px 4px 0 0', height: Math.max(4, Math.round(pct * 80)) + 'px', transition: 'height .5s' }} />
-            <div style={{ fontSize: 9, color: '#888', textAlign: 'center' }}>{m.mois}</div>
+            <div style={{ fontSize: 10, color: 'var(--green)', fontWeight: 700 }}>{m.nb_users}</div>
+            <div style={{ width: '100%', background: 'var(--green)', borderRadius: '4px 4px 0 0', height: Math.max(4, Math.round(pct * 80)) + 'px', transition: 'height .5s' }} />
+            <div style={{ fontSize: 9, color: 'var(--text-muted)', textAlign: 'center' }}>{m.mois}</div>
           </div>
         );
       })}
@@ -511,15 +511,15 @@ var NAV = [
 
 {/* Logs récents */}
 {stats.logs_recents && stats.logs_recents.length > 0 && (
-  <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: 16 }}>
-    <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14 }}>{t('admin.stats.activiteRecente')}</div>
+  <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: 16 }}>
+    <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 14 }}>{t('admin.stats.activiteRecente')}</div>
     {stats.logs_recents.map(function(l, i) {
       return (
         <div key={i} style={{ display: 'flex', gap: 12, padding: '8px 0', borderBottom: '0.5px solid #F5F5F5', alignItems: 'center' }}>
-          <div style={{ width: 8, height: 8, background: l.action.includes('admin') ? '#F5A623' : '#1B6B3A', borderRadius: '50%', flexShrink: 0 }} />
+          <div style={{ width: 8, height: 8, background: l.action.includes('admin') ? '#9A5B00' : 'var(--green)', borderRadius: '50%', flexShrink: 0 }} />
           <div style={{ flex: 1 }}>
-            <span style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>{l.prenom} {l.nom}</span>
-            <span style={{ fontSize: 12, color: '#888', marginLeft: 8 }}>{l.action}</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{l.prenom} {l.nom}</span>
+            <span style={{ fontSize: 12, color: 'var(--text-muted)', marginLeft: 8 }}>{l.action}</span>
           </div>
           <div style={{ fontSize: 11, color: '#aaa' }}>
             {new Date(l.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
@@ -532,21 +532,21 @@ var NAV = [
 
             {/* Graphique réservations */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-              <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>{t('admin.stats.repartitionReservations')}</div>
+              <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 16 }}>{t('admin.stats.repartitionReservations')}</div>
                 {[
-                  { label: t('admin.stats.kpiPrincipaux.locationsActives'),      val: stats.total_confirmees,                                                                                                          color: '#1B6B3A' },
-                  { label: t('admin.stats.enCoursTraitement'), val: Math.max(0, stats.total_reservations - stats.total_confirmees - Math.floor(stats.total_reservations * 0.1)), color: '#F5A623' },
-                  { label: t('admin.stats.refuseesAnnulees'),   val: Math.floor(stats.total_reservations * 0.1),                                                                  color: '#E53935' },
+                  { label: t('admin.stats.kpiPrincipaux.locationsActives'),      val: stats.total_confirmees,                                                                                                          color: 'var(--green)' },
+                  { label: t('admin.stats.enCoursTraitement'), val: Math.max(0, stats.total_reservations - stats.total_confirmees - Math.floor(stats.total_reservations * 0.1)), color: 'var(--warn)' },
+                  { label: t('admin.stats.refuseesAnnulees'),   val: Math.floor(stats.total_reservations * 0.1),                                                                  color: 'var(--danger)' },
                 ].map(function(item) {
                   var pct = stats.total_reservations > 0 ? Math.round(item.val / stats.total_reservations * 100) : 0;
                   return (
                     <div key={item.label} style={{ marginBottom: 12 }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5, fontSize: 12 }}>
-                        <span style={{ color: '#555' }}>{item.label}</span>
+                        <span style={{ color: 'var(--text-secondary)' }}>{item.label}</span>
                         <span style={{ fontWeight: 700, color: item.color }}>{item.val} ({pct}%)</span>
                       </div>
-                      <div style={{ background: '#F0F0F0', borderRadius: 4, height: 8, overflow: 'hidden' }}>
+                      <div style={{ background: 'var(--bg-tertiary)', borderRadius: 4, height: 8, overflow: 'hidden' }}>
                         <div style={{ background: item.color, width: pct + '%', height: '100%', borderRadius: 4, transition: 'width .5s' }} />
                       </div>
                     </div>
@@ -554,20 +554,20 @@ var NAV = [
                 })}
               </div>
 
-              <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>{t('admin.stats.alertesRecentes')}</div>
+              <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 16 }}>{t('admin.stats.alertesRecentes')}</div>
                 {alertes.slice(0, 5).map(function(a, i) {
                   return (
                     <div key={i} style={{ display: 'flex', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #F5F5F5' }}>
-                      <span style={{ flexShrink: 0 }}>{a.type === 'loyer_retard' ? <AlertTriangle size={16} strokeWidth={1.5} color="#F5A623" /> : <ClipboardList size={16} strokeWidth={1.5} color="#1565C0" />}</span>
+                      <span style={{ flexShrink: 0 }}>{a.type === 'loyer_retard' ? <AlertTriangle size={16} strokeWidth={1.5} color="var(--warn)" /> : <ClipboardList size={16} strokeWidth={1.5} color="var(--info)" />}</span>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22' }}>{a.titre}</div>
-                        <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{new Date(a.created_at).toLocaleDateString('fr-FR')}</div>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>{a.titre}</div>
+                        <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{new Date(a.created_at).toLocaleDateString('fr-FR')}</div>
                       </div>
                     </div>
                   );
                 })}
-                {alertes.length === 0 && <div style={{ color: '#888', fontSize: 13 }}>{t('admin.stats.aucuneAlerte')}</div>}
+                {alertes.length === 0 && <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>{t('admin.stats.aucuneAlerte')}</div>}
               </div>
             </div>
           </div>
@@ -578,27 +578,27 @@ var NAV = [
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
               <div>
-                <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
                   <Users size={18} strokeWidth={1.8} /> {t('admin.users.titre')}
                 </h1>
-                <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.users.compteur', { filtres: usersFiltres.length, total: users.length })}</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '4px 0 0' }}>{t('admin.users.compteur', { filtres: usersFiltres.length, total: users.length })}</p>
               </div>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                   <Search size={14} strokeWidth={2} style={{ position: 'absolute', left: 12, color: '#aaa', pointerEvents: 'none' }} />
                   <input type="text" placeholder={t('admin.users.rechercherPlaceholder')} value={searchUser}
                     onChange={function(e) { setSearchUser(e.target.value); }}
-                    style={{ padding: '9px 14px 9px 34px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', marginBottom: 0 }} />
+                    style={{ padding: '9px 14px 9px 34px', borderRadius: 8, border: '0.5px solid var(--border)', fontSize: 13, outline: 'none', marginBottom: 0 }} />
                 </div>
                 <select value={filterRole} onChange={function(e) { setFilterRole(e.target.value); }}
-                  style={{ padding: '9px 14px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: '#fff', width: 'auto', marginBottom: 0 }}>
+                  style={{ padding: '9px 14px', borderRadius: 8, border: '0.5px solid var(--border)', fontSize: 13, outline: 'none', background: 'var(--bg-secondary)', width: 'auto', marginBottom: 0 }}>
                   <option value="tous">{t('admin.users.filtreTousRoles')}</option>
                   <option value="locataire">{t('admin.users.filtreLocataires')}</option>
                   <option value="proprietaire">{t('admin.users.filtreProprietaires')}</option>
                   <option value="admin">{t('admin.users.filtreAdmins')}</option>
                 </select>
                 <select aria-label="Filtrer par source d'abonnement" value={filterSource} onChange={function(e) { setFilterSource(e.target.value); }}
-                  style={{ padding: '9px 14px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: '#fff', width: 'auto', marginBottom: 0 }}>
+                  style={{ padding: '9px 14px', borderRadius: 8, border: '0.5px solid var(--border)', fontSize: 13, outline: 'none', background: 'var(--bg-secondary)', width: 'auto', marginBottom: 0 }}>
                   <option value="tous">Toutes les sources</option>
                   <option value="paye">Payé</option>
                   <option value="essai">Essai</option>
@@ -610,46 +610,46 @@ var NAV = [
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {usersFiltres.map(function(u) {
                 var initiales = ((u.prenom || 'U').charAt(0) + (u.nom || 'U').charAt(0)).toUpperCase();
-                var roleColor = u.role === 'admin' ? '#7B1FA2' : u.role === 'proprietaire' ? '#1B6B3A' : '#1565C0';
+                var roleColor = u.role === 'admin' ? '#1B2B22' : u.role === 'proprietaire' ? '#1B6B3A' : '#55655B';
                 var nbResasUser = reservations.filter(function(r) { return r.locataire_id === u.id || r.proprietaire_id === u.id; }).length;
                 return (
-                  <div key={u.id} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap', opacity: u.suspendu ? 0.6 : 1 }}>
+                  <div key={u.id} style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap', opacity: u.suspendu ? 0.6 : 1 }}>
                     <div style={{ width: 44, height: 44, background: roleColor, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 15, fontWeight: 700, flexShrink: 0 }}>
                       {initiales}
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{u.prenom} {u.nom}</span>
-                        {u.suspendu && <span style={{ background: '#FFEBEE', color: '#B71C1C', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{t('admin.users.suspendu')}</span>}
-                        {u.abonnement_bloque && <span style={{ background: '#FFF3E0', color: '#E65100', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}><Lock size={11} strokeWidth={2} /> {t('admin.users.abonnementImpaye')}</span>}
-                        {u.plan && u.plan !== 'gratuit' && <span style={{ background: '#E8F5E9', color: '#1B6B3A', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{u.plan}</span>}
+                        <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{u.prenom} {u.nom}</span>
+                        {u.suspendu && <span style={{ background: 'var(--danger-soft)', color: 'var(--danger)', borderRadius: 16, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{t('admin.users.suspendu')}</span>}
+                        {u.abonnement_bloque && <span style={{ background: 'var(--warn-soft)', color: 'var(--warn)', borderRadius: 16, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}><Lock size={11} strokeWidth={2} /> {t('admin.users.abonnementImpaye')}</span>}
+                        {u.plan && u.plan !== 'gratuit' && <span style={{ background: 'var(--green-light)', color: 'var(--green)', borderRadius: 16, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{u.plan}</span>}
                         <BadgeSource source={u.source} offertJusqu={u.offert_jusqu_au} />
                       </div>
-                      <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{u.email} · {u.telephone || 'N/A'}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{u.email} · {u.telephone || 'N/A'}</div>
                       <div style={{ fontSize: 11, color: '#aaa', marginTop: 2 }}>
                         {t('admin.users.inscritLe', { date: new Date(u.created_at).toLocaleDateString('fr-FR'), count: nbResasUser })}
                       </div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                      <span style={{ background: roleColor + '20', color: roleColor, borderRadius: 20, padding: '3px 12px', fontSize: 11, fontWeight: 700 }}>
+                      <span style={{ background: roleColor + '20', color: roleColor, borderRadius: 16, padding: '3px 12px', fontSize: 11, fontWeight: 700 }}>
                         {u.role}
                       </span>
                       {(u.role === 'proprietaire' || u.role === 'les_deux') && (
                         <button onClick={function() { setPanneauUserId(u.id); }}
-                          style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #C8E6C9', background: '#fff', color: '#1B6B3A', fontSize: 11, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                          style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid var(--green-border)', background: 'var(--bg-secondary)', color: 'var(--green)', fontSize: 11, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                           <CreditCard size={12} strokeWidth={2} /> Abonnement
                         </button>
                       )}
                       {u.role !== 'admin' && (
                         <button onClick={function() { suspendreUser(u.id, u.suspendu); }}
-                          style={{ padding: '6px 12px', borderRadius: 8, border: u.suspendu ? '0.5px solid #A5D6A7' : '0.5px solid #FFCDD2', background: u.suspendu ? '#E8F5E9' : '#FFEBEE', color: u.suspendu ? '#1B5E20' : '#B71C1C', fontSize: 11, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                          style={{ padding: '6px 12px', borderRadius: 8, border: u.suspendu ? '0.5px solid var(--green-border)' : '0.5px solid var(--danger)', background: u.suspendu ? 'var(--green-light)' : 'var(--danger-soft)', color: u.suspendu ? 'var(--green)' : 'var(--danger)', fontSize: 11, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                           {u.suspendu ? <CheckCircle2 size={12} strokeWidth={2} /> : <Ban size={12} strokeWidth={2} />}
                           {u.suspendu ? t('admin.users.reactiver') : t('admin.users.suspendre')}
                         </button>
                       )}
                       {u.abonnement_bloque && (
                         <button onClick={function() { debloquerAbonnement(u.id); }}
-                          style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #FFCC80', background: '#FFF3E0', color: '#E65100', fontSize: 11, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                          style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #FFCC80', background: 'var(--warn-soft)', color: 'var(--warn)', fontSize: 11, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                           <Unlock size={12} strokeWidth={2} /> {t('admin.users.debloquer')}
                         </button>
                       )}
@@ -666,10 +666,10 @@ var NAV = [
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <div>
-                <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
                   <Home size={18} strokeWidth={1.8} /> {t('admin.logements.titre')}
                 </h1>
-                <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.logements.compteur', { count: logements.length })}</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '4px 0 0' }}>{t('admin.logements.compteur', { count: logements.length })}</p>
               </div>
             </div>
 
@@ -677,38 +677,38 @@ var NAV = [
               {logements.map(function(l) {
                 var nbResas = reservations.filter(function(r) { return r.logement_id === l.id; }).length;
                 return (
-                  <div key={l.id} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-                    <div style={{ width: 44, height: 44, background: l.statut === 'loue' ? '#E8F5E9' : '#FFF8E1', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <Home size={20} strokeWidth={1.5} color={l.statut === 'loue' ? '#1B6B3A' : '#F5A623'} />
+                  <div key={l.id} style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+                    <div style={{ width: 44, height: 44, background: l.statut === 'loue' ? 'var(--green-light)' : 'var(--warn-soft)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <Home size={20} strokeWidth={1.5} color={l.statut === 'loue' ? 'var(--green)' : 'var(--warn)'} />
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{l.titre}</span>
-                        {l.verifie && <span style={{ background: '#E8F5E9', color: '#1B5E20', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}><CheckCircle2 size={11} strokeWidth={2} /> {t('admin.logements.verifie')}</span>}
-                        {l.masque && <span style={{ background: '#FFEBEE', color: '#B71C1C', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}><EyeOff size={11} strokeWidth={2} /> {t('admin.logements.masque')}</span>}
+                        <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{l.titre}</span>
+                        {l.verifie && <span style={{ background: 'var(--green-light)', color: 'var(--green)', borderRadius: 16, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}><CheckCircle2 size={11} strokeWidth={2} /> {t('admin.logements.verifie')}</span>}
+                        {l.masque && <span style={{ background: 'var(--danger-soft)', color: 'var(--danger)', borderRadius: 16, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}><EyeOff size={11} strokeWidth={2} /> {t('admin.logements.masque')}</span>}
                       </div>
-                      <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{l.adresse}, {l.ville} · {GNF(l.prix_mensuel)}{t('admin.logements.parMois')}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{l.adresse}, {l.ville} · {GNF(l.prix_mensuel)}{t('admin.logements.parMois')}</div>
                       <div style={{ fontSize: 11, color: '#aaa', marginTop: 2 }}>
                         {t('admin.logements.proprietaireLabel', { prenom: l.prop_prenom, nom: l.prop_nom, count: nbResas })}
                       </div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ background: l.statut === 'loue' ? '#E8F5E9' : '#E3F2FD', color: l.statut === 'loue' ? '#1B5E20' : '#0D47A1', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
+                      <span style={{ background: l.statut === 'loue' ? 'var(--green-light)' : 'var(--info-soft)', color: l.statut === 'loue' ? 'var(--green)' : 'var(--info)', borderRadius: 16, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
                         {l.statut}
                       </span>
                       {!l.verifie && (
                         <button onClick={function() { verifierLogement(l.id); }}
-                          style={{ padding: '6px 12px', borderRadius: 8, background: '#1B6B3A', color: '#fff', border: 'none', fontSize: 11, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                          style={{ padding: '6px 12px', borderRadius: 8, background: 'var(--green)', color: '#fff', border: 'none', fontSize: 11, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                           <CheckCircle2 size={12} strokeWidth={2} /> {t('admin.logements.verifier')}
                         </button>
                       )}
                       <button onClick={function() { masquerLogement(l.id); }}
-                        style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: '#fff', fontSize: 11, cursor: 'pointer', fontWeight: 600, color: l.masque ? '#1B6B3A' : '#E65100', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid var(--border)', background: 'var(--bg-secondary)', fontSize: 11, cursor: 'pointer', fontWeight: 600, color: l.masque ? 'var(--green)' : 'var(--warn)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         {l.masque ? <Eye size={12} strokeWidth={2} /> : <EyeOff size={12} strokeWidth={2} />}
                         {l.masque ? t('admin.logements.demasquer') : t('admin.logements.masquer')}
                       </button>
                       <button onClick={function() { supprimerLogement(l.id); }}
-                        style={{ padding: '6px 12px', borderRadius: 8, background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                        style={{ padding: '6px 12px', borderRadius: 8, background: 'var(--danger-soft)', color: 'var(--danger)', border: '0.5px solid var(--danger)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
                         <Trash2 size={14} strokeWidth={1.8} />
                       </button>
                     </div>
@@ -724,13 +724,13 @@ var NAV = [
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
               <div>
-                <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
                   <CalendarCheck size={18} strokeWidth={1.8} /> {t('admin.reservations.titre')}
                 </h1>
-                <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.reservations.compteur', { filtres: reservationsFiltrees.length, total: reservations.length })}</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '4px 0 0' }}>{t('admin.reservations.compteur', { filtres: reservationsFiltrees.length, total: reservations.length })}</p>
               </div>
               <select value={filterStatut} onChange={function(e) { setFilterStatut(e.target.value); }}
-                style={{ padding: '9px 14px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: '#fff' }}>
+                style={{ padding: '9px 14px', borderRadius: 8, border: '0.5px solid var(--border)', fontSize: 13, outline: 'none', background: 'var(--bg-secondary)' }}>
                 <option value="tous">{t('admin.reservations.tousLesStatuts')}</option>
                 {Object.keys(cfgStatuts).map(function(s) {
                   return <option key={s} value={s}>{cfgStatuts[s].label}</option>;
@@ -739,7 +739,7 @@ var NAV = [
             </div>
 
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', fontSize: 13 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', background: 'var(--bg-secondary)', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', fontSize: 13 }}>
                 <thead>
                   <tr style={{ background: '#1B2B22' }}>
                     {[t('admin.reservations.colLocataire'), t('admin.reservations.colLogement'), t('admin.reservations.colProprietaire'), t('admin.reservations.colMontant'), t('admin.reservations.colStatut'), t('admin.reservations.colDate')].map(function(h) {
@@ -749,19 +749,19 @@ var NAV = [
                 </thead>
                 <tbody>
                   {reservationsFiltrees.map(function(r, i) {
-                    var cfg = cfgStatuts[r.statut] || { label: r.statut, color: '#888', bg: '#F5F5F5' };
+                    var cfg = cfgStatuts[r.statut] || { label: r.statut, color: 'var(--text-muted)', bg: 'var(--surface-soft)' };
                     return (
-                      <tr key={r.id} style={{ background: i % 2 === 0 ? '#fff' : '#FAFAFA', borderBottom: '0.5px solid #F0F0F0' }}>
-                        <td style={{ padding: '10px 14px', fontWeight: 600, color: '#1B2B22' }}>{r.locataire_prenom} {r.locataire_nom}</td>
-                        <td style={{ padding: '10px 14px', color: '#555' }}>{r.logement_titre}</td>
-                        <td style={{ padding: '10px 14px', color: '#888', fontSize: 12 }}>{r.prop_prenom} {r.prop_nom}</td>
-                        <td style={{ padding: '10px 14px', fontWeight: 700, color: '#1B6B3A' }}>{GNF(r.montant_total || 0)}</td>
+                      <tr key={r.id} style={{ background: i % 2 === 0 ? 'var(--bg-secondary)' : 'var(--surface-soft)', borderBottom: '0.5px solid var(--border)' }}>
+                        <td style={{ padding: '10px 14px', fontWeight: 600, color: 'var(--text-primary)' }}>{r.locataire_prenom} {r.locataire_nom}</td>
+                        <td style={{ padding: '10px 14px', color: 'var(--text-secondary)' }}>{r.logement_titre}</td>
+                        <td style={{ padding: '10px 14px', color: 'var(--text-muted)', fontSize: 12 }}>{r.prop_prenom} {r.prop_nom}</td>
+                        <td style={{ padding: '10px 14px', fontWeight: 700, color: 'var(--green)' }}>{GNF(r.montant_total || 0)}</td>
                         <td style={{ padding: '10px 14px' }}>
-                          <span style={{ background: cfg.bg, color: cfg.color, borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
+                          <span style={{ background: cfg.bg, color: cfg.color, borderRadius: 16, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
                             {cfg.label}
                           </span>
                         </td>
-                        <td style={{ padding: '10px 14px', color: '#888', fontSize: 12 }}>{new Date(r.created_at).toLocaleDateString('fr-FR')}</td>
+                        <td style={{ padding: '10px 14px', color: 'var(--text-muted)', fontSize: 12 }}>{new Date(r.created_at).toLocaleDateString('fr-FR')}</td>
                       </tr>
                     );
                   })}
@@ -775,20 +775,20 @@ var NAV = [
 {onglet === 'revenus' && (
   <div>
     <div style={{ marginBottom: 24 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
         <Wallet size={18} strokeWidth={1.8} /> {t('admin.revenus.titre')}
       </h1>
-      <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.revenus.sousTitre')}</p>
+      <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '4px 0 0' }}>{t('admin.revenus.sousTitre')}</p>
     </div>
 
     {!revenus && (
-      <div style={{ textAlign: 'center', padding: 40, color: '#888' }}>{t('admin.revenus.chargement')}</div>
+      <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>{t('admin.revenus.chargement')}</div>
     )}
 
     {revenus && (function() {
       // Barres d'évolution sur 6 mois (même rendu pour les deux blocs)
       function evolution(lignes, vide, degrade, couleur) {
-        if (!lignes || lignes.length === 0) return <div style={{ color: '#888', fontSize: 13 }}>{vide}</div>;
+        if (!lignes || lignes.length === 0) return <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>{vide}</div>;
         var max = Math.max.apply(null, lignes.map(function(x) { return Number(x.montant); }));
         return lignes.map(function(m, i) {
           var pct = max > 0 ? Math.round(Number(m.montant) / max * 100) : 0;
@@ -796,10 +796,10 @@ var NAV = [
           return (
             <div key={i} style={{ marginBottom: 12 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5, fontSize: 12 }}>
-                <span style={{ color: '#555', textTransform: 'capitalize' }}>{moisLabel}</span>
+                <span style={{ color: 'var(--text-secondary)', textTransform: 'capitalize' }}>{moisLabel}</span>
                 <span style={{ fontWeight: 700, color: couleur }}>{GNF(m.montant)}</span>
               </div>
-              <div style={{ background: '#F0F0F0', borderRadius: 4, height: 10, overflow: 'hidden' }}>
+              <div style={{ background: 'var(--bg-tertiary)', borderRadius: 4, height: 10, overflow: 'hidden' }}>
                 <div style={{ background: degrade, width: pct + '%', height: '100%', borderRadius: 4, transition: 'width .5s' }} />
               </div>
             </div>
@@ -811,10 +811,10 @@ var NAV = [
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 20 }}>
             {liste.map(function(s, i) {
               return (
-                <div key={i} style={{ background: s.bg, borderRadius: 14, padding: 16, borderLeft: '4px solid ' + s.color }}>
+                <div key={i} style={{ background: s.bg, borderRadius: 12, padding: 16, borderLeft: '4px solid ' + s.color }}>
                   <div style={{ marginBottom: 6 }}><s.icon size={24} strokeWidth={1.5} color={s.color} /></div>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: s.color }}>{s.val}</div>
-                  <div style={{ fontSize: 11, color: '#555', marginTop: 4 }}>{s.label}</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: s.color }}>{s.val}</div>
+                  <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 4 }}>{s.label}</div>
                 </div>
               );
             })}
@@ -827,32 +827,32 @@ var NAV = [
         {/* ─── Bloc 1 : ce que Werdhe gagne ─── */}
         <section>
           <div style={{ marginBottom: 14 }}>
-            <h2 style={{ fontSize: 17, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('admin.revenus.revenusWerdhe.titre')}</h2>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>{t('admin.revenus.revenusWerdhe.titre')}</h2>
             <p style={{ fontSize: 12.5, color: '#666', margin: '4px 0 0', lineHeight: 1.5 }}>{t('admin.revenus.revenusWerdhe.desc')}</p>
           </div>
           {tuiles([
-            { label: t('admin.revenus.kpi.revenusAbonnements'), val: GNF(revenus.abonnements.revenus_abonnements || 0), icon: ClipboardList, color: '#1565C0', bg: '#E3F2FD' },
-            { label: t('admin.revenus.kpi.abonnesPro'),         val: revenus.abonnements.nb_pro || 0,                   icon: Star,          color: '#1B6B3A', bg: '#E8F5E9' },
-            { label: t('admin.revenus.kpi.abonnesAgence'),      val: revenus.abonnements.nb_agence || 0,                icon: Building2,     color: '#7B1FA2', bg: '#F3E5F5' },
+            { label: t('admin.revenus.kpi.revenusAbonnements'), val: GNF(revenus.abonnements.revenus_abonnements || 0), icon: ClipboardList, color: 'var(--green)', bg: 'var(--green-light)' },
+            { label: t('admin.revenus.kpi.abonnesPro'),         val: revenus.abonnements.nb_pro || 0,                   icon: Star,          color: 'var(--green)', bg: 'var(--green-light)' },
+            { label: t('admin.revenus.kpi.abonnesAgence'),      val: revenus.abonnements.nb_agence || 0,                icon: Building2,     color: 'var(--green)', bg: 'var(--green-light)' },
           ])}
 
         {/* Répartition des comptes et comptes offerts (hors chiffre d'affaires) */}
         {(revenus.comptes || revenus.offerts) && (
           <div style={{ marginBottom: 20 }}>
             {revenus.comptes && (
-              <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginBottom: 14 }}>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 12 }}>Répartition des comptes</div>
+              <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginBottom: 14 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 12 }}>Répartition des comptes</div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 10 }}>
                   {[
-                    { label: 'Payants',  val: revenus.comptes.payants,  color: '#1B6B3A', bg: '#E8F5E9' },
-                    { label: 'En essai', val: revenus.comptes.essais,   color: '#1565C0', bg: '#E3F2FD' },
-                    { label: 'Offerts',  val: revenus.comptes.offerts,  color: '#6A1B9A', bg: '#F3E5F5' },
-                    { label: 'Gratuits', val: revenus.comptes.gratuits, color: '#666',    bg: '#F0F0F0' },
+                    { label: 'Payants',  val: revenus.comptes.payants,  color: 'var(--green)', bg: 'var(--green-light)' },
+                    { label: 'En essai', val: revenus.comptes.essais,   color: 'var(--info)', bg: 'var(--info-soft)' },
+                    { label: 'Offerts',  val: revenus.comptes.offerts,  color: 'var(--info)', bg: 'var(--info-soft)' },
+                    { label: 'Gratuits', val: revenus.comptes.gratuits, color: '#666',    bg: 'var(--bg-tertiary)' },
                   ].map(function(c) {
                     return (
                       <div key={c.label} style={{ background: c.bg, borderRadius: 12, padding: '12px 14px' }}>
-                        <div style={{ fontSize: 22, fontWeight: 800, color: c.color }}>{c.val || 0}</div>
-                        <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>{c.label}</div>
+                        <div style={{ fontSize: 22, fontWeight: 700, color: c.color }}>{c.val || 0}</div>
+                        <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2 }}>{c.label}</div>
                       </div>
                     );
                   })}
@@ -861,33 +861,33 @@ var NAV = [
             )}
 
             {revenus.offerts && (
-              <div style={{ background: '#FBF5FC', border: '1px solid #E1BEE7', borderRadius: 14, padding: 20 }}>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#6A1B9A', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ background: '#FBF5FC', border: '1px solid #E1BEE7', borderRadius: 12, padding: 20 }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--info)', display: 'flex', alignItems: 'center', gap: 8 }}>
                   Comptes offerts
-                  <span style={{ background: '#F3E5F5', borderRadius: 20, padding: '2px 10px', fontSize: 12 }}>{revenus.offerts.nb || 0}</span>
+                  <span style={{ background: 'var(--info-soft)', borderRadius: 16, padding: '2px 10px', fontSize: 12 }}>{revenus.offerts.nb || 0}</span>
                 </div>
                 <p style={{ fontSize: 12, color: '#777', margin: '6px 0 14px', lineHeight: 1.5 }}>
                   Les comptes offerts ne comptent pas dans le chiffre d’affaires : ils sont présentés à part, avec la valeur mensuelle qu’ils représenteraient s’ils payaient.
                 </p>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 10 }}>
-                  <div style={{ background: '#fff', borderRadius: 12, padding: '12px 14px' }}>
-                    <div style={{ fontSize: 18, fontWeight: 800, color: '#6A1B9A' }}>{GNF(revenus.offerts.valeur_mensuelle_non_facturee || 0)}</div>
-                    <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>Valeur mensuelle non facturée</div>
+                  <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: '12px 14px' }}>
+                    <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--info)' }}>{GNF(revenus.offerts.valeur_mensuelle_non_facturee || 0)}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2 }}>Valeur mensuelle non facturée</div>
                   </div>
-                  <div style={{ background: '#fff', borderRadius: 12, padding: '12px 14px' }}>
-                    <div style={{ fontSize: 12, color: '#555', lineHeight: 1.8 }}>
+                  <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: '12px 14px' }}>
+                    <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.8 }}>
                       <div>Pro : <strong>{(revenus.offerts.par_plan && revenus.offerts.par_plan.pro) || 0}</strong></div>
                       <div>Agence : <strong>{(revenus.offerts.par_plan && revenus.offerts.par_plan.agence) || 0}</strong></div>
                     </div>
-                    <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>Par plan</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2 }}>Par plan</div>
                   </div>
-                  <div style={{ background: '#fff', borderRadius: 12, padding: '12px 14px' }}>
-                    <div style={{ fontSize: 12, color: '#555', lineHeight: 1.8 }}>
+                  <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: '12px 14px' }}>
+                    <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.8 }}>
                       {[['collaborateur', 'Collaborateur'], ['partenaire', 'Partenaire'], ['pilote', 'Pilote'], ['geste_commercial', 'Geste commercial']].map(function(m) {
                         return <div key={m[0]}>{m[1]} : <strong>{(revenus.offerts.par_motif && revenus.offerts.par_motif[m[0]]) || 0}</strong></div>;
                       })}
                     </div>
-                    <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>Par motif</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2 }}>Par motif</div>
                   </div>
                 </div>
               </div>
@@ -896,29 +896,29 @@ var NAV = [
         )}
 
 
-          <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>{t('admin.revenus.evolutionAbonnementsTitre')}</div>
-            {evolution(revenus.evolution_abonnements, t('admin.revenus.aucunRevenu'), 'linear-gradient(90deg, #1565C0, #42A5F5)', '#1565C0')}
+          <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 16 }}>{t('admin.revenus.evolutionAbonnementsTitre')}</div>
+            {evolution(revenus.evolution_abonnements, t('admin.revenus.aucunRevenu'), '#1B6B3A', '#1B6B3A')}
           </div>
         </section>
 
         {/* ─── Bloc 2 : ce qui transite entre propriétaires et locataires ─── */}
-        <section style={{ background: '#F7F8F7', border: '1px dashed #D5DBD6', borderRadius: 16, padding: 20 }}>
+        <section style={{ background: 'var(--surface-soft)', border: '1px dashed #D5DBD6', borderRadius: 16, padding: 20 }}>
           <div style={{ marginBottom: 14 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-              <h2 style={{ fontSize: 17, fontWeight: 700, color: '#1B2B22', margin: 0 }}>{t('admin.revenus.paiementsPlateforme.titre')}</h2>
-              <span style={{ background: '#ECEFEC', color: '#555', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>{t('admin.revenus.paiementsPlateforme.badge')}</span>
+              <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>{t('admin.revenus.paiementsPlateforme.titre')}</h2>
+              <span style={{ background: '#ECEFEC', color: 'var(--text-secondary)', borderRadius: 16, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>{t('admin.revenus.paiementsPlateforme.badge')}</span>
             </div>
             <p style={{ fontSize: 12.5, color: '#666', margin: '6px 0 0', lineHeight: 1.5 }}>{t('admin.revenus.paiementsPlateforme.desc')}</p>
           </div>
           {tuiles([
-            { label: t('admin.revenus.kpi.paiements'), val: GNF(revenus.paiements.total_paiements || 0), icon: Wallet,       color: '#555',    bg: '#fff' },
-            { label: t('admin.revenus.kpi.encaisses'), val: GNF(revenus.paiements.encaisse || 0),         icon: CheckCircle2, color: '#555',    bg: '#fff' },
-            { label: t('admin.revenus.kpi.enAttente'), val: GNF(revenus.paiements.en_attente || 0),       icon: Clock,        color: '#E65100', bg: '#fff' },
+            { label: t('admin.revenus.kpi.paiements'), val: GNF(revenus.paiements.total_paiements || 0), icon: Wallet,       color: 'var(--text-secondary)',    bg: 'var(--bg-secondary)' },
+            { label: t('admin.revenus.kpi.encaisses'), val: GNF(revenus.paiements.encaisse || 0),         icon: CheckCircle2, color: 'var(--text-secondary)',    bg: 'var(--bg-secondary)' },
+            { label: t('admin.revenus.kpi.enAttente'), val: GNF(revenus.paiements.en_attente || 0),       icon: Clock,        color: 'var(--warn)', bg: 'var(--bg-secondary)' },
           ])}
-          <div style={{ background: '#fff', borderRadius: 14, padding: 20 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>{t('admin.revenus.evolutionTitre')}</div>
-            {evolution(revenus.evolution_paiements, t('admin.revenus.aucunPaiement'), 'linear-gradient(90deg, #9AA59D, #C5CCC7)', '#555')}
+          <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 20 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 16 }}>{t('admin.revenus.evolutionTitre')}</div>
+            {evolution(revenus.evolution_paiements, t('admin.revenus.aucunPaiement'), '#9AA59D', '#555')}
           </div>
         </section>
       </div>
@@ -931,32 +931,32 @@ var NAV = [
         {onglet === 'alertes' && (
           <div>
             <div style={{ marginBottom: 20 }}>
-              <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Bell size={18} strokeWidth={1.8} /> {t('admin.alertes.titre')}
               </h1>
-              <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.alertes.compteur', { count: alertes.length })}</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '4px 0 0' }}>{t('admin.alertes.compteur', { count: alertes.length })}</p>
             </div>
 
             {alertes.length === 0 && (
-              <div style={{ textAlign: 'center', padding: '40px', color: '#888', background: '#fff', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)', background: 'var(--bg-secondary)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                 <CheckCircle2 size={16} strokeWidth={1.8} /> {t('admin.alertes.aucuneAlerte')}
               </div>
             )}
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {alertes.map(function(a, i) {
-                var couleur = a.priorite === 'haute' ? '#E53935' : a.type === 'loyer_retard' ? '#F5A623' : '#1565C0';
+                var couleur = a.priorite === 'haute' ? 'var(--danger)' : a.type === 'loyer_retard' ? 'var(--warn)' : 'var(--info)';
                 return (
-                  <div key={i} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderLeft: '4px solid ' + couleur, display: 'flex', gap: 12 }}>
-                    <span style={{ flexShrink: 0 }}>{a.type === 'loyer_retard' ? <AlertTriangle size={20} strokeWidth={1.5} color="#F5A623" /> : a.type === 'bail_bientot' ? <ClipboardList size={20} strokeWidth={1.5} color="#1565C0" /> : <Bell size={20} strokeWidth={1.5} color="#555" />}</span>
+                  <div key={i} style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderLeft: '4px solid ' + couleur, display: 'flex', gap: 12 }}>
+                    <span style={{ flexShrink: 0 }}>{a.type === 'loyer_retard' ? <AlertTriangle size={20} strokeWidth={1.5} color="var(--warn)" /> : a.type === 'bail_bientot' ? <ClipboardList size={20} strokeWidth={1.5} color="var(--info)" /> : <Bell size={20} strokeWidth={1.5} color="var(--text-secondary)" />}</span>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{a.titre}</div>
-                      <div style={{ fontSize: 12, color: '#888', marginTop: 3 }}>{a.description}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{a.titre}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 3 }}>{a.description}</div>
                       <div style={{ fontSize: 11, color: '#aaa', marginTop: 4 }}>
                         {new Date(a.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit' })}
                       </div>
                     </div>
-                    <span style={{ background: couleur + '20', color: couleur, borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, alignSelf: 'flex-start', flexShrink: 0 }}>
+                    <span style={{ background: couleur + '20', color: couleur, borderRadius: 16, padding: '3px 10px', fontSize: 11, fontWeight: 700, alignSelf: 'flex-start', flexShrink: 0 }}>
                       {a.priorite || 'normale'}
                     </span>
                   </div>
@@ -970,24 +970,24 @@ var NAV = [
 {onglet === 'abonnements' && (
   <div>
     <div style={{ marginBottom: 20 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
         <CreditCard size={18} strokeWidth={1.8} /> {t('admin.abonnements.titre')}
       </h1>
     </div>
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {users.filter(function(u) { return u.role !== 'admin'; }).map(function(u) {
         return (
-          <div key={u.id} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+          <div key={u.id} style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{u.prenom} {u.nom}</div>
-              <div style={{ fontSize: 12, color: '#888' }}>{u.email} · {u.role}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{u.prenom} {u.nom}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{u.email} · {u.role}</div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-              <span style={{ background: u.plan && u.plan !== 'gratuit' ? '#E8F5E9' : '#F0F0F0', color: u.plan && u.plan !== 'gratuit' ? '#1B6B3A' : '#777', borderRadius: 20, padding: '3px 10px', fontSize: 12, fontWeight: 700, textTransform: 'capitalize' }}>{u.plan || 'gratuit'}</span>
+              <span style={{ background: u.plan && u.plan !== 'gratuit' ? 'var(--green-light)' : 'var(--bg-tertiary)', color: u.plan && u.plan !== 'gratuit' ? 'var(--green)' : '#777', borderRadius: 16, padding: '3px 10px', fontSize: 12, fontWeight: 700, textTransform: 'capitalize' }}>{u.plan || 'gratuit'}</span>
               <BadgeSource source={u.source} offertJusqu={u.offert_jusqu_au} />
               {(u.role === 'proprietaire' || u.role === 'les_deux') && (
                 <button onClick={function() { setPanneauUserId(u.id); }}
-                  style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #C8E6C9', background: '#fff', color: '#1B6B3A', fontSize: 12, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid var(--green-border)', background: 'var(--bg-secondary)', color: 'var(--green)', fontSize: 12, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                   <CreditCard size={12} strokeWidth={2} /> Gérer l’abonnement
                 </button>
               )}
@@ -1003,7 +1003,7 @@ var NAV = [
 {onglet === 'blog' && (
   <div>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
         <Newspaper size={18} strokeWidth={1.8} /> {t('admin.blog.titre')}
       </h1>
       <button onClick={function() {
@@ -1011,69 +1011,69 @@ var NAV = [
           setArticleForm(ARTICLE_VIDE);
           setShowArticleForm(!showArticleForm);
         }}
-        style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '9px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+        style={{ background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 8, padding: '9px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
         {t('admin.blog.nouvelArticle')}
       </button>
     </div>
 
     {showArticleForm && (
-      <div style={{ background: '#fff', borderRadius: 14, padding: 20, marginBottom: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', margin: '0 0 14px' }}>
+      <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 20, marginBottom: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 14px' }}>
           {editingArticleId ? t('admin.blog.modifierArticle') : t('admin.blog.nouvelArticleTitre')}
         </h3>
         <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelTitre')}</label>
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelTitre')}</label>
           <input type="text" value={articleForm.titre}
             onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { titre: e.target.value })); }}
-            style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
+            style={{ padding: '9px 12px', border: '1.5px solid var(--border)', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
           <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelCategorie')}</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelCategorie')}</label>
             <input type="text" placeholder={t('admin.blog.placeholderCategorie')} value={articleForm.categorie}
               onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { categorie: e.target.value })); }}
-              style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
+              style={{ padding: '9px 12px', border: '1.5px solid var(--border)', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
           </div>
           <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelImage')}</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelImage')}</label>
             <input type="text" placeholder={t('admin.blog.placeholderUrl')} value={articleForm.image_couverture}
               onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { image_couverture: e.target.value })); }}
-              style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
+              style={{ padding: '9px 12px', border: '1.5px solid var(--border)', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
           </div>
         </div>
         <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelExtrait')}</label>
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelExtrait')}</label>
           <textarea rows={2} value={articleForm.extrait}
             onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { extrait: e.target.value })); }}
-            style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+            style={{ padding: '9px 12px', border: '1.5px solid var(--border)', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box', fontFamily: 'inherit' }} />
         </div>
         <div style={{ marginBottom: 12 }}>
-          <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>
             {t('admin.blog.labelContenu')} <span style={{ fontWeight: 400, color: '#aaa' }}>{t('admin.blog.hintContenu')}</span>
           </label>
           <textarea rows={10} value={articleForm.contenu}
             onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { contenu: e.target.value })); }}
-            style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box', fontFamily: 'var(--font-mono)' }} />
+            style={{ padding: '9px 12px', border: '1.5px solid var(--border)', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box', fontFamily: 'var(--font-mono)' }} />
         </div>
         <div style={{ marginBottom: 16 }}>
-          <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelMetaDescription')}</label>
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>{t('admin.blog.labelMetaDescription')}</label>
           <input type="text" maxLength={300} value={articleForm.meta_description}
             onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { meta_description: e.target.value })); }}
-            style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
+            style={{ padding: '9px 12px', border: '1.5px solid var(--border)', borderRadius: 8, fontSize: 13, width: '100%', boxSizing: 'border-box' }} />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
           <input type="checkbox" id="articlePublie" checked={articleForm.publie}
             onChange={function(e) { setArticleForm(Object.assign({}, articleForm, { publie: e.target.checked })); }}
             style={{ width: 15, height: 15, cursor: 'pointer' }} />
-          <label htmlFor="articlePublie" style={{ fontSize: 13, color: '#555', cursor: 'pointer' }}>{t('admin.blog.labelPublierImmediatement')}</label>
+          <label htmlFor="articlePublie" style={{ fontSize: 13, color: 'var(--text-secondary)', cursor: 'pointer' }}>{t('admin.blog.labelPublierImmediatement')}</label>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
           <button onClick={sauvegarderArticle}
-            style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 20px', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>
+            style={{ background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>
             {editingArticleId ? t('admin.blog.boutonMettreAJour') : t('admin.blog.boutonCreerArticle')}
           </button>
           <button onClick={function() { setShowArticleForm(false); setEditingArticleId(null); }}
-            style={{ background: '#F5F5F5', color: '#555', border: 'none', borderRadius: 10, padding: '10px 20px', fontWeight: 600, cursor: 'pointer', fontSize: 13 }}>
+            style={{ background: 'var(--surface-soft)', color: 'var(--text-secondary)', border: 'none', borderRadius: 8, padding: '10px 20px', fontWeight: 600, cursor: 'pointer', fontSize: 13 }}>
             {t('admin.blog.boutonAnnuler')}
           </button>
         </div>
@@ -1082,33 +1082,33 @@ var NAV = [
 
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {articlesBlog.length === 0 && (
-        <div style={{ textAlign: 'center', padding: 40, color: '#888', background: '#fff', borderRadius: 14 }}>{t('admin.blog.aucunArticle')}</div>
+        <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)', background: 'var(--bg-secondary)', borderRadius: 12 }}>{t('admin.blog.aucunArticle')}</div>
       )}
       {articlesBlog.map(function(a) {
         return (
-          <div key={a.id} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+          <div key={a.id} style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
             <div style={{ flex: 1, minWidth: 200 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                <span style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{a.titre}</span>
-                <span style={{ background: a.publie ? '#E8F5E9' : '#FFF3E0', color: a.publie ? '#1B5E20' : '#E65100', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>
+                <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{a.titre}</span>
+                <span style={{ background: a.publie ? 'var(--green-light)' : 'var(--warn-soft)', color: a.publie ? 'var(--green)' : 'var(--warn)', borderRadius: 16, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>
                   {a.publie ? t('admin.blog.statutPublie') : t('admin.blog.statutBrouillon')}
                 </span>
               </div>
-              <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
                 {a.categorie || t('admin.blog.sansCategorie')} · {t('admin.blog.nbVues', { count: a.vues || 0 })} · /blog/{a.slug}
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <button onClick={function() { togglePublieArticle(a); }}
-                style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: '#fff', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: a.publie ? '#E65100' : '#1B6B3A' }}>
+                style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid var(--border)', background: 'var(--bg-secondary)', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: a.publie ? 'var(--warn)' : 'var(--green)' }}>
                 {a.publie ? t('admin.blog.depublier') : t('admin.blog.publier')}
               </button>
               <button onClick={function() { editerArticle(a); }}
-                style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: '#fff', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: '#1565C0' }}>
+                style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid var(--border)', background: 'var(--bg-secondary)', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: 'var(--info)' }}>
                 {t('admin.blog.modifier')}
               </button>
               <button onClick={function() { supprimerArticle(a.id); }}
-                style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #FFCDD2', background: '#FFEBEE', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: '#B71C1C' }}>
+                style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid var(--danger)', background: 'var(--danger-soft)', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: 'var(--danger)' }}>
                 {t('admin.blog.supprimer')}
               </button>
             </div>
@@ -1123,35 +1123,35 @@ var NAV = [
 {onglet === 'promos' && (
   <div>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
         <Ticket size={18} strokeWidth={1.8} /> {t('admin.promos.titre')}
       </h1>
       <button onClick={function() { setShowPromoForm(!showPromoForm); }}
-        style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '9px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+        style={{ background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 8, padding: '9px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
         {t('admin.promos.nouveauCode')}
       </button>
     </div>
 
     {showPromoForm && (
-      <div style={{ background: '#fff', borderRadius: 14, padding: 20, marginBottom: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+      <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 20, marginBottom: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginBottom: 14 }}>
           <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.promos.labelCode')}</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>{t('admin.promos.labelCode')}</label>
             <input type="text" placeholder={t('admin.promos.placeholderCode')} value={promoForm.code}
               onChange={function(e) { setPromoForm(Object.assign({}, promoForm, { code: e.target.value.toUpperCase() })); }}
-              style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%', fontFamily: 'var(--font-mono)', letterSpacing: 1 }} />
+              style={{ padding: '9px 12px', border: '1.5px solid var(--border)', borderRadius: 8, fontSize: 13, width: '100%', fontFamily: 'var(--font-mono)', letterSpacing: 1 }} />
           </div>
           <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.promos.labelReduction')}</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>{t('admin.promos.labelReduction')}</label>
             <input type="number" min="1" max="100" value={promoForm.reduction_pct}
               onChange={function(e) { setPromoForm(Object.assign({}, promoForm, { reduction_pct: e.target.value })); }}
-              style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%' }} />
+              style={{ padding: '9px 12px', border: '1.5px solid var(--border)', borderRadius: 8, fontSize: 13, width: '100%' }} />
           </div>
           <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('admin.promos.labelNbMax')}</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>{t('admin.promos.labelNbMax')}</label>
             <input type="number" value={promoForm.nb_utilisations_max}
               onChange={function(e) { setPromoForm(Object.assign({}, promoForm, { nb_utilisations_max: e.target.value })); }}
-              style={{ padding: '9px 12px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 13, width: '100%' }} />
+              style={{ padding: '9px 12px', border: '1.5px solid var(--border)', borderRadius: 8, fontSize: 13, width: '100%' }} />
           </div>
         </div>
         <button
@@ -1165,7 +1165,7 @@ var NAV = [
               })
               .catch(function(err) { toast.error(err.response?.data?.erreur || t('admin.erreurs.generique')); });
           }}
-          style={{ background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 20px', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>
+          style={{ background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>
           {t('admin.promos.boutonCreer')}
         </button>
       </div>
@@ -1174,19 +1174,19 @@ var NAV = [
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {codesPromo.map(function(c) {
         return (
-          <div key={c.id} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap', opacity: c.actif ? 1 : 0.5 }}>
-            <div style={{ background: '#F0FBF0', border: '1.5px dashed #A5D6A7', borderRadius: 8, padding: '6px 14px' }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 15, fontWeight: 800, color: '#1B6B3A', letterSpacing: 1 }}>{c.code}</span>
+          <div key={c.id} style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap', opacity: c.actif ? 1 : 0.5 }}>
+            <div style={{ background: 'var(--green-light)', border: '1.5px dashed var(--green-border)', borderRadius: 8, padding: '6px 14px' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 15, fontWeight: 700, color: 'var(--green)', letterSpacing: 1 }}>{c.code}</span>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{t('admin.promos.reductionPlan', { pct: c.reduction_pct, plan: c.plan_cible })}</div>
-              <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{t('admin.promos.reductionPlan', { pct: c.reduction_pct, plan: c.plan_cible })}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
                 {t('admin.promos.utilisations', { nb: c.nb_utilisations, max: c.nb_utilisations_max })}
                 {c.expire_at && ' · ' + t('admin.promos.expireLe', { date: new Date(c.expire_at).toLocaleDateString('fr-FR') })}
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <span style={{ background: c.actif ? '#E8F5E9' : '#F5F5F5', color: c.actif ? '#1B5E20' : '#888', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
+              <span style={{ background: c.actif ? 'var(--green-light)' : 'var(--surface-soft)', color: c.actif ? 'var(--green)' : 'var(--text-muted)', borderRadius: 16, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
                 {c.actif ? t('admin.promos.actif') : t('admin.promos.inactif')}
               </span>
               <button
@@ -1195,7 +1195,7 @@ var NAV = [
                     .then(function() { charger(); })
                     .catch(function() { toast.error(t('admin.erreurs.generique')); });
                 }}
-                style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: '#fff', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: c.actif ? '#B71C1C' : '#1B6B3A' }}>
+                style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid var(--border)', background: 'var(--bg-secondary)', fontSize: 12, cursor: 'pointer', fontWeight: 600, color: c.actif ? 'var(--danger)' : 'var(--green)' }}>
                 {c.actif ? t('admin.promos.desactiver') : t('admin.promos.activer')}
               </button>
             </div>
@@ -1210,26 +1210,26 @@ var NAV = [
 {onglet === 'logs' && (
   <div>
     <div style={{ marginBottom: 20 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
         <ClipboardList size={18} strokeWidth={1.8} /> {t('admin.logs.titre')}
       </h1>
-      <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.logs.compteur', { count: logsAudit.length })}</p>
+      <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '4px 0 0' }}>{t('admin.logs.compteur', { count: logsAudit.length })}</p>
     </div>
-    <div style={{ background: '#fff', borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+    <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
       {logsAudit.map(function(l, i) {
         var actionColor = l.action.includes('admin') ? '#F5A623'
           : l.action.includes('connexion') ? '#1B6B3A'
           : l.action.includes('suspend') ? '#E53935'
           : '#1565C0';
         return (
-          <div key={l.id} style={{ display: 'flex', gap: 14, padding: '12px 16px', borderBottom: '0.5px solid #F5F5F5', alignItems: 'flex-start', background: i % 2 === 0 ? '#fff' : '#FAFAFA' }}>
+          <div key={l.id} style={{ display: 'flex', gap: 14, padding: '12px 16px', borderBottom: '0.5px solid #F5F5F5', alignItems: 'flex-start', background: i % 2 === 0 ? 'var(--bg-secondary)' : 'var(--surface-soft)' }}>
             <div style={{ width: 8, height: 8, background: actionColor, borderRadius: '50%', flexShrink: 0, marginTop: 5 }} />
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{l.prenom || '?'} {l.nom || ''}</span>
-                <span style={{ background: actionColor + '20', color: actionColor, borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{l.action}</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{l.prenom || '?'} {l.nom || ''}</span>
+                <span style={{ background: actionColor + '20', color: actionColor, borderRadius: 16, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{l.action}</span>
               </div>
-              {l.email && <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{l.email}</div>}
+              {l.email && <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{l.email}</div>}
               {l.ip_address && <div style={{ fontSize: 11, color: '#bbb', marginTop: 1 }}>{t('admin.logs.ip', { ip: l.ip_address })}</div>}
             </div>
             <div style={{ fontSize: 11, color: '#aaa', flexShrink: 0, textAlign: 'right' }}>
@@ -1247,26 +1247,26 @@ var NAV = [
 {onglet === 'documents' && (
   <div>
     <div style={{ marginBottom: 20 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+      <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
         <FileText size={18} strokeWidth={1.8} /> {t('admin.documents.titre')}
       </h1>
-      <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.documents.compteur', { count: documents.length })}</p>
+      <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '4px 0 0' }}>{t('admin.documents.compteur', { count: documents.length })}</p>
     </div>
 
     {documents.length === 0 && (
-      <div style={{ textAlign: 'center', padding: 40, color: '#888', background: '#fff', borderRadius: 14 }}>{t('admin.documents.aucunDocument')}</div>
+      <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)', background: 'var(--bg-secondary)', borderRadius: 12 }}>{t('admin.documents.aucunDocument')}</div>
     )}
 
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {documents.map(function(d) {
         return (
-          <div key={d.id} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-            <div style={{ width: 40, height: 40, background: '#E3F2FD', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <FileText size={18} strokeWidth={1.5} color="#1565C0" />
+          <div key={d.id} style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+            <div style={{ width: 40, height: 40, background: 'var(--info-soft)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <FileText size={18} strokeWidth={1.5} color="var(--info)" />
             </div>
             <div style={{ flex: 1, minWidth: 200 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{d.titre}</div>
-              <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{d.titre}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
                 {d.type} {d.logement_titre ? '· ' + d.logement_titre : ''}
               </div>
               <div style={{ fontSize: 11, color: '#aaa', marginTop: 2 }}>
@@ -1278,11 +1278,11 @@ var NAV = [
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ background: '#F5F5F5', color: '#555', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
+              <span style={{ background: 'var(--surface-soft)', color: 'var(--text-secondary)', borderRadius: 16, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
                 {d.statut}
               </span>
               <button onClick={function() { telechargerDocument(d.id); }}
-                style={{ padding: '6px 12px', borderRadius: 8, background: '#1B6B3A', color: '#fff', border: 'none', fontSize: 11, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                style={{ padding: '6px 12px', borderRadius: 8, background: 'var(--green)', color: '#fff', border: 'none', fontSize: 11, cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                 <Download size={12} strokeWidth={2} /> {t('admin.documents.telecharger')}
               </button>
             </div>
@@ -1298,13 +1298,13 @@ var NAV = [
   <div>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 10 }}>
       <div>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
           <Flag size={18} strokeWidth={1.8} /> {t('admin.signalements.titre')}
         </h1>
-        <p style={{ color: '#888', fontSize: 13, margin: '4px 0 0' }}>{t('admin.signalements.compteur', { filtres: signalementsFiltres.length, total: signalements.length })}</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '4px 0 0' }}>{t('admin.signalements.compteur', { filtres: signalementsFiltres.length, total: signalements.length })}</p>
       </div>
       <select value={filterSignalement} onChange={function(e) { setFilterSignalement(e.target.value); }}
-        style={{ padding: '9px 14px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: '#fff' }}>
+        style={{ padding: '9px 14px', borderRadius: 8, border: '0.5px solid var(--border)', fontSize: 13, outline: 'none', background: 'var(--bg-secondary)' }}>
         <option value="tous">{t('admin.signalements.tousLesStatuts')}</option>
         <option value="ouvert">{t('admin.signalements.statutOuvert')}</option>
         <option value="en_cours">{t('admin.signalements.statutEnCours')}</option>
@@ -1313,20 +1313,20 @@ var NAV = [
     </div>
 
     {signalementsFiltres.length === 0 && (
-      <div style={{ textAlign: 'center', padding: 40, color: '#888', background: '#fff', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+      <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)', background: 'var(--bg-secondary)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
         <CheckCircle2 size={16} strokeWidth={1.8} /> {t('admin.signalements.aucunSignalement')}
       </div>
     )}
 
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {signalementsFiltres.map(function(s) {
-        var couleur = s.statut === 'resolu' ? '#1B6B3A' : s.statut === 'en_cours' ? '#1565C0' : '#E53935';
+        var couleur = s.statut === 'resolu' ? 'var(--green)' : s.statut === 'en_cours' ? 'var(--info)' : 'var(--danger)';
         return (
-          <div key={s.id} style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderLeft: '4px solid ' + couleur, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+          <div key={s.id} style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderLeft: '4px solid ' + couleur, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
             <span style={{ flexShrink: 0 }}><Flag size={18} strokeWidth={1.5} color={couleur} /></span>
             <div style={{ flex: 1, minWidth: 220 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{s.titre}</div>
-              <div style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{s.description}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{s.titre}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{s.description}</div>
               <div style={{ fontSize: 11, color: '#aaa', marginTop: 4 }}>
                 {t('admin.signalements.infosLabel', {
                   logement: s.logement_titre || t('admin.documents.inconnu'),
@@ -1336,25 +1336,25 @@ var NAV = [
                 {' · '}{new Date(s.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit' })}
               </div>
             </div>
-            <span style={{ background: couleur + '20', color: couleur, borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
+            <span style={{ background: couleur + '20', color: couleur, borderRadius: 16, padding: '3px 10px', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
               {s.statut}
             </span>
             <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
               {s.statut !== 'en_cours' && s.statut !== 'resolu' && (
                 <button onClick={function() { traiterSignalement(s.id, 'en_cours'); }}
-                  style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', background: '#fff', fontSize: 11, cursor: 'pointer', fontWeight: 600, color: '#1565C0' }}>
+                  style={{ padding: '6px 12px', borderRadius: 8, border: '0.5px solid var(--border)', background: 'var(--bg-secondary)', fontSize: 11, cursor: 'pointer', fontWeight: 600, color: 'var(--info)' }}>
                   {t('admin.signalements.marquerEnCours')}
                 </button>
               )}
               {s.statut !== 'resolu' && (
                 <button onClick={function() { traiterSignalement(s.id, 'resolu'); }}
-                  style={{ padding: '6px 12px', borderRadius: 8, background: '#1B6B3A', color: '#fff', border: 'none', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
+                  style={{ padding: '6px 12px', borderRadius: 8, background: 'var(--green)', color: '#fff', border: 'none', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
                   {t('admin.signalements.marquerResolu')}
                 </button>
               )}
               {s.proprietaire_id && (
                 <button onClick={function() { traiterSignalement(s.id, s.statut, true); }}
-                  style={{ padding: '6px 12px', borderRadius: 8, background: '#FFEBEE', color: '#B71C1C', border: '0.5px solid #FFCDD2', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
+                  style={{ padding: '6px 12px', borderRadius: 8, background: 'var(--danger-soft)', color: 'var(--danger)', border: '0.5px solid var(--danger)', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>
                   {t('admin.signalements.suspendreProprietaire')}
                 </button>
               )}

@@ -59,16 +59,16 @@ export function BadgeSource(props) {
   if (source === 'offert') {
     var fin = props.offertJusqu ? 'jusqu’au ' + formaterDateJour(props.offertJusqu) : 'illimité';
     return (
-      <span style={{ background: '#F3E5F5', color: '#6A1B9A', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+      <span style={{ background: 'var(--info-soft)', color: 'var(--info)', borderRadius: 16, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
         <Gift size={11} strokeWidth={2} /> Offert · {fin}
       </span>
     );
   }
   if (source === 'essai') {
-    return <span style={{ background: '#E3F2FD', color: '#1565C0', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>Essai</span>;
+    return <span style={{ background: 'var(--info-soft)', color: 'var(--info)', borderRadius: 16, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>Essai</span>;
   }
   if (source === 'paye' && props.afficherPaye) {
-    return <span style={{ background: '#E8F5E9', color: '#1B6B3A', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>Payé</span>;
+    return <span style={{ background: 'var(--green-light)', color: 'var(--green)', borderRadius: 16, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>Payé</span>;
   }
   return null;
 }
@@ -91,18 +91,18 @@ function resumeAction(a) {
   return parties.join(' · ');
 }
 
-var champ = { width: '100%', boxSizing: 'border-box', margin: 0, padding: '9px 12px', borderRadius: 10, border: '0.5px solid #D5D5D5', fontSize: 13, outline: 'none', background: '#fff', fontFamily: 'inherit' };
-var etiquette = { display: 'block', fontSize: 12, fontWeight: 600, color: '#555', marginBottom: 5 };
+var champ = { width: '100%', boxSizing: 'border-box', margin: 0, padding: '9px 12px', borderRadius: 8, border: '0.5px solid #D5D5D5', fontSize: 13, outline: 'none', background: 'var(--bg-secondary)', fontFamily: 'inherit' };
+var etiquette = { display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 5 };
 var boutonPrincipal = function(couleur, desactive) {
-  return { padding: '10px 16px', borderRadius: 10, border: 'none', background: desactive ? '#B0B8B3' : couleur, color: '#fff', fontSize: 13, fontWeight: 700, cursor: desactive ? 'not-allowed' : 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 };
+  return { padding: '10px 16px', borderRadius: 8, border: 'none', background: desactive ? '#B0B8B3' : couleur, color: '#fff', fontSize: 13, fontWeight: 700, cursor: desactive ? 'not-allowed' : 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 };
 };
-var boutonSecondaire = { padding: '10px 16px', borderRadius: 10, border: '0.5px solid #D5D5D5', background: '#fff', color: '#555', fontSize: 13, fontWeight: 600, cursor: 'pointer' };
-var carte = { background: '#F7F8F7', borderRadius: 12, padding: 14, marginTop: 14 };
+var boutonSecondaire = { padding: '10px 16px', borderRadius: 8, border: '0.5px solid #D5D5D5', background: 'var(--bg-secondary)', color: 'var(--text-secondary)', fontSize: 13, fontWeight: 600, cursor: 'pointer' };
+var carte = { background: 'var(--surface-soft)', borderRadius: 12, padding: 14, marginTop: 14 };
 
 function Section(props) {
   return (
     <div style={{ marginTop: 22 }}>
-      <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
         {props.icone} {props.titre}
       </div>
       {props.children}
@@ -241,7 +241,7 @@ export default function PanneauAbonnement(props) {
       <div onClick={onClose} aria-hidden="true"
         style={{ position: 'fixed', inset: 0, background: 'rgba(15,30,20,0.45)', zIndex: 1000 }} />
       <aside ref={panneauRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label="Abonnement du propriétaire"
-        style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 'min(480px, 100vw)', background: '#fff', zIndex: 1001, overflowY: 'auto', boxShadow: '-8px 0 32px rgba(0,0,0,0.18)', outline: 'none', fontFamily: 'var(--font-body)', animation: 'panneauAboEntree .22s ease-out' }}>
+        style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 'min(480px, 100vw)', background: 'var(--bg-secondary)', zIndex: 1001, overflowY: 'auto', boxShadow: '-8px 0 32px rgba(0,0,0,0.18)', outline: 'none', fontFamily: 'var(--font-body)', animation: 'panneauAboEntree .22s ease-out' }}>
         <style>{'@keyframes panneauAboEntree { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }'}</style>
 
         <div style={{ position: 'sticky', top: 0, background: '#1B2B22', color: '#fff', padding: '16px 18px', display: 'flex', alignItems: 'flex-start', gap: 12, zIndex: 2 }}>
@@ -260,20 +260,20 @@ export default function PanneauAbonnement(props) {
 
         <div style={{ padding: '4px 18px 32px' }}>
           {erreur && (
-            <div style={{ ...carte, background: '#FFEBEE', color: '#B71C1C', fontSize: 13 }}>
+            <div style={{ ...carte, background: 'var(--danger-soft)', color: 'var(--danger)', fontSize: 13 }}>
               {erreur}
               <div><button onClick={charger} style={{ ...boutonSecondaire, marginTop: 10, display: 'inline-flex', alignItems: 'center', gap: 6 }}><RefreshCw size={13} /> Réessayer</button></div>
             </div>
           )}
-          {!data && !erreur && <div style={{ padding: 30, textAlign: 'center', color: '#888', fontSize: 13 }}>Chargement…</div>}
+          {!data && !erreur && <div style={{ padding: 30, textAlign: 'center', color: 'var(--text-muted)', fontSize: 13 }}>Chargement…</div>}
 
           {data && (
             <div>
               <div style={carte}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: 15, fontWeight: 800, color: '#1B2B22' }}>Plan {libelle(PLANS, prop.plan || 'gratuit')}</span>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>Plan {libelle(PLANS, prop.plan || 'gratuit')}</span>
                   <BadgeSource source={source} offertJusqu={abo && abo.offert_jusqu_au} afficherPaye={prop.plan !== 'gratuit'} />
-                  {prop.abonnement_bloque && <span style={{ background: '#FFF3E0', color: '#E65100', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>Bloqué (impayé)</span>}
+                  {prop.abonnement_bloque && <span style={{ background: 'var(--warn-soft)', color: 'var(--warn)', borderRadius: 16, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>Bloqué (impayé)</span>}
                 </div>
                 <div style={{ fontSize: 12, color: '#666', marginTop: 8, lineHeight: 1.7 }}>
                   {echeance}
@@ -281,7 +281,7 @@ export default function PanneauAbonnement(props) {
                   {estOffert && abo.offert_par_nom && <span> · Par {abo.offert_par_nom}</span>}
                   <br />
                   {data.nb_biens} bien{data.nb_biens > 1 ? 's' : ''}
-                  {data.biens_masques > 0 && <span style={{ color: '#E65100', fontWeight: 600 }}> dont {data.biens_masques} masqué{data.biens_masques > 1 ? 's' : ''} (limite du plan)</span>}
+                  {data.biens_masques > 0 && <span style={{ color: 'var(--warn)', fontWeight: 600 }}> dont {data.biens_masques} masqué{data.biens_masques > 1 ? 's' : ''} (limite du plan)</span>}
                 </div>
               </div>
 
@@ -321,7 +321,7 @@ export default function PanneauAbonnement(props) {
 
                 {mode === 'offrir' && (
                   <div style={{ ...carte, border: '1px solid #E1BEE7', background: '#FBF5FC' }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#6A1B9A', marginBottom: 10 }}>Offrir l’accès</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--info)', marginBottom: 10 }}>Offrir l’accès</div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                       <div>
                         <label style={etiquette} htmlFor="offre-plan">Plan</label>
@@ -364,8 +364,8 @@ export default function PanneauAbonnement(props) {
                 )}
 
                 {mode === 'revoquer' && estOffert && (
-                  <div style={{ ...carte, border: '1px solid #FFCDD2', background: '#FFF8F8' }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#B71C1C', marginBottom: 4 }}>Révoquer l’accès offert</div>
+                  <div style={{ ...carte, border: '1px solid var(--danger)', background: '#FFF8F8' }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--danger)', marginBottom: 4 }}>Révoquer l’accès offert</div>
                     <div style={{ fontSize: 12, color: '#777', marginBottom: 10, lineHeight: 1.5 }}>
                       Le compte repasse au plan Gratuit immédiatement. Aucune donnée n’est supprimée : les biens au-delà de la limite sont masqués.
                     </div>
@@ -388,8 +388,8 @@ export default function PanneauAbonnement(props) {
                 )}
 
                 {mode === 'paiement' && (
-                  <div style={{ ...carte, border: '1px solid #BBDEFB', background: '#F5FAFE' }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#1565C0', marginBottom: 10 }}>Enregistrer un paiement manuel</div>
+                  <div style={{ ...carte, border: '1px solid var(--info)', background: '#F5FAFE' }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--info)', marginBottom: 10 }}>Enregistrer un paiement manuel</div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                       <div>
                         <label style={etiquette} htmlFor="pai-plan">Plan</label>
@@ -440,9 +440,9 @@ export default function PanneauAbonnement(props) {
                   {data.historique.map(function(a) {
                     var resume = resumeAction(a);
                     return (
-                      <div key={a.id} style={{ borderLeft: '3px solid ' + (a.action === 'revoquer' || a.action === 'expiration_auto' ? '#E57373' : a.action === 'paiement_manuel' ? '#64B5F6' : '#BA68C8'), background: '#F7F8F7', borderRadius: '0 10px 10px 0', padding: '8px 12px' }}>
+                      <div key={a.id} style={{ borderLeft: '3px solid ' + (a.action === 'revoquer' || a.action === 'expiration_auto' ? '#E57373' : a.action === 'paiement_manuel' ? '#64B5F6' : '#BA68C8'), background: 'var(--surface-soft)', borderRadius: '0 10px 10px 0', padding: '8px 12px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
-                          <span style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{ACTIONS[a.action] || a.action}</span>
+                          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{ACTIONS[a.action] || a.action}</span>
                           <span style={{ fontSize: 11, color: '#999' }}>{formaterDateHeure(a.created_at)}</span>
                         </div>
                         <div style={{ fontSize: 12, color: '#666', marginTop: 2 }}>Par {a.admin_nom || 'Système'}{resume ? ' · ' + resume : ''}</div>
@@ -459,19 +459,19 @@ export default function PanneauAbonnement(props) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {data.factures.map(function(f) {
                     return (
-                      <div key={f.id} style={{ background: '#F7F8F7', borderRadius: 10, padding: '8px 12px', display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
+                      <div key={f.id} style={{ background: 'var(--surface-soft)', borderRadius: 8, padding: '8px 12px', display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
                         <div>
-                          <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                             {libelle(PLANS, f.plan)} · {GNF(f.montant)}
-                            {f.origine === 'manuel' && <span style={{ background: '#E3F2FD', color: '#1565C0', borderRadius: 20, padding: '1px 7px', fontSize: 10, fontWeight: 700 }}>Manuel</span>}
+                            {f.origine === 'manuel' && <span style={{ background: 'var(--info-soft)', color: 'var(--info)', borderRadius: 16, padding: '1px 7px', fontSize: 10, fontWeight: 700 }}>Manuel</span>}
                           </div>
-                          <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>
+                          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
                             {formaterDateJour(f.periode_debut)} → {formaterDateJour(f.periode_fin)}
                             {f.operateur ? ' · ' + libelle(MOYENS, f.operateur) : ''}
                             {f.reference_externe ? ' · réf. ' + f.reference_externe : ''}
                           </div>
                         </div>
-                        <span style={{ fontSize: 11, fontWeight: 700, color: f.statut === 'payee' ? '#1B6B3A' : f.statut === 'annulee' ? '#B71C1C' : '#E65100', alignSelf: 'center' }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: f.statut === 'payee' ? 'var(--green)' : f.statut === 'annulee' ? 'var(--danger)' : 'var(--warn)', alignSelf: 'center' }}>
                           {f.statut === 'payee' ? 'Payée' : f.statut === 'annulee' ? 'Annulée' : 'Émise'}
                         </span>
                       </div>
