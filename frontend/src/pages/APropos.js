@@ -91,7 +91,7 @@ export default function APropos() {
   }, []);
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'var(--font-body)', background: '#F7F8F7', minHeight: '100vh' }}>
       <SEO
         titre={t('apropos.seo.titre')}
         description={t('apropos.seo.description')}

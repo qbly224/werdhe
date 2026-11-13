@@ -106,7 +106,7 @@ export default function Contact() {
   }
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'var(--font-body)', background: '#F7F8F7', minHeight: '100vh' }}>
       <SEO
         titre={t('contact.seo.titre')}
         description={t('contact.seo.description')}
@@ -248,7 +248,7 @@ export default function Contact() {
                   <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('contact.champMessage')}</label>
                   <textarea rows="5" placeholder={t('contact.placeholderMessage')} value={form.message}
                     onChange={function(e) { setForm(Object.assign({}, form, { message: e.target.value })); }}
-                    style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', resize: 'vertical', fontFamily: 'system-ui', boxSizing: 'border-box' }} />
+                    style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', resize: 'vertical', fontFamily: 'var(--font-body)', boxSizing: 'border-box' }} />
                 </div>
                 <button type="submit" disabled={loading}
                   style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: loading ? '#aaa' : '#1B6B3A', color: '#fff', fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>

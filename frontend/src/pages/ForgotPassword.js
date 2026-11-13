@@ -44,7 +44,7 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', fontFamily: 'system-ui, sans-serif', overflow: 'hidden' }}>
+    <div style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', fontFamily: 'var(--font-body)', overflow: 'hidden' }}>
 
       {/* Fond plein écran (slides) */}
       {SLIDES.map(function(slide, i) {

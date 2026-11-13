@@ -1,5 +1,5 @@
 .accueil-page {
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: var(--font-body);
   color: #111;
 }
 

@@ -2181,7 +2181,7 @@ function PaiementsProprietaire(props) {
   var filtered = filterStatut === 'tous' ? biensList : biensList.filter(function(b) { return b.statut === filterStatut; });
   var SCFG = { paye: { label: t('ongletPaiementsDash.statuts.paye'), bg: '#E8F5E9', color: '#1B5E20', border: '#A5D6A7', bar: '#1B6B3A' }, impaye: { label: t('ongletPaiementsDash.statuts.nonPaye'), bg: '#FFEBEE', color: '#B71C1C', border: '#FFCDD2', bar: '#E53935' }, en_retard: { label: t('ongletPaiementsDash.statuts.enRetard'), bg: '#FFF8E1', color: '#7B4F00', border: '#FFE082', bar: '#C8860A' } };
   return (
-    <div style={{fontFamily:'system-ui,sans-serif'}}>
+    <div style={{fontFamily: 'var(--font-body)'}}>
       <div style={{background:'#1B6B3A',borderRadius:'14px',padding:'14px 18px',marginBottom:'18px'}}>
         <div style={{color:'#fff',fontWeight:'700',fontSize:'16px'}}>{t('ongletPaiementsDash.proprio.titre')}</div>
         <div style={{color:'rgba(255,255,255,.7)',fontSize:'12px',marginTop:'2px'}}>{t('ongletPaiementsDash.proprio.sousTitre', { mois: moisActuel, count: biensList.length })}</div>
@@ -2272,7 +2272,7 @@ function PaiementsLocataire(props) {
   var statutPaye = !!paiementComplet;
 
   return (
-    <div style={{fontFamily:'system-ui,sans-serif'}}>
+    <div style={{fontFamily: 'var(--font-body)'}}>
       <div style={{background:'#1A4FA0',borderRadius:'14px',padding:'16px 18px',marginBottom:'18px'}}><div style={{color:'#fff',fontWeight:'700',fontSize:'16px'}}>{t('ongletPaiementsDash.locataireLegacy.mesPaiements')}</div><div style={{color:'rgba(255,255,255,.75)',fontSize:'12px',marginTop:'2px'}}>{moisActuel}</div></div>
       <div style={{background:'#fff',borderRadius:'14px',padding:'16px',marginBottom:'14px',boxShadow:'0 2px 10px rgba(0,0,0,.06)'}}>
         <div style={{display:'flex',gap:'12px',alignItems:'flex-start',marginBottom:'14px'}}>
@@ -2824,7 +2824,7 @@ function repondre(preavisId, reponse) {
                 value={messageReponse}
                 onChange={function(e) { setMessageReponse(e.target.value); }}
                 placeholder={t('ongletPreavisDash.recus.messageOptionnel')}
-                style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 70, fontFamily: 'system-ui', boxSizing: 'border-box', outline: 'none', marginBottom: 10 }} />
+                style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 70, fontFamily: 'var(--font-body)', boxSizing: 'border-box', outline: 'none', marginBottom: 10 }} />
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <button
                   onClick={function() { repondre(p.id, 'renouveler'); }}
@@ -2921,7 +2921,7 @@ function repondre(preavisId, reponse) {
             <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>{t('ongletPreavisDash.form.messageOptionnel')}</div>
             <textarea value={note} onChange={function(e) { setNote(e.target.value); }}
               placeholder={estProprietaire ? t('ongletPreavis.proprio.form.messagePlaceholder') : t('ongletPreavisDash.form.messagePersonnelPlaceholder')}
-              style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 80, fontFamily: 'system-ui', boxSizing: 'border-box', outline: 'none' }} />
+              style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 80, fontFamily: 'var(--font-body)', boxSizing: 'border-box', outline: 'none' }} />
           </div>
 
           <button

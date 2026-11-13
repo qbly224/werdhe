@@ -65,7 +65,7 @@ export default function ResetPassword() {
 
   if (!token) {
     return (
-      <div style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui, sans-serif', background: '#1B2B22' }}>
+      <div style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-body)', background: '#1B2B22' }}>
         <div style={Object.assign({}, carteStyle, { maxWidth: 420, margin: '24px' })}>
           <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'center' }}>
             <Logo size={36} showText={true} darkBg={false} />
@@ -86,7 +86,7 @@ export default function ResetPassword() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', fontFamily: 'system-ui, sans-serif', overflow: 'hidden' }}>
+    <div style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', fontFamily: 'var(--font-body)', overflow: 'hidden' }}>
 
       {SLIDES.map(function(slide, i) {
         return (

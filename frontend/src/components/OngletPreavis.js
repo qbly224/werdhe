@@ -206,7 +206,7 @@ function PreavisLocataire() {
               <div style={{ fontSize: 13, color: '#1B2B22', marginBottom: 8, fontWeight: 700 }}>{t('ongletPreavis.locataire.form.messageLabel')}</div>
               <textarea value={note} onChange={function(e) { setNote(e.target.value); }}
                 placeholder={t('ongletPreavis.locataire.form.messagePlaceholder')}
-                style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 80, fontFamily: 'system-ui', boxSizing: 'border-box', outline: 'none' }} />
+                style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 80, fontFamily: 'var(--font-body)', boxSizing: 'border-box', outline: 'none' }} />
             </div>
 
             <button onClick={function() { if (motif && delai) setStep('confirm'); else toast.error(t('ongletPreavis.locataire.form.erreurSelection')); }}
@@ -440,7 +440,7 @@ function PreavisProprio() {
               <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>{t('ongletPreavis.proprio.form.messageLabel')}</div>
               <textarea value={note} onChange={function(e) { setNote(e.target.value); }}
                 placeholder={t('ongletPreavis.proprio.form.messagePlaceholder')}
-                style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 80, fontFamily: 'system-ui', boxSizing: 'border-box', outline: 'none' }} />
+                style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 80, fontFamily: 'var(--font-body)', boxSizing: 'border-box', outline: 'none' }} />
             </div>
 
             <button onClick={function() { if (bien && motif && delai) setStep('confirm'); else toast.error(t('ongletPreavis.proprio.form.erreurChampsObligatoires')); }}

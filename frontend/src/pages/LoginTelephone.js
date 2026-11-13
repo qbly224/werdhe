@@ -134,7 +134,7 @@ export default function LoginTelephone() {
   }
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', minHeight: '100vh', background: '#F7F8F7', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+    <div style={{ fontFamily: 'var(--font-body)', minHeight: '100vh', background: '#F7F8F7', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
       <div style={{ background: '#fff', borderRadius: 20, padding: 28, width: '100%', maxWidth: 380, boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}>
 
         {/* Header */}
@@ -181,7 +181,7 @@ export default function LoginTelephone() {
     value={telephone}
     onChange={function(e) { setTelephone(e.target.value.replace(/\D/g, '')); }}
     onKeyDown={function(e) { if (e.key === 'Enter') envoyerOTP(); }}
-    style={{ width: '100%', padding: '14px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 16, outline: 'none', fontFamily: 'monospace', letterSpacing: 2, boxSizing: 'border-box' }}
+    style={{ width: '100%', padding: '14px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 16, outline: 'none', fontFamily: 'var(--font-mono)', letterSpacing: 2, boxSizing: 'border-box' }}
     autoFocus />
 </div>
 
@@ -237,7 +237,7 @@ export default function LoginTelephone() {
                       border: digit ? '2px solid #1B6B3A' : '1.5px solid #E0E0E0',
                       background: digit ? '#F0FBF0' : '#FAFAFA',
                       outline: 'none',
-                      fontFamily: 'monospace',
+                      fontFamily: 'var(--font-mono)',
                       color: '#1B2B22',
                       transition: 'all .15s'
                     }} />

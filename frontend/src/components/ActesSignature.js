@@ -173,7 +173,7 @@ export default function ActesSignature({ reservationId, type, onFermer, onChange
     var actes = ((liste && liste.actes) || []).filter(function(a) { return !type || a.type === type; });
     var aucuneCreation = !(type ? (type === 'avenant' ? sug.avenants.length : type === 'decompte' ? sug.decompte : type === 'bail' ? sug.bail : sug.cautionnement) : (sug.avenants.length || sug.decompte || sug.cautionnement || sug.bail));
     return (
-      <div style={{ fontFamily: 'system-ui, sans-serif' }}>
+      <div style={{ fontFamily: 'var(--font-body)' }}>
         <div style={{ background: '#37474F', borderRadius: 14, padding: '14px 18px', marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
           <div>
             <div style={{ color: '#fff', fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', gap: 6 }}><FileSignature size={15} strokeWidth={1.75} /> {type ? t('actes.type.' + type) : t('actes.titre')}</div>
@@ -241,7 +241,7 @@ export default function ActesSignature({ reservationId, type, onFermer, onChange
   };
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif' }}>
+    <div style={{ fontFamily: 'var(--font-body)' }}>
       <div style={{ background: '#37474F', borderRadius: 14, padding: '14px 18px', marginBottom: 14 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'center' }}>
           <div style={{ color: '#fff', fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', gap: 6 }}><FileSignature size={15} strokeWidth={1.75} /> {t('actes.type.' + a.type)}</div>

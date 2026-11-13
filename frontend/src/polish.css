@@ -20,7 +20,7 @@
   display: flex;
   min-height: 100vh;
   background: #F5F6FA;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
 }
 
 /* ─── SIDEBAR ─────────────────────────────────────────────────── */

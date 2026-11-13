@@ -1,0 +1,20 @@
+/* En-tête commun des pages publiques : blanc, filet fin, un seul modèle. */
+.ds-header { position: sticky; top: 0; z-index: 100; background: var(--bg-secondary); border-bottom: 1px solid var(--line); }
+.ds-header__bar { max-width: 1200px; margin: 0 auto; min-height: 60px; padding: 8px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.ds-header__nav { display: flex; align-items: center; gap: 24px; }
+.ds-header__nav a { font-size: 14px; font-weight: 500; color: var(--text-secondary); text-decoration: none; }
+.ds-header__nav a:hover, .ds-header__nav a[aria-current="page"] { color: var(--green); }
+.ds-header__actions { display: flex; align-items: center; gap: 10px; }
+.ds-header__user { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text-primary); text-decoration: none; }
+.ds-header__avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; font-size: 11px; font-weight: 700; }
+[data-theme="dark"] .ds-header__avatar { color: #0F1A12; }
+.ds-header__burger { display: none; background: none; border: 0; padding: 6px; cursor: pointer; color: var(--text-primary); min-height: 0; }
+.ds-header__menu { display: none; }
+@media (max-width: 860px) {
+  .ds-header__nav, .ds-header__hide { display: none; }
+  .ds-header__burger { display: inline-flex; }
+  .ds-header__bar { padding: 8px 16px; }
+  .ds-header__menu { display: flex; flex-direction: column; border-top: 1px solid var(--line); background: var(--bg-secondary); padding: 8px 16px 16px; }
+  .ds-header__menu a:not(.ds-btn) { padding: 12px 0; font-size: 16px; font-weight: 600; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--line); }
+  .ds-header__menu .ds-btn { margin-top: 12px; }
+}

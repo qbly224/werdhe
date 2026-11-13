@@ -161,7 +161,7 @@ export default function Pricing() {
     return Math.round(prixMois * infos.mois * (1 - infos.reduction));
   }
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#F7F8F7', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'var(--font-body)', background: '#F7F8F7', minHeight: '100vh' }}>
       <SEO
         titre={t('pricing.seo.titre')}
         description={t('pricing.seo.description')}
@@ -304,7 +304,7 @@ export default function Pricing() {
             <input type="text" placeholder={t('pricing.placeholderCodePromo')} value={code}
               onChange={function(e) { setCode(e.target.value.toUpperCase()); setCodeOk(null); }}
               onKeyDown={function(e) { if (e.key === 'Enter') validerCode(); }}
-              style={{ flex: 1, padding: '10px 14px', border: '1.5px solid ' + (codeOk && codeOk.valide ? '#1B6B3A' : codeOk === false ? '#E53935' : '#E0E0E0'), borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'monospace', letterSpacing: 1 }} />
+              style={{ flex: 1, padding: '10px 14px', border: '1.5px solid ' + (codeOk && codeOk.valide ? '#1B6B3A' : codeOk === false ? '#E53935' : '#E0E0E0'), borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'var(--font-mono)', letterSpacing: 1 }} />
             <button onClick={validerCode} disabled={loading || !code.trim()}
               style={{ padding: '10px 18px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
               {loading ? '...' : t('pricing.valider')}

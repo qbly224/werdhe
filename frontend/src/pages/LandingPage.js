@@ -228,7 +228,7 @@ useEffect(function() {
   }, []);
 
   return (
-    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: '#F7F8F7', color: '#1B2B22', overflowX: 'hidden', position: 'relative' }}>
+    <div style={{ fontFamily: 'var(--font-body)', background: '#F7F8F7', color: '#1B2B22', overflowX: 'hidden', position: 'relative' }}>
       <Particules />
       <SEO
         titre={t('landingPage.seo.titre')}

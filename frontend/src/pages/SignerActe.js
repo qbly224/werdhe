@@ -57,7 +57,7 @@ export default function SignerActe() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F2F6F3', fontFamily: 'system-ui, sans-serif', padding: '28px 16px 60px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div style={{ minHeight: '100vh', background: '#F2F6F3', fontFamily: 'var(--font-body)', padding: '28px 16px 60px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <SEO titre={t('signerActe.titre')} noIndex={true} />
       <div style={{ marginBottom: 22 }}><Logo size={36} showText={true} /></div>
       <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 6px 24px rgba(10,30,18,.10)', padding: '24px 20px', width: '100%', maxWidth: 860 }}>

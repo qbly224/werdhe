@@ -264,7 +264,7 @@ export default function EtatDesLieux({ reservationId, onTermine, onFermer }) {
   // ── Liste (entrée / sortie) ──
   if (!courant) {
     return (
-      <div style={{ fontFamily: 'system-ui, sans-serif' }}>
+      <div style={{ fontFamily: 'var(--font-body)' }}>
         <div style={{ background: '#1B6B3A', borderRadius: 14, padding: '14px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
           <div>
             <div style={{ color: '#fff', fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', gap: 6 }}><ClipboardCheck size={15} strokeWidth={1.75} /> {t('edl.titre')}</div>
@@ -317,7 +317,7 @@ export default function EtatDesLieux({ reservationId, onTermine, onFermer }) {
   }
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif' }}>
+    <div style={{ fontFamily: 'var(--font-body)' }}>
       <div style={{ background: e.type === 'sortie' ? '#C62828' : '#1B6B3A', borderRadius: 14, padding: '14px 18px', marginBottom: 14 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'center' }}>
           <div style={{ color: '#fff', fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', gap: 6 }}><ClipboardCheck size={15} strokeWidth={1.75} /> {t('edl.type.' + e.type)}</div>
