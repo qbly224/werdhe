@@ -16,6 +16,7 @@ import useLimitesPlans from '../hooks/useLimitesPlans';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import OdometerNumber from '../components/OdometerNumber';
 import CommentCaMarche from '../components/CommentCaMarche';
+import Fonctionnalites from '../components/Fonctionnalites';
 import HeroQuittance from '../components/HeroQuittance';
 
 function getStats(t) {
@@ -53,19 +54,6 @@ function getTemoignages(t) {
       initiales: 'IB',
       couleur:   '#7B1FA2'
     },
-  ];
-}
-
-function getFonctionnalites(t, limites) {
-  return [
-    { icon: <Shield size={20} strokeWidth={1.5} />,       titre: t('landingPage.features.0.titre'),    desc: t('landingPage.features.0.desc') },
-    { icon: <FileText size={20} strokeWidth={1.5} />,     titre: t('landingPage.features.1.titre'), desc: t('landingPage.features.1.desc') },
-    { icon: <Bell size={20} strokeWidth={1.5} />,         titre: t('landingPage.features.2.titre'),  desc: t('landingPage.features.2.desc') },
-    { icon: <Banknote size={20} strokeWidth={1.5} />,     titre: t('landingPage.features.3.titre'),    desc: t('landingPage.features.3.desc') },
-    { icon: <MessageCircle size={20} strokeWidth={1.5} />, titre: t('landingPage.features.4.titre'),   desc: t('landingPage.features.4.desc') },
-    { icon: <TrendingUp size={20} strokeWidth={1.5} />,   titre: t('landingPage.features.5.titre'),    desc: t('landingPage.features.5.desc') },
-    { icon: <Star size={20} strokeWidth={1.5} />,         titre: t('landingPage.features.6.titre'),    desc: t('landingPage.features.6.desc') },
-    { icon: <Building2 size={20} strokeWidth={1.5} />,    titre: t('landingPage.features.7.titre'),        desc: t('landingPage.features.7.desc', limites) },
   ];
 }
 
@@ -184,7 +172,6 @@ export default function LandingPage() {
   var STATS                = getStats(t);
   var TEMOIGNAGES          = getTemoignages(t);
   var limitesPlans         = useLimitesPlans();
-  var FONCTIONNALITES      = getFonctionnalites(t, limitesPlans);
 
 useEffect(function() {
   function handleMouse(e) {
@@ -435,26 +422,14 @@ useEffect(function() {
       </section>
 
       {/* ─── FONCTIONNALITÉS ─────────────────────────────────────── */}
-      <section id="fonctionnalites" style={{ background: '#1B2B22', padding: 'clamp(50px, 8vw, 90px) 24px' }}>
+      <section id="fonctionnalites" style={{ background: '#fff', padding: 'clamp(50px, 8vw, 90px) 24px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <div style={{ fontSize: 12, color: '#F5A623', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.featuresSection.overline')}</div>
-            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 650, margin: 0, color: '#fff', letterSpacing: -0.5 }}>{t('landingPage.featuresSection.title')}</h2>
+          <div style={{ textAlign: 'center', marginBottom: 40 }}>
+            <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.featuresSection.overline')}</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 650, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.featuresSection.title')}</h2>
+            <p style={{ color: '#5B6E5F', fontSize: 15, margin: '10px auto 0', maxWidth: 520 }}>{t('landingPage.featuresSection.subtitle')}</p>
           </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
-            {FONCTIONNALITES.map(function(f, i) {
-              return (
-                <div key={i} style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 14, padding: '20px 18px', border: '0.5px solid rgba(255,255,255,0.1)' }}>
-                  <div style={{ width: 40, height: 40, background: 'rgba(245,166,35,0.15)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#F5A623', marginBottom: 14 }}>
-                    {f.icon}
-                  </div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 6 }}>{f.titre}</div>
-                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.5 }}>{f.desc}</div>
-                </div>
-              );
-            })}
-          </div>
+          <Fonctionnalites />
         </div>
       </section>
 

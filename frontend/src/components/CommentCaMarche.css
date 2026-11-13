@@ -83,11 +83,6 @@
 .ccm-cta button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(27,107,58,.28); }
 .ccm-cta button:focus-visible { outline: 3px solid #F5A623; outline-offset: 2px; }
 
-.ccm-trust { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
-.ccm-tr { background: #fff; border: 1px solid #E3E8E0; border-radius: 12px; padding: 14px; display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: start; }
-.ccm-tr > svg { width: 34px; height: 34px; padding: 7px; border-radius: 10px; background: #E8F5E9; color: var(--ccm-green); }
-.ccm-tr b { font-size: 14px; display: block; color: #1B2B22; }
-.ccm-tr span { font-size: 12.5px; color: #5B6E5F; }
 
 @media (max-width: 820px) { .ccm-split { grid-template-columns: minmax(0, 1fr); } .ccm-screen { min-height: 360px; } }
 @media (prefers-reduced-motion: reduce) {

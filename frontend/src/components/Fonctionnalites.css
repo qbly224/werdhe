@@ -1,0 +1,43 @@
+/* Section « Fonctionnalités » de la page d'accueil : trois vedettes animées et une grille. Fond clair. CSS pur. */
+.fn { display: flex; flex-direction: column; gap: 26px; --fn-ease: cubic-bezier(.2,.7,.2,1); }
+.fn-vedettes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 860px) { .fn-vedettes { grid-template-columns: minmax(0, 1fr); } }
+.fn-vd { background: #F7F8F7; border: 1px solid #E3E8E0; border-radius: 18px; padding: 18px; display: grid; gap: 12px; align-content: start; min-width: 0; transition: transform .3s var(--fn-ease), box-shadow .3s; }
+.fn-vd:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(21,38,27,.12); }
+.fn-vd h3 { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 650; margin: 0; color: #1B2B22; line-height: 1.2; }
+.fn-vd p { font-size: 14px; color: #5B6E5F; margin: 0; line-height: 1.55; }
+.fn-vi { height: 172px; border-radius: 12px; background: #EEF4EF; display: grid; place-items: center; position: relative; overflow: hidden; padding: 12px; }
+.fn-mini { background: #fff; color: #1B2B22; border-radius: 9px; box-shadow: 0 8px 20px rgba(0,0,0,.14); width: 100%; max-width: 200px; padding: 10px; display: grid; gap: 6px; font-size: 11.5px; position: relative; }
+.fn-mini-h { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+.fn-mini-t { font-family: 'Fraunces', serif; font-weight: 700; font-size: 13px; }
+.fn-ex { font-size: 9px; color: #8A5200; background: #FCEBC8; border-radius: 99px; padding: 1px 6px; font-weight: 600; white-space: nowrap; }
+.fn-row { display: grid; grid-template-columns: 1fr auto; gap: 6px; align-items: center; border-bottom: 1px dashed #DDE3DA; padding-bottom: 3px; opacity: 0; animation: fn-row 7s infinite; }
+.fn-row:nth-of-type(2) { animation-delay: .5s; } .fn-row:nth-of-type(3) { animation-delay: 1s; } .fn-row:nth-of-type(4) { animation-delay: 1.5s; }
+.fn-pl { font-weight: 700; border-radius: 99px; padding: 1px 7px; font-size: 10px; white-space: nowrap; }
+.fn-pl.ok { background: #E8F5E9; color: #1B6B3A; } .fn-pl.lt { background: #FFEBEE; color: #B71C1C; } .fn-pl.av { background: #F0F0F0; color: #666; } .fn-pl.rs { background: #E3F2FD; color: #0D47A1; }
+.fn-alerte { position: absolute; right: -6px; top: -12px; background: #F5A623; color: #1B2B22; border-radius: 99px; font-weight: 700; font-size: 10px; padding: 2px 8px; opacity: 0; animation: fn-pop 7s infinite .6s; }
+.fn-chart { display: flex; align-items: flex-end; gap: 6px; height: 64px; padding-top: 4px; }
+.fn-bar { flex: 1; display: flex; align-items: flex-end; height: 100%; }
+.fn-bar i { display: block; width: 100%; background: #1B6B3A; border-radius: 3px 3px 0 0; height: var(--h); transform-origin: bottom; transform: scaleY(0); animation: fn-grow 7s infinite; }
+.fn-bar:nth-child(2) i { animation-delay: .12s; } .fn-bar:nth-child(3) i { animation-delay: .24s; } .fn-bar:nth-child(4) i { animation-delay: .36s; } .fn-bar:nth-child(5) i { animation-delay: .48s; } .fn-bar:nth-child(6) i { animation-delay: .6s; }
+.fn-pdf { justify-self: end; border: 1.5px solid #1B6B3A; color: #1B6B3A; border-radius: 6px; padding: 1px 7px; font-weight: 700; font-size: 10px; opacity: 0; animation: fn-pop 7s infinite 1.4s; }
+.fn-team { display: flex; margin-top: 2px; }
+.fn-team span { width: 18px; height: 18px; border-radius: 50%; background: #1B6B3A; color: #fff; display: grid; place-items: center; font-size: 8px; font-weight: 700; border: 2px solid #fff; margin-left: -5px; }
+.fn-team span:first-child { margin-left: 0; } .fn-team span:nth-child(2) { background: #8A5200; } .fn-team span:nth-child(3) { background: #4A6B8A; }
+@keyframes fn-row { 0%, 4% { opacity: 0; transform: translateY(5px); } 10%, 92% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+@keyframes fn-pop { 0%, 38% { opacity: 0; transform: translateY(4px); } 46%, 92% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+@keyframes fn-grow { 0%, 5% { transform: scaleY(0); } 22%, 92% { transform: scaleY(1); } 100% { transform: scaleY(0); } }
+
+.fn-grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.fn-sm { display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: start; background: #F7F8F7; border: 1px solid #E3E8E0; border-radius: 12px; padding: 12px; min-width: 0; transition: transform .25s var(--fn-ease), border-color .25s; }
+.fn-sm:hover { transform: translateY(-3px); border-color: #1B6B3A; }
+.fn-ic { width: 34px; height: 34px; border-radius: 9px; background: #E8F5E9; color: #1B6B3A; display: grid; place-items: center; }
+.fn-sm b { font-size: 13.5px; display: block; color: #1B2B22; line-height: 1.3; }
+.fn-sm span.d { font-size: 12.5px; color: #5B6E5F; display: block; margin-top: 2px; line-height: 1.45; }
+
+/* Mouvement réduit : les mini-visuels s'affichent dans leur état final, immobiles. */
+@media (prefers-reduced-motion: reduce) {
+  .fn-row, .fn-alerte, .fn-pdf, .fn-bar i { animation: none; }
+  .fn-row, .fn-alerte, .fn-pdf { opacity: 1; }
+  .fn-bar i { transform: none; }
+}

@@ -106,12 +106,12 @@
             "Visible tout de suite"
           ],
           [
-            "Messagerie intégrée",
-            "Vous choisissez"
+            "Vous choisissez",
+            ""
           ],
           [
-            "Document verrouillé",
-            "QR de vérification"
+            "Signature en ligne",
+            ""
           ]
         ],
         "tenant": [
@@ -124,8 +124,8 @@
             "Dossier en ligne"
           ],
           [
-            "État des lieux signé",
-            "Gratuit pour vous"
+            "Signature en ligne",
+            ""
           ]
         ]
       },
@@ -179,24 +179,6 @@
           }
         }
       },
-      "trust": [
-        {
-          "titre": "Documents verrouillés",
-          "desc": "Une fois signés, on ne peut plus les modifier."
-        },
-        {
-          "titre": "QR de vérification",
-          "desc": "Chaque document se vérifie en ligne."
-        },
-        {
-          "titre": "Paiement mobile",
-          "desc": "Orange Money, MTN MoMo, Kulu, carte."
-        },
-        {
-          "titre": "Gratuit pour les locataires",
-          "desc": "Aucun frais, aucune commission."
-        }
-      ],
       "etapesAria": "Étapes",
       "profilAria": "Profil"
     },
@@ -214,7 +196,88 @@
     },
     "featuresSection": {
       "overline": "Fonctionnalités",
-      "title": "Tout pour gérer vos locations"
+      "title": "Tout pour gérer vos locations",
+      "subtitle": "Le suivi, les chiffres et les documents d'un seul endroit.",
+      "exemple": "Exemple",
+      "vedettes": [
+        {
+          "titre": "Le suivi des loyers",
+          "desc": "Les alertes loyers vous préviennent avant l'échéance et en cas de retard. Les quittances se génèrent automatiquement.",
+          "mini": {
+            "titre": "Loyers de l'année",
+            "m1": "Octobre",
+            "m2": "Novembre",
+            "m3": "Décembre",
+            "paye": "Payé",
+            "retard": "En retard",
+            "avenir": "À venir",
+            "rappel": "Rappel envoyé"
+          }
+        },
+        {
+          "titre": "Des rapports clairs",
+          "desc": "Vos revenus mois par mois, avec des graphiques lisibles et un export de vos rapports (selon votre plan).",
+          "mini": {
+            "titre": "Revenus sur 6 mois",
+            "export": "Export PDF"
+          }
+        },
+        {
+          "titre": "Tout votre parc au même endroit",
+          "desc": "Vos logements, leur état et vos locataires dans un seul tableau de bord. Les agences y invitent leur équipe.",
+          "mini": {
+            "titre": "Mes biens",
+            "b1": "Appartement F3, Kipé",
+            "b2": "Studio, Ratoma",
+            "b3": "Villa F4, Lambanyi",
+            "loue": "Loué",
+            "reserve": "Réservé",
+            "libre": "Libre"
+          }
+        }
+      ],
+      "grille": [
+        {
+          "titre": "Documents verrouillés",
+          "desc": "Plus de modification après signature, QR de vérification."
+        },
+        {
+          "titre": "Cautionnement avec garant",
+          "desc": "Le garant signe sans créer de compte."
+        },
+        {
+          "titre": "Renouvellement négocié",
+          "desc": "Durée et loyer discutés en ligne."
+        },
+        {
+          "titre": "Réclamations",
+          "desc": "Signalement avec photo et suivi."
+        },
+        {
+          "titre": "Estimation de loyer",
+          "desc": "Un prix indicatif par quartier."
+        },
+        {
+          "titre": "Dossiers sécurisés",
+          "desc": "CNI, revenus et contrats gardés en lieu sûr."
+        },
+        {
+          "titre": "Messagerie et notifications",
+          "desc": "Échanges intégrés, alertes sur le téléphone."
+        },
+        {
+          "titre": "Notations mutuelles",
+          "desc": "Confiance des deux côtés."
+        },
+        {
+          "titre": "État des lieux comparé",
+          "desc": "Entrée et sortie côte à côte."
+        },
+        {
+          "titre": "Préavis avec accusé",
+          "desc": "Date au choix, accusé de réception."
+        }
+      ]
     },
     "features": [
       { "titre": "Dossiers sécurisés", "desc": "CNI, bulletins de paie, contrats stockés et accessibles en toute sécurité." },
