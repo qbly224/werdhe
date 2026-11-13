@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
@@ -76,6 +76,23 @@ function RoutePrivee(props) {
   return props.children;
 }
 
+// Remonte en haut de page à chaque changement de page (sauf lien vers une ancre #...).
+function RetourEnHaut() {
+  var loc = useLocation();
+  useEffect(function() {
+    if (loc.hash) {
+      var id = decodeURIComponent(loc.hash.slice(1));
+      var t = setTimeout(function() {
+        var el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 120);
+      return function() { clearTimeout(t); };
+    }
+    window.scrollTo(0, 0);
+  }, [loc.pathname, loc.hash]);
+  return null;
+}
+
 function App() {
   useEffect(function() {
     // Le backend (plan gratuit Render) se met en veille après une période
@@ -90,6 +107,7 @@ function App() {
     <HelmetProvider>
       <AuthProvider>
         <BrowserRouter>
+        <RetourEnHaut />
           <Toaster position="top-right" />
           <ConnexionBanner />
           <InstallPwaBanner />

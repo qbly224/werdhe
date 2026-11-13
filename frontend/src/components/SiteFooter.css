@@ -1,5 +1,7 @@
-/* Pied de page commun : aplat vert très foncé, sans photo ni dégradé. */
-.ds-footer { background: #1B2B22; color: rgba(255,255,255,.72); }
+/* Pied de page commun : photo de maisons voilée d'un aplat vert très foncé (pas de dégradé). */
+.ds-footer { position: relative; isolation: isolate; background: #1B2B22; color: rgba(255,255,255,.72); }
+.ds-footer::before { content: ''; position: absolute; inset: 0; z-index: -2; background: url(https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=75&fit=crop) center / cover; }
+.ds-footer::after { content: ''; position: absolute; inset: 0; z-index: -1; background: rgba(8, 22, 12, .88); }
 .ds-footer__body { max-width: 1100px; margin: 0 auto; padding: 48px 24px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 36px; }
 .ds-footer__col h2 { font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #fff; margin: 0 0 14px; }
 .ds-footer__col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }

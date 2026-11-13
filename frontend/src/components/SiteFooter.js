@@ -3,8 +3,13 @@ import { useTranslation } from 'react-i18next';
 import Logo from './Logo';
 import './SiteFooter.css';
 
-var NAV = [['accueil', '/'], ['logements', '/logements'], ['tarifs', '/pricing'], ['blog', '/blog'], ['estimation', '/estimation'], ['aPropos', '/a-propos'], ['seConnecter', '/login']];
+var NAV = [['accueil', '/'], ['logements', '/logements'], ['tarifs', '/pricing'], ['blog', '/blog'], ['estimation', '/estimation'], ['aPropos', '/a-propos']];
 var RAPIDES = [['creerCompte', '/inscription'], ['contact', '/contact'], ['faq', '/a-propos#faq'], ['cgu', '/cgu'], ['confidentialite', '/confidentialite']];
+
+// Tri du plus court au plus long libellé (dans la langue affichée).
+function parLongueur(liens, t, prefixe) {
+  return liens.slice().sort(function(a, b) { return t(prefixe + a[0]).length - t(prefixe + b[0]).length; });
+}
 
 // Pied de page commun des pages publiques.
 export default function SiteFooter() {
@@ -19,11 +24,11 @@ export default function SiteFooter() {
         </div>
         <nav className="ds-footer__col" aria-label={t(F + 'navTitle')}>
           <h2>{t(F + 'navTitle')}</h2>
-          <ul>{NAV.map(function(l) { return <li key={l[1]}><Link to={l[1]}>{t(F + 'nav.' + l[0])}</Link></li>; })}</ul>
+          <ul>{parLongueur(NAV, t, F + 'nav.').map(function(l) { return <li key={l[1]}><Link to={l[1]}>{t(F + 'nav.' + l[0])}</Link></li>; })}</ul>
         </nav>
         <nav className="ds-footer__col" aria-label={t(F + 'quickTitle')}>
           <h2>{t(F + 'quickTitle')}</h2>
-          <ul>{RAPIDES.map(function(l) { return <li key={l[1]}><Link to={l[1]}>{t(F + 'quick.' + l[0])}</Link></li>; })}</ul>
+          <ul>{parLongueur(RAPIDES, t, F + 'quick.').map(function(l) { return <li key={l[1]}><Link to={l[1]}>{t(F + 'quick.' + l[0])}</Link></li>; })}</ul>
         </nav>
         <div className="ds-footer__col">
           <h2>{t(F + 'infosTitle')}</h2>
