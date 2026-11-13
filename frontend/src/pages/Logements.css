@@ -1,11 +1,11 @@
 .logements-page {
   min-height: calc(100vh - 60px);
-  background: var(--gray-light);
+  background: var(--surface-soft);
 }
 
 /* Barre catégories */
 .categories-bar {
-  background: var(--white);
+  background: var(--bg-secondary);
   padding: 16px 0;
   border-bottom: 1px solid #eee;
   overflow-x: auto;
@@ -24,7 +24,7 @@
   gap: 4px;
   padding: 10px 18px;
   border: 2px solid #eee;
-  background: var(--white);
+  background: var(--bg-secondary);
   border-radius: 12px;
   cursor: pointer;
   white-space: nowrap;
@@ -36,23 +36,23 @@
 }
 
 .cat-btn:hover {
-  border-color: var(--primary);
-  color: var(--primary);
+  border-color: var(--green);
+  color: var(--green);
 }
 
 .cat-btn.active {
-  border-color: var(--primary);
+  border-color: var(--green);
   background: #e8f5e9;
-  color: var(--primary-dark);
+  color: var(--green-dark);
 }
 
 .cat-icon { font-size: 22px; }
 
 /* Barre de recherche */
 .recherche-bar {
-  background: var(--white);
+  background: var(--bg-secondary);
   padding: 20px 0;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 30px;
 }
 
@@ -80,7 +80,7 @@
 
 .logements-header h3 {
   font-size: 16px;
-  color: var(--gray);
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -88,7 +88,7 @@
 
 .filtre-actif {
   background: #e8f5e9;
-  color: var(--primary);
+  color: var(--green);
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 13px;
@@ -105,7 +105,7 @@
 .loading, .empty {
   text-align: center;
   padding: 60px 20px;
-  color: var(--gray);
+  color: var(--text-muted);
   font-size: 18px;
 }
 

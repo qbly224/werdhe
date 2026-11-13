@@ -1,7 +1,7 @@
 .carte-logement {
-  background: var(--white);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -48,7 +48,7 @@
 
 .carte-statut.disponible {
   background: rgba(232,245,233,0.95);
-  color: var(--primary);
+  color: var(--green);
 }
 
 .carte-statut.loue {
@@ -96,7 +96,7 @@
 
 .carte-adresse {
   font-size: 13px;
-  color: var(--gray);
+  color: var(--text-muted);
   margin-bottom: 10px;
 }
 
@@ -110,7 +110,7 @@
 .carte-details span {
   font-size: 12px;
   color: #555;
-  background: var(--gray-light);
+  background: var(--surface-soft);
   padding: 3px 8px;
   border-radius: 20px;
 }
@@ -126,12 +126,12 @@
 .carte-prix {
   font-size: 16px;
   font-weight: 800;
-  color: var(--primary-dark);
+  color: var(--green-dark);
 }
 
 .carte-prix small {
   font-size: 11px;
   font-weight: 400;
-  color: var(--gray);
+  color: var(--text-muted);
   margin-left: 2px;
 }
