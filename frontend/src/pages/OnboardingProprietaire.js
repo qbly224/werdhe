@@ -15,7 +15,7 @@ export default function OnboardingProprietaire() {
       titre: t('onboardingProprietaire.plans.gratuitTitre'),
       desc: t('onboardingProprietaire.plans.gratuitDesc', limites),
       icon: (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="2.5" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2.5" aria-hidden="true">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
         </svg>
       ),
@@ -27,7 +27,7 @@ export default function OnboardingProprietaire() {
       titre: t('onboardingProprietaire.plans.proTitre'),
       desc: t('onboardingProprietaire.plans.proDesc'),
       icon: (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C8860A" strokeWidth="2.5" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2.5" aria-hidden="true">
           <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
         </svg>
       ),
@@ -39,11 +39,11 @@ export default function OnboardingProprietaire() {
       titre: t('onboardingProprietaire.plans.agenceTitre'),
       desc: t('onboardingProprietaire.plans.agenceDesc'),
       icon: (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7B1FA2" strokeWidth="2.5" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2.5" aria-hidden="true">
           <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/>
         </svg>
       ),
-      iconBg: '#F3E5F5',
+      iconBg: 'var(--green-light)',
       recommande: false
     }
   ];
@@ -122,8 +122,8 @@ export default function OnboardingProprietaire() {
                 </div>
                 {plan.recommande && (
                   <span style={{
-                    fontSize:'10px', background:'#1B6B3A', color:'#fff',
-                    borderRadius:'20px', padding:'2px 8px', whiteSpace:'nowrap'
+                    fontSize:'10px', background:'var(--green)', color:'#fff',
+                    borderRadius: '16px', padding:'2px 8px', whiteSpace:'nowrap'
                   }}>{t('onboardingProprietaire.plans.recommande')}</span>
                 )}
               </div>
@@ -226,15 +226,15 @@ export default function OnboardingProprietaire() {
                     {p.logo}
                   </div>
                 ) : p.id === 'cash' ? (
-                  <div className="auth-pay-icon" style={{background:'#E8F5E9'}}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="2.5" aria-hidden="true">
+                  <div className="auth-pay-icon" style={{background:'var(--green-light)'}}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2.5" aria-hidden="true">
                       <rect x="2" y="6" width="20" height="12" rx="2"/>
                       <circle cx="12" cy="12" r="2"/>
                     </svg>
                   </div>
                 ) : (
-                  <div className="auth-pay-icon" style={{background:'#E8F5E9'}}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="2.5" aria-hidden="true">
+                  <div className="auth-pay-icon" style={{background:'var(--green-light)'}}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2.5" aria-hidden="true">
                       <rect x="3" y="3" width="18" height="18" rx="2"/>
                       <line x1="3" y1="9" x2="21" y2="9"/>
                     </svg>
@@ -245,7 +245,7 @@ export default function OnboardingProprietaire() {
                   <div className="auth-pay-desc">{p.desc}</div>
                 </div>
                 {isSelected && (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="3" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="3" aria-hidden="true">
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>
                 )}
@@ -276,21 +276,21 @@ export default function OnboardingProprietaire() {
         <Stepper />
         <div style={{textAlign:'center'}}>
           <div className="auth-success-icon green" style={{margin:'0 auto 14px'}}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="3" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="3" aria-hidden="true">
               <polyline points="20 6 9 17 4 12"/>
             </svg>
           </div>
           <div style={{fontSize:'17px', fontWeight:'500', color:'#111', marginBottom:'6px'}}>
             {t('onboardingProprietaire.etape4.titre')}
           </div>
-          <div style={{fontSize:'12px', color:'#888', marginBottom:'20px', lineHeight:'1.6'}}>
+          <div style={{fontSize:'12px', color:'var(--text-muted)', marginBottom:'20px', lineHeight:'1.6'}}>
             {t('onboardingProprietaire.etape4.desc')}
           </div>
 
           <div className="auth-quick-grid">
             <div className="auth-quick-action" onClick={function() { navigate('/logements/ajouter'); }}>
               <div className="auth-quick-action-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="2" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2" aria-hidden="true">
                   <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                   <line x1="12" y1="22" x2="12" y2="12"/>
                   <line x1="8" y1="16" x2="16" y2="16"/>
@@ -300,7 +300,7 @@ export default function OnboardingProprietaire() {
             </div>
             <div className="auth-quick-action" onClick={function() { navigate('/dashboard/locataires'); }}>
               <div className="auth-quick-action-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="2" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2" aria-hidden="true">
                   <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                   <circle cx="9" cy="7" r="4"/>
                   <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
@@ -311,7 +311,7 @@ export default function OnboardingProprietaire() {
             </div>
             <div className="auth-quick-action" onClick={function() { navigate('/dashboard/documents'); }}>
               <div className="auth-quick-action-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="2" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2" aria-hidden="true">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                   <polyline points="14 2 14 8 20 8"/>
                   <line x1="16" y1="13" x2="8" y2="13"/>
@@ -323,7 +323,7 @@ export default function OnboardingProprietaire() {
             </div>
             <div className="auth-quick-action" onClick={function() { navigate('/dashboard/paiements'); }}>
               <div className="auth-quick-action-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8860A" strokeWidth="2" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2" aria-hidden="true">
                   <rect x="2" y="6" width="20" height="12" rx="2"/>
                   <circle cx="12" cy="12" r="2"/>
                 </svg>

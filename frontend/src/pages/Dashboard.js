@@ -57,13 +57,13 @@ var GNF = function(n) {
 // ================================================
 var DOCS_TYPES = [
   { icon: <FileSignature size={32} strokeWidth={1.5} color="var(--green)"/>, labelKey: 'contratBail',     color: 'var(--green)', type: 'contrat_bail'     },
-  { icon: <Receipt       size={32} strokeWidth={1.5} color="var(--info)"/>, labelKey: 'quittance',       color: 'var(--info)', type: 'quittance'        },
-  { icon: <FileText      size={32} strokeWidth={1.5} color="var(--warn)"/>, labelKey: 'etatLieux',       color: 'var(--warn)', type: 'etat_lieux'       },
+  { icon: <Receipt       size={32} strokeWidth={1.5} color="var(--green)"/>, labelKey: 'quittance',       color: 'var(--green)', type: 'quittance'        },
+  { icon: <FileText      size={32} strokeWidth={1.5} color="var(--green)"/>, labelKey: 'etatLieux',       color: 'var(--green)', type: 'etat_lieux'       },
   { icon: <AlertCircle   size={32} strokeWidth={1.5} color="var(--danger)"/>, labelKey: 'miseEnDemeure',   color: 'var(--danger)', type: 'mise_en_demeure'  },
-  { icon: <TrendingUp    size={32} strokeWidth={1.5} color="var(--info)"/>, labelKey: 'rapportFinancier', color: 'var(--info)', type: 'rapport_financier' },
+  { icon: <TrendingUp    size={32} strokeWidth={1.5} color="var(--green)"/>, labelKey: 'rapportFinancier', color: 'var(--green)', type: 'rapport_financier' },
   { icon: <Shield        size={32} strokeWidth={1.5} color="#1B6B3A"/>, labelKey: 'caution',         color: '#1B6B3A', type: 'caution'          },
-  { icon: <Send          size={32} strokeWidth={1.5} color="var(--text-secondary)"/>, labelKey: 'preavis',         color: 'var(--text-secondary)', type: 'preavis'          },
-  { icon: <FileSignature size={32} strokeWidth={1.5} color="var(--info)"/>, labelKey: 'avenant',         color: 'var(--info)', type: 'avenant'          },
+  { icon: <Send          size={32} strokeWidth={1.5} color="var(--green)"/>, labelKey: 'preavis',         color: 'var(--green)', type: 'preavis'          },
+  { icon: <FileSignature size={32} strokeWidth={1.5} color="var(--green)"/>, labelKey: 'avenant',         color: 'var(--green)', type: 'avenant'          },
   { icon: <Banknote      size={32} strokeWidth={1.5} color="var(--green)"/>, labelKey: 'decompte',        color: 'var(--green)', type: 'decompte'         },
   { icon: <Shield        size={32} strokeWidth={1.5} color="var(--danger)"/>, labelKey: 'cautionnement',   color: 'var(--danger)', type: 'cautionnement'    },
 ];
@@ -2188,7 +2188,7 @@ function PaiementsProprietaire(props) {
   var SCFG = { paye: { label: t('ongletPaiementsDash.statuts.paye'), bg: 'var(--green-light)', color: 'var(--green)', border: 'var(--green-border)', bar: 'var(--green)' }, impaye: { label: t('ongletPaiementsDash.statuts.nonPaye'), bg: 'var(--danger-soft)', color: 'var(--danger)', border: 'var(--danger)', bar: 'var(--danger)' }, en_retard: { label: t('ongletPaiementsDash.statuts.enRetard'), bg: 'var(--warn-soft)', color: 'var(--warn)', border: 'var(--warn)', bar: '#C8860A' } };
   return (
     <div style={{fontFamily: 'var(--font-body)'}}>
-      <div style={{background:'var(--green)',borderRadius: '12px',padding:'14px 18px',marginBottom:'18px'}}>
+      <div style={{background:'#1B6B3A',borderRadius: '12px',padding:'14px 18px',marginBottom:'18px'}}>
         <div style={{color:'#fff',fontWeight:'700',fontSize:'16px'}}>{t('ongletPaiementsDash.proprio.titre')}</div>
         <div style={{color:'rgba(255,255,255,.7)',fontSize:'12px',marginTop:'2px'}}>{t('ongletPaiementsDash.proprio.sousTitre', { mois: moisActuel, count: biensList.length })}</div>
       </div>
@@ -2197,7 +2197,7 @@ function PaiementsProprietaire(props) {
       </div>
       <div style={{background:'var(--bg-secondary)',borderRadius:'12px',padding:'14px 16px',marginBottom:'16px',boxShadow: 'var(--shadow-md)'}}>
         <div style={{display:'flex',justifyContent:'space-between',marginBottom:'8px'}}><span style={{fontSize:'13px',fontWeight:'600'}}>{t('ongletPaiementsDash.proprio.tauxRecouvrement')}</span><span style={{fontSize:'13px',fontWeight:'700',color:'var(--green)'}}>{tauxRecouv}%</span></div>
-        <div style={{background:'#F0F0F0',borderRadius:'6px',height:'10px',overflow:'hidden'}}><div style={{background:'#1B6B3A',width:tauxRecouv+'%',height:'100%',borderRadius:'6px',transition:'width .5s'}}/></div>
+        <div style={{background:'var(--bg-tertiary)',borderRadius:'6px',height:'10px',overflow:'hidden'}}><div style={{background:'#1B6B3A',width:tauxRecouv+'%',height:'100%',borderRadius:'6px',transition:'width .5s'}}/></div>
       </div>
       <div style={{display:'flex',gap:'8px',marginBottom:'14px',flexWrap:'wrap'}}>
         {[['tous',t('ongletPaiementsDash.proprio.filtres.tous'),'#1B6B3A'],['paye',t('ongletPaiementsDash.proprio.filtres.payes'),'#1B6B3A'],['impaye',t('ongletPaiementsDash.proprio.filtres.nonPayes'),'#C62828'],['en_retard',t('ongletPaiementsDash.proprio.filtres.enRetard'),'#C8860A']].map(function(f){return(<button key={f[0]} type="button" onClick={function(){setFilterStatut(f[0]);}} style={{padding:'7px 16px',borderRadius: '16px',fontSize:'12px',cursor:'pointer',border:filterStatut===f[0]?'1.5px solid '+f[2]:'0.5px solid var(--border)',background:filterStatut===f[0]?f[2]:'var(--bg-secondary)',color:filterStatut===f[0]?'#fff':'#666',fontWeight:filterStatut===f[0]?700:400}}>{f[1]}</button>);})}
@@ -2279,7 +2279,7 @@ function PaiementsLocataire(props) {
 
   return (
     <div style={{fontFamily: 'var(--font-body)'}}>
-      <div style={{background:'var(--green)',borderRadius: '12px',padding:'16px 18px',marginBottom:'18px'}}><div style={{color:'#fff',fontWeight:'700',fontSize:'16px'}}>{t('ongletPaiementsDash.locataireLegacy.mesPaiements')}</div><div style={{color:'rgba(255,255,255,.75)',fontSize:'12px',marginTop:'2px'}}>{moisActuel}</div></div>
+      <div style={{background:'#1B6B3A',borderRadius: '12px',padding:'16px 18px',marginBottom:'18px'}}><div style={{color:'#fff',fontWeight:'700',fontSize:'16px'}}>{t('ongletPaiementsDash.locataireLegacy.mesPaiements')}</div><div style={{color:'rgba(255,255,255,.75)',fontSize:'12px',marginTop:'2px'}}>{moisActuel}</div></div>
       <div style={{background:'var(--bg-secondary)',borderRadius: '12px',padding:'16px',marginBottom:'14px',boxShadow: 'var(--shadow-md)'}}>
         <div style={{display:'flex',gap:'12px',alignItems:'flex-start',marginBottom:'14px'}}>
           <div style={{width:'52px',height:'52px',background:'var(--info-soft)',borderRadius:'12px',display:'flex',alignItems:'center',justifyContent:'center'}}><Building2 size={26} strokeWidth={1.5} color="var(--info)" /></div>
@@ -3226,15 +3226,15 @@ if (user && user.role !== 'locataire' && !plan.droits.documents_pdf) {
           {documents.map(function(doc) {
             var cfgDoc = {
               contrat_bail:    { icon: FileSignature, color: 'var(--green)', bg: 'var(--green-light)', label: t('ongletDocuments.cfgDoc.contratBail')    },
-              quittance:       { icon: Receipt,        color: 'var(--info)', bg: 'var(--info-soft)', label: t('ongletDocuments.cfgDoc.quittance')           },
-              etat_lieux:      { icon: ClipboardList,  color: 'var(--warn)', bg: 'var(--warn-soft)', label: t('ongletDocuments.cfgDoc.etatLieux')      },
+              quittance:       { icon: Receipt,        color: 'var(--green)', bg: 'var(--green-light)', label: t('ongletDocuments.cfgDoc.quittance')           },
+              etat_lieux:      { icon: ClipboardList,  color: 'var(--green)', bg: 'var(--green-light)', label: t('ongletDocuments.cfgDoc.etatLieux')      },
               mise_en_demeure: { icon: AlertTriangle,   color: 'var(--danger)', bg: 'var(--danger-soft)', label: t('ongletDocuments.cfgDoc.miseEnDemeure')     },
-              preavis:         { icon: Send,            color: 'var(--text-secondary)', bg: 'var(--bg-tertiary)', label: t('ongletDocuments.cfgDoc.preavis')              },
-              facture:         { icon: Banknote,        color: 'var(--info)', bg: 'var(--info-soft)', label: t('ongletDocuments.cfgDoc.facture')              },
+              preavis:         { icon: Send,            color: 'var(--green)', bg: 'var(--green-light)', label: t('ongletDocuments.cfgDoc.preavis')              },
+              facture:         { icon: Banknote,        color: 'var(--green)', bg: 'var(--green-light)', label: t('ongletDocuments.cfgDoc.facture')              },
               caution:         { icon: Lock,            color: 'var(--green)', bg: 'var(--green-light)', label: t('ongletDocuments.cfgDoc.caution')     },
-              avenant:         { icon: FileSignature,   color: 'var(--info)', bg: 'var(--info-soft)', label: t('ongletDocuments.cfgDoc.avenant')     },
+              avenant:         { icon: FileSignature,   color: 'var(--green)', bg: 'var(--green-light)', label: t('ongletDocuments.cfgDoc.avenant')     },
               decompte:        { icon: Banknote,        color: 'var(--green)', bg: 'var(--green-light)', label: t('ongletDocuments.cfgDoc.decompte')    },
-              cautionnement:   { icon: Shield,          color: 'var(--danger)', bg: 'var(--danger-soft)', label: t('ongletDocuments.cfgDoc.cautionnement') },
+              cautionnement:   { icon: Shield,          color: 'var(--green)', bg: 'var(--green-light)', label: t('ongletDocuments.cfgDoc.cautionnement') },
             }[doc.type] || { icon: FileText, color: 'var(--text-muted)', bg: 'var(--surface-soft)', label: t('ongletDocuments.cfgDoc.document') };
             var CfgDocIcon = cfgDoc.icon;
             return (

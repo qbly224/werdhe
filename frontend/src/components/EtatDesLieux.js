@@ -60,13 +60,13 @@ export function SignatureForm({ titre, nomCompte, onValider, onAnnuler, envoi, l
   }
 
   return (
-    <div style={{ background: '#fff', borderRadius: 14, padding: 18, border: '1px solid #E0E0E0' }}>
-      <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}><PenLine size={15} strokeWidth={1.75} /> {titre}</div>
+    <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 18, border: '1px solid var(--border)' }}>
+      <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}><PenLine size={15} strokeWidth={1.75} /> {titre}</div>
       <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
         {['dessin', 'texte'].map(function(m) {
           return (
             <button key={m} type="button" onClick={function() { setMode(m); }}
-              style={{ flex: 1, padding: '8px 10px', borderRadius: 8, border: mode === m ? '2px solid #1B6B3A' : '1px solid #E0E0E0', background: mode === m ? '#E8F5E9' : '#FAFAFA', color: mode === m ? '#1B5E20' : '#555', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+              style={{ flex: 1, padding: '8px 10px', borderRadius: 8, border: mode === m ? '2px solid var(--green)' : '1px solid var(--border)', background: mode === m ? 'var(--green-light)' : 'var(--surface-soft)', color: mode === m ? 'var(--green)' : 'var(--text-secondary)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
               {t('edl.signature.' + m)}
             </button>
           );
@@ -74,30 +74,30 @@ export function SignatureForm({ titre, nomCompte, onValider, onAnnuler, envoi, l
       </div>
       {mode === 'dessin' ? (
         <div>
-          <div style={{ border: '1.5px dashed #1B6B3A', borderRadius: 10, background: '#FAFAFA', touchAction: 'none', position: 'relative' }}>
+          <div style={{ border: '1.5px dashed var(--green)', borderRadius: 8, background: 'var(--surface-soft)', touchAction: 'none', position: 'relative' }}>
             <canvas ref={canvasRef} width={400} height={120}
-              style={{ width: '100%', height: 120, display: 'block', cursor: 'crosshair', borderRadius: 10 }}
+              style={{ width: '100%', height: 120, display: 'block', cursor: 'crosshair', borderRadius: 8 }}
               onMouseDown={debut} onMouseMove={mouvement} onMouseUp={fin} onMouseLeave={fin}
               onTouchStart={debut} onTouchMove={mouvement} onTouchEnd={fin} />
             {!trace && <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', color: '#bbb', fontSize: 13, pointerEvents: 'none' }}>{t('edl.signature.signezIci')}</div>}
           </div>
-          <button type="button" onClick={effacer} style={{ marginTop: 6, background: 'none', border: 'none', color: '#888', fontSize: 12, cursor: 'pointer' }}>{t('edl.signature.effacer')}</button>
+          <button type="button" onClick={effacer} style={{ marginTop: 6, background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: 12, cursor: 'pointer' }}>{t('edl.signature.effacer')}</button>
         </div>
       ) : (
         <div>
           <input type="text" value={nom} maxLength={80} onChange={function(e) { setNom(e.target.value); }} placeholder={t('edl.signature.nomPlaceholder')}
-            style={{ width: '100%', padding: '11px 12px', borderRadius: 10, border: '1px solid #E0E0E0', fontSize: 15, boxSizing: 'border-box', fontFamily: 'Georgia, serif', fontStyle: 'italic' }} />
+            style={{ width: '100%', padding: '11px 12px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 15, boxSizing: 'border-box', fontFamily: 'Georgia, serif', fontStyle: 'italic' }} />
         </div>
       )}
       <label style={{ display: 'flex', gap: 8, alignItems: 'flex-start', margin: '14px 0', fontSize: 13, color: '#444', cursor: 'pointer' }}>
         <input type="checkbox" checked={accepte} onChange={function(e) { setAccepte(e.target.checked); }} style={{ marginTop: 3 }} />
         <span>{t('edl.signature.luEtApprouve')}</span>
       </label>
-      <div style={{ fontSize: 11, color: '#888', marginBottom: 12 }}>{t('edl.signature.preuve')}</div>
+      <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 12 }}>{t('edl.signature.preuve')}</div>
       <div style={{ display: 'flex', gap: 10 }}>
-        <button type="button" onClick={onAnnuler} disabled={envoi} style={{ flex: 1, padding: 12, borderRadius: 10, border: 'none', background: '#F0F0F0', color: '#555', fontSize: 13, cursor: 'pointer' }}>{t('edl.annuler')}</button>
+        <button type="button" onClick={onAnnuler} disabled={envoi} style={{ flex: 1, padding: 12, borderRadius: 8, border: 'none', background: 'var(--bg-tertiary)', color: 'var(--text-secondary)', fontSize: 13, cursor: 'pointer' }}>{t('edl.annuler')}</button>
         <button type="button" onClick={valider} disabled={!pret || envoi}
-          style={{ flex: 2, padding: 12, borderRadius: 10, border: 'none', background: pret && !envoi ? '#1B6B3A' : '#CCC', color: '#fff', fontSize: 14, fontWeight: 700, cursor: pret && !envoi ? 'pointer' : 'not-allowed' }}>
+          style={{ flex: 2, padding: 12, borderRadius: 8, border: 'none', background: pret && !envoi ? 'var(--green)' : '#CCC', color: '#fff', fontSize: 14, fontWeight: 700, cursor: pret && !envoi ? 'pointer' : 'not-allowed' }}>
           {envoi ? t('edl.enCours') : libelleBouton}
         </button>
       </div>
@@ -257,40 +257,40 @@ export default function EtatDesLieux({ reservationId, onTermine, onFermer }) {
   function retirerLigne(id) { maj(function(l) { return Object.assign({}, l, { grille: l.grille.filter(function(x) { return x.id !== id; }) }); }); }
 
   // ── Présentation ──
-  if (charge) return <div style={{ padding: 30, textAlign: 'center', color: '#888' }}>{t('edl.chargement')}</div>;
+  if (charge) return <div style={{ padding: 30, textAlign: 'center', color: 'var(--text-muted)' }}>{t('edl.chargement')}</div>;
 
-  var carte = { background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' };
+  var carte = { background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' };
 
   // ── Liste (entrée / sortie) ──
   if (!courant) {
     return (
       <div style={{ fontFamily: 'var(--font-body)' }}>
-        <div style={{ background: '#1B6B3A', borderRadius: 14, padding: '14px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+        <div style={{ background: 'var(--green)', borderRadius: 12, padding: '14px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
           <div>
             <div style={{ color: '#fff', fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', gap: 6 }}><ClipboardCheck size={15} strokeWidth={1.75} /> {t('edl.titre')}</div>
             <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12, marginTop: 3 }}>{liste && liste.logement ? liste.logement.titre : ''}</div>
           </div>
           {onFermer && <button onClick={onFermer} style={{ background: 'rgba(255,255,255,0.18)', color: '#fff', border: 'none', borderRadius: 8, padding: '6px 12px', fontSize: 12, cursor: 'pointer' }}>{t('edl.fermer')}</button>}
         </div>
-        <div style={{ background: '#FFF8E1', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 12, color: '#7B4F00' }}>{t('edl.explication')}</div>
+        <div style={{ background: 'var(--warn-soft)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 12, color: 'var(--warn)' }}>{t('edl.explication')}</div>
         {['entree', 'sortie'].map(function(type) {
           var etat = liste && liste.etats.find(function(x) { return x.type === type; });
           var peut = liste && liste.peut_creer[type];
           return (
             <div key={type} style={carte}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>{t('edl.type.' + type)}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>{t('edl.type.' + type)}</div>
               {etat ? (
                 <div>
                   <div style={{ fontSize: 12, color: '#666', marginBottom: 10 }}>
-                    <span style={{ background: etat.statut === 'genere' ? '#E8F5E9' : '#FFF3E0', color: etat.statut === 'genere' ? '#1B5E20' : '#8A4F05', borderRadius: 20, padding: '2px 10px', fontWeight: 700, fontSize: 11 }}>{t('edl.statut.' + etat.statut)}</span>
-                    {' '}{etat.droits.signer ? <b style={{ color: '#B3261E' }}>{t('edl.aVousDeSigner')}</b> : null}
+                    <span style={{ background: etat.statut === 'genere' ? 'var(--green-light)' : 'var(--warn-soft)', color: etat.statut === 'genere' ? 'var(--green)' : 'var(--warn)', borderRadius: 16, padding: '2px 10px', fontWeight: 700, fontSize: 11 }}>{t('edl.statut.' + etat.statut)}</span>
+                    {' '}{etat.droits.signer ? <b style={{ color: 'var(--danger)' }}>{t('edl.aVousDeSigner')}</b> : null}
                   </div>
-                  <button onClick={function() { ouvrir(etat.id); }} style={{ padding: '10px 16px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                  <button onClick={function() { ouvrir(etat.id); }} style={{ padding: '10px 16px', borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
                     {etat.statut === 'genere' ? t('edl.consulter') : t('edl.continuer')}
                   </button>
                 </div>
               ) : peut ? (
-                <button onClick={function() { creer(type); }} disabled={action} style={{ padding: '10px 16px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                <button onClick={function() { creer(type); }} disabled={action} style={{ padding: '10px 16px', borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Plus size={14} strokeWidth={2} /> {t('edl.commencer.' + type)}</span>
                 </button>
               ) : (
@@ -313,12 +313,12 @@ export default function EtatDesLieux({ reservationId, onTermine, onFermer }) {
   function pastille(st) {
     var couleurs = { brouillon: ['#FFF3E0', '#8A4F05'], a_valider: ['#E3F2FD', '#0D47A1'], signe: ['#E8F5E9', '#1B5E20'], genere: ['#ECEFF1', '#37474F'] };
     var c = couleurs[st] || couleurs.brouillon;
-    return <span style={{ background: c[0], color: c[1], borderRadius: 20, padding: '2px 10px', fontWeight: 700, fontSize: 11 }}>{st === 'genere' ? <Lock size={10} strokeWidth={2.2} style={{ verticalAlign: -1, marginRight: 4 }} /> : null}{t('edl.statut.' + st)}</span>;
+    return <span style={{ background: c[0], color: c[1], borderRadius: 16, padding: '2px 10px', fontWeight: 700, fontSize: 11 }}>{st === 'genere' ? <Lock size={10} strokeWidth={2.2} style={{ verticalAlign: -1, marginRight: 4 }} /> : null}{t('edl.statut.' + st)}</span>;
   }
 
   return (
     <div style={{ fontFamily: 'var(--font-body)' }}>
-      <div style={{ background: e.type === 'sortie' ? '#C62828' : '#1B6B3A', borderRadius: 14, padding: '14px 18px', marginBottom: 14 }}>
+      <div style={{ background: e.type === 'sortie' ? 'var(--danger)' : 'var(--green)', borderRadius: 12, padding: '14px 18px', marginBottom: 14 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'center' }}>
           <div style={{ color: '#fff', fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', gap: 6 }}><ClipboardCheck size={15} strokeWidth={1.75} /> {t('edl.type.' + e.type)}</div>
           <button onClick={retourListe} style={{ background: 'rgba(255,255,255,0.18)', color: '#fff', border: 'none', borderRadius: 8, padding: '6px 12px', fontSize: 12, cursor: 'pointer' }}>← {t('edl.retour')}</button>
@@ -329,29 +329,29 @@ export default function EtatDesLieux({ reservationId, onTermine, onFermer }) {
       <div style={{ marginBottom: 12 }}>{pastille(e.statut)}</div>
 
       {/* Message d'étape */}
-      {e.statut === 'brouillon' && !d.modifier && <div style={{ background: '#E3F2FD', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#0D47A1' }}>{t('edl.msg.brouillonAutre', { nom: e.redacteur.nom })}</div>}
+      {e.statut === 'brouillon' && !d.modifier && <div style={{ background: 'var(--info-soft)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: 'var(--info)' }}>{t('edl.msg.brouillonAutre', { nom: e.redacteur.nom })}</div>}
       {e.statut === 'brouillon' && e.corrections.length > 0 && (
-        <div style={{ background: '#FFEBEE', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#B71C1C' }}>
+        <div style={{ background: 'var(--danger-soft)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: 'var(--danger)' }}>
           <b>{t('edl.msg.correctionDemandee')}</b> {e.corrections[e.corrections.length - 1].motif}
         </div>
       )}
-      {e.statut === 'a_valider' && d.signer && <div style={{ background: '#FFF8E1', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#7B4F00' }}>{t('edl.msg.aSigner', { nom: e.redacteur.nom })}</div>}
-      {e.statut === 'a_valider' && d.retirer && <div style={{ background: '#E3F2FD', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#0D47A1' }}>{t('edl.msg.attenteAutre', { nom: e.autre_partie.nom })}</div>}
-      {e.statut === 'signe' && d.generer && <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#1B5E20' }}>{t('edl.msg.pretAGenerer')}</div>}
-      {e.statut === 'signe' && !d.generer && <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#1B5E20' }}>{t('edl.msg.attenteGeneration', { nom: e.redacteur.nom })}</div>}
-      {e.statut === 'genere' && <div style={{ background: '#ECEFF1', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#37474F' }}>{t('edl.msg.genere')}</div>}
+      {e.statut === 'a_valider' && d.signer && <div style={{ background: 'var(--warn-soft)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: 'var(--warn)' }}>{t('edl.msg.aSigner', { nom: e.redacteur.nom })}</div>}
+      {e.statut === 'a_valider' && d.retirer && <div style={{ background: 'var(--info-soft)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: 'var(--info)' }}>{t('edl.msg.attenteAutre', { nom: e.autre_partie.nom })}</div>}
+      {e.statut === 'signe' && d.generer && <div style={{ background: 'var(--green-light)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: 'var(--green)' }}>{t('edl.msg.pretAGenerer')}</div>}
+      {e.statut === 'signe' && !d.generer && <div style={{ background: 'var(--green-light)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: 'var(--green)' }}>{t('edl.msg.attenteGeneration', { nom: e.redacteur.nom })}</div>}
+      {e.statut === 'genere' && <div style={{ background: 'var(--bg-tertiary)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: 'var(--text-secondary)' }}>{t('edl.msg.genere')}</div>}
 
       {/* Grille */}
       {grille.map(function(it) {
         var degrade = e.degradations.indexOf(it.id) !== -1;
         var photosLigne = photos.filter(function(p) { return p.item_id === it.id; });
         return (
-          <div key={it.id} style={{ background: degrade ? '#FFF3E0' : '#fff', borderRadius: 12, padding: 12, marginBottom: 8, boxShadow: '0 1px 6px rgba(0,0,0,0.05)', borderLeft: '4px solid ' + (ETATS.indexOf(it.etat) !== -1 ? COULEURS[it.etat] : '#E0E0E0') }}>
+          <div key={it.id} style={{ background: degrade ? 'var(--warn-soft)' : 'var(--bg-secondary)', borderRadius: 12, padding: 12, marginBottom: 8, boxShadow: '0 1px 6px rgba(0,0,0,0.05)', borderLeft: '4px solid ' + (ETATS.indexOf(it.etat) !== -1 ? COULEURS[it.etat] : 'var(--border)') }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'center', marginBottom: 8 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{it.piece} · {it.element}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{it.piece} · {it.element}</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                {it.entree && <span style={{ fontSize: 11, color: '#666' }}>{t('edl.entreeLabel')} : <b>{t('edl.etat.' + it.entree)}</b>{degrade ? <span style={{ color: '#E65100', marginLeft: 4 }}>▼</span> : null}</span>}
-                {edition && it.perso && <button onClick={function() { retirerLigne(it.id); }} title={t('edl.retirerLigne')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#B3261E' }}><Trash2 size={14} strokeWidth={1.75} /></button>}
+                {it.entree && <span style={{ fontSize: 11, color: '#666' }}>{t('edl.entreeLabel')} : <b>{t('edl.etat.' + it.entree)}</b>{degrade ? <span style={{ color: 'var(--warn)', marginLeft: 4 }}>▼</span> : null}</span>}
+                {edition && it.perso && <button onClick={function() { retirerLigne(it.id); }} title={t('edl.retirerLigne')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)' }}><Trash2 size={14} strokeWidth={1.75} /></button>}
               </div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6, marginBottom: 8 }}>
@@ -359,7 +359,7 @@ export default function EtatDesLieux({ reservationId, onTermine, onFermer }) {
                 var actif = it.etat === k;
                 return (
                   <button key={k} disabled={!edition} onClick={function() { majLigne(it.id, 'etat', k); }}
-                    style={{ padding: '8px 2px', borderRadius: 8, border: actif ? '2px solid ' + COULEURS[k] : '1px solid #E0E0E0', background: actif ? COULEURS[k] + '1F' : '#FAFAFA', color: actif ? COULEURS[k] : '#666', fontSize: 12, fontWeight: actif ? 800 : 500, cursor: edition ? 'pointer' : 'default' }}>
+                    style={{ padding: '8px 2px', borderRadius: 8, border: actif ? '2px solid ' + COULEURS[k] : '1px solid var(--border)', background: actif ? COULEURS[k] + '1F' : 'var(--surface-soft)', color: actif ? COULEURS[k] : '#666', fontSize: 12, fontWeight: actif ? 800 : 500, cursor: edition ? 'pointer' : 'default' }}>
                     {t('edl.etat.' + k)}
                   </button>
                 );
@@ -367,7 +367,7 @@ export default function EtatDesLieux({ reservationId, onTermine, onFermer }) {
             </div>
             {edition ? (
               <input type="text" maxLength={LIM.obs} value={it.obs || ''} onChange={function(ev) { majLigne(it.id, 'obs', ev.target.value); }} placeholder={t('edl.observationPlaceholder')}
-                style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #E0E0E0', fontSize: 12, boxSizing: 'border-box' }} />
+                style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 12, boxSizing: 'border-box' }} />
             ) : (it.obs ? <div style={{ fontSize: 12, color: '#444' }}>{it.obs}</div> : null)}
             {(photosLigne.length > 0 || edition) && (
               <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 8, flexWrap: 'wrap' }}>
@@ -375,13 +375,13 @@ export default function EtatDesLieux({ reservationId, onTermine, onFermer }) {
                   return (
                     <span key={p.id} style={{ position: 'relative' }}>
                       <a href={p.url} target="_blank" rel="noopener noreferrer"><img src={p.url} alt="" style={{ width: 44, height: 44, borderRadius: 6, objectFit: 'cover', display: 'block' }} /></a>
-                      {edition && <button onClick={function() { supprimerPhoto(p.id); }} style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', border: 'none', background: '#B3261E', color: '#fff', fontSize: 11, cursor: 'pointer', lineHeight: '18px', padding: 0 }}>×</button>}
+                      {edition && <button onClick={function() { supprimerPhoto(p.id); }} style={{ position: 'absolute', top: -6, right: -6, width: 18, height: 18, borderRadius: '50%', border: 'none', background: 'var(--danger)', color: '#fff', fontSize: 11, cursor: 'pointer', lineHeight: '18px', padding: 0 }}>×</button>}
                     </span>
                   );
                 })}
                 {edition && photos.length < LIM.photos && (
                   <button onClick={function() { setPhotoPour(it.id); setTimeout(function() { fichierRef.current && fichierRef.current.click(); }, 0); }}
-                    style={{ padding: '5px 10px', borderRadius: 8, border: '1px dashed #B0BEC5', background: '#FAFAFA', color: '#607D8B', fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+                    style={{ padding: '5px 10px', borderRadius: 8, border: '1px dashed #B0BEC5', background: 'var(--surface-soft)', color: '#607D8B', fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
                     <Camera size={12} strokeWidth={1.75} /> {t('edl.photo')}
                   </button>
                 )}
@@ -396,10 +396,10 @@ export default function EtatDesLieux({ reservationId, onTermine, onFermer }) {
       {/* Ajouter une ligne */}
       {edition && (
         <div style={Object.assign({}, carte, { padding: 12 })}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>{t('edl.ajouterLigne')}</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>{t('edl.ajouterLigne')}</div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <input type="text" maxLength={LIM.piece} value={nouvelle.piece} onChange={function(ev) { setNouvelle({ piece: ev.target.value, element: nouvelle.element }); }} placeholder={t('edl.piecePlaceholder')} style={{ flex: '1 1 120px', padding: '8px 10px', borderRadius: 8, border: '1px solid #E0E0E0', fontSize: 12 }} />
-            <input type="text" maxLength={LIM.element} value={nouvelle.element} onChange={function(ev) { setNouvelle({ piece: nouvelle.piece, element: ev.target.value }); }} placeholder={t('edl.elementPlaceholder')} style={{ flex: '1 1 140px', padding: '8px 10px', borderRadius: 8, border: '1px solid #E0E0E0', fontSize: 12 }} />
+            <input type="text" maxLength={LIM.piece} value={nouvelle.piece} onChange={function(ev) { setNouvelle({ piece: ev.target.value, element: nouvelle.element }); }} placeholder={t('edl.piecePlaceholder')} style={{ flex: '1 1 120px', padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 12 }} />
+            <input type="text" maxLength={LIM.element} value={nouvelle.element} onChange={function(ev) { setNouvelle({ piece: nouvelle.piece, element: ev.target.value }); }} placeholder={t('edl.elementPlaceholder')} style={{ flex: '1 1 140px', padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 12 }} />
             <button onClick={ajouterLigne} style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: '#37474F', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>{t('edl.ajouter')}</button>
           </div>
         </div>
@@ -407,7 +407,7 @@ export default function EtatDesLieux({ reservationId, onTermine, onFermer }) {
 
       {/* Relevés */}
       <div style={carte}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>{t('edl.releves.titre')}</div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10 }}>{t('edl.releves.titre')}</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 10 }}>
           {[['eau', 'text', 16], ['electricite', 'text', 16], ['cles', 'number', 2], ['badge', 'number', 2]].map(function(c) {
             var val = edition ? (local.releves[c[0]] == null ? '' : local.releves[c[0]]) : (e.releves[c[0]] == null || e.releves[c[0]] === '' ? '—' : e.releves[c[0]]);
@@ -415,8 +415,8 @@ export default function EtatDesLieux({ reservationId, onTermine, onFermer }) {
               <label key={c[0]} style={{ fontSize: 11, color: '#666' }}>{t('edl.releves.' + c[0])}
                 {edition ? (
                   <input type={c[1]} min={0} max={20} maxLength={c[2] === 16 ? 16 : undefined} value={val} onChange={function(ev) { var v = ev.target.value; maj(function(l) { return Object.assign({}, l, { releves: Object.assign({}, l.releves, { [c[0]]: v }) }); }); }}
-                    style={{ display: 'block', width: '100%', marginTop: 3, padding: '8px 10px', borderRadius: 8, border: '1px solid #E0E0E0', fontSize: 13, boxSizing: 'border-box' }} />
-                ) : <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginTop: 3 }}>{val}</div>}
+                    style={{ display: 'block', width: '100%', marginTop: 3, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 13, boxSizing: 'border-box' }} />
+                ) : <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginTop: 3 }}>{val}</div>}
               </label>
             );
           })}
@@ -425,10 +425,10 @@ export default function EtatDesLieux({ reservationId, onTermine, onFermer }) {
 
       {/* Observations générales */}
       <div style={carte}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>{t('edl.observationsGenerales')}</div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>{t('edl.observationsGenerales')}</div>
         {edition ? (
           <div>
-            <textarea value={local.obs} maxLength={LIM.obsGen} onChange={function(ev) { var v = ev.target.value; maj(function(l) { return Object.assign({}, l, { obs: v }); }); }} style={{ width: '100%', height: 70, padding: '8px 10px', borderRadius: 8, border: '1px solid #E0E0E0', fontSize: 13, boxSizing: 'border-box', fontFamily: 'inherit', resize: 'none' }} />
+            <textarea value={local.obs} maxLength={LIM.obsGen} onChange={function(ev) { var v = ev.target.value; maj(function(l) { return Object.assign({}, l, { obs: v }); }); }} style={{ width: '100%', height: 70, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 13, boxSizing: 'border-box', fontFamily: 'inherit', resize: 'none' }} />
             <div style={{ fontSize: 11, color: '#999', textAlign: 'right' }}>{local.obs.length}/{LIM.obsGen}</div>
           </div>
         ) : <div style={{ fontSize: 13, color: '#444' }}>{e.observations_generales || <span style={{ color: '#999' }}>{t('edl.aucune')}</span>}</div>}
@@ -444,24 +444,24 @@ export default function EtatDesLieux({ reservationId, onTermine, onFermer }) {
       {/* Réserves (lecture ou saisie par l'autre partie) */}
       {e.statut === 'a_valider' && d.signer && (
         <div style={carte}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>{t('edl.reserves.titre')}</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>{t('edl.reserves.titre')}</div>
           <textarea value={reserves} maxLength={LIM.reserves} onChange={function(ev) { setReserves(ev.target.value); }} placeholder={t('edl.reserves.placeholder')}
-            style={{ width: '100%', height: 70, padding: '8px 10px', borderRadius: 8, border: '1px solid #E0E0E0', fontSize: 13, boxSizing: 'border-box', fontFamily: 'inherit', resize: 'none' }} />
+            style={{ width: '100%', height: 70, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 13, boxSizing: 'border-box', fontFamily: 'inherit', resize: 'none' }} />
           <div style={{ fontSize: 11, color: '#999', textAlign: 'right' }}>{reserves.length}/{LIM.reserves}</div>
         </div>
       )}
       {e.reserves && (e.statut === 'signe' || e.statut === 'genere') && (
-        <div style={carte}><div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 6 }}>{t('edl.reserves.titre')}</div><div style={{ fontSize: 13, color: '#444' }}>{e.reserves}</div></div>
+        <div style={carte}><div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>{t('edl.reserves.titre')}</div><div style={{ fontSize: 13, color: '#444' }}>{e.reserves}</div></div>
       )}
 
       {/* Signatures déjà posées */}
       {(e.signature_redacteur || e.signature_autre) && (
         <div style={carte}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>{t('edl.signatures')}</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10 }}>{t('edl.signatures')}</div>
           {[e.signature_redacteur, e.signature_autre].filter(Boolean).map(function(s, i) {
             return (
-              <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '8px 0', borderTop: i ? '1px solid #F0F0F0' : 'none' }}>
-                {s.mode === 'dessin' && s.image ? <img src={s.image} alt="" style={{ height: 40, maxWidth: 120, objectFit: 'contain', background: '#FAFAFA', borderRadius: 6 }} /> : <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', color: '#1B3F8F', fontSize: 18 }}>{s.nom_complet}</span>}
+              <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '8px 0', borderTop: i ? '1px solid var(--border)' : 'none' }}>
+                {s.mode === 'dessin' && s.image ? <img src={s.image} alt="" style={{ height: 40, maxWidth: 120, objectFit: 'contain', background: 'var(--surface-soft)', borderRadius: 6 }} /> : <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', color: '#1B3F8F', fontSize: 18 }}>{s.nom_complet}</span>}
                 <div style={{ fontSize: 11, color: '#666' }}><b>{s.nom_complet}</b> · {t('edl.role.' + s.role)}<br />{new Date(s.signe_at).toLocaleString('fr-FR', { dateStyle: 'medium', timeStyle: 'short' })}</div>
               </div>
             );
@@ -478,22 +478,22 @@ export default function EtatDesLieux({ reservationId, onTermine, onFermer }) {
       )}
       {modal === 'corriger' && (
         <div style={carte}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>{t('edl.correction.titre')}</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>{t('edl.correction.titre')}</div>
           <div style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>{t('edl.correction.explication')}</div>
-          <input type="text" maxLength={300} value={motif} onChange={function(ev) { setMotif(ev.target.value); }} placeholder={t('edl.correction.placeholder')} style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #E0E0E0', fontSize: 13, boxSizing: 'border-box', marginBottom: 10 }} />
+          <input type="text" maxLength={300} value={motif} onChange={function(ev) { setMotif(ev.target.value); }} placeholder={t('edl.correction.placeholder')} style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 13, boxSizing: 'border-box', marginBottom: 10 }} />
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={function() { setModal(null); }} style={{ flex: 1, padding: 10, borderRadius: 8, border: 'none', background: '#F0F0F0', color: '#555', cursor: 'pointer' }}>{t('edl.annuler')}</button>
-            <button onClick={corriger} disabled={action || motif.trim().length < 3} style={{ flex: 2, padding: 10, borderRadius: 8, border: 'none', background: motif.trim().length < 3 ? '#E0B5B1' : '#B3261E', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>{t('edl.correction.envoyer')}</button>
+            <button onClick={function() { setModal(null); }} style={{ flex: 1, padding: 10, borderRadius: 8, border: 'none', background: 'var(--bg-tertiary)', color: 'var(--text-secondary)', cursor: 'pointer' }}>{t('edl.annuler')}</button>
+            <button onClick={corriger} disabled={action || motif.trim().length < 3} style={{ flex: 2, padding: 10, borderRadius: 8, border: 'none', background: motif.trim().length < 3 ? '#E0B5B1' : 'var(--danger)', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>{t('edl.correction.envoyer')}</button>
           </div>
         </div>
       )}
       {modal === 'generer' && (
         <div style={carte}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#B3261E', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}><AlertTriangle size={14} strokeWidth={1.75} /> {t('edl.generer.titre')}</div>
-          <div style={{ fontSize: 12, color: '#55655B', marginBottom: 12 }}>{t('edl.generer.avertissement')}</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--danger)', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}><AlertTriangle size={14} strokeWidth={1.75} /> {t('edl.generer.titre')}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 12 }}>{t('edl.generer.avertissement')}</div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={function() { setModal(null); }} style={{ flex: 1, padding: 10, borderRadius: 8, border: 'none', background: '#F0F0F0', color: '#555', cursor: 'pointer' }}>{t('edl.annuler')}</button>
-            <button onClick={generer} disabled={action} style={{ flex: 2, padding: 10, borderRadius: 8, border: 'none', background: '#1B6B3A', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>{action ? t('edl.enCours') : t('edl.generer.confirmer')}</button>
+            <button onClick={function() { setModal(null); }} style={{ flex: 1, padding: 10, borderRadius: 8, border: 'none', background: 'var(--bg-tertiary)', color: 'var(--text-secondary)', cursor: 'pointer' }}>{t('edl.annuler')}</button>
+            <button onClick={generer} disabled={action} style={{ flex: 2, padding: 10, borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>{action ? t('edl.enCours') : t('edl.generer.confirmer')}</button>
           </div>
         </div>
       )}
@@ -503,23 +503,23 @@ export default function EtatDesLieux({ reservationId, onTermine, onFermer }) {
           {d.modifier && (
             <div style={{ display: 'flex', gap: 8 }}>
               <button onClick={function() { enregistrer(false).catch(function(err) { toast.error(erreurServeur(err, t('edl.erreur'))); }); }} disabled={!sale || action}
-                style={{ flex: 1, padding: 12, borderRadius: 10, border: '1px solid #CFD8DC', background: '#fff', color: sale ? '#37474F' : '#AAA', fontSize: 13, fontWeight: 600, cursor: sale ? 'pointer' : 'default' }}>{t('edl.enregistrer')}</button>
+                style={{ flex: 1, padding: 12, borderRadius: 8, border: '1px solid #CFD8DC', background: 'var(--bg-secondary)', color: sale ? 'var(--text-secondary)' : '#AAA', fontSize: 13, fontWeight: 600, cursor: sale ? 'pointer' : 'default' }}>{t('edl.enregistrer')}</button>
               <button onClick={function() { if (!tousRenseignes) { toast.error(t('edl.renseignezTout')); return; } setModal('envoyer'); }} disabled={action}
-                style={{ flex: 2, padding: 12, borderRadius: 10, border: 'none', background: tousRenseignes ? '#1B6B3A' : '#B0BEC5', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                style={{ flex: 2, padding: 12, borderRadius: 8, border: 'none', background: tousRenseignes ? 'var(--green)' : '#B0BEC5', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
                 <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Send size={14} strokeWidth={1.75} /> {t('edl.signerEtEnvoyer', { nom: e.autre_partie.nom })}</span>
               </button>
             </div>
           )}
           {d.signer && (
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={function() { setModal('corriger'); }} style={{ flex: 1, padding: 12, borderRadius: 10, border: '1px solid #F0C9C5', background: '#fff', color: '#B3261E', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>{t('edl.demanderCorrection')}</button>
-              <button onClick={function() { setModal('signer'); }} style={{ flex: 2, padding: 12, borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>{t('edl.relireEtSigner')}</button>
+              <button onClick={function() { setModal('corriger'); }} style={{ flex: 1, padding: 12, borderRadius: 8, border: '1px solid var(--danger)', background: 'var(--bg-secondary)', color: 'var(--danger)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>{t('edl.demanderCorrection')}</button>
+              <button onClick={function() { setModal('signer'); }} style={{ flex: 2, padding: 12, borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>{t('edl.relireEtSigner')}</button>
             </div>
           )}
-          {d.retirer && <button onClick={retirer} disabled={action} style={{ padding: 12, borderRadius: 10, border: '1px solid #CFD8DC', background: '#fff', color: '#37474F', fontSize: 13, cursor: 'pointer' }}>{t('edl.retirer')}</button>}
-          {d.generer && <button onClick={function() { setModal('generer'); }} style={{ padding: 13, borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Lock size={14} strokeWidth={1.75} /> {t('edl.generer.bouton')}</span></button>}
-          {d.telecharger && <button onClick={telecharger} style={{ padding: 13, borderRadius: 10, border: 'none', background: '#37474F', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Download size={14} strokeWidth={1.75} /> {t('edl.telecharger')}</span></button>}
-          {d.annuler && <button onClick={abandonner} disabled={action} style={{ padding: 8, border: 'none', background: 'none', color: '#B3261E', fontSize: 12, cursor: 'pointer' }}>{t('edl.abandonner')}</button>}
+          {d.retirer && <button onClick={retirer} disabled={action} style={{ padding: 12, borderRadius: 8, border: '1px solid #CFD8DC', background: 'var(--bg-secondary)', color: 'var(--text-secondary)', fontSize: 13, cursor: 'pointer' }}>{t('edl.retirer')}</button>}
+          {d.generer && <button onClick={function() { setModal('generer'); }} style={{ padding: 13, borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Lock size={14} strokeWidth={1.75} /> {t('edl.generer.bouton')}</span></button>}
+          {d.telecharger && <button onClick={telecharger} style={{ padding: 13, borderRadius: 8, border: 'none', background: '#37474F', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Download size={14} strokeWidth={1.75} /> {t('edl.telecharger')}</span></button>}
+          {d.annuler && <button onClick={abandonner} disabled={action} style={{ padding: 8, border: 'none', background: 'none', color: 'var(--danger)', fontSize: 12, cursor: 'pointer' }}>{t('edl.abandonner')}</button>}
         </div>
       )}
     </div>

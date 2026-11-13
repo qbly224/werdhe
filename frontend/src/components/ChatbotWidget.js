@@ -149,7 +149,7 @@ export default function ChatbotWidget() {
       {ouvert && (
         <div style={{
           width: 'min(360px, calc(100vw - 32px))', height: 'min(560px, calc(100vh - 110px))',
-          background: '#fff', borderRadius: 18, boxShadow: '0 16px 48px rgba(0,0,0,0.22)',
+          background: 'var(--bg-secondary)', borderRadius: 16, boxShadow: '0 16px 48px rgba(0,0,0,0.22)',
           display: 'flex', flexDirection: 'column', marginBottom: 14, overflow: 'hidden',
           border: '1px solid #ECE7D9'
         }}>
@@ -161,7 +161,7 @@ export default function ChatbotWidget() {
                 <ArrowLeft size={18} color="#fff" />
               </button>
             ) : (
-              <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#1B6B3A', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--green)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <MessageCircle size={16} color="#fff" strokeWidth={2} />
               </div>
             )}
@@ -196,8 +196,8 @@ export default function ChatbotWidget() {
               {sessions.map(function(s) {
                 return (
                   <button key={s.id} onClick={function() { ouvrirSession(s.id); }}
-                    style={{ textAlign: 'left', background: '#fff', border: '1px solid #ECE7D9', borderRadius: 10, padding: '10px 12px', cursor: 'pointer' }}>
-                    <div style={{ fontSize: 12.5, fontWeight: 600, color: '#1B2B22', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.titre || t('chatbot.sansTitre')}</div>
+                    style={{ textAlign: 'left', background: 'var(--bg-secondary)', border: '1px solid #ECE7D9', borderRadius: 8, padding: '10px 12px', cursor: 'pointer' }}>
+                    <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.titre || t('chatbot.sansTitre')}</div>
                     <div style={{ fontSize: 11, color: '#999', marginTop: 2 }}>{new Date(s.updated_at).toLocaleDateString(i18n.language === 'en' ? 'en-GB' : 'fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</div>
                   </button>
                 );
@@ -207,7 +207,7 @@ export default function ChatbotWidget() {
           <>
           {/* Messages */}
           <div style={{ flex: 1, overflowY: 'auto', padding: '14px 14px 6px', display: 'flex', flexDirection: 'column', gap: 10, background: '#FBFAF6' }}>
-            <div style={{ alignSelf: 'flex-start', maxWidth: '88%', background: '#F0F0EA', color: '#1B2B22', borderRadius: '4px 14px 14px 14px', padding: '9px 12px', fontSize: 13, lineHeight: 1.5 }}>
+            <div style={{ alignSelf: 'flex-start', maxWidth: '88%', background: '#F0F0EA', color: 'var(--text-primary)', borderRadius: '4px 14px 14px 14px', padding: '9px 12px', fontSize: 13, lineHeight: 1.5 }}>
               {t('chatbot.accueil')}
             </div>
 
@@ -216,7 +216,7 @@ export default function ChatbotWidget() {
                 {suggestions.map(function(s, i) {
                   return (
                     <button key={i} onClick={function() { envoyer(s); }}
-                      style={{ textAlign: 'left', background: '#fff', border: '1px solid #E0DCCF', borderRadius: 10, padding: '8px 12px', fontSize: 12.5, color: '#1B6B3A', fontWeight: 600, cursor: 'pointer' }}>
+                      style={{ textAlign: 'left', background: 'var(--bg-secondary)', border: '1px solid #E0DCCF', borderRadius: 8, padding: '8px 12px', fontSize: 12.5, color: 'var(--green)', fontWeight: 600, cursor: 'pointer' }}>
                       {s}
                     </button>
                   );
@@ -234,8 +234,8 @@ export default function ChatbotWidget() {
                   {m.content && (
                     <div style={{
                       maxWidth: '88%', fontSize: 13, lineHeight: 1.5, padding: '9px 12px',
-                      background: estUser ? '#1B6B3A' : (m.erreur ? '#FDEDEA' : '#F0F0EA'),
-                      color: estUser ? '#fff' : (m.erreur ? '#B3261E' : '#1B2B22'),
+                      background: estUser ? 'var(--green)' : (m.erreur ? '#FDEDEA' : '#F0F0EA'),
+                      color: estUser ? '#fff' : (m.erreur ? 'var(--danger)' : 'var(--text-primary)'),
                       borderRadius: estUser ? '14px 4px 14px 14px' : '4px 14px 14px 14px'
                     }}>
                       {m.content}
@@ -247,13 +247,13 @@ export default function ChatbotWidget() {
                         var photo = urlPremierePhoto(l.photos);
                         return (
                           <Link key={l.id} to={'/logements/' + l.id} target="_blank" rel="noopener noreferrer"
-                            style={{ display: 'flex', gap: 10, alignItems: 'center', background: '#fff', border: '1px solid #ECE7D9', borderRadius: 10, padding: 8, textDecoration: 'none' }}>
-                            <div style={{ width: 42, height: 42, borderRadius: 8, overflow: 'hidden', flexShrink: 0, background: '#E8F5E9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              {photo ? <img src={photo} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <Home size={16} color="#1B6B3A" />}
+                            style={{ display: 'flex', gap: 10, alignItems: 'center', background: 'var(--bg-secondary)', border: '1px solid #ECE7D9', borderRadius: 8, padding: 8, textDecoration: 'none' }}>
+                            <div style={{ width: 42, height: 42, borderRadius: 8, overflow: 'hidden', flexShrink: 0, background: 'var(--green-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              {photo ? <img src={photo} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <Home size={16} color="var(--green)" />}
                             </div>
                             <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ fontSize: 12, fontWeight: 700, color: '#1B2B22', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{l.titre}</div>
-                              <div style={{ fontSize: 11, color: '#888' }}>{l.ville}{l.quartier ? ', ' + l.quartier : ''} · {GNF(l.prix_mensuel)}{t('chatbot.parMois')}</div>
+                              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{l.titre}</div>
+                              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{l.ville}{l.quartier ? ', ' + l.quartier : ''} · {GNF(l.prix_mensuel)}{t('chatbot.parMois')}</div>
                             </div>
                           </Link>
                         );
@@ -271,9 +271,9 @@ export default function ChatbotWidget() {
           </div>
 
           {imagePreview && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderTop: '1px solid #ECE7D9', background: '#fff' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderTop: '1px solid #ECE7D9', background: 'var(--bg-secondary)' }}>
               <img src={imagePreview} alt="" style={{ width: 36, height: 36, borderRadius: 8, objectFit: 'cover' }} />
-              <div style={{ flex: 1, fontSize: 11.5, color: '#888' }}>{t('chatbot.imagePrete')}</div>
+              <div style={{ flex: 1, fontSize: 11.5, color: 'var(--text-muted)' }}>{t('chatbot.imagePrete')}</div>
               <button type="button" onClick={function() { setImageFile(null); setImagePreview(null); }}
                 style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, display: 'flex' }}>
                 <X size={15} color="#999" />
@@ -283,12 +283,12 @@ export default function ChatbotWidget() {
 
           {/* Input */}
           <form onSubmit={function(e) { e.preventDefault(); envoyer(); }}
-            style={{ display: 'flex', gap: 8, padding: 12, borderTop: imagePreview ? 'none' : '1px solid #ECE7D9', flexShrink: 0, background: '#fff' }}>
+            style={{ display: 'flex', gap: 8, padding: 12, borderTop: imagePreview ? 'none' : '1px solid #ECE7D9', flexShrink: 0, background: 'var(--bg-secondary)' }}>
             <input ref={fileInputRef} type="file" accept="image/*" onChange={choisirImage} style={{ display: 'none' }} />
             <button type="button" onClick={function() { fileInputRef.current && fileInputRef.current.click(); }}
               disabled={envoi} aria-label={t('chatbot.joindreImage')}
-              style={{ flexShrink: 0, width: 38, height: 38, borderRadius: 10, border: '1px solid #E0DCCF', background: '#FBFAF6', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-              <Paperclip size={15} color="#1B6B3A" strokeWidth={2} />
+              style={{ flexShrink: 0, width: 38, height: 38, borderRadius: 8, border: '1px solid #E0DCCF', background: '#FBFAF6', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+              <Paperclip size={15} color="var(--green)" strokeWidth={2} />
             </button>
             <input
               type="text"
@@ -296,10 +296,10 @@ export default function ChatbotWidget() {
               onChange={function(e) { setSaisie(e.target.value); }}
               placeholder={t('chatbot.placeholder')}
               disabled={envoi}
-              style={{ flex: 1, minWidth: 0, border: '1px solid #E0DCCF', borderRadius: 10, padding: '10px 12px', fontSize: 13, outline: 'none', background: '#FBFAF6' }}
+              style={{ flex: 1, minWidth: 0, border: '1px solid #E0DCCF', borderRadius: 8, padding: '10px 12px', fontSize: 13, outline: 'none', background: '#FBFAF6' }}
             />
             <button type="submit" disabled={envoi || (!saisie.trim() && !imageFile)}
-              style={{ flexShrink: 0, width: 38, height: 38, borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: envoi ? 'default' : 'pointer', opacity: envoi || (!saisie.trim() && !imageFile) ? 0.6 : 1 }}
+              style={{ flexShrink: 0, width: 38, height: 38, borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: envoi ? 'default' : 'pointer', opacity: envoi || (!saisie.trim() && !imageFile) ? 0.6 : 1 }}
               aria-label={t('chatbot.envoyer')}>
               <Send size={15} strokeWidth={2} />
             </button>
@@ -311,7 +311,7 @@ export default function ChatbotWidget() {
 
       <button onClick={function() { setOuvert(!ouvert); }}
         style={{
-          width: 54, height: 54, borderRadius: '50%', border: 'none', background: '#1B6B3A', color: '#fff',
+          width: 54, height: 54, borderRadius: '50%', border: 'none', background: 'var(--green)', color: '#fff',
           boxShadow: '0 8px 24px rgba(27,107,58,0.4)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
         }}
         aria-label={t('chatbot.bulle')}>

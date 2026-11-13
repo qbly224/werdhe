@@ -20,7 +20,7 @@
 
 .reserver-form-card h1 {
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--primary-dark);
   margin-bottom: 24px;
 }
@@ -55,7 +55,7 @@
 
 .type-btn.active {
   border-color: var(--primary);
-  background: #e8f5e9;
+  background: var(--green-light);
   color: var(--primary-dark);
 }
 
@@ -63,7 +63,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #e8f5e9;
+  background: var(--green-light);
   border-radius: var(--radius);
   padding: 14px 16px;
   margin-top: 16px;
@@ -76,7 +76,7 @@
 
 .montant-estime strong {
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--primary);
 }
 
@@ -90,7 +90,7 @@
 }
 
 .recap-image {
-  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  background: var(--green-light);
   height: 140px;
   display: flex;
   align-items: center;
@@ -116,7 +116,7 @@
 
 .recap-prix {
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--primary-dark);
   margin: 14px 0;
 }

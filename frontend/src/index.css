@@ -119,6 +119,12 @@ body {
   --radius:        var(--radius-sm);
 }
 
+/* Thème sombre : texte par défaut lisible quand un élément ne fixe pas sa couleur */
+[data-theme="dark"] body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
 /* Utilitaires */
 .container {
   max-width: 1200px;

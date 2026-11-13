@@ -55,7 +55,7 @@ export default function ModalPaiementMobile(props) {
       zIndex: 1000, padding: '20px'
     },
     modal: {
-      background: '#fff', borderRadius: '16px',
+      background: 'var(--bg-secondary)', borderRadius: '16px',
       padding: '28px', width: '100%', maxWidth: '420px',
       boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
       fontFamily: "'Segoe UI', system-ui, sans-serif"
@@ -67,34 +67,34 @@ export default function ModalPaiementMobile(props) {
       <div style={styles.modal}>
 
         <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px'}}>
-          <h2 style={{margin:0, fontSize:'18px', fontWeight:'700', color:'#1B2B22', display:'flex', alignItems:'center', gap:8}}>
+          <h2 style={{margin:0, fontSize:'18px', fontWeight:'700', color:'var(--text-primary)', display:'flex', alignItems:'center', gap:8}}>
             <Smartphone size={18} strokeWidth={1.75} /> {t('modalPaiementMobile.titre')}
           </h2>
           <button
             onClick={onClose}
-            style={{background:'none', border:'none', fontSize:'22px', cursor:'pointer', color:'#888', lineHeight:1}}
+            style={{background:'none', border:'none', fontSize:'22px', cursor:'pointer', color:'var(--text-muted)', lineHeight:1}}
             type="button"
           >×</button>
         </div>
 
-        <div style={{textAlign:'center', marginBottom:'20px', padding:'12px', background:'#F0F4F1', borderRadius:'10px'}}>
+        <div style={{textAlign:'center', marginBottom:'20px', padding:'12px', background:'var(--surface-soft)', borderRadius: '8px'}}>
           <div style={{fontSize:'13px', color:'#666', marginBottom:'4px'}}>{t('modalPaiementMobile.montantAPayer')}</div>
-          <div style={{fontSize:'24px', fontWeight:'800', color:'#1B6B3A'}}>
+          <div style={{fontSize:'24px', fontWeight: '700', color:'var(--green)'}}>
             {Number(montant).toLocaleString('fr-FR')} GNF
           </div>
-          {titre && <div style={{fontSize:'12px', color:'#888'}}>{titre}</div>}
+          {titre && <div style={{fontSize:'12px', color:'var(--text-muted)'}}>{titre}</div>}
         </div>
 
         <div style={{marginBottom:'16px'}}>
-          <label style={{fontSize:'13px', fontWeight:'600', color:'#555', display:'block', marginBottom:'6px'}}>
+          <label style={{fontSize:'13px', fontWeight:'600', color:'var(--text-secondary)', display:'block', marginBottom:'6px'}}>
             {t('modalPaiementMobile.numeroTelephone')}
           </label>
           <div style={{display:'flex', gap:'8px'}}>
             <div style={{
               display:'flex', alignItems:'center', gap:'5px',
-              padding:'10px 12px', background:'#f5f5f5',
-              border:'1px solid #e0e0e0', borderRadius:'8px',
-              fontSize:'13px', color:'#555', flexShrink:0
+              padding:'10px 12px', background:'var(--surface-soft)',
+              border:'1px solid var(--border)', borderRadius:'8px',
+              fontSize:'13px', color:'var(--text-secondary)', flexShrink:0
             }}>
               🇬🇳 +224
             </div>
@@ -104,11 +104,11 @@ export default function ModalPaiementMobile(props) {
               value={telephone}
               onChange={function(e) { setTelephone(formaterTel(e.target.value)); }}
               style={{
-                flex:1, padding:'10px 12px', border:'1px solid #e0e0e0',
+                flex:1, padding:'10px 12px', border:'1px solid var(--border)',
                 borderRadius:'8px', fontSize:'13px', outline:'none', margin:0
               }}
-              onFocus={function(e) { e.target.style.borderColor = '#1B6B3A'; }}
-              onBlur={function(e) { e.target.style.borderColor = '#e0e0e0'; }}
+              onFocus={function(e) { e.target.style.borderColor = 'var(--green)'; }}
+              onBlur={function(e) { e.target.style.borderColor = 'var(--border)'; }}
             />
           </div>
           <div style={{fontSize:'11px', color:'#aaa', marginTop:'8px', lineHeight:'1.5'}}>
@@ -120,7 +120,7 @@ export default function ModalPaiementMobile(props) {
           <button
             type="button"
             onClick={onClose}
-            style={{flex:1, padding:'12px', background:'#f5f5f5', color:'#555', border:'none', borderRadius:'9px', fontSize:'14px', cursor:'pointer'}}
+            style={{flex:1, padding:'12px', background:'var(--surface-soft)', color:'var(--text-secondary)', border:'none', borderRadius: '8px', fontSize:'14px', cursor:'pointer'}}
           >
             {t('modalPaiementMobile.fermer')}
           </button>
@@ -130,9 +130,9 @@ export default function ModalPaiementMobile(props) {
             disabled={loading || !telephoneValide}
             style={{
               flex:2, padding:'12px',
-              background: loading || !telephoneValide ? '#ccc' : '#1B6B3A',
+              background: loading || !telephoneValide ? '#ccc' : 'var(--green)',
               color:'#fff',
-              border:'none', borderRadius:'9px', fontSize:'14px',
+              border:'none', borderRadius: '8px', fontSize:'14px',
               fontWeight:'700', cursor: loading || !telephoneValide ? 'not-allowed' : 'pointer'
             }}
           >

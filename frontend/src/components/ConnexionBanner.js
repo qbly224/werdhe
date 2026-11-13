@@ -42,7 +42,7 @@ export default function ConnexionBanner() {
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 10000,
       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
       padding: '8px 16px', fontSize: 12.5, fontWeight: 600, textAlign: 'center',
-      color: '#fff', background: enLigne ? '#1B6B3A' : '#8A5A00',
+      color: '#fff', background: enLigne ? 'var(--green)' : '#8A5A00',
       transition: 'background .3s',
     }}>
       {enLigne

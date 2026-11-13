@@ -20,24 +20,24 @@ export default function ModalSignatureBail(props) {
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
       onClick={function(e) { if (e.target === e.currentTarget && !loading) onClose(); }}>
-      <div style={{ background: '#fff', borderRadius: 16, padding: 28, width: '100%', maxWidth: 420, boxShadow: '0 8px 32px rgba(0,0,0,0.2)', fontFamily: 'var(--font-body)' }}>
+      <div style={{ background: 'var(--bg-secondary)', borderRadius: 16, padding: 28, width: '100%', maxWidth: 420, boxShadow: '0 8px 32px rgba(0,0,0,0.2)', fontFamily: 'var(--font-body)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-          <div style={{ width: 36, height: 36, borderRadius: 10, background: '#E8F5E9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <PenLine size={18} strokeWidth={1.5} color="#1B6B3A" />
+          <div style={{ width: 36, height: 36, borderRadius: 8, background: 'var(--green-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <PenLine size={18} strokeWidth={1.5} color="var(--green)" />
           </div>
-          <h2 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: '#1B2B22' }}>{t('modalSignatureBail.titre')}</h2>
+          <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: 'var(--text-primary)' }}>{t('modalSignatureBail.titre')}</h2>
         </div>
-        <p style={{ fontSize: 13, color: '#888', margin: '0 0 20px', lineHeight: 1.5 }}>
+        <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: '0 0 20px', lineHeight: 1.5 }}>
           {t('modalSignatureBail.description')}
         </p>
 
-        <label style={{ fontSize: 12, fontWeight: 700, color: '#555', display: 'block', marginBottom: 6 }}>
+        <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: 6 }}>
           {t('modalSignatureBail.labelNom')}
         </label>
         <input type="text" value={nomComplet} autoFocus
           onChange={function(e) { setNomComplet(e.target.value); }}
           placeholder={t('modalSignatureBail.placeholderNom')}
-          style={{ width: '100%', padding: '11px 14px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', boxSizing: 'border-box', marginBottom: 16 }} />
+          style={{ width: '100%', padding: '11px 14px', border: '1.5px solid var(--border)', borderRadius: 8, fontSize: 14, outline: 'none', boxSizing: 'border-box', marginBottom: 16 }} />
 
         <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 13, color: '#444', cursor: 'pointer', marginBottom: 22, lineHeight: 1.5 }}>
           <input type="checkbox" checked={accepte} onChange={function(e) { setAccepte(e.target.checked); }}
@@ -47,12 +47,12 @@ export default function ModalSignatureBail(props) {
 
         <div style={{ display: 'flex', gap: 10 }}>
           <button type="button" onClick={onClose} disabled={loading}
-            style={{ flex: 1, padding: 12, borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 14, fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer' }}>
+            style={{ flex: 1, padding: 12, borderRadius: 8, border: '1.5px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text-secondary)', fontSize: 14, fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer' }}>
             {t('modalSignatureBail.annuler')}
           </button>
           <button type="button" disabled={!peutSigner}
             onClick={function() { onConfirm(nomComplet.trim()); }}
-            style={{ flex: 2, padding: 12, borderRadius: 10, border: 'none', background: peutSigner ? '#1B6B3A' : '#ccc', color: '#fff', fontSize: 14, fontWeight: 700, cursor: peutSigner ? 'pointer' : 'not-allowed' }}>
+            style={{ flex: 2, padding: 12, borderRadius: 8, border: 'none', background: peutSigner ? 'var(--green)' : '#ccc', color: '#fff', fontSize: 14, fontWeight: 700, cursor: peutSigner ? 'pointer' : 'not-allowed' }}>
             {loading ? t('modalSignatureBail.signatureEnCours') : t('modalSignatureBail.signerLeBail')}
           </button>
         </div>

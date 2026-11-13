@@ -97,7 +97,7 @@ const PhotoUpload = ({ logementId, photosInitiales = [], onUpdate }) => {
           </div>
         ) : (
           <div className="drop-content">
-            <Camera size={32} strokeWidth={1.5} color="#1B6B3A" />
+            <Camera size={32} strokeWidth={1.5} color="var(--green)" />
             <p>{t('photoUpload.dropZone.dragText')} <strong>{t('photoUpload.dropZone.dragTextBold')}</strong></p>
             <small>{t('photoUpload.dropZone.formats')}</small>
           </div>

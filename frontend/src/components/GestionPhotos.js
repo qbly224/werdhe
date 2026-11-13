@@ -53,7 +53,7 @@ export default function GestionPhotos({ logementId, photosInitiales, onUpdate })
 
   return (
     <div>
-      <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
         <Camera size={15} strokeWidth={1.8} />
         {t('gestionPhotos.titre', { count: photos.length })}
       </div>
@@ -62,13 +62,13 @@ export default function GestionPhotos({ logementId, photosInitiales, onUpdate })
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: 8, marginBottom: 12 }}>
         {photos.map(function(url, i) {
           return (
-            <div key={i} style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', aspectRatio: '1', background: '#F0F0F0' }}>
+            <div key={i} style={{ position: 'relative', borderRadius: 8, overflow: 'hidden', aspectRatio: '1', background: 'var(--bg-tertiary)' }}>
               <img
                 src={url} alt={t('gestionPhotos.altPhoto', { index: i + 1 })}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}
                 onClick={function() { setPreview(url); }} />
               {i === 0 && (
-                <div style={{ position: 'absolute', top: 4, left: 4, background: '#1B6B3A', color: '#fff', borderRadius: 6, padding: '2px 6px', fontSize: 9, fontWeight: 700 }}>
+                <div style={{ position: 'absolute', top: 4, left: 4, background: 'var(--green)', color: '#fff', borderRadius: 6, padding: '2px 6px', fontSize: 9, fontWeight: 700 }}>
                   {t('gestionPhotos.photoPrincipale')}
                 </div>
               )}
@@ -83,19 +83,19 @@ export default function GestionPhotos({ logementId, photosInitiales, onUpdate })
 
         {/* Bouton ajouter */}
         {photos.length < 10 && (
-          <label style={{ aspectRatio: '1', border: '2px dashed #E0E0E0', borderRadius: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: uploading ? 'not-allowed' : 'pointer', background: '#FAFAFA', transition: 'all .2s' }}
-            onMouseEnter={function(e) { if (!uploading) e.currentTarget.style.borderColor = '#1B6B3A'; }}
-            onMouseLeave={function(e) { e.currentTarget.style.borderColor = '#E0E0E0'; }}>
+          <label style={{ aspectRatio: '1', border: '2px dashed var(--border)', borderRadius: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: uploading ? 'not-allowed' : 'pointer', background: 'var(--surface-soft)', transition: 'all .2s' }}
+            onMouseEnter={function(e) { if (!uploading) e.currentTarget.style.borderColor = 'var(--green)'; }}
+            onMouseLeave={function(e) { e.currentTarget.style.borderColor = 'var(--border)'; }}>
             <input type="file" multiple accept="image/*" style={{ display: 'none' }} onChange={handleUpload} disabled={uploading} />
             {uploading ? (
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 20, marginBottom: 4 }}>⏳</div>
-                <div style={{ fontSize: 9, color: '#888' }}>{t('gestionPhotos.upload')}</div>
+                <div style={{ fontSize: 9, color: 'var(--text-muted)' }}>{t('gestionPhotos.upload')}</div>
               </div>
             ) : (
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 24, marginBottom: 4 }}>+</div>
-                <div style={{ fontSize: 9, color: '#888' }}>{t('gestionPhotos.ajouter')}</div>
+                <div style={{ fontSize: 9, color: 'var(--text-muted)' }}>{t('gestionPhotos.ajouter')}</div>
               </div>
             )}
           </label>
@@ -115,7 +115,7 @@ export default function GestionPhotos({ logementId, photosInitiales, onUpdate })
             <img src={preview} alt="preview" style={{ maxWidth: '100%', maxHeight: '85vh', borderRadius: 12, objectFit: 'contain' }} />
             <button
               onClick={function() { setPreview(null); }}
-              style={{ position: 'absolute', top: -12, right: -12, background: '#fff', border: 'none', borderRadius: '50%', width: 32, height: 32, fontSize: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+              style={{ position: 'absolute', top: -12, right: -12, background: 'var(--bg-secondary)', border: 'none', borderRadius: '50%', width: 32, height: 32, fontSize: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
               ×
             </button>
           </div>
