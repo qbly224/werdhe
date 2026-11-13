@@ -1,11 +1,7 @@
 /* eslint-disable */
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import {
-  Home, Users, FileText, Shield, Bell, MessageCircle,
-  ChevronRight, Check, Star, MapPin, ArrowRight,
-  Building2, Key, TrendingUp, Banknote, Menu, X,Facebook, Instagram, Search, Phone, Mail, Clock
-} from 'lucide-react';
+import { Home, Users, ChevronRight, Star, ArrowRight, Building2, Key, Search } from 'lucide-react';
 import SEO from '../components/SEO';
 import Logo from '../components/Logo';
 import api from '../services/api';
@@ -15,6 +11,8 @@ import { useTranslation } from 'react-i18next';
 import useLimitesPlans from '../hooks/useLimitesPlans';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import OdometerNumber from '../components/OdometerNumber';
+import SiteHeader from '../components/SiteHeader';
+import SiteFooter from '../components/SiteFooter';
 import CommentCaMarche from '../components/CommentCaMarche';
 import Fonctionnalites from '../components/Fonctionnalites';
 import HeroQuittance from '../components/HeroQuittance';
@@ -122,47 +120,10 @@ function getSlides(t) {
     },
   ];
 }
-function Particules() {
-  var [scrollY, setScrollY] = useState(0);
-
-  useEffect(function() {
-    function onScroll() { setScrollY(window.scrollY); }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return function() { window.removeEventListener('scroll', onScroll); };
-  }, []);
-
-  return (
-    <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
-      {[
-        { size: 6,   left: '10%', top: '20%', speed: 0.08, opacity: 0.15, color: '#1B6B3A' },
-        { size: 10,  left: '85%', top: '15%', speed: 0.12, opacity: 0.1,  color: '#F5A623' },
-        { size: 4,   left: '60%', top: '40%', speed: 0.06, opacity: 0.12, color: '#1B6B3A' },
-        { size: 8,   left: '25%', top: '60%', speed: 0.1,  opacity: 0.08, color: '#F5A623' },
-        { size: 5,   left: '75%', top: '70%', speed: 0.09, opacity: 0.1,  color: '#1B6B3A' },
-        { size: 12,  left: '45%', top: '30%', speed: 0.07, opacity: 0.06, color: '#F5A623' },
-      ].map(function(p, i) {
-        return (
-          <div key={i} style={{
-            position: 'absolute',
-            width:  p.size,
-            height: p.size,
-            borderRadius: '50%',
-            background: p.color,
-            left: p.left,
-            top:  'calc(' + p.top + ' - ' + (scrollY * p.speed) + 'px)',
-            opacity: p.opacity,
-            transition: 'top 0.1s ease-out',
-          }} />
-        );
-      })}
-    </div>
-  );
-}
 export default function LandingPage() {
   var t                   = useTranslation('public').t;
   var navigate            = useNavigate();
   var { user }             = useAuth();
-  var [mobileMenu, setMobileMenu] = useState(false);
   var heroRef             = useRef(null);
   var [compteurs, setCompteurs] = useState({ logements: 0, utilisateurs: 0 });
   var [slideActif, setSlideActif] = useState(0);
@@ -172,6 +133,13 @@ export default function LandingPage() {
   var STATS                = getStats(t);
   var TEMOIGNAGES          = getTemoignages(t);
   var limitesPlans         = useLimitesPlans();
+
+useEffect(function() {
+  if (window.location.hash) {
+    var cible = document.getElementById(window.location.hash.slice(1));
+    if (cible) setTimeout(function() { cible.scrollIntoView(); }, 60);
+  }
+}, []);
 
 useEffect(function() {
   function handleMouse(e) {
@@ -229,68 +197,13 @@ useEffect(function() {
 
   return (
     <div style={{ fontFamily: 'var(--font-body)', background: '#F7F8F7', color: '#1B2B22', overflowX: 'hidden', position: 'relative' }}>
-      <Particules />
       <SEO
         titre={t('landingPage.seo.titre')}
         description={t('landingPage.seo.description')}
         url="https://werdhe.com"
       />
-      {/* ─── NAVBAR ─────────────────────────────────────────────── */}
-      <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(247,248,247,0.92)', backdropFilter: 'blur(8px)', borderBottom: '0.5px solid rgba(27,107,58,0.12)', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="nav-barre">
-        <Logo size={36} showText={true} darkBg={false} />
+      <SiteHeader />
 
-        <div style={{ display: 'flex', gap: 28, alignItems: 'center' }} className="nav-desktop">
-          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.carte'), '/logements?vue=carte'], [t('landingPage.nav.tarifs'), '/pricing'], [t('landingPage.nav.faq'), '#faq']].map(function(l) {
-            return l[1].charAt(0) === '#'
-              ? <a key={l[1]} href={l[1]} style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontWeight: 500 }}>{l[0]}</a>
-              : <a key={l[1]} href={l[1]} onClick={function(e) { e.preventDefault(); navigate(l[1]); }} style={{ fontSize: 14, color: '#555', textDecoration: 'none', fontWeight: 500 }}>{l[0]}</a>;
-          })}
-        </div>
-
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }} className="nav-actions">
-          <LanguageSwitcher />
-          <button onClick={function() { navigate('/login'); }}
-            style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', background: 'transparent', color: '#1B6B3A', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
-            className="btn-nav-login">
-            {t('landingPage.nav.connexion')}
-          </button>
-          <button onClick={function() { navigate('/inscription'); }}
-            style={{ padding: '8px 16px', borderRadius: 8, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
-            className="btn-nav-hide">
-            {t('landingPage.nav.demarrer')}
-          </button>
-          <button onClick={function() { setMobileMenu(!mobileMenu); }}
-            style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
-            className="btn-hamburger">
-            {mobileMenu ? <X size={22} color="#1B2B22" /> : <Menu size={22} color="#1B2B22" />}
-          </button>
-        </div>
-      </nav>
-
-      {/* Menu mobile */}
-      {mobileMenu && (
-        <div style={{ position: 'fixed', inset: 0, top: 60, background: '#fff', zIndex: 99, padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {[[t('landingPage.nav.fonctionnalites'), '#fonctionnalites'], [t('landingPage.nav.commentCaMarche'), '#comment'], [t('landingPage.nav.carte'), '/logements?vue=carte'], [t('landingPage.nav.tarifs'), '/pricing']].map(function(l) {
-            return (
-              <a key={l[1]} href={l[1]} onClick={function(e) {
-                  setMobileMenu(false);
-                  if (l[1].charAt(0) !== '#') { e.preventDefault(); navigate(l[1]); }
-                }}
-                style={{ fontSize: 18, color: '#1B2B22', textDecoration: 'none', fontWeight: 600, padding: '12px 0', borderBottom: '0.5px solid #f0f0f0' }}>
-                {l[0]}
-              </a>
-            );
-          })}
-          <button onClick={function() { navigate('/login'); }}
-            style={{ padding: '14px', borderRadius: 10, border: '1px solid #1B6B3A', background: 'transparent', color: '#1B6B3A', fontSize: 15, fontWeight: 600, cursor: 'pointer', marginTop: 8 }}>
-            {t('landingPage.nav.connexion')}
-          </button>
-          <button onClick={function() { navigate('/inscription'); }}
-            style={{ padding: '14px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
-            {t('landingPage.nav.demarrerGratuit')}
-          </button>
-        </div>
-      )}
       {/* ─── HERO PLEIN ÉCRAN ────────────────────────────────── */}
       <section ref={heroRef} style={{ position: 'relative', height: '100vh', minHeight: 600, maxHeight: 900, overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
 
@@ -303,19 +216,14 @@ useEffect(function() {
           );
         })}
 
-        {/* Overlay dégradé */}
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%)', zIndex: 1 }} />
+        {/* Voile uni pour la lisibilité du texte */}
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 12, 0.55)', zIndex: 1 }} />
 
         {/* Contenu hero */}
         <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 960, margin: '0 auto', padding: '0 24px', textAlign: 'center', transform: 'translate(' + (souris.x * 0.3) + 'px, ' + (souris.y * 0.3) + 'px)', transition: 'transform 0.1s ease-out' }}>
 
-          {/* Badge */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 20, padding: '6px 16px', marginBottom: 24 }}>
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.95)', fontWeight: 600 }}>{SLIDES[slideActif].tag}</span>
-          </div>
-
           {/* Titre */}
-          <h1 style={{ fontSize: 'clamp(32px, 6vw, 68px)', fontWeight: 900, color: '#fff', margin: '0 0 14px', letterSpacing: -1.5, lineHeight: 1.08, textShadow: '0 2px 24px rgba(0,0,0,0.4)' }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 6vw, 64px)', fontWeight: 700, color: '#fff', margin: '0 0 14px', letterSpacing: -1, lineHeight: 1.1 }}>
             {SLIDES[slideActif].titre}
           </h1>
           <p style={{ fontSize: 'clamp(15px, 2vw, 19px)', color: 'rgba(255,255,255,0.85)', margin: '0 auto 36px', lineHeight: 1.6, maxWidth: 580 }}>
@@ -337,13 +245,13 @@ useEffect(function() {
                 placeholder={t('landingPage.search.placeholderUnique')}
                 style={{ flex: 1, minWidth: 0, border: 'none', background: 'transparent', outline: 'none', fontFamily: "'Fraunces', serif", fontStyle: 'italic', fontSize: 15, color: '#1B2B22' }} />
               <button type="submit"
-                style={{ flexShrink: 0, padding: '12px 22px', borderRadius: 24, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                style={{ flexShrink: 0, padding: '12px 22px', borderRadius: 16, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
                 {t('landingPage.search.rechercher')}
               </button>
             </div>
           </form>
           <div style={{ textAlign: 'center', marginBottom: 28 }}>
-            <span style={{ display: 'inline-block', fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: '0.02em', color: 'rgba(255,255,255,0.65)', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.16)', borderRadius: 16, padding: '5px 14px' }}>
+            <span style={{ display: 'inline-block', fontFamily: 'var(--font-mono)', fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>
               {t('landingPage.search.exemple')}
             </span>
           </div>
@@ -358,7 +266,7 @@ useEffect(function() {
             ].map(function(b, i) {
               return (
                 <button key={i} onClick={function() { navigate('/logements'); }}
-                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 16, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.1)', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
                   {b.icon} {b.label}
                 </button>
               );
@@ -374,7 +282,7 @@ useEffect(function() {
             var actif = slideActif === i;
             return (
               <button key={i} onClick={function() { setSlideActif(i); }} aria-label={'Slide ' + (i + 1)}
-                style={{ width: actif ? 12 : 9, height: actif ? 12 : 9, borderRadius: '50%', border: actif ? 'none' : '1.5px solid rgba(255,255,255,0.7)', background: actif ? '#F5A623' : 'rgba(255,255,255,0.35)', boxShadow: actif ? '0 0 0 3px rgba(245,166,35,0.25)' : 'none', cursor: 'pointer', transition: 'all .3s', padding: 0 }} />
+                style={{ width: actif ? 12 : 9, height: actif ? 12 : 9, borderRadius: '50%', border: actif ? 'none' : '1.5px solid rgba(255,255,255,0.7)', background: actif ? '#fff' : 'rgba(255,255,255,0.35)', boxShadow: 'none', cursor: 'pointer', transition: 'all .3s', padding: 0 }} />
             );
           })}
         </div>
@@ -413,7 +321,7 @@ useEffect(function() {
             return (
               <div key={i} style={{ textAlign: 'center', padding: '20px 12px' }}>
                 <OdometerNumber value={val} suffix={suffix}
-                  style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 900, letterSpacing: -1, fontFamily: "'Fraunces', serif", color: i <= 1 ? '#F5A623' : '#fff', justifyContent: 'center' }} />
+                  style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 700, letterSpacing: -1, fontFamily: "'Fraunces', serif", color: '#fff', justifyContent: 'center' }} />
                 <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', marginTop: 6 }}>{s.label}</div>
               </div>
             );
@@ -426,7 +334,7 @@ useEffect(function() {
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
             <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.featuresSection.overline')}</div>
-            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 650, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.featuresSection.title')}</h2>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 600, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.featuresSection.title')}</h2>
             <p style={{ color: '#5B6E5F', fontSize: 15, margin: '10px auto 0', maxWidth: 520 }}>{t('landingPage.featuresSection.subtitle')}</p>
           </div>
           <Fonctionnalites />
@@ -437,7 +345,7 @@ useEffect(function() {
       <section id="comment" style={{ padding: 'clamp(50px, 8vw, 90px) 24px', maxWidth: 1000, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
           <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.howItWorks.overline')}</div>
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 650, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.howItWorks.title')}</h2>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 600, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.howItWorks.title')}</h2>
         </div>
 
         <CommentCaMarche />
@@ -448,7 +356,7 @@ useEffect(function() {
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
             <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.testimonialsSection.overline')}</div>
-            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 650, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.testimonialsSection.title')}</h2>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 600, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.testimonialsSection.title')}</h2>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
@@ -478,14 +386,14 @@ useEffect(function() {
       <section id="faq" style={{ padding: 'clamp(50px, 8vw, 80px) 24px', maxWidth: 700, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
           <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.faqSection.overline')}</div>
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 34px)', fontWeight: 650, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.faqSection.title')}</h2>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 34px)', fontWeight: 600, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.faqSection.title')}</h2>
         </div>
         <FaqLanding />
       </section>
       {/* ─── CTA FINAL ───────────────────────────────────────────── */}
       <section style={{ background: '#1B6B3A', padding: 'clamp(50px, 8vw, 80px) 24px', textAlign: 'center' }}>
         <div style={{ maxWidth: 600, margin: '0 auto' }}>
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(26px, 4vw, 42px)', fontWeight: 650, color: '#fff', margin: '0 0 16px', letterSpacing: -0.5 }}>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(26px, 4vw, 42px)', fontWeight: 600, color: '#fff', margin: '0 0 16px', letterSpacing: -0.5 }}>
             {t('landingPage.ctaFinal.title')}
           </h2>
           <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.75)', margin: '0 0 32px', lineHeight: 1.6 }}>
@@ -493,7 +401,7 @@ useEffect(function() {
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <button onClick={function() { navigate('/inscription'); }}
-              style={{ padding: '14px 28px', borderRadius: 12, border: 'none', background: '#F5A623', color: '#1B2B22', fontSize: 15, fontWeight: 800, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              style={{ padding: '14px 28px', borderRadius: 12, border: 'none', background: '#fff', color: '#1B6B3A', fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
               {t('landingPage.ctaFinal.creerCompte')} <ArrowRight size={16} strokeWidth={2.5} />
             </button>
             <button onClick={function() { navigate('/logements'); }}
@@ -504,215 +412,9 @@ useEffect(function() {
         </div>
       </section>
 
-      {/* ─── FOOTER ───────────────────────────────────────────────── */}
-<footer style={{ position: 'relative', background: '#0A1A0D', overflow: 'hidden' }}>
-
-  {/* Image de fond avec overlay */}
-  <div style={{
-    position: 'absolute', inset: 0,
-    backgroundImage: 'url(https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=75&fit=crop)',
-    backgroundSize: 'cover', backgroundPosition: 'center',
-  }}>
-    <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 12, 0.88)' }} />
-  </div>
-
-  {/* Contenu au-dessus de l'image */}
-  <div style={{ position: 'relative', zIndex: 1 }}>
-
-    {/* ── Corps du footer ── */}
-    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '48px 24px 28px' }}>
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: 40, marginBottom: 40,
-      }}>
-
-        {/* Colonne 1 — Logo + desc + réseaux */}
-        <div>
-          <div style={{ marginBottom: 14 }}>
-            <Logo size={32} showText={true} darkBg={true} />
-          </div>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, margin: '0 0 20px' }}>
-            {t('landingPage.footer.desc')}
-          </p>
-          <div style={{ display: 'flex', gap: 10 }}>
-            {[
-  {
-    label: 'Facebook',
-    svg: (
-      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
-        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-      </svg>
-    ),
-  },
-  {
-    label: 'TikTok',
-    href: 'https://www.tiktok.com/@qbelytech',
-    svg: (
-      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
-        <path d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6c0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64c0 3.33 2.76 5.7 5.69 5.7c3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z"/>
-      </svg>
-    ),
-  },
-  {
-    label: 'YouTube',
-    svg: (
-      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
-        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58a2.78 2.78 0 0 0 1.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58zM9.75 15.02V8.98L15.5 12z"/>
-      </svg>
-    ),
-  },
-].map(function(s) {
-  return (
-    <a key={s.label} href={s.href || '#'} target={s.href ? '_blank' : undefined} rel={s.href ? 'noopener noreferrer' : undefined} title={s.label} style={{
-      width: 36, height: 36, borderRadius: 8,
-      border: '1px solid rgba(255,255,255,0.15)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      color: 'rgba(255,255,255,0.5)', textDecoration: 'none', transition: 'all .2s',
-    }}
-    onMouseEnter={function(e) {
-      e.currentTarget.style.background = '#1B6B3A';
-      e.currentTarget.style.borderColor = '#1B6B3A';
-      e.currentTarget.style.color = '#fff';
-    }}
-    onMouseLeave={function(e) {
-      e.currentTarget.style.background = 'transparent';
-      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
-      e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
-    }}>
-      {s.svg}
-    </a>
-  );
-})}
-          </div>
-        </div>
-
-        {/* Colonne 2 — Navigation */}
-        <div>
-          <div style={{ fontSize: 11, color: '#F5A623', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 16 }}>
-            {t('landingPage.footer.navTitle')}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {[
-              [t('landingPage.footer.nav.accueil'), '/'],
-              [t('landingPage.footer.nav.logements'), '/logements'],
-              [t('landingPage.footer.nav.tarifs'), '/pricing'],
-              [t('landingPage.footer.nav.blog'), '/blog'],
-              [t('landingPage.footer.nav.estimation'), '/estimation'],
-              [t('landingPage.footer.nav.aPropos'), '/a-propos'],
-              [t('landingPage.footer.nav.seConnecter'), '/login'],
-            ].map(function(l) {
-              return (
-                <a key={l[1]} href={l[1]} style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', transition: 'color .2s' }}
-                  onMouseEnter={function(e) { e.currentTarget.style.color = '#fff'; }}
-                  onMouseLeave={function(e) { e.currentTarget.style.color = 'rgba(255,255,255,0.45)'; }}>
-                  {l[0]}
-                </a>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Colonne 3 — Liens rapides */}
-        <div>
-          <div style={{ fontSize: 11, color: '#F5A623', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 16 }}>
-            {t('landingPage.footer.quickTitle')}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {[
-              [t('landingPage.footer.quick.creerCompte'), '/inscription'],
-              [t('landingPage.footer.quick.contact'), '/contact'],
-              [t('landingPage.footer.quick.faq'), '/a-propos#faq'],
-              [t('landingPage.footer.quick.cgu'), '/cgu'],
-              [t('landingPage.footer.quick.confidentialite'), '/confidentialite'],
-            ].map(function(l) {
-              return (
-                <a key={l[1]} href={l[1]} style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', transition: 'color .2s' }}
-                  onMouseEnter={function(e) { e.currentTarget.style.color = '#fff'; }}
-                  onMouseLeave={function(e) { e.currentTarget.style.color = 'rgba(255,255,255,0.45)'; }}>
-                  {l[0]}
-                </a>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Colonne 4 — Infos pratiques */}
-        <div>
-          <div style={{ fontSize: 11, color: '#F5A623', fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 16 }}>
-            {t('landingPage.footer.infosTitle')}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-              <MapPin size={15} strokeWidth={1.5} style={{ color: '#F5A623', flexShrink: 0, marginTop: 2 }} />
-              <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
-                {t('landingPage.footer.adresse')}
-              </span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-              <Clock size={15} strokeWidth={1.5} style={{ color: '#F5A623', flexShrink: 0, marginTop: 2 }} />
-              <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
-                {t('landingPage.footer.horaires')}<br />
-                {t('landingPage.footer.support')}
-              </span>
-            </div>
-          </div>
-          <a href="/contact" style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            marginTop: 20, padding: '10px 20px',
-            background: 'transparent', border: '1.5px solid #1B6B3A',
-            borderRadius: 8, color: '#fff', fontSize: 13,
-            fontWeight: 600, textDecoration: 'none', transition: 'all .2s',
-          }}
-          onMouseEnter={function(e) { e.currentTarget.style.background = '#1B6B3A'; }}
-          onMouseLeave={function(e) { e.currentTarget.style.background = 'transparent'; }}>
-            <Phone size={14} strokeWidth={1.5} />
-            {t('landingPage.footer.contactBtn')}
-          </a>
-        </div>
-
-      </div>
-
-      {/* ── Bas du footer ── */}
-      <div style={{
-        borderTop: '1px solid rgba(255,255,255,0.07)',
-        paddingTop: 20,
-        display: 'flex', justifyContent: 'space-between',
-        alignItems: 'center', flexWrap: 'wrap', gap: 10,
-      }}>
-        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.2)' }}>
-          {t('landingPage.footer.copyright')}
-        </div>
-        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.2)' }}>
-          contact@werdhe.com
-        </div>
-      </div>
-    </div>
-
-  </div>
-</footer>
+      <SiteFooter />
 
       <style>{`
-        @media (max-width: 768px) {
-          .nav-desktop { display: none !important; }
-          .btn-nav-hide { display: none !important; }
-          .btn-hamburger { display: flex !important; }
-          .nav-actions { gap: 6px !important; }
-          .btn-nav-login { padding: 8px 12px !important; }
-        }
-        @media (max-width: 400px) {
-          .nav-barre { padding: 0 14px !important; }
-        }
-        @media (max-width: 380px) {
-          .btn-nav-login { display: none !important; }
-        }
-        @media (min-width: 769px) {
-          .btn-hamburger { display: none !important; }
-        }
-        a:hover { opacity: 0.85; }
-        button { transition: opacity .15s, transform .1s; }
-        button:hover { opacity: 0.9; }
-        button:active { transform: scale(0.98); }
         @keyframes flottement {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-10px); }

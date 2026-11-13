@@ -9,7 +9,8 @@ import {
   Zap, Droplets, Wind, Shield, Car, Trees, ArrowRight,
   Copy, Check, Phone, Star, Home, Share2, ImageOff, CheckCircle2, Lock
 } from 'lucide-react';
-import Logo from '../components/Logo';
+import SiteHeader from '../components/SiteHeader';
+import SiteFooter from '../components/SiteFooter';
 import MiniCarteLogement from '../components/MiniCarteLogement';
 import { useTranslation } from 'react-i18next';
 
@@ -112,27 +113,21 @@ export default function LogementDetail() {
         type="article"
       />
 
-      {/* Navbar */}
-      <nav style={{ background: '#fff', borderBottom: '0.5px solid #E0E0E0', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 1px 8px rgba(0,0,0,0.04)' }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
-          <Logo size={32} showText={true} darkBg={false} />
-        </Link>
-        <button onClick={function() { navigate(-1); }}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: '1px solid #E0E0E0', borderRadius: 8, padding: '6px 14px', fontSize: 13, color: '#555', cursor: 'pointer' }}>
+      <SiteHeader />
+
+      <div style={{ maxWidth: 1060, margin: '0 auto', padding: '16px 16px 60px' }}>
+        <button onClick={function() { navigate(-1); }} className="ds-btn ds-btn--ghost ds-btn--sm" style={{ marginBottom: 12 }}>
           <ChevronLeft size={16} strokeWidth={2} /> {t('logementDetail.nav.retour')}
         </button>
-      </nav>
-
-      <div style={{ maxWidth: 1060, margin: '0 auto', padding: '24px 16px 60px' }}>
         <div className="logement-detail-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 24, alignItems: 'start' }}>
 
           {/* ─── COLONNE GAUCHE ───────────────────────────────── */}
           <div>
             {/* Galerie photos */}
-            <div style={{ borderRadius: 18, overflow: 'hidden', marginBottom: 20, position: 'relative', background: '#1B2B22' }}>
+            <div style={{ borderRadius: 16, overflow: 'hidden', marginBottom: 20, position: 'relative', background: '#1B2B22' }}>
               {photos.length === 0 ? (
-                <div style={{ height: 380, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1B6B3A, #2D9E5F)' }}>
-                  <ImageOff size={56} strokeWidth={1.5} color="rgba(255,255,255,0.85)" />
+                <div style={{ height: 380, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#E8F5E9' }}>
+                  <ImageOff size={56} strokeWidth={1.5} color="#1B6B3A" />
                 </div>
               ) : (
                 <div style={{ position: 'relative', height: 380 }}>
@@ -143,14 +138,14 @@ export default function LogementDetail() {
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.5))' }} />
 
                   {/* Badge statut */}
-                  <div style={{ position: 'absolute', top: 14, right: 14, background: logement.statut === 'disponible' ? '#1B6B3A' : '#888', color: '#fff', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <div style={{ position: 'absolute', top: 14, right: 14, background: logement.statut === 'disponible' ? '#1B6B3A' : (logement.statut === 'reserve' ? '#1565C0' : '#5B6E5F'), color: '#fff', borderRadius: 6, padding: '4px 12px', fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5 }}>
                     {logement.statut === 'disponible'
                       ? (<><CheckCircle2 size={13} strokeWidth={2} /> {t('logementDetail.badge.disponible')}</>)
                       : (<><Lock size={13} strokeWidth={2} /> {logement.statut === 'reserve' ? t('logementDetail.badge.reserve') : t('logementDetail.badge.occupe')}</>)}
                   </div>
 
                   {/* Compteur photos */}
-                  <div style={{ position: 'absolute', top: 14, left: 14, background: 'rgba(0,0,0,0.55)', color: '#fff', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 600 }}>
+                  <div style={{ position: 'absolute', top: 14, left: 14, background: 'rgba(0,0,0,0.55)', color: '#fff', borderRadius: 16, padding: '4px 12px', fontSize: 12, fontWeight: 600 }}>
                     {t('logementDetail.compteurPhotos', { actuelle: photoActive + 1, total: photos.length })}
                   </div>
 
@@ -170,7 +165,7 @@ export default function LogementDetail() {
 
                   {/* Titre superposé */}
                   <div style={{ position: 'absolute', bottom: 16, left: 18 }}>
-                    <div style={{ color: '#fff', fontSize: 20, fontWeight: 800, marginBottom: 4 }}>{logement.titre}</div>
+                    <div style={{ color: '#fff', fontSize: 20, fontWeight: 700, marginBottom: 4 }}>{logement.titre}</div>
                     <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13, display: 'flex', alignItems: 'center', gap: 4 }}>
                       <MapPin size={13} strokeWidth={1.5} /> {logement.adresse}, {logement.ville}
                     </div>
@@ -184,7 +179,7 @@ export default function LogementDetail() {
                   {photos.map(function(p, i) {
                     return (
                       <img key={i} src={p} alt="" onClick={function() { setPhotoActive(i); }}
-                        style={{ width: 64, height: 48, objectFit: 'cover', borderRadius: 8, cursor: 'pointer', border: photoActive === i ? '2px solid #F5A623' : '2px solid transparent', opacity: photoActive === i ? 1 : 0.6, transition: 'all .2s', flexShrink: 0 }} />
+                        style={{ width: 64, height: 48, objectFit: 'cover', borderRadius: 8, cursor: 'pointer', border: photoActive === i ? '2px solid #1B6B3A' : '2px solid transparent', opacity: photoActive === i ? 1 : 0.6, transition: 'all .2s', flexShrink: 0 }} />
                     );
                   })}
                 </div>
@@ -193,26 +188,26 @@ export default function LogementDetail() {
 
             {/* Caractéristiques */}
             <div style={{ background: '#fff', borderRadius: 16, padding: '20px 22px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-              <h2 style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 16px', letterSpacing: -0.5 }}>{t('logementDetail.caracteristiques.titre')}</h2>
+              <h2 style={{ fontSize: 18, fontWeight: 700, color: '#1B2B22', margin: '0 0 16px', letterSpacing: -0.5 }}>{t('logementDetail.caracteristiques.titre')}</h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12 }}>
                 {logement.nb_chambres && (
                   <div style={{ background: '#F7F8F7', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
                     <BedDouble size={24} strokeWidth={1.5} color="#1B6B3A" style={{ marginBottom: 6 }} />
-                    <div style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22' }}>{logement.nb_chambres}</div>
+                    <div style={{ fontSize: 20, fontWeight: 700, color: '#1B2B22' }}>{logement.nb_chambres}</div>
                     <div style={{ fontSize: 11, color: '#888' }}>{t('logementDetail.caracteristiques.chambres')}</div>
                   </div>
                 )}
                 {logement.nb_salles_bain && (
                   <div style={{ background: '#F7F8F7', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
                     <Bath size={24} strokeWidth={1.5} color="#1565C0" style={{ marginBottom: 6 }} />
-                    <div style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22' }}>{logement.nb_salles_bain}</div>
+                    <div style={{ fontSize: 20, fontWeight: 700, color: '#1B2B22' }}>{logement.nb_salles_bain}</div>
                     <div style={{ fontSize: 11, color: '#888' }}>{t('logementDetail.caracteristiques.sallesDeBain')}</div>
                   </div>
                 )}
                 {logement.superficie && (
                   <div style={{ background: '#F7F8F7', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
                     <Maximize2 size={24} strokeWidth={1.5} color="#7B1FA2" style={{ marginBottom: 6 }} />
-                    <div style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22' }}>{parseFloat(logement.superficie)}</div>
+                    <div style={{ fontSize: 20, fontWeight: 700, color: '#1B2B22' }}>{parseFloat(logement.superficie)}</div>
                     <div style={{ fontSize: 11, color: '#888' }}>{t('logementDetail.caracteristiques.superficie')}</div>
                   </div>
                 )}
@@ -241,7 +236,7 @@ export default function LogementDetail() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 10 }}>
                   {equipements.map(function(e, i) {
                     return (
-                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', background: '#F0FBF0', borderRadius: 10, border: '0.5px solid #A5D6A7' }}>
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', background: '#F0FBF0', borderRadius: 8, border: '0.5px solid #A5D6A7' }}>
                         <div style={{ color: '#1B6B3A', flexShrink: 0 }}>{e.icon}</div>
                         <span style={{ fontSize: 13, fontWeight: 600, color: '#1B5E20' }}>{e.label}</span>
                       </div>
@@ -286,7 +281,7 @@ export default function LogementDetail() {
                         </div>
                         <div style={{ padding: '10px 12px' }}>
                           <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 4 }}>{s.titre}</div>
-                          <div style={{ fontSize: 14, fontWeight: 800, color: '#1B6B3A' }}>{GNF(s.prix_mensuel)} <span style={{ fontSize: 11, fontWeight: 400, color: '#888' }}>{t('logementDetail.prix.parMois')}</span></div>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: '#1B6B3A' }}>{GNF(s.prix_mensuel)} <span style={{ fontSize: 11, fontWeight: 400, color: '#888' }}>{t('logementDetail.prix.parMois')}</span></div>
                         </div>
                       </Link>
                     );
@@ -298,11 +293,11 @@ export default function LogementDetail() {
 
           {/* ─── COLONNE DROITE (sticky sur desktop, empilée sur mobile) ─── */}
           <div className="logement-detail-sidebar" style={{ position: 'sticky', top: 72 }}>
-            <div style={{ background: '#fff', borderRadius: 18, padding: '22px 20px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', marginBottom: 14 }}>
+            <div style={{ background: '#fff', borderRadius: 16, padding: '22px 20px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', marginBottom: 14 }}>
 
               {/* Prix */}
               <div style={{ marginBottom: 18 }}>
-                <div style={{ fontSize: 30, fontWeight: 900, color: '#1B6B3A', letterSpacing: -1 }}>
+                <div style={{ fontSize: 30, fontWeight: 700, color: '#1B6B3A', letterSpacing: -1 }}>
                   {GNF(logement.prix_mensuel)}
                   <span style={{ fontSize: 14, fontWeight: 400, color: '#888', marginLeft: 4 }}>{t('logementDetail.prix.parMois')}</span>
                 </div>
@@ -338,7 +333,7 @@ export default function LogementDetail() {
 
                 {propTel && (
                   <a href={'tel:' + propTel}
-                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 10, padding: '9px', borderRadius: 10, background: '#E8F5E9', color: '#1B5E20', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 10, padding: '9px', borderRadius: 8, background: '#E8F5E9', color: '#1B5E20', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>
                     <Phone size={14} strokeWidth={2} /> {t('logementDetail.proprietaire.appeler')}
                   </a>
                 )}
@@ -347,7 +342,7 @@ export default function LogementDetail() {
               {/* Bouton candidater */}
               {logement.statut === 'disponible' && user && (
                 <Link to={'/logements/' + logement.id + '/reserver'}
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 15, fontWeight: 800, textDecoration: 'none', marginBottom: 10, boxSizing: 'border-box' }}>
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 15, fontWeight: 700, textDecoration: 'none', marginBottom: 10, boxSizing: 'border-box' }}>
                   {t('logementDetail.actions.candidater')} <ArrowRight size={16} strokeWidth={2.5} />
                 </Link>
               )}
@@ -365,13 +360,13 @@ export default function LogementDetail() {
 
               {/* Copier lien */}
               <button onClick={copierLien}
-                style={{ width: '100%', padding: '10px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                style={{ width: '100%', padding: '10px', borderRadius: 8, border: '1.5px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                 {copie ? <><Check size={14} strokeWidth={2.5} color="#1B6B3A" /> {t('logementDetail.actions.lienCopie')}</> : <><Copy size={14} strokeWidth={1.5} /> {t('logementDetail.actions.partagerCeLogement')}</>}
               </button>
             </div>
 
             {/* Infos rapides */}
-            <div style={{ background: '#1B2B22', borderRadius: 14, padding: '16px 18px' }}>
+            <div style={{ background: '#1B2B22', borderRadius: 12, padding: '16px 18px' }}>
               <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>{t('logementDetail.infosRapides.titre')}</div>
               {[
                 t('logementDetail.infosRapides.aucunFraisAgence'),
@@ -385,6 +380,7 @@ export default function LogementDetail() {
           </div>
         </div>
       </div>
+      <SiteFooter />
     </div>
   );
 }

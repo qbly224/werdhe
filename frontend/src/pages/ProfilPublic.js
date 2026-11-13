@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Star, Home, MapPin, BedDouble, Maximize2, Award, ChevronLeft, Calendar, Building2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import SiteHeader from '../components/SiteHeader';
+import SiteFooter from '../components/SiteFooter';
 import api from '../services/api';
 import { urlPremierePhoto } from '../utils/photos';
 
@@ -42,7 +44,7 @@ export default function ProfilPublic() {
         <h2 style={{ color: '#1B2B22', margin: 0 }}>{t('profilPublic.introuvable')}</h2>
         <p style={{ color: '#888' }}>{erreur}</p>
         <button onClick={function() { navigate(-1); }}
-          style={{ padding: '10px 20px', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 600 }}>
+          style={{ padding: '10px 20px', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600 }}>
           {t('profilPublic.retour')}
         </button>
       </div>
@@ -56,30 +58,26 @@ export default function ProfilPublic() {
   return (
     <div style={{ fontFamily: 'var(--font-body)', background: '#F7F8F7', minHeight: '100vh' }}>
 
-      {/* Header */}
-      <div style={{ background: 'linear-gradient(135deg, #1B6B3A, #134F2B)', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center' }}>
-        <button onClick={function() { navigate(-1); }}
-          style={{ background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+      <SiteHeader />
+
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '16px 16px 24px' }}>
+        <button onClick={function() { navigate(-1); }} className="ds-btn ds-btn--ghost ds-btn--sm" style={{ marginBottom: 12 }}>
           <ChevronLeft size={16} strokeWidth={2} /> {t('profilPublic.retour')}
         </button>
-        <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, marginLeft: 16 }}>{t('profilPublic.headerTitre')}</span>
-      </div>
-
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '24px 16px' }}>
 
         {/* Carte profil */}
-        <div style={{ background: '#fff', borderRadius: 18, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginBottom: 20 }}>
+        <div style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginBottom: 20 }}>
           {/* Bannière verte */}
-          <div style={{ height: 80, background: 'linear-gradient(135deg, #1B6B3A, #2D9E5F)' }} />
+          <div style={{ height: 80, background: '#1B2B22' }} />
 
           <div style={{ padding: '0 24px 24px' }}>
             {/* Avatar */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 16 }}>
-              <div style={{ marginTop: -36, width: 72, height: 72, background: '#1B2B22', borderRadius: '50%', border: '4px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#F5A623', fontSize: 24, fontWeight: 800, flexShrink: 0 }}>
+              <div style={{ marginTop: -36, width: 72, height: 72, background: '#1B2B22', borderRadius: '50%', border: '4px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 24, fontWeight: 700, flexShrink: 0 }}>
                 {initiales}
               </div>
               {p.plan === 'pro' || p.plan === 'agence' ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#E8F5E9', border: '1px solid #A5D6A7', borderRadius: 20, padding: '5px 12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#E8F5E9', border: '1px solid #A5D6A7', borderRadius: 16, padding: '5px 12px' }}>
                   <Award size={14} color="#1B6B3A" strokeWidth={2} />
                   <span style={{ fontSize: 12, color: '#1B5E20', fontWeight: 700 }}>{t('profilPublic.proprietaireVerifie')}</span>
                 </div>
@@ -87,7 +85,7 @@ export default function ProfilPublic() {
             </div>
 
             {/* Nom + note */}
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 8px' }}>{nomComplet}</h1>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: '0 0 8px' }}>{nomComplet}</h1>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 16 }}>
               {p.nb_notations > 0 ? (
@@ -116,7 +114,7 @@ export default function ProfilPublic() {
                   <div key={i} style={{ background: '#F7F8F7', borderRadius: 12, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
                     <div style={{ color: '#1B6B3A' }}>{s.icon}</div>
                     <div>
-                      <div style={{ fontSize: 16, fontWeight: 800, color: '#1B2B22' }}>{s.val}</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22' }}>{s.val}</div>
                       <div style={{ fontSize: 11, color: '#888' }}>{s.label}</div>
                     </div>
                   </div>
@@ -133,7 +131,7 @@ export default function ProfilPublic() {
                     <div style={{ background: '#1B6B3A', width: p.score_confiance + '%', height: '100%', borderRadius: 6 }} />
                   </div>
                 </div>
-                <div style={{ fontSize: 16, fontWeight: 800, color: '#1B6B3A', flexShrink: 0 }}>{p.score_confiance}/100</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: '#1B6B3A', flexShrink: 0 }}>{p.score_confiance}/100</div>
               </div>
             )}
 
@@ -164,18 +162,18 @@ export default function ProfilPublic() {
                 var photoUrl = urlPremierePhoto(l.photos);
                 return (
                   <Link key={l.id} to={'/logements/' + l.id}
-                    style={{ textDecoration: 'none', display: 'block', background: '#fff', borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', transition: 'all 0.2s' }}
+                    style={{ textDecoration: 'none', display: 'block', background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', transition: 'all 0.2s' }}
                     onMouseEnter={function(e) { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)'; }}
                     onMouseLeave={function(e) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.06)'; }}>
 
                     {/* Photo */}
-                    <div style={{ height: 150, background: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ height: 150, background: '#E8F5E9', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
                       {photoUrl ? (
                         <img src={photoUrl} alt={l.titre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
                         <Home size={40} strokeWidth={1} color="#A5D6A7" />
                       )}
-                      <div style={{ position: 'absolute', top: 10, right: 10, background: l.statut === 'loue' ? '#1B2B22' : (l.statut === 'reserve' ? '#0D47A1' : '#1B6B3A'), color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>
+                      <div style={{ position: 'absolute', top: 10, right: 10, background: l.statut === 'loue' ? '#1B2B22' : (l.statut === 'reserve' ? '#0D47A1' : '#1B6B3A'), color: '#fff', borderRadius: 6, padding: '3px 9px', fontSize: 12, fontWeight: 600 }}>
                         {l.statut === 'loue' ? t('profilPublic.occupe') : (l.statut === 'reserve' ? t('profilPublic.reserve') : t('profilPublic.disponible'))}
                       </div>
                     </div>
@@ -185,7 +183,7 @@ export default function ProfilPublic() {
                       <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: '#888', marginBottom: 10 }}>
                         <MapPin size={12} strokeWidth={1.5} /> {l.ville}
                       </div>
-                      <div style={{ fontSize: 16, fontWeight: 800, color: '#1B6B3A' }}>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: '#1B6B3A' }}>
                         {GNF(l.prix_mensuel)} <span style={{ fontSize: 11, fontWeight: 400, color: '#888' }}>{t('profilPublic.logementCard.prixUnite')}</span>
                       </div>
                       {(l.nb_chambres || l.superficie) && (
@@ -211,7 +209,7 @@ export default function ProfilPublic() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14 }}>
               {data.notations.map(function(n, i) {
                 return (
-                  <div key={i} style={{ background: '#fff', borderRadius: 14, padding: '18px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+                  <div key={i} style={{ background: '#fff', borderRadius: 12, padding: '18px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
                     <div style={{ display: 'flex', gap: 4, marginBottom: 10 }}>
                       {[1,2,3,4,5].map(function(s) {
                         return <Star key={s} size={13} strokeWidth={1.5} fill={s <= n.note ? '#F5A623' : 'transparent'} color="#F5A623" />;
@@ -235,6 +233,7 @@ export default function ProfilPublic() {
           </div>
         )}
       </div>
+      <SiteFooter />
     </div>
   );
 }

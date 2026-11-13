@@ -10,10 +10,9 @@ import SEO from '../components/SEO';
 import { SkeletonLogement } from '../components/Skeleton';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
-import BlueprintPattern from '../components/BlueprintPattern';
+import SiteHeader from '../components/SiteHeader';
+import SiteFooter from '../components/SiteFooter';
 import useCompteurAnime from '../hooks/useCompteurAnime';
-
-var gradientOr = { background: 'linear-gradient(135deg, #F5A623 0%, #FFD98E 55%, #F5A623 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' };
 
 var GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 
@@ -91,46 +90,16 @@ export default function Logements() {
 
   return (
     <div style={{ fontFamily: 'var(--font-body)', background: '#F7F8F7', minHeight: '100vh' }}>
-      {/* Navbar */}
-      <nav className="site-navbar" style={{ background: 'rgba(247,248,247,0.96)', backdropFilter: 'blur(8px)', borderBottom: '0.5px solid rgba(27,107,58,0.1)', padding: '10px 24px', minHeight: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', rowGap: 8, position: 'sticky', top: 0, zIndex: 100 }}>
-                <Link to="/" style={{ textDecoration: 'none' }}>
-          <Logo size={34} showText={true} darkBg={false} />
-        </Link>
-        <div className="site-navbar-actions" style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap', rowGap: 8 }}>
-          {user ? (
-            <>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 12px', background: '#fff', borderRadius: 20, fontSize: 13 }}>
-                <div style={{ width: 24, height: 24, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
-                  {((user.prenom || '').charAt(0) + (user.nom || '').charAt(0)).toUpperCase()}
-                </div>
-                <span style={{ color: '#1B2B22', fontWeight: 600 }}>{user.prenom}</span>
-              </div>
-              <Link to="/dashboard" style={{ padding: '7px 14px', borderRadius: 8, background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>{t('logements.nav.dashboard')}</Link>
-            </>
-          ) : (
-            <>
-              <Link to="/login" style={{ padding: '7px 14px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>{t('logements.nav.connexion')}</Link>
-              <Link to="/dashboard" style={{ padding: '7px 14px', borderRadius: 8, background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>{t('logements.nav.dashboard')}</Link>
-            </>
-          )}
-        </div>
-      </nav>
+      <SiteHeader />
 
       {/* HERO PHOTOGRAPHIQUE */}
       <div style={{ position: 'relative', overflow: 'hidden', padding: '40px 24px 76px' }}>
         <img src="/img/residences/villa-conakry.jpg" alt="" aria-hidden="true"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(15,30,20,0.92) 0%, rgba(27,107,58,0.82) 65%, rgba(27,107,58,0.55) 100%)' }} />
-        <BlueprintPattern opacity={0.08} color="#F5A623" size={56} />
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 12, 0.72)' }} />
 
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 900, margin: '0 auto' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(245,166,35,0.14)', border: '1px solid rgba(245,166,35,0.35)', borderRadius: 20, padding: '5px 14px', marginBottom: 16 }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#F5A623', animation: 'pulseLive 1.8s ease-in-out infinite' }} />
-            <span style={{ fontSize: 12, fontWeight: 700, ...gradientOr }}>
-              {compteurTotal.toLocaleString('fr-FR')} {t('logements.header.badgeDisponibles')}
-            </span>
-          </div>
-          <h1 style={{ color: '#fff', fontSize: 'clamp(24px,4.5vw,36px)', fontWeight: 900, margin: '0 0 8px', letterSpacing: -0.8, textShadow: '0 2px 20px rgba(0,0,0,0.35)' }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', color: '#fff', fontSize: 'clamp(26px,4.5vw,38px)', fontWeight: 700, margin: '0 0 8px', letterSpacing: -0.5 }}>
             {t('logements.header.titre')}
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 14, margin: 0 }}>
@@ -141,7 +110,7 @@ export default function Logements() {
 
       {/* CARTE DE RECHERCHE FLOTTANTE */}
       <div style={{ maxWidth: 900, margin: '-52px auto 0', padding: '0 20px', position: 'relative', zIndex: 2 }}>
-        <div style={{ background: '#fff', borderRadius: 16, padding: '14px 16px', boxShadow: '0 16px 40px rgba(15,30,20,0.18)', border: '1px solid rgba(245,166,35,0.15)' }}>
+        <div style={{ background: '#fff', borderRadius: 16, padding: '14px 16px', boxShadow: 'var(--shadow-lg)', border: '1px solid #E3E8E0' }}>
           <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
             <div style={{ flex: 1, position: 'relative' }}>
                <Search size={15} strokeWidth={1.5} color="#aaa" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
@@ -150,11 +119,11 @@ export default function Logements() {
                 placeholder={t('logements.recherche.placeholder')}
                 value={search}
                 onChange={function(e) { setSearch(e.target.value); setPage(1); }}
-                style={{ width: '100%', padding: '10px 12px 10px 36px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box', background: '#F8F8F8' }} />
+                style={{ width: '100%', padding: '10px 12px 10px 36px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', boxSizing: 'border-box', background: '#F8F8F8' }} />
             </div>
             <button
               onClick={function() { setShowFiltres(!showFiltres); }}
-              style={{ padding: '10px 16px', borderRadius: 10, border: nbFiltresActifs > 0 ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: nbFiltresActifs > 0 ? '#E8F5E9' : '#F8F8F8', color: nbFiltresActifs > 0 ? '#1B6B3A' : '#555', fontSize: 13, fontWeight: nbFiltresActifs > 0 ? 700 : 400, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+              style={{ padding: '10px 16px', borderRadius: 8, border: nbFiltresActifs > 0 ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: nbFiltresActifs > 0 ? '#E8F5E9' : '#F8F8F8', color: nbFiltresActifs > 0 ? '#1B6B3A' : '#555', fontSize: 13, fontWeight: nbFiltresActifs > 0 ? 700 : 400, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
                 <SlidersHorizontal size={15} strokeWidth={1.5} /> {t('logements.recherche.filtres')} {nbFiltresActifs > 0 && <span style={{ background: '#1B6B3A', color: '#fff', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11 }}>{nbFiltresActifs}</span>}
             </button>
           </div>
@@ -165,7 +134,7 @@ export default function Logements() {
               var actif = v === 'Toutes' ? !ville : ville === v;
               return (
                 <button key={v} onClick={function() { setVille(v === 'Toutes' ? '' : v); setPage(1); }}
-                  style={{ padding: '5px 14px', borderRadius: 20, border: actif ? '1.5px solid #1B6B3A' : '0.5px solid #E0E0E0', background: actif ? '#1B6B3A' : '#fff', color: actif ? '#fff' : '#555', fontSize: 12, fontWeight: actif ? 700 : 400, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                  style={{ padding: '5px 14px', borderRadius: 16, border: actif ? '1.5px solid #1B6B3A' : '0.5px solid #E0E0E0', background: actif ? '#1B6B3A' : '#fff', color: actif ? '#fff' : '#555', fontSize: 12, fontWeight: actif ? 700 : 400, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}>
                   {v === 'Toutes' ? t('logements.villes.toutes') : v}
                 </button>
               );
@@ -245,7 +214,7 @@ export default function Logements() {
 
           {/* Fourchette prix visuelle */}
           {(prixMin || prixMax) && (
-            <div style={{ marginTop: 12, padding: '10px 14px', background: '#E8F5E9', borderRadius: 10, fontSize: 13, color: '#1B5E20', fontWeight: 600 }}>
+            <div style={{ marginTop: 12, padding: '10px 14px', background: '#E8F5E9', borderRadius: 8, fontSize: 13, color: '#1B5E20', fontWeight: 600 }}>
               {t('logements.filtresAvances.fourchette', { min: prixMin ? GNF(prixMin) : '0', max: prixMax ? GNF(prixMax) : t('logements.filtresAvances.illimite') })}
             </div>
           )}
@@ -258,17 +227,17 @@ export default function Logements() {
         {!loading && logements.length > 0 && (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, marginBottom: 14 }}>
             <div style={{ fontSize: 14, color: '#555' }}>
-              <span style={{ fontSize: 20, fontWeight: 900, ...gradientOr }}>{compteurTotal.toLocaleString('fr-FR')}</span>
+              <span style={{ fontSize: 20, fontWeight: 700, color: '#1B6B3A' }}>{compteurTotal.toLocaleString('fr-FR')}</span>
               {' '}{t('logements.resultatsToolbar.resultats')}
             </div>
             <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
               <select value={tri} onChange={function(e) { setTri(e.target.value); }}
-                style={{ padding: '8px 14px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', fontSize: 13, color: '#555', cursor: 'pointer', outline: 'none' }}>
+                style={{ padding: '8px 14px', borderRadius: 8, border: '1.5px solid #E0E0E0', background: '#fff', fontSize: 13, color: '#555', cursor: 'pointer', outline: 'none' }}>
                 <option value="recent">{t('logements.tri.recent')}</option>
                 <option value="prix_asc">{t('logements.tri.prixAsc')}</option>
                 <option value="prix_desc">{t('logements.tri.prixDesc')}</option>
               </select>
-              <div style={{ display: 'flex', gap: 6, background: '#F0F0F0', borderRadius: 10, padding: 4 }}>
+              <div style={{ display: 'flex', gap: 6, background: '#F0F0F0', borderRadius: 8, padding: 4 }}>
                 <button
                   onClick={function() { setVueMode('liste'); }}
                   style={{ padding: '7px 14px', borderRadius: 7, border: 'none', background: vueMode === 'liste' ? '#1B6B3A' : 'transparent', color: vueMode === 'liste' ? '#fff' : '#888', fontSize: 13, fontWeight: vueMode === 'liste' ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, transition: 'all .2s' }}>
@@ -299,7 +268,7 @@ export default function Logements() {
             <div style={{ fontSize: 14, color: '#888', marginBottom: 20 }}>{t('logements.etatRecherche.autresCriteres')}</div>
             {nbFiltresActifs > 0 && (
               <button onClick={reinitialiser}
-                style={{ padding: '10px 24px', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                style={{ padding: '10px 24px', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
                 {t('logements.etatRecherche.reinitialiserFiltres')}
               </button>
             )}
@@ -339,25 +308,22 @@ export default function Logements() {
                   {l.photos && l.photos.length > 0 ? (
   <img src={optimiserImage(typeof l.photos[0] === 'string' ? l.photos[0] : l.photos[0].url, 400, 75)} alt={l.titre} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }} />
 ) : (
-  <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1B6B3A 0%, #2D9E5F 50%, #E8F5E9 100%)' }}>
-    <span style={{ display: 'flex', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.2))' }}>
-      <CatIcon size={40} strokeWidth={1.5} color="#fff" />
+  <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#E8F5E9' }}>
+    <span style={{ display: 'flex' }}>
+      <CatIcon size={40} strokeWidth={1.5} color="#1B6B3A" />
     </span>
-    <div style={{ color: 'rgba(255,255,255,0.9)', fontSize: 12, fontWeight: 600, marginTop: 8, textTransform: 'capitalize', letterSpacing: 0.5 }}>
+    <div style={{ color: '#1B6B3A', fontSize: 12, fontWeight: 600, marginTop: 8, textTransform: 'capitalize' }}>
       {l.categorie ? l.categorie.replace(/_/g, ' ') : t('logements.carte.logementParDefaut')}
     </div>
   </div>
 )}
-                  <div style={{ position: 'absolute', top: 10, right: 10, background: 'linear-gradient(135deg, #1B6B3A, #2D9E5F)', color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
-                    {t('logements.carte.disponible')}
-                  </div>
                   {estNouveau && (
-  <div style={{ position: 'absolute', top: 10, left: 10, background: '#F5A623', color: '#1B2B22', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 800 }}>
+  <div style={{ position: 'absolute', top: 10, left: 10, background: '#fff', color: '#1B2B22', borderRadius: 6, padding: '3px 9px', fontSize: 12, fontWeight: 600, boxShadow: 'var(--shadow-sm)' }}>
     {t('logements.carte.nouveau')}
   </div>
 )}
                   {l.categorie && l.photos && l.photos.length > 0 && (
-                    <div style={{ position: 'absolute', bottom: 10, left: 10, background: 'rgba(0,0,0,0.55)', color: '#fff', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <div style={{ position: 'absolute', bottom: 10, left: 10, background: 'rgba(0,0,0,0.55)', color: '#fff', borderRadius: 16, padding: '3px 10px', fontSize: 11, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
                       <CatIcon size={12} strokeWidth={1.8} /> {t(catInfo.label_key)}
                     </div>
                   )}
@@ -366,7 +332,7 @@ export default function Logements() {
                 <div style={{ padding: '14px 16px' }}>
                   <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 4 }}>{l.titre}</div>
                   <div style={{ fontSize: 12, color: '#888', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}><MapPin size={12} strokeWidth={1.5} /> {l.adresse}, {l.ville}</div>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: '#1B6B3A', marginBottom: 10 }}>{GNF(l.prix_mensuel)}<span style={{ fontSize: 12, fontWeight: 400, color: '#888' }}>{t('logements.carte.prixParMois')}</span></div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: '#1B6B3A', marginBottom: 10 }}>{GNF(l.prix_mensuel)}<span style={{ fontSize: 12, fontWeight: 400, color: '#888' }}>{t('logements.carte.prixParMois')}</span></div>
 
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
                     {l.nb_chambres && (
@@ -390,12 +356,12 @@ export default function Logements() {
                     <div style={{ display: 'flex', gap: 8 }}>
                     <button
                       onClick={function(e) { e.stopPropagation(); navigate('/logements/' + l.id); }}
-                      style={{ flex: 1, padding: '9px', borderRadius: 10, border: '1.5px solid #1B6B3A', background: 'transparent', color: '#1B6B3A', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+                      style={{ flex: 1, padding: '9px', borderRadius: 8, border: '1.5px solid #1B6B3A', background: 'transparent', color: '#1B6B3A', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
                       {t('logements.carte.voir')}
                     </button>
                     <button
                       onClick={function(e) { e.stopPropagation(); navigate('/logements/' + l.id + '/reserver'); }}
-                      style={{ flex: 2, padding: '9px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                      style={{ flex: 2, padding: '9px', borderRadius: 8, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                       <ArrowRight size={13} strokeWidth={2.5} /> {t('logements.carte.candidater')}
                     </button>
                   </div>
@@ -423,12 +389,7 @@ export default function Logements() {
           </div>
         )}
       </div>
-      <style>{`
-        @keyframes pulseLive {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.4; transform: scale(1.4); }
-        }
-      `}</style>
+      <SiteFooter />
     </div>
   );
 }

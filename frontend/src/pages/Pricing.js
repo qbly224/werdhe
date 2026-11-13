@@ -7,7 +7,8 @@ import toast from 'react-hot-toast';
 import ModalPaiementMobile from '../components/ModalPaiementMobile';
 import { useAuth } from '../context/AuthContext';
 import { Check, X, ChevronDown, ChevronUp, Zap, Building2, Users, ArrowRight, Info } from 'lucide-react';
-import Logo from '../components/Logo';
+import SiteHeader from '../components/SiteHeader';
+import SiteFooter from '../components/SiteFooter';
 import { useTranslation } from 'react-i18next';
 import OdometerNumber from '../components/OdometerNumber';
 import useLimitesPlans from '../hooks/useLimitesPlans';
@@ -168,21 +169,12 @@ export default function Pricing() {
         url="https://werdhe.com/pricing"
       />
 
-      {/* Navbar */}
-      <nav className="site-navbar" style={{ background: '#fff', borderBottom: '0.5px solid #E0E0E0', padding: '10px 24px', minHeight: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', rowGap: 8, position: 'sticky', top: 0, zIndex: 100 }}>
-        <Link to="/" style={{ textDecoration: 'none' }}>
-          <Logo size={34} showText={true} darkBg={false} />
-        </Link>
-        <div className="site-navbar-actions" style={{ display: 'flex', gap: 10, flexWrap: 'wrap', rowGap: 8 }}>
-          <Link to="/login" style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>{t('pricing.connexion')}</Link>
-          <Link to="/inscription" style={{ padding: '8px 16px', borderRadius: 8, background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>{t('pricing.demarrer')}</Link>
-        </div>
-      </nav>
+      <SiteHeader />
 
       {/* Hero */}
-      <div style={{ background: 'linear-gradient(160deg, #0F1E14 0%, #1B2B22 55%, #16321F 100%)', textAlign: 'center', padding: 'clamp(28px, 4vw, 44px) 24px 28px' }}>
+      <div className="ds-band">
         <div style={{ maxWidth: 640, margin: '0 auto' }}>
-          <h1 style={{ fontSize: 'clamp(24px, 4vw, 34px)', fontWeight: 800, color: '#fff', margin: '0 0 8px', letterSpacing: -0.5 }}>
+          <h1 className="ds-title">
             {t('pricing.titre')}
           </h1>
           <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', margin: '0 0 4px' }}>
@@ -201,7 +193,7 @@ export default function Pricing() {
                   style={{ padding: '7px 14px', borderRadius: 22, border: 'none', background: actif ? '#1B6B3A' : 'transparent', color: actif ? '#fff' : '#888', fontSize: 13, fontWeight: actif ? 700 : 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, transition: 'all .2s' }}>
                   {CYCLES[c].label}
                   {CYCLES[c].reduction > 0 && (
-                    <span style={{ background: '#F5A623', color: '#1B2B22', borderRadius: 20, padding: '2px 7px', fontSize: 10, fontWeight: 800 }}>
+                    <span style={{ background: '#E8F5E9', color: '#1B6B3A', borderRadius: 6, padding: '2px 7px', fontSize: 11, fontWeight: 600 }}>
                       -{Math.round(CYCLES[c].reduction * 100)}%
                     </span>
                   )}
@@ -227,7 +219,7 @@ export default function Pricing() {
       <div style={{ maxWidth: 1080, margin: '32px auto 40px', padding: '0 20px' }}>
         <div style={{ textAlign: 'center', marginBottom: 30 }}>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: '#1B6B3A', marginBottom: 8 }}>{t('pricing.registreOverline')}</div>
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 'clamp(24px, 3.4vw, 36px)', color: '#1B2B22', margin: 0 }}>{t('pricing.comparaison')}</h2>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontWeight: 600, fontSize: 'clamp(24px, 3.4vw, 36px)', color: '#1B2B22', margin: 0 }}>{t('pricing.comparaison')}</h2>
         </div>
 
         <div className="plan-cards">
@@ -251,11 +243,11 @@ export default function Pricing() {
                     {payant ? (
                       <>
                         <OdometerNumber value={montantCycle(plan.prix_mois)} suffix={"\u00A0GNF"}
-                          style={{ fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 32, color: 'inherit' }} />
+                          style={{ fontFamily: "'Fraunces', serif", fontWeight: 600, fontSize: 32, color: 'inherit' }} />
                         <span className="plan-per">/ {CYCLES[cycle].label.toLowerCase()}</span>
                       </>
                     ) : (
-                      <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 650, fontSize: 38 }}>{t('pricing.gratuit')}</span>
+                      <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 600, fontSize: 38 }}>{t('pricing.gratuit')}</span>
                     )}
                   </div>
 
@@ -304,14 +296,14 @@ export default function Pricing() {
             <input type="text" placeholder={t('pricing.placeholderCodePromo')} value={code}
               onChange={function(e) { setCode(e.target.value.toUpperCase()); setCodeOk(null); }}
               onKeyDown={function(e) { if (e.key === 'Enter') validerCode(); }}
-              style={{ flex: 1, padding: '10px 14px', border: '1.5px solid ' + (codeOk && codeOk.valide ? '#1B6B3A' : codeOk === false ? '#E53935' : '#E0E0E0'), borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'var(--font-mono)', letterSpacing: 1 }} />
+              style={{ flex: 1, padding: '10px 14px', border: '1.5px solid ' + (codeOk && codeOk.valide ? '#1B6B3A' : codeOk === false ? '#E53935' : '#E0E0E0'), borderRadius: 8, fontSize: 14, outline: 'none', fontFamily: 'var(--font-mono)', letterSpacing: 1 }} />
             <button onClick={validerCode} disabled={loading || !code.trim()}
-              style={{ padding: '10px 18px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+              style={{ padding: '10px 18px', borderRadius: 8, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
               {loading ? '...' : t('pricing.valider')}
             </button>
           </div>
           {codeOk && codeOk.valide && (
-            <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginTop: 12, fontSize: 13, color: '#1B5E20', fontWeight: 600 }}>
+            <div style={{ background: '#E8F5E9', borderRadius: 8, padding: '10px 14px', marginTop: 12, fontSize: 13, color: '#1B5E20', fontWeight: 600 }}>
               {t('pricing.codeValideReduction', { pct: codeOk.reduction_pct, plan: codeOk.plan_cible })}
             </div>
           )}
@@ -320,7 +312,7 @@ export default function Pricing() {
 
       {/* FAQ */}
       <div style={{ maxWidth: 640, margin: '0 auto 48px', padding: '0 20px' }}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', textAlign: 'center', margin: '0 0 20px' }}>{t('pricing.questionsFrequentes')}</h2>
+        <h2 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', textAlign: 'center', margin: '0 0 20px' }}>{t('pricing.questionsFrequentes')}</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {FAQ_ITEMS.map(function(item, i) {
             var open = openFaq === i;
@@ -343,45 +335,41 @@ export default function Pricing() {
       </div>
 
       {/* CTA */}
-      <div style={{ background: 'linear-gradient(160deg, #0F1E14 0%, #1B2B22 55%, #16321F 100%)', padding: 'clamp(32px, 5vw, 48px) 24px', textAlign: 'center' }}>
-        <h2 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 800, margin: '0 0 10px', color: '#fff' }}>{t('pricing.pretACommencer')}</h2>
+      <div style={{ background: '#1B6B3A', padding: 'clamp(32px, 5vw, 48px) 24px', textAlign: 'center' }}>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 600, margin: '0 0 10px', color: '#fff' }}>{t('pricing.pretACommencer')}</h2>
         <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', margin: '0 0 22px' }}>{t('pricing.ctaSousTitre')}</p>
         <button onClick={function() { choisirPlan('pro'); }}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, border: 'none', background: '#F5A623', color: '#1B2B22', fontWeight: 800, fontSize: 15, cursor: 'pointer' }}>
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 8, border: 'none', background: '#fff', color: '#1B6B3A', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>
           {t('pricing.demarrerEssai')} <ArrowRight size={16} strokeWidth={2.5} />
         </button>
       </div>
 
-      <div style={{ background: '#101A12', padding: '20px 24px', textAlign: 'center' }}>
-        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', margin: 0 }}>
-          © 2026 Werdhe · <a href="/cgu" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>{t('pricing.footerCgu')}</a> · <a href="/confidentialite" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>{t('pricing.footerConfidentialite')}</a>
-        </p>
-      </div>
+      <SiteFooter />
 
       <style>{`
         @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
         .plan-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
         .plan-card {
-          display: flex; flex-direction: column; background: #EEF0EE; border-radius: 26px; padding: 8px;
+          display: flex; flex-direction: column; background: #EEF0EE; border-radius: 16px; padding: 8px;
           color: #1B2B22; transition: transform .2s, box-shadow .2s;
         }
         .plan-card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(15,30,20,0.12); }
         .plan-card-head {
-          position: relative; background: #fff; border-radius: 20px; padding: 22px 20px 20px; min-height: 130px;
+          position: relative; background: #fff; border-radius: 12px; padding: 22px 20px 20px; min-height: 130px;
         }
         .plan-pill {
           position: absolute; top: 16px; right: 16px; background: #E4F4EA; color: #1B6B3A;
-          border-radius: 20px; padding: 4px 11px; font-size: 12px; font-weight: 800;
+          border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 600;
         }
-        .plan-name { font-family: 'Fraunces', serif; font-weight: 650; font-size: 24px; margin-bottom: 6px; padding-right: 110px; }
+        .plan-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 24px; margin-bottom: 6px; padding-right: 110px; }
         .plan-tagline { font-size: 14px; color: #666; line-height: 1.45; }
         .plan-card-body { padding: 22px 14px 14px; display: flex; flex-direction: column; flex: 1; }
         .plan-price { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; min-height: 46px; }
         .plan-per { font-size: 14px; color: #777; }
         .plan-cta {
-          margin-top: 18px; width: 100%; padding: 13px 16px; border-radius: 12px; cursor: pointer;
-          background: #fff; color: #1B2B22; border: 1.5px solid #D6DBD7; font-size: 14.5px; font-weight: 700;
+          margin-top: 18px; width: 100%; padding: 13px 16px; border-radius: 8px; cursor: pointer;
+          background: #fff; color: #1B2B22; border: 1.5px solid #D6DBD7; font-size: 14.5px; font-weight: 600;
           display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background .15s, border-color .15s;
         }
         .plan-cta:hover { border-color: #1B6B3A; background: #F6FBF8; }
@@ -394,14 +382,14 @@ export default function Pricing() {
         .plan-check { color: #1FA750; }
         .plan-feature-off { color: #9AA09B; }
 
-        .plan-card-vedette { background: linear-gradient(180deg, #16321F 0%, #08110B 100%); color: #fff; }
-        .plan-card-vedette .plan-card-head { background: linear-gradient(160deg, #1B6B3A 0%, #0F3D22 100%); }
+        .plan-card-vedette { background: #1B2B22; color: #fff; }
+        .plan-card-vedette .plan-card-head { background: #1B6B3A; }
         .plan-card-vedette .plan-tagline { color: rgba(255,255,255,0.78); }
-        .plan-card-vedette .plan-pill { background: #F5A623; color: #1B2B22; }
+        .plan-card-vedette .plan-pill { background: #fff; color: #1B2B22; }
         .plan-card-vedette .plan-per { color: rgba(255,255,255,0.65); }
         .plan-card-vedette .plan-cta { background: #fff; border-color: #fff; color: #1B2B22; }
-        .plan-card-vedette .plan-cta:hover { background: #F5A623; border-color: #F5A623; }
-        .plan-card-vedette .plan-fineprint { color: #FFD98E; }
+        .plan-card-vedette .plan-cta:hover { background: #E8F5E9; border-color: #E8F5E9; }
+        .plan-card-vedette .plan-fineprint { color: rgba(255,255,255,0.85); }
         .plan-card-vedette .plan-already { color: rgba(255,255,255,0.55); }
         .plan-card-vedette .plan-check { color: #5BE08A; }
         .plan-card-vedette .plan-feature-off { color: rgba(255,255,255,0.4); }
