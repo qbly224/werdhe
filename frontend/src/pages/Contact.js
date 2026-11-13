@@ -11,6 +11,8 @@ import {
 import Logo from '../components/Logo';
 import { useTranslation } from 'react-i18next';
 import useLimitesPlans from '../hooks/useLimitesPlans';
+import SiteHeader from '../components/SiteHeader';
+import SiteFooter from '../components/SiteFooter';
 
 function getFaqCategories(t, limites) {
   return [
@@ -113,24 +115,14 @@ export default function Contact() {
         url="https://werdhe.com/contact"
       />
 
-      {/* Header */}
-      <div style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <button onClick={function() { navigate(-1); }}
-            style={{ background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <ChevronLeft size={16} strokeWidth={2} /> {t('contact.retour')}
-          </button>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Logo size={30} showText={true} darkBg={true} />
-        </div>
-      </div>
+      <SiteHeader />
+
 
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '32px 16px 60px' }}>
 
         {/* Titre */}
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <h1 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 900, color: '#1B2B22', margin: '0 0 12px', letterSpacing: -1 }}>
+          <h1 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 700, color: '#1B2B22', margin: '0 0 12px', letterSpacing: -1 }}>
             {t('contact.titre')}
           </h1>
           <p style={{ fontSize: 16, color: '#888', margin: 0 }}>{t('contact.sousTitre')}</p>
@@ -141,7 +133,7 @@ export default function Contact() {
           {CONTACTS.map(function(c, i) {
             return (
               <a key={i} href={c.href} target="_blank" rel="noreferrer"
-                style={{ background: '#fff', borderRadius: 14, padding: '20px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', transition: 'all .2s', border: '1px solid transparent' }}
+                style={{ background: '#fff', borderRadius: 12, padding: '20px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', transition: 'all .2s', border: '1px solid transparent' }}
                 onMouseEnter={function(e) { e.currentTarget.style.borderColor = c.couleur; e.currentTarget.style.transform = 'translateY(-2px)'; }}
                 onMouseLeave={function(e) { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.transform = 'translateY(0)'; }}>
                 <div style={{ width: 44, height: 44, background: c.couleur + '15', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: c.couleur, flexShrink: 0 }}>
@@ -155,7 +147,7 @@ export default function Contact() {
             );
           })}
 
-          <div style={{ background: '#fff', borderRadius: 14, padding: '20px', display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          <div style={{ background: '#fff', borderRadius: 12, padding: '20px', display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <div style={{ width: 44, height: 44, background: '#F3E5F5', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Phone size={22} strokeWidth={1.5} color="#7B1FA2" />
             </div>
@@ -170,14 +162,14 @@ export default function Contact() {
 
           {/* FAQ */}
           <div style={{ gridColumn: '1 / -1' }}>
-            <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 20px', letterSpacing: -0.5 }}>
+            <h2 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: '0 0 20px', letterSpacing: -0.5 }}>
               {t('contact.questionsFrequentes')}
             </h2>
 
             {FAQ_CATEGORIES.map(function(cat, ci) {
               return (
                 <div key={ci} style={{ marginBottom: 24 }}>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: cat.bg, borderRadius: 20, padding: '6px 16px', marginBottom: 12 }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: cat.bg, borderRadius: 16, padding: '6px 16px', marginBottom: 12 }}>
                     <span style={{ fontSize: 13, fontWeight: 700, color: cat.couleur }}>{cat.categorie}</span>
                   </div>
 
@@ -211,7 +203,7 @@ export default function Contact() {
 
           {/* Formulaire de contact */}
           <div style={{ gridColumn: '1 / -1' }}>
-            <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 20px', letterSpacing: -0.5 }}>
+            <h2 style={{ fontSize: 22, fontWeight: 700, color: '#1B2B22', margin: '0 0 20px', letterSpacing: -0.5 }}>
               {t('contact.nousEcrire')}
             </h2>
             <div style={{ background: '#fff', borderRadius: 16, padding: '28px 24px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
@@ -221,19 +213,19 @@ export default function Contact() {
                     <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('contact.champNom')}</label>
                     <input type="text" placeholder="Mamadou Diallo" value={form.nom}
                       onChange={function(e) { setForm(Object.assign({}, form, { nom: e.target.value })); }}
-                      style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
+                      style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
                   </div>
                   <div>
                     <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('contact.champEmail')}</label>
                     <input type="email" placeholder={t('contact.placeholderEmail')} value={form.email}
                       onChange={function(e) { setForm(Object.assign({}, form, { email: e.target.value })); }}
-                      style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
+                      style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 14, outline: 'none', boxSizing: 'border-box' }} />
                   </div>
                 </div>
                 <div style={{ marginBottom: 14 }}>
                   <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('contact.champSujet')}</label>
                   <select value={form.sujet} onChange={function(e) { setForm(Object.assign({}, form, { sujet: e.target.value })); }}
-                    style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', background: '#fff', boxSizing: 'border-box' }}>
+                    style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 14, outline: 'none', background: '#fff', boxSizing: 'border-box' }}>
                     <option value="">{t('contact.selectionnerSujet')}</option>
                     <option value="Question locataire">{t('contact.sujets.questionLocataire')}</option>
                     <option value="Question propriétaire">{t('contact.sujets.questionProprietaire')}</option>
@@ -248,7 +240,7 @@ export default function Contact() {
                   <label style={{ fontSize: 12, fontWeight: 600, color: '#555', display: 'block', marginBottom: 6 }}>{t('contact.champMessage')}</label>
                   <textarea rows="5" placeholder={t('contact.placeholderMessage')} value={form.message}
                     onChange={function(e) { setForm(Object.assign({}, form, { message: e.target.value })); }}
-                    style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #E0E0E0', borderRadius: 10, fontSize: 14, outline: 'none', resize: 'vertical', fontFamily: 'var(--font-body)', boxSizing: 'border-box' }} />
+                    style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #E0E0E0', borderRadius: 8, fontSize: 14, outline: 'none', resize: 'vertical', fontFamily: 'var(--font-body)', boxSizing: 'border-box' }} />
                 </div>
                 <button type="submit" disabled={loading}
                   style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: loading ? '#aaa' : '#1B6B3A', color: '#fff', fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
@@ -262,6 +254,7 @@ export default function Contact() {
           </div>
         </div>
       </div>
+      <SiteFooter />
     </div>
   );
 }

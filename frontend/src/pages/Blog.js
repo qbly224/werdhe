@@ -6,6 +6,8 @@ import api from '../services/api';
 import { Home, Calendar, Eye, ArrowRight, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Logo from '../components/Logo';
+import SiteHeader from '../components/SiteHeader';
+import SiteFooter from '../components/SiteFooter';
 
 export default function Blog() {
   var t = useTranslation('admin').t;
@@ -48,17 +50,10 @@ export default function Blog() {
         url="https://werdhe.com/blog"
       />
 
-      <nav style={{ background: '#fff', borderBottom: '0.5px solid #E0E0E0', padding: '0 24px', height: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-          <Logo size={28} showText={true} />
-        </Link>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <Link to="/logements" style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>{t('blogPage.voirLogements')}</Link>
-        </div>
-      </nav>
+      <SiteHeader />
 
       <div style={{ textAlign: 'center', padding: 'clamp(40px, 6vw, 56px) 24px 32px' }}>
-        <h1 style={{ fontSize: 'clamp(26px, 5vw, 42px)', fontWeight: 900, color: '#1B2B22', margin: '0 0 12px', letterSpacing: -1 }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(26px, 5vw, 40px)', fontWeight: 700, color: '#1B2B22', margin: '0 0 12px', letterSpacing: -0.5 }}>
           {t('blogPage.titre')}
         </h1>
         <p style={{ fontSize: 15, color: '#888', margin: '0 auto 24px', maxWidth: 480 }}>
@@ -76,14 +71,14 @@ export default function Blog() {
       {categories.length > 0 && (
         <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap', padding: '0 20px 32px' }}>
           <button onClick={function() { changerCategorie(''); }}
-            style={{ padding: '7px 16px', borderRadius: 20, border: 'none', background: !categorieActive ? '#1B6B3A' : '#fff', color: !categorieActive ? '#fff' : '#555', fontSize: 13, fontWeight: 600, cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+            style={{ padding: '7px 16px', borderRadius: 16, border: 'none', background: !categorieActive ? '#1B6B3A' : '#fff', color: !categorieActive ? '#fff' : '#555', fontSize: 13, fontWeight: 600, cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
             {t('blogPage.tous')}
           </button>
           {categories.map(function(c) {
             var actif = categorieActive === c.categorie;
             return (
               <button key={c.categorie} onClick={function() { changerCategorie(c.categorie); }}
-                style={{ padding: '7px 16px', borderRadius: 20, border: 'none', background: actif ? '#1B6B3A' : '#fff', color: actif ? '#fff' : '#555', fontSize: 13, fontWeight: 600, cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+                style={{ padding: '7px 16px', borderRadius: 16, border: 'none', background: actif ? '#1B6B3A' : '#fff', color: actif ? '#fff' : '#555', fontSize: 13, fontWeight: 600, cursor: 'pointer', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
                 {c.categorie} ({c.nb})
               </button>
             );
@@ -101,14 +96,14 @@ export default function Blog() {
             {articles.map(function(a) {
               return (
                 <Link key={a.id} to={'/blog/' + a.slug} style={{ textDecoration: 'none', background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ height: 160, background: a.image_couverture ? 'url(' + a.image_couverture + ') center/cover' : 'linear-gradient(135deg, #1B6B3A, #1B2B22)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ height: 160, background: a.image_couverture ? 'url(' + a.image_couverture + ') center/cover' : '#E8F5E9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {!a.image_couverture && <Home size={36} color="rgba(255,255,255,0.5)" strokeWidth={1.5} />}
                   </div>
                   <div style={{ padding: '18px 18px 20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                     {a.categorie && (
                       <span style={{ fontSize: 11, fontWeight: 700, color: '#1B6B3A', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>{a.categorie}</span>
                     )}
-                    <h3 style={{ fontSize: 16, fontWeight: 800, color: '#1B2B22', margin: '0 0 8px', lineHeight: 1.35 }}>{a.titre}</h3>
+                    <h3 style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', margin: '0 0 8px', lineHeight: 1.35 }}>{a.titre}</h3>
                     <p style={{ fontSize: 13, color: '#888', margin: '0 0 14px', lineHeight: 1.6, flex: 1 }}>{a.extrait}</p>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12, color: '#aaa' }}>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -133,6 +128,7 @@ export default function Blog() {
           {t('footer.copyright')} · <a href="/cgu" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>{t('footer.cgu')}</a> · <a href="/confidentialite" style={{ color: 'rgba(255,255,255,0.3)', textDecoration: 'none' }}>{t('footer.confidentialite')}</a>
         </p>
       </div>
+      <SiteFooter />
     </div>
   );
 }

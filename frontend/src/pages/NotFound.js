@@ -1,147 +1,77 @@
 /* eslint-disable */
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { Home, Search, SearchX, ArrowLeft, RefreshCw, CreditCard, Phone } from 'lucide-react';
+import { Home, CreditCard, Phone } from 'lucide-react';
 import SEO from '../components/SEO';
-import Logo from '../components/Logo';
+import SiteHeader from '../components/SiteHeader';
+import SiteFooter from '../components/SiteFooter';
 import { useTranslation } from 'react-i18next';
 
 function getSuggestions(t) {
   return [
     { icon: Home,       label: t('notFound.suggestions.logements'), path: '/logements' },
-    { icon: CreditCard, label: t('notFound.suggestions.tarifs'),        path: '/pricing'   },
-    { icon: Phone,      label: t('notFound.suggestions.contact'),         path: '/contact'   },
+    { icon: CreditCard, label: t('notFound.suggestions.tarifs'),    path: '/pricing'   },
+    { icon: Phone,      label: t('notFound.suggestions.contact'),   path: '/contact'   },
   ];
 }
 
+// Page introuvable : un titre, une phrase, un bouton principal et quelques liens.
 export default function NotFound() {
-  var t         = useTranslation('public').t;
+  var t           = useTranslation('public').t;
   var SUGGESTIONS = getSuggestions(t);
-  var navigate  = useNavigate();
-  var location  = useLocation();
+  var navigate    = useNavigate();
+  var location    = useLocation();
   var [compte, setCompte] = useState(10);
 
-  // Compte à rebours → redirection auto
+  // Compte à rebours → redirection automatique vers l'accueil
   useEffect(function() {
     if (compte <= 0) {
       navigate('/');
       return;
     }
-    var t = setTimeout(function() { setCompte(compte - 1); }, 1000);
-    return function() { clearTimeout(t); };
+    var id = setTimeout(function() { setCompte(compte - 1); }, 1000);
+    return function() { clearTimeout(id); };
   }, [compte]);
 
   return (
-    <div style={{
-      fontFamily: 'var(--font-body)',
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #0F1A12 0%, #1B2B22 50%, #1B6B3A 100%)',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '24px 16px',
-      textAlign: 'center',
-      position: 'relative',
-      overflow: 'hidden'
-    }}>
+    <div style={{ fontFamily: 'var(--font-body)', background: 'var(--surface-soft)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <SEO titre={t('notFound.seoTitre')} noIndex={true} />
+      <SiteHeader />
 
-      {/* Cercles décoratifs */}
-      <div style={{ position: 'absolute', top: -100, right: -100, width: 400, height: 400, borderRadius: '50%', background: 'rgba(27,107,58,0.15)', pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: -150, left: -100, width: 500, height: 500, borderRadius: '50%', background: 'rgba(245,166,35,0.08)', pointerEvents: 'none' }} />
-
-      {/* Logo */}
-      <div style={{ marginBottom: 40, position: 'relative', zIndex: 1 }}>
-        <Logo size={40} showText={true} darkBg={true} variant="gold" />
-      </div>
-
-      {/* 404 géant */}
-      <div style={{ position: 'relative', marginBottom: 24, zIndex: 1 }}>
-        <div style={{
-          fontSize: 'clamp(80px, 20vw, 160px)',
-          fontWeight: 900,
-          color: 'transparent',
-          WebkitTextStroke: '2px rgba(255,255,255,0.15)',
-          letterSpacing: -8,
-          lineHeight: 1,
-          userSelect: 'none',
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          whiteSpace: 'nowrap'
-        }}>
-          404
-        </div>
-        <div style={{ width: 140, height: 140, background: 'rgba(255,255,255,0.06)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid rgba(255,255,255,0.1)', position: 'relative' }}>
-          <SearchX size={60} strokeWidth={1.3} color="rgba(255,255,255,0.8)" />
-        </div>
-      </div>
-
-      {/* Texte principal */}
-      <h1 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 800, color: '#fff', margin: '0 0 12px', letterSpacing: -0.5, position: 'relative', zIndex: 1 }}>
-        {t('notFound.titre')}
-      </h1>
-      <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.55)', margin: '0 0 8px', maxWidth: 420, lineHeight: 1.6, position: 'relative', zIndex: 1 }}>
-        {t('notFound.pagePrefixe')} <code style={{ background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: 6, fontSize: 13, color: '#F5A623' }}>{location.pathname}</code> {t('notFound.pageIntrouvable')}
-      </p>
-      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', margin: '0 0 36px', position: 'relative', zIndex: 1 }}>
-        {t('notFound.redirectionAuto')} <span style={{ color: '#F5A623', fontWeight: 700 }}>{compte}s</span>
-      </p>
-
-      {/* Boutons principaux */}
-      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 40, position: 'relative', zIndex: 1 }}>
-        <button onClick={function() { navigate(-1); }}
-          style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 22px', borderRadius: 12, border: '1.5px solid rgba(255,255,255,0.2)', background: 'transparent', color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'all .2s' }}
-          onMouseEnter={function(e) { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
-          onMouseLeave={function(e) { e.currentTarget.style.background = 'transparent'; }}>
-          <ArrowLeft size={16} strokeWidth={2} /> {t('notFound.retour')}
-        </button>
-        <button onClick={function() { navigate('/'); }}
-          style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 22px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: 'all .2s' }}
-          onMouseEnter={function(e) { e.currentTarget.style.background = '#134F2B'; }}
-          onMouseLeave={function(e) { e.currentTarget.style.background = '#1B6B3A'; }}>
-          <Home size={16} strokeWidth={2} /> {t('notFound.accueil')}
-        </button>
-        <button onClick={function() { navigate('/logements'); }}
-          style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 22px', borderRadius: 12, border: 'none', background: '#F5A623', color: '#1B2B22', fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: 'all .2s' }}
-          onMouseEnter={function(e) { e.currentTarget.style.opacity = '0.9'; }}
-          onMouseLeave={function(e) { e.currentTarget.style.opacity = '1'; }}>
-          <Search size={16} strokeWidth={2} /> {t('notFound.chercherLogement')}
-        </button>
-      </div>
-
-      {/* Suggestions */}
-      <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 420 }}>
-        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 }}>
-          {t('notFound.pagesUtiles')}
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '56px 16px', textAlign: 'center' }}>
+        <div className="ds-eyebrow" style={{ marginBottom: 12 }}>404</div>
+        <h1 className="ds-title" style={{ fontSize: 'clamp(26px, 4vw, 36px)', margin: '0 0 12px' }}>
+          {t('notFound.titre')}
+        </h1>
+        <p className="ds-muted" style={{ fontSize: 15, margin: '0 0 6px', maxWidth: 440, lineHeight: 1.6 }}>
+          {t('notFound.pagePrefixe')} <code className="ds-mono" style={{ background: 'var(--bg-tertiary)', padding: '2px 8px', borderRadius: 6, fontSize: 13 }}>{location.pathname}</code> {t('notFound.pageIntrouvable')}
         </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {SUGGESTIONS.map(function(s, i) {
-            return (
-              <Link key={i} to={s.path}
-                style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: 'rgba(255,255,255,0.05)', borderRadius: 12, border: '0.5px solid rgba(255,255,255,0.08)', textDecoration: 'none', transition: 'all .2s' }}
-                onMouseEnter={function(e) { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
-                onMouseLeave={function(e) { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}>
-                <s.icon size={18} strokeWidth={1.5} color="rgba(255,255,255,0.8)" />
-                <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>{s.label}</span>
-                <span style={{ marginLeft: 'auto', color: 'rgba(255,255,255,0.3)', fontSize: 18 }}>→</span>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
+        <p className="ds-muted" style={{ fontSize: 13, margin: '0 0 28px' }}>
+          {t('notFound.redirectionAuto')} <strong>{compte}s</strong>
+        </p>
 
-      {/* Barre de progression */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: 3, background: 'rgba(255,255,255,0.1)' }}>
-        <div style={{
-          height: '100%',
-          background: 'linear-gradient(90deg, #1B6B3A, #F5A623)',
-          width: ((10 - compte) / 10 * 100) + '%',
-          transition: 'width 1s linear'
-        }} />
-      </div>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 36 }}>
+          <button className="ds-btn ds-btn--primary" onClick={function() { navigate('/'); }}>{t('notFound.accueil')}</button>
+          <button className="ds-btn ds-btn--secondary" onClick={function() { navigate(-1); }}>{t('notFound.retour')}</button>
+        </div>
+
+        <div style={{ width: '100%', maxWidth: 420, textAlign: 'left' }}>
+          <p className="ds-eyebrow" style={{ marginBottom: 10 }}>{t('notFound.pagesUtiles')}</p>
+          <div style={{ display: 'grid', gap: 8 }}>
+            {SUGGESTIONS.map(function(s, i) {
+              return (
+                <Link key={i} to={s.path} className="ds-card" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', textDecoration: 'none', color: 'var(--text-primary)' }}>
+                  <s.icon size={18} strokeWidth={1.5} color="var(--green)" />
+                  <span style={{ fontSize: 14, fontWeight: 500 }}>{s.label}</span>
+                  <span style={{ marginLeft: 'auto', color: 'var(--text-muted)' }}>→</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </main>
+
+      <SiteFooter />
     </div>
   );
 }

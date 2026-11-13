@@ -6,6 +6,8 @@ import api from '../services/api';
 import { Calendar, Eye, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Logo from '../components/Logo';
+import SiteHeader from '../components/SiteHeader';
+import SiteFooter from '../components/SiteFooter';
 
 export default function BlogArticle() {
   var t = useTranslation('admin').t;
@@ -52,22 +54,15 @@ export default function BlogArticle() {
         type="article"
       />
 
-      <nav style={{ background: '#fff', borderBottom: '0.5px solid #E0E0E0', padding: '0 24px', height: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100 }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-          <Logo size={28} showText={true} />
-        </Link>
-        <button onClick={function() { navigate('/blog'); }} style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', background: 'transparent', fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <ArrowLeft size={14} strokeWidth={2} /> {t('blogArticle.blog')}
-        </button>
-      </nav>
+      <SiteHeader />
 
       <article style={{ maxWidth: 760, margin: '0 auto', padding: 'clamp(32px, 6vw, 56px) 20px 64px' }}>
         {article.categorie && (
-          <span style={{ display: 'inline-block', background: '#E8F5E9', color: '#1B6B3A', borderRadius: 20, padding: '4px 14px', fontSize: 12, fontWeight: 700, marginBottom: 16 }}>
+          <span style={{ display: 'inline-block', background: '#E8F5E9', color: '#1B6B3A', borderRadius: 16, padding: '4px 14px', fontSize: 12, fontWeight: 700, marginBottom: 16 }}>
             {article.categorie}
           </span>
         )}
-        <h1 style={{ fontSize: 'clamp(26px, 4vw, 38px)', fontWeight: 900, color: '#1B2B22', margin: '0 0 16px', lineHeight: 1.25, letterSpacing: -0.5 }}>
+        <h1 style={{ fontSize: 'clamp(26px, 4vw, 38px)', fontWeight: 700, color: '#1B2B22', margin: '0 0 16px', lineHeight: 1.25, letterSpacing: -0.5 }}>
           {article.titre}
         </h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, fontSize: 13, color: '#888', marginBottom: 28, paddingBottom: 24, borderBottom: '1px solid #E8E8E8' }}>
@@ -89,17 +84,17 @@ export default function BlogArticle() {
           dangerouslySetInnerHTML={{ __html: article.contenu }}
         />
 
-        <div style={{ marginTop: 48, padding: 24, background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', borderRadius: 16, textAlign: 'center' }}>
-          <h3 style={{ color: '#fff', fontSize: 18, fontWeight: 800, margin: '0 0 8px' }}>{t('blogArticle.ctaTitre')}</h3>
+        <div style={{ marginTop: 48, padding: 24, background: '#1B2B22', borderRadius: 16, textAlign: 'center' }}>
+          <h3 style={{ color: '#fff', fontSize: 18, fontWeight: 700, margin: '0 0 8px' }}>{t('blogArticle.ctaTitre')}</h3>
           <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 13, margin: '0 0 18px' }}>{t('blogArticle.ctaTexte')}</p>
-          <Link to="/logements" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 24px', borderRadius: 10, background: '#F5A623', color: '#1B2B22', fontWeight: 800, fontSize: 14, textDecoration: 'none' }}>
+          <Link to="/logements" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 24px', borderRadius: 8, background: '#1B6B3A', color: '#fff', fontWeight: 600, fontSize: 14, textDecoration: 'none' }}>
             {t('blogArticle.voirLogements')} <ArrowRight size={15} strokeWidth={2.5} />
           </Link>
         </div>
 
         {similaires.length > 0 && (
           <div style={{ marginTop: 48 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22', marginBottom: 16 }}>{t('blogArticle.aLireAussi')}</h3>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1B2B22', marginBottom: 16 }}>{t('blogArticle.aLireAussi')}</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
               {similaires.map(function(s) {
                 return (
@@ -128,6 +123,7 @@ export default function BlogArticle() {
         .blog-contenu li { margin-bottom: 8px; }
         .blog-contenu a { color: #1B6B3A; font-weight: 600; }
       `}</style>
+      <SiteFooter />
     </div>
   );
 }

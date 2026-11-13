@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import Accueil from './pages/Accueil';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import OTP from './pages/OTP';
@@ -107,7 +106,7 @@ function App() {
 }>
           <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/accueil" element={<Accueil />} />
+          <Route path="/accueil" element={<Navigate to="/" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/inscription" element={<Register />} />

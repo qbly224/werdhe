@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import Logo from '../components/Logo';
 import { useTranslation } from 'react-i18next';
+import SiteHeader from '../components/SiteHeader';
+import SiteFooter from '../components/SiteFooter';
 
 function getValeurs(t) {
   return [
@@ -99,31 +101,19 @@ export default function APropos() {
       />
 
       {/* Header */}
-      <div className="apropos-header" style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', padding: '10px 24px', minHeight: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', rowGap: 8 }}>
-        <button onClick={function() { navigate(-1); }}
-          style={{ background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: 8, padding: '6px 12px', color: '#fff', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <ChevronLeft size={16} strokeWidth={2} /> {t('apropos.retour')}
-        </button>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-         <Logo size={30} showText={true} darkBg={true} />
-        </div>
-      </div>
+      <SiteHeader />
+
 
       {/* Hero */}
-      <div style={{ background: 'linear-gradient(135deg, #1B2B22 0%, #1B6B3A 100%)', padding: 'clamp(48px, 8vw, 80px) 24px', textAlign: 'center' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,0.1)', borderRadius: 20, padding: '5px 16px', marginBottom: 20 }}>
-          <MapPin size={14} color="#F5A623" strokeWidth={2} />
-          <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', fontWeight: 600 }}>🇬🇳 {t('apropos.madeInGuinea')}</span>
-        </div>
-        <h1 style={{ fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 900, color: '#fff', margin: '0 0 16px', letterSpacing: -1, lineHeight: 1.1 }}>
+      <div style={{ background: '#1B2B22', padding: 'clamp(48px, 8vw, 80px) 24px', textAlign: 'center' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: 700, color: '#fff', margin: '0 0 16px', letterSpacing: -0.5, lineHeight: 1.15 }}>
           {t('apropos.heroTitre1')}<br/>
-          <span style={{ color: '#F5A623' }}>{t('apropos.heroTitre2')}</span>
+          {t('apropos.heroTitre2')}
         </h1>
-        <p style={{ fontSize: 'clamp(15px, 2vw, 18px)', color: 'rgba(255,255,255,0.7)', maxWidth: 560, margin: '0 auto 32px', lineHeight: 1.7 }}>
+        <p style={{ fontSize: 'clamp(15px, 2vw, 18px)', color: 'rgba(255,255,255,0.72)', maxWidth: 560, margin: '0 auto 32px', lineHeight: 1.7 }}>
           {t('apropos.heroDesc')}
         </p>
-        <Link to="/logements"
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, background: '#F5A623', color: '#1B2B22', textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>
+        <Link to="/logements" className="ds-btn ds-btn--primary">
           {t('apropos.decouvrirLogements')} <ArrowRight size={16} strokeWidth={2.5} />
         </Link>
       </div>
@@ -134,7 +124,7 @@ export default function APropos() {
           {STATS.map(function(s, i) {
             return (
               <div key={i} style={{ textAlign: 'center', padding: '16px 8px' }}>
-                <div style={{ fontSize: 'clamp(28px, 5vw, 40px)', fontWeight: 900, color: i === 0 ? '#F5A623' : '#fff' }}>{s.val}</div>
+                <div style={{ fontSize: 'clamp(28px, 5vw, 40px)', fontWeight: 700, color: '#fff' }}>{s.val}</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 6 }}>{s.label}</div>
               </div>
             );
@@ -149,7 +139,7 @@ export default function APropos() {
           <div className="apropos-mission-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, alignItems: 'center' }}>
             <div>
               <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('apropos.mission.overline')}</div>
-              <h2 style={{ fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 800, color: '#1B2B22', margin: '0 0 16px', letterSpacing: -0.5, lineHeight: 1.2 }}>
+              <h2 style={{ fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 700, color: '#1B2B22', margin: '0 0 16px', letterSpacing: -0.5, lineHeight: 1.2 }}>
                 {t('apropos.mission.titre')}
               </h2>
               <p style={{ fontSize: 15, color: '#555', lineHeight: 1.8, margin: '0 0 16px' }}>
@@ -172,9 +162,9 @@ export default function APropos() {
                 );
               })}
             </div>
-            <div style={{ background: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)', borderRadius: 20, padding: 32, textAlign: 'center', minHeight: 280, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ background: '#E8F5E9', borderRadius: 16, padding: 32, textAlign: 'center', minHeight: 280, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <div style={{ marginBottom: 16 }}><Home size={64} strokeWidth={1.3} color="#1B6B3A" /></div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: '#1B6B3A', marginBottom: 8 }}>Werdhe</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#1B6B3A', marginBottom: 8 }}>Werdhe</div>
               <div style={{ fontSize: 13, color: '#555', lineHeight: 1.6 }}>
                 {t('apropos.mission.tagline1')}<br/>{t('apropos.mission.tagline2')}
               </div>
@@ -189,13 +179,13 @@ export default function APropos() {
         <section style={{ marginBottom: 48 }}>
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
             <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('apropos.valeursSection.overline')}</div>
-            <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 800, color: '#1B2B22', margin: 0, letterSpacing: -0.5 }}>{t('apropos.valeursSection.titre')}</h2>
+            <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 700, color: '#1B2B22', margin: 0, letterSpacing: -0.5 }}>{t('apropos.valeursSection.titre')}</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
             {VALEURS.map(function(v, i) {
               return (
                 <div key={i} style={{ background: '#fff', borderRadius: 16, padding: '24px 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', border: '1px solid #F0F0F0' }}>
-                  <div style={{ width: 56, height: 56, background: v.bg, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                  <div style={{ width: 56, height: 56, background: v.bg, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
                     {v.icon}
                   </div>
                   <h3 style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', margin: '0 0 8px' }}>{v.titre}</h3>
@@ -210,7 +200,7 @@ export default function APropos() {
         <section style={{ marginBottom: 48 }}>
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
             <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('apropos.histoireSection.overline')}</div>
-            <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 800, color: '#1B2B22', margin: 0, letterSpacing: -0.5 }}>{t('apropos.histoireSection.titre')}</h2>
+            <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 700, color: '#1B2B22', margin: 0, letterSpacing: -0.5 }}>{t('apropos.histoireSection.titre')}</h2>
           </div>
           <div style={{ position: 'relative' }}>
             <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: 2, background: '#E8F5E9', transform: 'translateX(-50%)' }} />
@@ -221,7 +211,7 @@ export default function APropos() {
                   <div key={i} style={{ display: 'flex', justifyContent: estGauche ? 'flex-start' : 'flex-end', position: 'relative' }}>
                     {/* Point central */}
                     <div style={{ position: 'absolute', left: '50%', top: 20, transform: 'translate(-50%, -50%)', width: 16, height: 16, background: '#1B6B3A', borderRadius: '50%', border: '3px solid #fff', boxShadow: '0 0 0 2px #1B6B3A', zIndex: 1 }} />
-                    <div style={{ width: '44%', background: '#fff', borderRadius: 14, padding: '18px 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', border: '1px solid #F0F0F0' }}>
+                    <div style={{ width: '44%', background: '#fff', borderRadius: 12, padding: '18px 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', border: '1px solid #F0F0F0' }}>
                       <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, marginBottom: 6 }}>{e.annee}</div>
                       <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 6 }}>{e.titre}</div>
                       <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6 }}>{e.desc}</div>
@@ -237,16 +227,16 @@ export default function APropos() {
         <section style={{ marginBottom: 48 }}>
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
             <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('apropos.equipeSection.overline')}</div>
-            <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 800, color: '#1B2B22', margin: 0, letterSpacing: -0.5 }}>{t('apropos.equipeSection.titre')}</h2>
+            <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 700, color: '#1B2B22', margin: 0, letterSpacing: -0.5 }}>{t('apropos.equipeSection.titre')}</h2>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             {EQUIPE.map(function(m, i) {
               return (
-                <div key={i} style={{ background: '#fff', borderRadius: 20, padding: '28px 24px', boxShadow: '0 4px 16px rgba(0,0,0,0.08)', maxWidth: 360, width: '100%', textAlign: 'center' }}>
-                  <div style={{ width: 80, height: 80, background: m.couleur, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 28, fontWeight: 800, margin: '0 auto 16px' }}>
+                <div key={i} style={{ background: '#fff', borderRadius: 16, padding: '28px 24px', boxShadow: '0 4px 16px rgba(0,0,0,0.08)', maxWidth: 360, width: '100%', textAlign: 'center' }}>
+                  <div style={{ width: 80, height: 80, background: m.couleur, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 28, fontWeight: 700, margin: '0 auto 16px' }}>
                     {m.initiales}
                   </div>
-                  <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 4px' }}>{m.nom}</h3>
+                  <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1B2B22', margin: '0 0 4px' }}>{m.nom}</h3>
                   <div style={{ fontSize: 13, color: '#1B6B3A', fontWeight: 600, marginBottom: 14 }}>{m.role}</div>
                   <p style={{ fontSize: 14, color: '#666', lineHeight: 1.7, margin: 0 }}>{m.bio}</p>
                 </div>
@@ -256,8 +246,8 @@ export default function APropos() {
         </section>
 
         {/* CTA */}
-        <section style={{ background: 'linear-gradient(135deg, #1B2B22, #1B6B3A)', borderRadius: 20, padding: 'clamp(32px, 5vw, 48px) 32px', textAlign: 'center' }}>
-          <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 800, color: '#fff', margin: '0 0 14px', letterSpacing: -0.5 }}>
+        <section style={{ background: '#1B2B22', borderRadius: 16, padding: 'clamp(32px, 5vw, 48px) 32px', textAlign: 'center' }}>
+          <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 700, color: '#fff', margin: '0 0 14px', letterSpacing: -0.5 }}>
             {t('apropos.cta.titre')}
           </h2>
           <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', margin: '0 0 28px', maxWidth: 440, marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.6 }}>
@@ -265,7 +255,7 @@ export default function APropos() {
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link to="/inscription"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, background: '#F5A623', color: '#1B2B22', textDecoration: 'none', fontWeight: 800, fontSize: 15 }}>
+              className="ds-btn ds-btn--primary">
               {t('apropos.cta.creerCompte')} <ArrowRight size={16} strokeWidth={2.5} />
             </Link>
             <Link to="/contact"
@@ -275,6 +265,7 @@ export default function APropos() {
           </div>
         </section>
       </div>
+      <SiteFooter />
     </div>
   );
 }
