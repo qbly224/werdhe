@@ -71,12 +71,12 @@ export default function TourTooltip({ actif, etapeActuelle, etape, totalEtapes, 
         left:     pos.left,
         transform: transform,
         zIndex:   9999,
-        background: '#fff',
+        background: 'var(--bg-secondary)',
         borderRadius: 16,
         padding: '20px 22px',
         maxWidth: 300,
         boxShadow: '0 16px 48px rgba(0,0,0,0.25)',
-        border: '2px solid #1B6B3A',
+        border: '2px solid var(--green)',
         animation: 'fadeInUp 0.2s ease-out',
       }}>
         {/* Progression */}
@@ -84,7 +84,7 @@ export default function TourTooltip({ actif, etapeActuelle, etape, totalEtapes, 
           <div style={{ display: 'flex', gap: 4 }}>
             {Array.from({ length: totalEtapes }).map(function(_, i) {
               return (
-                <div key={i} style={{ width: i === etape ? 18 : 6, height: 6, borderRadius: 3, background: i === etape ? '#1B6B3A' : '#E0E0E0', transition: 'all .3s' }} />
+                <div key={i} style={{ width: i === etape ? 18 : 6, height: 6, borderRadius: 3, background: i === etape ? 'var(--green)' : 'var(--bg-tertiary)', transition: 'all .3s' }} />
               );
             })}
           </div>
@@ -95,7 +95,7 @@ export default function TourTooltip({ actif, etapeActuelle, etape, totalEtapes, 
         </div>
 
         {/* Contenu */}
-        <h3 style={{ fontSize: 15, fontWeight: 800, color: '#1B2B22', margin: '0 0 8px' }}>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 8px' }}>
           {etapeActuelle.titre}
         </h3>
         <p style={{ fontSize: 13, color: '#666', lineHeight: 1.6, margin: '0 0 18px' }}>
@@ -109,7 +109,7 @@ export default function TourTooltip({ actif, etapeActuelle, etape, totalEtapes, 
             {t('tourTooltip.passerLeTutoriel')}
           </button>
           <button onClick={suivant}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
             {etape === totalEtapes - 1 ? t('tourTooltip.terminer') : t('tourTooltip.suivant')}
             <ChevronRight size={15} strokeWidth={2.5} />
           </button>
@@ -141,7 +141,7 @@ function SpotlightElement({ cible }) {
       borderRadius: 12,
       zIndex: 9991,
       boxShadow: '0 0 0 9999px rgba(0,0,0,0.45)',
-      border: '2px solid #1B6B3A',
+      border: '2px solid var(--green)',
       pointerEvents: 'none',
       transition: 'all .3s ease',
     }} />

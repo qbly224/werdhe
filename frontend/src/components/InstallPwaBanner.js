@@ -85,7 +85,7 @@ export default function InstallPwaBanner() {
   if (!visible || estMasque(location.pathname)) return null;
 
   return (
-    <div style={{ position: 'fixed', bottom: 16, left: '50%', transform: 'translateX(-50%)', background: '#1B2B22', color: '#fff', borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.25)', zIndex: 9997, maxWidth: 400, width: 'calc(100% - 32px)' }}>
+    <div style={{ position: 'fixed', bottom: 16, left: '50%', transform: 'translateX(-50%)', background: '#1B2B22', color: '#fff', borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.25)', zIndex: 9997, maxWidth: 400, width: 'calc(100% - 32px)' }}>
       <div style={{ flexShrink: 0 }}><Download size={26} strokeWidth={1.5} color="#fff" /></div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 3 }}>{t('pwa.installerWerdhe')}</div>
@@ -98,7 +98,7 @@ export default function InstallPwaBanner() {
       <div style={{ display: 'flex', gap: 6, flexShrink: 0, alignItems: 'center' }}>
         {!plateformeIOS && (
           <button onClick={installer}
-            style={{ background: '#F5A623', border: 'none', color: '#1B2B22', borderRadius: 8, padding: '6px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+            style={{ background: 'var(--green)', border: 'none', color: '#fff', borderRadius: 8, padding: '6px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}>
             {t('pwa.installer')}
           </button>
         )}

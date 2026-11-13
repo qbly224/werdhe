@@ -14,44 +14,44 @@ var CATEGORIES = [
   {
     groupe: 'villas',
     types: [
-      { value: 'villa_luxe',     icon: <Crown      size={22} strokeWidth={1.5} color="#7B1FA2" />, hasChambres: true,  chambresMin: 4, chambresMax: 20, hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'villa_standard', icon: <Castle     size={22} strokeWidth={1.5} color="#1B6B3A" />, hasChambres: true,  chambresMin: 3, chambresMax: 10, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'villa_luxe',     icon: <Crown      size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: true,  chambresMin: 4, chambresMax: 20, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'villa_standard', icon: <Castle     size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: true,  chambresMin: 3, chambresMax: 10, hasSallesBain: true,  hasSuperficie: true  },
     ]
   },
   {
     groupe: 'maisons',
     types: [
-      { value: 'maison_moderne',   icon: <Home       size={22} strokeWidth={1.5} color="#1565C0" />, hasChambres: true,  chambresMin: 1, chambresMax: 15, hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'maison_banco',     icon: <Tent       size={22} strokeWidth={1.5} color="#E65100" />, hasChambres: true,  chambresMin: 1, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'maison_chantier',  icon: <Construction size={22} strokeWidth={1.5} color="#888"  />, hasChambres: true,  chambresMin: 1, chambresMax: 10, hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'concession',       icon: <Fence      size={22} strokeWidth={1.5} color="#1B6B3A" />, hasChambres: true,  chambresMin: 1, chambresMax: 30, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'maison_moderne',   icon: <Home       size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: true,  chambresMin: 1, chambresMax: 15, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'maison_banco',     icon: <Tent       size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: true,  chambresMin: 1, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'maison_chantier',  icon: <Construction size={22} strokeWidth={1.5} color="var(--green)"  />, hasChambres: true,  chambresMin: 1, chambresMax: 10, hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'concession',       icon: <Fence      size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: true,  chambresMin: 1, chambresMax: 30, hasSallesBain: true,  hasSuperficie: true  },
     ]
   },
   {
     groupe: 'appartements',
     types: [
-      { value: 'appartement',      icon: <Building2  size={22} strokeWidth={1.5} color="#1565C0" />, hasChambres: true,  chambresMin: 1, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'duplex',           icon: <Layers     size={22} strokeWidth={1.5} color="#7B1FA2" />, hasChambres: true,  chambresMin: 2, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'logement_social',  icon: <Landmark   size={22} strokeWidth={1.5} color="#37474F" />, hasChambres: true,  chambresMin: 1, chambresMax: 5,  hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'appartement',      icon: <Building2  size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: true,  chambresMin: 1, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'duplex',           icon: <Layers     size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: true,  chambresMin: 2, chambresMax: 8,  hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'logement_social',  icon: <Landmark   size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: true,  chambresMin: 1, chambresMax: 5,  hasSallesBain: true,  hasSuperficie: true  },
     ]
   },
   {
     groupe: 'chambresStudios',
     types: [
-      { value: 'studio_moderne',    icon: <Hotel      size={22} strokeWidth={1.5} color="#1B6B3A" />, hasChambres: false, chambresFixed: 1,               hasSallesBain: true,  hasSuperficie: true  },
-      { value: 'chambre_habitant',  icon: <BedDouble  size={22} strokeWidth={1.5} color="#E65100" />, hasChambres: false, chambresFixed: 1,               hasSallesBain: false, hasSuperficie: true  },
-      { value: 'chambre_cour',      icon: <DoorOpen   size={22} strokeWidth={1.5} color="#888"    />, hasChambres: false, chambresFixed: 1,               hasSallesBain: false, hasSuperficie: true  },
-      { value: 'habitat_precaire',  icon: <TriangleAlert size={22} strokeWidth={1.5} color="#B71C1C" />, hasChambres: true,  chambresMin: 0, chambresMax: 5,  hasSallesBain: false, hasSuperficie: false },
+      { value: 'studio_moderne',    icon: <Hotel      size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: false, chambresFixed: 1,               hasSallesBain: true,  hasSuperficie: true  },
+      { value: 'chambre_habitant',  icon: <BedDouble  size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: false, chambresFixed: 1,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'chambre_cour',      icon: <DoorOpen   size={22} strokeWidth={1.5} color="var(--green)"    />, hasChambres: false, chambresFixed: 1,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'habitat_precaire',  icon: <TriangleAlert size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: true,  chambresMin: 0, chambresMax: 5,  hasSallesBain: false, hasSuperficie: false },
     ]
   },
   {
     groupe: 'locauxCommerciaux',
     types: [
-      { value: 'boutique',          icon: <Store      size={22} strokeWidth={1.5} color="#E65100" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
-      { value: 'bureau',            icon: <Briefcase  size={22} strokeWidth={1.5} color="#1565C0" />, hasChambres: true,  chambresMin: 0, chambresMax: 20, hasSallesBain: false, hasSuperficie: true  },
-      { value: 'entrepot',          icon: <Warehouse  size={22} strokeWidth={1.5} color="#37474F" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
-      { value: 'local_commercial',  icon: <Building   size={22} strokeWidth={1.5} color="#7B1FA2" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
-      { value: 'centre_commercial', icon: <ShoppingBag size={22} strokeWidth={1.5} color="#1B6B3A" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'boutique',          icon: <Store      size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'bureau',            icon: <Briefcase  size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: true,  chambresMin: 0, chambresMax: 20, hasSallesBain: false, hasSuperficie: true  },
+      { value: 'entrepot',          icon: <Warehouse  size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'local_commercial',  icon: <Building   size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
+      { value: 'centre_commercial', icon: <ShoppingBag size={22} strokeWidth={1.5} color="var(--green)" />, hasChambres: false, chambresFixed: 0,               hasSallesBain: false, hasSuperficie: true  },
     ]
   },
 ];
@@ -231,8 +231,8 @@ const AjouterLogement = () => {
         <div className="container">
 
           <div className="ajouter-header">
-            <h1 style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 24, fontWeight: 800, color: '#1B2B22', margin: 0 }}>
-              <Home size={24} strokeWidth={1.5} color="#1B6B3A" /> {t('ajouterLogement.header.titre')}
+            <h1 style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+              <Home size={24} strokeWidth={1.5} color="var(--green)" /> {t('ajouterLogement.header.titre')}
             </h1>
             <p>{t('ajouterLogement.header.sousTitre')}</p>
           </div>
@@ -284,8 +284,8 @@ const AjouterLogement = () => {
                 </div>
                 <button className="btn-changer" onClick={() => setEtape(1)}>{t('ajouterLogement.etape2.changer')}</button>
               </div>
-                            <h2 style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 4px' }}>
-                <MapPin size={20} strokeWidth={1.5} color="#1B6B3A" /> {t('ajouterLogement.etape2.titre')}
+                            <h2 style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 4px' }}>
+                <MapPin size={20} strokeWidth={1.5} color="var(--green)" /> {t('ajouterLogement.etape2.titre')}
               </h2>
               <p className="etape-subtitle">{t('ajouterLogement.etape2.sousTitre')}</p>
 
@@ -293,11 +293,11 @@ const AjouterLogement = () => {
               {categorieSelectionnee && (
                 <div className="form-group">
                   <label>{t('ajouterLogement.etape2.typeLogement')}</label>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: '#E8F5E9', borderRadius: 10, border: '1.5px solid #A5D6A7' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: 'var(--green-light)', borderRadius: 8, border: '1.5px solid var(--green-border)' }}>
                     <span>{categorieSelectionnee.icon}</span>
                     <div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22' }}>{t('ajouterLogement.categories.types.' + categorieSelectionnee.value + '.label')}</div>
-                      <div style={{ fontSize: 12, color: '#888' }}>{t('ajouterLogement.categories.types.' + categorieSelectionnee.value + '.description')}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{t('ajouterLogement.categories.types.' + categorieSelectionnee.value + '.label')}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{t('ajouterLogement.categories.types.' + categorieSelectionnee.value + '.description')}</div>
                     </div>
                   </div>
                 </div>
@@ -386,8 +386,8 @@ const AjouterLogement = () => {
           {/* ÉTAPE 3 — Détails */}
           {etape === 3 && (
             <div className="etape-card">
-              <h2 style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 4px' }}>
-                <Home size={20} strokeWidth={1.5} color="#1B6B3A" /> {t('ajouterLogement.etape3.titre')}
+              <h2 style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 4px' }}>
+                <Home size={20} strokeWidth={1.5} color="var(--green)" /> {t('ajouterLogement.etape3.titre')}
               </h2>
               <p className="etape-subtitle">{t('ajouterLogement.etape3.sousTitre')}</p>
 
@@ -440,26 +440,26 @@ const AjouterLogement = () => {
               </div>
 
               {estimationLoading && (
-                <div style={{ fontSize: 13, color: '#888', marginTop: -8, marginBottom: 16 }}>{t('ajouterLogement.etape3.estimationEnCours')}</div>
+                <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: -8, marginBottom: 16 }}>{t('ajouterLogement.etape3.estimationEnCours')}</div>
               )}
 
               {!estimationLoading && estimation && (
-                <div style={{ background: '#E8F5E9', border: '1px solid #A5D6A7', borderRadius: 12, padding: '14px 16px', marginTop: -8, marginBottom: 16, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                  <Sparkles size={18} strokeWidth={1.5} color="#1B6B3A" style={{ flexShrink: 0, marginTop: 2 }} />
+                <div style={{ background: 'var(--green-light)', border: '1px solid var(--green-border)', borderRadius: 12, padding: '14px 16px', marginTop: -8, marginBottom: 16, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                  <Sparkles size={18} strokeWidth={1.5} color="var(--green)" style={{ flexShrink: 0, marginTop: 2 }} />
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
                       {t('ajouterLogement.etape3.loyerSuggere', {
                         bas: Number(estimation.estimation_basse).toLocaleString('fr-FR'),
                         haut: Number(estimation.estimation_haute).toLocaleString('fr-FR')
                       })}
                     </div>
-                    <div style={{ fontSize: 12, color: '#555', marginTop: 2 }}>
+                    <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>
                       {estimation.nb_comparables > 0
                         ? t('ajouterLogement.etape3.baseSurComparables', { count: estimation.nb_comparables })
                         : t('ajouterLogement.etape3.estimationStatistique')}
                     </div>
                     <button type="button" onClick={() => setFormData(prev => ({ ...prev, prix_mensuel: String(estimation.estimation_moyenne) }))}
-                      style={{ marginTop: 8, background: 'none', border: 'none', color: '#1B6B3A', fontSize: 12, fontWeight: 700, cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>
+                      style={{ marginTop: 8, background: 'none', border: 'none', color: 'var(--green)', fontSize: 12, fontWeight: 700, cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>
                       {t('ajouterLogement.etape3.utiliser', { prix: Number(estimation.estimation_moyenne).toLocaleString('fr-FR') })}
                     </button>
                   </div>
@@ -580,9 +580,9 @@ const AjouterLogement = () => {
           {etape === 5 && logementCree && (
             <div className="etape-card">
               <div className="photos-etape-header">
-                <span style={{ display: 'flex' }}><Camera size={40} strokeWidth={1.5} color="#1B6B3A" /></span>
+                <span style={{ display: 'flex' }}><Camera size={40} strokeWidth={1.5} color="var(--green)" /></span>
                 <div>
-                  <h2>{t('ajouterLogement.etape5.titre')} <span style={{ color: '#E53935', fontSize: 14 }}>*</span></h2>
+                  <h2>{t('ajouterLogement.etape5.titre')} <span style={{ color: 'var(--danger)', fontSize: 14 }}>*</span></h2>
                   <p>{t('ajouterLogement.etape5.sousTitre')}</p>
                 </div>
               </div>
@@ -597,8 +597,8 @@ const AjouterLogement = () => {
 
               <div className="form-actions" style={{marginTop: '24px'}}>
                 {photosAjoutees.length === 0 && (
-  <div style={{ background: '#FFF8E1', border: '1px solid #FFE082', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#7B4F00', display: 'flex', alignItems: 'center', gap: 8 }}>
-    <AlertTriangle size={16} strokeWidth={1.5} color="#F5A623" /> {t('ajouterLogement.etape5.avertissementPhoto')}
+  <div style={{ background: 'var(--warn-soft)', border: '1px solid var(--warn)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: 'var(--warn)', display: 'flex', alignItems: 'center', gap: 8 }}>
+    <AlertTriangle size={16} strokeWidth={1.5} color="var(--warn)" /> {t('ajouterLogement.etape5.avertissementPhoto')}
   </div>
 )}
 <button

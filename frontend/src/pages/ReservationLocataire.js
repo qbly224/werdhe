@@ -18,7 +18,7 @@ const GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 
 var PAY_OPTS = [
   { id: 'om',   labelKey: 'om',   color: '#FF6600', textColor: '#fff', abbr: 'OM' },
-  { id: 'mtn',  labelKey: 'mtn',  color: '#FFCC00', textColor: '#1B2B22', abbr: 'MM' },
+  { id: 'mtn',  labelKey: 'mtn',  color: '#FFCC00', textColor: 'var(--text-primary)', abbr: 'MM' },
   { id: 'cash', labelKey: 'cash', icon: Banknote },
   { id: 'bank', labelKey: 'bank', icon: Landmark },
 ];
@@ -45,8 +45,8 @@ function StepBar({ etape }) {
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <div style={{
                 width: 30, height: 30, borderRadius: '50%',
-                background: done || active ? '#1B6B3A' : '#E0E0E0',
-                color: done || active ? '#fff' : '#888',
+                background: done || active ? 'var(--green)' : 'var(--bg-tertiary)',
+                color: done || active ? '#fff' : 'var(--text-muted)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: done ? 13 : 11, fontWeight: 700,
                 boxShadow: active ? '0 0 0 4px #C8E6C9' : 'none',
@@ -54,12 +54,12 @@ function StepBar({ etape }) {
               }}>
                 {done ? <Check size={14} strokeWidth={2.2} /> : s.id}
               </div>
-              <div style={{ fontSize: 9, marginTop: 3, whiteSpace: 'nowrap', color: active ? '#1B6B3A' : '#999', fontWeight: active ? 700 : 400 }}>
+              <div style={{ fontSize: 9, marginTop: 3, whiteSpace: 'nowrap', color: active ? 'var(--green)' : '#999', fontWeight: active ? 700 : 400 }}>
                 {t('reservationLocataire.stepBar.' + s.labelKey)}
               </div>
             </div>
             {i < steps.length - 1 && (
-              <div style={{ flex: 1, height: 2, background: done ? '#1B6B3A' : '#E0E0E0', minWidth: 8, margin: '0 2px', marginBottom: 14, transition: 'background .3s' }} />
+              <div style={{ flex: 1, height: 2, background: done ? 'var(--green)' : 'var(--bg-tertiary)', minWidth: 8, margin: '0 2px', marginBottom: 14, transition: 'background .3s' }} />
             )}
           </div>
         );
@@ -95,15 +95,15 @@ function AttenteCard({ icone, message, sub }) {
   // pas des fonctions : seule une chaîne (emoji) doit être rendue telle quelle.
   var IconeComp = icone && typeof icone !== 'string' ? icone : null;
   return (
-    <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', marginBottom: 14 }}>
+    <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 24, textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', marginBottom: 14 }}>
       <div style={{ fontSize: 40, marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
-        {IconeComp ? <IconeComp size={40} strokeWidth={1.4} color="#1B6B3A" /> : (icone || '⏳')}
+        {IconeComp ? <IconeComp size={40} strokeWidth={1.4} color="var(--green)" /> : (icone || '⏳')}
       </div>
-      <div style={{ fontSize: 16, fontWeight: 700, color: '#1B2B22', marginBottom: 6 }}>{message}{dots}</div>
-      <div style={{ fontSize: 13, color: '#888', lineHeight: 1.6 }}>{sub}</div>
+      <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>{message}{dots}</div>
+      <div style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6 }}>{sub}</div>
       <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-        <div style={{ width: 8, height: 8, background: '#1B6B3A', borderRadius: '50%' }} />
-        <span style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 600 }}>{t('reservationLocataire.attenteCard.syncTempsReel')}</span>
+        <div style={{ width: 8, height: 8, background: 'var(--green)', borderRadius: '50%' }} />
+        <span style={{ fontSize: 12, color: 'var(--green)', fontWeight: 600 }}>{t('reservationLocataire.attenteCard.syncTempsReel')}</span>
       </div>
     </div>
   );
@@ -332,8 +332,8 @@ export default function ReservationLocataire() {
   // ── LOADING ───────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div style={{ fontFamily: 'var(--font-body)', maxWidth: 560, margin: '0 auto', padding: 16, background: '#F7F8F7', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center', color: '#888' }}>{t('reservationLocataire.chargement')}</div>
+      <div style={{ fontFamily: 'var(--font-body)', maxWidth: 560, margin: '0 auto', padding: 16, background: 'var(--surface-soft)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>{t('reservationLocataire.chargement')}</div>
       </div>
     );
   }
@@ -343,11 +343,11 @@ export default function ReservationLocataire() {
       <div style={{ fontFamily: 'var(--font-body)', maxWidth: 560, margin: '0 auto', padding: 16 }}>
         <div style={{ textAlign: 'center', padding: 60 }}>
           <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center' }}>
-            <XCircle size={40} strokeWidth={1.5} color="#E53935" />
+            <XCircle size={40} strokeWidth={1.5} color="var(--danger)" />
           </div>
           <div style={{ fontSize: 16, fontWeight: 700 }}>{t('reservationLocataire.introuvable.titre')}</div>
           <button onClick={function() { navigate('/dashboard'); }}
-            style={{ marginTop: 16, padding: '10px 20px', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>
+            style={{ marginTop: 16, padding: '10px 20px', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 700 }}>
             {t('reservationLocataire.introuvable.retour')}
           </button>
         </div>
@@ -356,10 +356,10 @@ export default function ReservationLocataire() {
   }
 
   return (
-    <div style={{ fontFamily: 'var(--font-body)', maxWidth: 560, margin: '0 auto', padding: '12px 16px 80px', background: '#F7F8F7', minHeight: '100vh', width: '100%' }}>
+    <div style={{ fontFamily: 'var(--font-body)', maxWidth: 560, margin: '0 auto', padding: '12px 16px 80px', background: 'var(--surface-soft)', minHeight: '100vh', width: '100%' }}>
 
       {/* HEADER */}
-      <div style={{ background: '#1B6B3A', borderRadius: 14, padding: '14px 18px', marginBottom: 18 }}>
+      <div style={{ background: 'var(--green)', borderRadius: 12, padding: '14px 18px', marginBottom: 18 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
             <button onClick={function() { navigate('/dashboard'); }}
@@ -371,7 +371,7 @@ export default function ReservationLocataire() {
               {logement && (logement.titre || logement.nom)} · {logement && logement.ville}
             </div>
           </div>
-          <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: 20, padding: '4px 12px', fontSize: 11, color: '#fff', fontWeight: 600 }}>
+          <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: 16, padding: '4px 12px', fontSize: 11, color: '#fff', fontWeight: 600 }}>
             {statut === 'en_attente'          ? t('reservationLocataire.statutBadge.enAttente')
              : statut === 'dossier_requis'    ? t('reservationLocataire.statutBadge.dossierRequis')
              : statut === 'en_examen'         ? t('reservationLocataire.statutBadge.enExamen')
@@ -399,8 +399,8 @@ export default function ReservationLocataire() {
             message={t('reservationLocataire.etape1.attente.message')}
             sub={t('reservationLocataire.etape1.attente.sub')}
           />
-          <div style={{ background: '#fff', borderRadius: 14, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 12 }}>{t('reservationLocataire.etape1.recap.titre')}</div>
+          <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 12 }}>{t('reservationLocataire.etape1.recap.titre')}</div>
             {[
               [t('reservationLocataire.etape1.recap.logement'), logement && (logement.titre || logement.nom)],
               [t('reservationLocataire.etape1.recap.loyerMensuel'), GNF(loyer)],
@@ -410,8 +410,8 @@ export default function ReservationLocataire() {
             ].map(function(row) {
               return (
                 <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '6px 0', borderBottom: '0.5px solid #F5F5F5' }}>
-                  <span style={{ color: '#888' }}>{row[0]}</span>
-                  <span style={{ fontWeight: 600, color: '#1B2B22' }}>{row[1]}</span>
+                  <span style={{ color: 'var(--text-muted)' }}>{row[0]}</span>
+                  <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{row[1]}</span>
                 </div>
               );
             })}
@@ -422,22 +422,22 @@ export default function ReservationLocataire() {
       {/* ═══ ÉTAPE 2 : DOSSIER ══════════════════════════════════════ */}
       {statut === 'dossier_requis' && (
         <div>
-          <div style={{ background: '#E3F2FD', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
-            <ClipboardList size={16} strokeWidth={1.6} color="#1565C0" />
-            <span style={{ fontSize: 13, color: '#1565C0', lineHeight: 1.5, fontWeight: 600 }}>
+          <div style={{ background: 'var(--info-soft)', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
+            <ClipboardList size={16} strokeWidth={1.6} color="var(--info)" />
+            <span style={{ fontSize: 13, color: 'var(--info)', lineHeight: 1.5, fontWeight: 600 }}>
               {t('reservationLocataire.etape2.alerteInfo')}
             </span>
           </div>
           <form onSubmit={soumettreDocuments}>
-            <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>{t('reservationLocataire.etape2.titreDossier')}</div>
+            <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10 }}>{t('reservationLocataire.etape2.titreDossier')}</div>
               <div style={{ marginBottom: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                   <span style={{ fontSize: 12, color: '#666' }}>{t('reservationLocataire.etape2.progression')}</span>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: '#1B6B3A' }}>{Math.round(Object.values(docs).filter(Boolean).length / 4 * 100)}%</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--green)' }}>{Math.round(Object.values(docs).filter(Boolean).length / 4 * 100)}%</span>
                 </div>
-                <div style={{ background: '#F0F0F0', borderRadius: 6, height: 8, overflow: 'hidden' }}>
-                  <div style={{ background: 'linear-gradient(90deg, #1B6B3A, #34A853)', width: Math.round(Object.values(docs).filter(Boolean).length / 4 * 100) + '%', height: '100%', borderRadius: 6, transition: 'width .4s' }} />
+                <div style={{ background: 'var(--bg-tertiary)', borderRadius: 6, height: 8, overflow: 'hidden' }}>
+                  <div style={{ background: 'var(--green)', width: Math.round(Object.values(docs).filter(Boolean).length / 4 * 100) + '%', height: '100%', borderRadius: 6, transition: 'width .4s' }} />
                 </div>
               </div>
               {[
@@ -449,14 +449,14 @@ export default function ReservationLocataire() {
                 var added = Boolean(docs[doc.key]);
                 return (
                   <div key={doc.key} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 0', borderBottom: '0.5px solid #F5F5F5' }}>
-                    <div style={{ width: 38, height: 38, borderRadius: 10, background: added ? '#E8F5E9' : '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      {added ? <CheckCircle2 size={18} strokeWidth={1.6} color="#1B6B3A" /> : <FileText size={18} strokeWidth={1.6} color="#999" />}
+                    <div style={{ width: 38, height: 38, borderRadius: 8, background: added ? 'var(--green-light)' : 'var(--surface-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      {added ? <CheckCircle2 size={18} strokeWidth={1.6} color="var(--green)" /> : <FileText size={18} strokeWidth={1.6} color="#999" />}
                     </div>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>
-                        {t('reservationLocataire.etape2.docs.' + doc.labelKey + '.label')}{doc.req && <span style={{ color: '#E53935' }}> *</span>}
+                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>
+                        {t('reservationLocataire.etape2.docs.' + doc.labelKey + '.label')}{doc.req && <span style={{ color: 'var(--danger)' }}> *</span>}
                       </div>
-                      <div style={{ fontSize: 11, color: added ? '#1B6B3A' : '#888', marginTop: 1 }}>
+                      <div style={{ fontSize: 11, color: added ? 'var(--green)' : 'var(--text-muted)', marginTop: 1 }}>
                         {added ? (docs[doc.key] && docs[doc.key].name ? docs[doc.key].name : docs[doc.key]) : t('reservationLocataire.etape2.docs.' + doc.labelKey + '.sub')}
                       </div>
                     </div>
@@ -468,7 +468,7 @@ export default function ReservationLocataire() {
                           toast.success(t('reservationLocataire.etape2.fichierAjouteToast', { nom: f.name }));
                         }
                       }} />
-                      <div style={{ padding: '7px 12px', borderRadius: 8, background: added ? '#F0FBF0' : '#1B6B3A', color: added ? '#1B6B3A' : '#fff', fontSize: 12, fontWeight: 600, border: added ? '0.5px solid #A5D6A7' : 'none' }}>
+                      <div style={{ padding: '7px 12px', borderRadius: 8, background: added ? 'var(--green-light)' : 'var(--green)', color: added ? 'var(--green)' : '#fff', fontSize: 12, fontWeight: 600, border: added ? '0.5px solid var(--green-border)' : 'none' }}>
                         {added ? t('reservationLocataire.etape2.modifier') : t('reservationLocataire.etape2.ajouter')}
                       </div>
                     </label>
@@ -477,7 +477,7 @@ export default function ReservationLocataire() {
               })}
             </div>
             <button type="submit"
-              style={{ width: '100%', background: Object.values(docs).filter(Boolean).length >= 2 ? '#1B6B3A' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: Object.values(docs).filter(Boolean).length >= 2 ? 'pointer' : 'not-allowed' }}>
+              style={{ width: '100%', background: Object.values(docs).filter(Boolean).length >= 2 ? 'var(--green)' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: Object.values(docs).filter(Boolean).length >= 2 ? 'pointer' : 'not-allowed' }}>
               {t('reservationLocataire.etape2.soumettreBouton')}
             </button>
           </form>
@@ -495,20 +495,20 @@ export default function ReservationLocataire() {
 
       {/* ═══ REFUSÉE ════════════════════════════════════════════════ */}
       {statut === 'refusee' && (
-        <div style={{ background: '#fff', borderRadius: 14, padding: 24, textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+        <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 24, textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
           <div style={{ fontSize: 40, marginBottom: 12 }}>😞</div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: '#B71C1C', marginBottom: 8 }}>{t('reservationLocataire.refusee.titre')}</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--danger)', marginBottom: 8 }}>{t('reservationLocataire.refusee.titre')}</div>
           <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6, marginBottom: 16 }}>
             {t('reservationLocataire.refusee.description')}
           </div>
           {reservation.motif_refus && (
-            <div style={{ background: '#FFEBEE', borderRadius: 10, padding: 14, marginBottom: 16, textAlign: 'left' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#B71C1C', marginBottom: 4 }}>{t('reservationLocataire.refusee.motif')}</div>
-              <div style={{ fontSize: 13, color: '#555' }}>{reservation.motif_refus}</div>
+            <div style={{ background: 'var(--danger-soft)', borderRadius: 8, padding: 14, marginBottom: 16, textAlign: 'left' }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--danger)', marginBottom: 4 }}>{t('reservationLocataire.refusee.motif')}</div>
+              <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{reservation.motif_refus}</div>
             </div>
           )}
           <button onClick={function() { navigate('/logements'); }}
-            style={{ width: '100%', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+            style={{ width: '100%', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
             {t('reservationLocataire.refusee.chercherAutres')}
           </button>
         </div>
@@ -517,15 +517,15 @@ export default function ReservationLocataire() {
       {/* ═══ ÉTAPE 4 : ÉCHANGES ═════════════════════════════════════ */}
       {(statut === 'acceptee' || statut === 'echanges') && (
         <div>
-          <div style={{ background: '#E8F5E9', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
+          <div style={{ background: 'var(--green-light)', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
             <span>🎉</span>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B5E20' }}>{t('reservationLocataire.etape4.accepteeBanner.titre')}</div>
-              <div style={{ fontSize: 12, color: '#2E7D32' }}>{t('reservationLocataire.etape4.accepteeBanner.sous')}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--green)' }}>{t('reservationLocataire.etape4.accepteeBanner.titre')}</div>
+              <div style={{ fontSize: 12, color: 'var(--green)' }}>{t('reservationLocataire.etape4.accepteeBanner.sous')}</div>
             </div>
           </div>
-          <div style={{ background: '#fff', borderRadius: 14, overflow: 'hidden', marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-            <div style={{ background: '#1B6B3A', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, overflow: 'hidden', marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+            <div style={{ background: 'var(--green)', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
               <div style={{ width: 32, height: 32, background: 'rgba(255,255,255,0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Home size={16} strokeWidth={1.6} color="#fff" />
               </div>
@@ -545,10 +545,10 @@ export default function ReservationLocataire() {
                 var isMoi = m.expedition_id === (user && user.id);
                 return (
                   <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: isMoi ? 'flex-end' : 'flex-start' }}>
-                    <div style={{ maxWidth: '80%', padding: '9px 13px', borderRadius: isMoi ? '16px 16px 4px 16px' : '16px 16px 16px 4px', background: isMoi ? '#1B6B3A' : '#fff', color: isMoi ? '#fff' : '#1B2B22', fontSize: 13, lineHeight: 1.5, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+                    <div style={{ maxWidth: '80%', padding: '9px 13px', borderRadius: isMoi ? '16px 16px 4px 16px' : '16px 16px 16px 4px', background: isMoi ? 'var(--green)' : 'var(--bg-secondary)', color: isMoi ? '#fff' : 'var(--text-primary)', fontSize: 13, lineHeight: 1.5, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
                       {m.type === 'photo' && m.fichier_url && <img src={m.fichier_url} alt="photo" style={{ maxWidth: '100%', maxHeight: 160, borderRadius: 8, marginBottom: m.contenu ? 6 : 0 }} />}
                       {m.type === 'document' && m.fichier_url && (
-                        <a href={m.fichier_url} target="_blank" rel="noreferrer" style={{ color: isMoi ? '#fff' : '#1B6B3A', textDecoration: 'none', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        <a href={m.fichier_url} target="_blank" rel="noreferrer" style={{ color: isMoi ? '#fff' : 'var(--green)', textDecoration: 'none', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                           <Paperclip size={12} strokeWidth={1.8} /> {m.fichier_nom || t('reservationLocataire.etape4.document')}
                         </a>
                       )}
@@ -562,23 +562,23 @@ export default function ReservationLocataire() {
               })}
             </div>
             {fichierMsg && (
-              <div style={{ padding: '6px 12px', background: '#E8F5E9', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 12, color: '#1B5E20', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <div style={{ padding: '6px 12px', background: 'var(--green-light)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 12, color: 'var(--green)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                   {fichierMsg.type.startsWith('image/') ? <Camera size={13} strokeWidth={1.8} /> : <Paperclip size={13} strokeWidth={1.8} />} {fichierMsg.name}
                 </span>
-                <button onClick={function() { setFichierMsg(null); }} style={{ background: 'none', border: 'none', color: '#E53935', cursor: 'pointer', fontWeight: 700 }}>×</button>
+                <button onClick={function() { setFichierMsg(null); }} style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer', fontWeight: 700 }}>×</button>
               </div>
             )}
-            <div style={{ padding: '10px 12px', background: '#fff', borderTop: '0.5px solid #F0F0F0', display: 'flex', gap: 8 }}>
+            <div style={{ padding: '10px 12px', background: 'var(--bg-secondary)', borderTop: '0.5px solid var(--border)', display: 'flex', gap: 8 }}>
               <input value={newMsg} onChange={function(e) { setNewMsg(e.target.value); }}
                 onKeyDown={function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); envoyerMessage(); } }}
                 placeholder={t('reservationLocataire.etape4.messagePlaceholder')}
-                style={{ flex: 1, padding: '9px 14px', borderRadius: 20, border: '0.5px solid #E0E0E0', fontSize: 13, outline: 'none', background: '#F8F8F8' }} />
-              <button onClick={envoyerMessage} style={{ width: 38, height: 38, borderRadius: '50%', background: '#1B6B3A', border: 'none', color: '#fff', fontSize: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>↗</button>
+                style={{ flex: 1, padding: '9px 14px', borderRadius: 16, border: '0.5px solid var(--border)', fontSize: 13, outline: 'none', background: 'var(--surface-soft)' }} />
+              <button onClick={envoyerMessage} style={{ width: 38, height: 38, borderRadius: '50%', background: 'var(--green)', border: 'none', color: '#fff', fontSize: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>↗</button>
             </div>
           </div>
           <button onClick={passerCautionRequise}
-            style={{ width: '100%', background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+            style={{ width: '100%', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
             {t('reservationLocataire.etape4.procederCautionBouton')}
           </button>
         </div>
@@ -587,33 +587,33 @@ export default function ReservationLocataire() {
       {/* ═══ ÉTAPE 5 : CAUTION ══════════════════════════════════════ */}
       {statut === 'caution_requise' && (
         <div>
-          <div style={{ background: '#FFF3E0', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
-            <Lock size={16} strokeWidth={1.6} color="#E65100" />
-            <span style={{ fontSize: 12, color: '#E65100', lineHeight: 1.5 }}>
+          <div style={{ background: 'var(--warn-soft)', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
+            <Lock size={16} strokeWidth={1.6} color="var(--warn)" />
+            <span style={{ fontSize: 12, color: 'var(--warn)', lineHeight: 1.5 }}>
               {t('reservationLocataire.etape5.alerteInfo')}
             </span>
           </div>
-          <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-            <div style={{ background: '#F0FBF0', borderRadius: 12, padding: 14, marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+            <div style={{ background: 'var(--green-light)', borderRadius: 12, padding: 14, marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#1B6B3A' }}>{t('reservationLocataire.etape5.titreCaution')}</div>
-                <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{t('reservationLocataire.etape5.securiseeSurWerdhe')}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--green)' }}>{t('reservationLocataire.etape5.titreCaution')}</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{t('reservationLocataire.etape5.securiseeSurWerdhe')}</div>
               </div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: '#1B6B3A' }}>{GNF(loyer)}</div>
+              <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--green)' }}>{GNF(loyer)}</div>
             </div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 12 }}>{t('reservationLocataire.etape5.modePaiement')}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 12 }}>{t('reservationLocataire.etape5.modePaiement')}</div>
             {PAY_OPTS.map(function(p) {
               return (
                 <div key={p.id} onClick={function() { setPayMode(p.id); }}
-                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', border: payMode === p.id ? '2px solid #1B6B3A' : '0.5px solid #E0E0E0', background: payMode === p.id ? '#F0FBF0' : '#fff', borderRadius: 12, marginBottom: 8, cursor: 'pointer', transition: 'all .2s' }}>
-                  <div style={{ width: 40, height: 40, background: p.color || '#E8F5E9', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: p.icon ? 20 : 13, fontWeight: 700, color: p.textColor || '#1B6B3A', flexShrink: 0 }}>
-                    {p.icon ? <p.icon size={20} strokeWidth={1.6} color={p.textColor || '#1B6B3A'} /> : p.abbr}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', border: payMode === p.id ? '2px solid var(--green)' : '0.5px solid var(--border)', background: payMode === p.id ? 'var(--green-light)' : 'var(--bg-secondary)', borderRadius: 12, marginBottom: 8, cursor: 'pointer', transition: 'all .2s' }}>
+                  <div style={{ width: 40, height: 40, background: p.color || 'var(--green-light)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: p.icon ? 20 : 13, fontWeight: 700, color: p.textColor || 'var(--green)', flexShrink: 0 }}>
+                    {p.icon ? <p.icon size={20} strokeWidth={1.6} color={p.textColor || 'var(--green)'} /> : p.abbr}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#1B2B22' }}>{t('reservationLocataire.payOpts.' + p.labelKey + '.label')}</div>
-                    <div style={{ fontSize: 11, color: '#888' }}>{t('reservationLocataire.payOpts.' + p.labelKey + '.sub')}</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{t('reservationLocataire.payOpts.' + p.labelKey + '.label')}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{t('reservationLocataire.payOpts.' + p.labelKey + '.sub')}</div>
                   </div>
-                  <div style={{ width: 22, height: 22, borderRadius: '50%', border: payMode === p.id ? 'none' : '1.5px solid #E0E0E0', background: payMode === p.id ? '#1B6B3A' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 22, height: 22, borderRadius: '50%', border: payMode === p.id ? 'none' : '1.5px solid var(--border)', background: payMode === p.id ? 'var(--green)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {payMode === p.id && <Check size={13} strokeWidth={2.2} color="#fff" />}
                   </div>
                 </div>
@@ -621,7 +621,7 @@ export default function ReservationLocataire() {
             })}
           </div>
           <button onClick={payerCaution} disabled={payProcessing}
-            style={{ width: '100%', background: payProcessing ? '#999' : '#1B6B3A', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: payProcessing ? 'not-allowed' : 'pointer' }}>
+            style={{ width: '100%', background: payProcessing ? '#999' : 'var(--green)', color: '#fff', border: 'none', borderRadius: 12, padding: 14, fontSize: 15, fontWeight: 700, cursor: payProcessing ? 'not-allowed' : 'pointer' }}>
             {payProcessing ? t('reservationLocataire.etape5.traitementEnCours') : t('reservationLocataire.etape5.verserBouton', { montant: GNF(loyer) })}
           </button>
         </div>
@@ -635,11 +635,11 @@ export default function ReservationLocataire() {
             message={t('reservationLocataire.etape5b.message')}
             sub={t('reservationLocataire.etape5b.sub')}
           />
-          <div style={{ background: '#E8F5E9', borderRadius: 12, padding: 14, display: 'flex', gap: 8 }}>
-            <CheckCircle2 size={18} strokeWidth={1.6} color="#1B5E20" />
+          <div style={{ background: 'var(--green-light)', borderRadius: 12, padding: 14, display: 'flex', gap: 8 }}>
+            <CheckCircle2 size={18} strokeWidth={1.6} color="var(--green)" />
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B5E20' }}>{t('reservationLocataire.etape5b.cautionVersee', { montant: GNF(loyer) })}</div>
-              <div style={{ fontSize: 11, color: '#2E7D32', marginTop: 2 }}>{t('reservationLocataire.etape5b.protegeeJusqua')}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--green)' }}>{t('reservationLocataire.etape5b.cautionVersee', { montant: GNF(loyer) })}</div>
+              <div style={{ fontSize: 11, color: 'var(--green)', marginTop: 2 }}>{t('reservationLocataire.etape5b.protegeeJusqua')}</div>
             </div>
           </div>
         </div>
@@ -653,17 +653,17 @@ export default function ReservationLocataire() {
       )}
       {(statut === 'bail_en_cours' || statut === 'bail_signe_proprio') && acteBail === false && (
         <div>
-          <div style={{ background: '#F3E5F5', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
-            <FileSignature size={18} strokeWidth={1.6} color="#6A1B9A" />
+          <div style={{ background: 'var(--info-soft)', borderRadius: 12, padding: '12px 14px', marginBottom: 14, display: 'flex', gap: 8 }}>
+            <FileSignature size={18} strokeWidth={1.6} color="var(--info)" />
             <div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#6A1B9A' }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--info)' }}>
                 {statut === 'bail_signe_proprio' ? t('reservationLocataire.etape6.bannerSigneAttente') : t('reservationLocataire.etape6.bannerPret')}
               </div>
-              <div style={{ fontSize: 12, color: '#7B1FA2' }}>{t('reservationLocataire.etape6.lisezEtSignez')}</div>
+              <div style={{ fontSize: 12, color: 'var(--info)' }}>{t('reservationLocataire.etape6.lisezEtSignez')}</div>
             </div>
           </div>
-          <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-            <div style={{ background: '#F8F8F8', borderRadius: 10, padding: 10, marginBottom: 14, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+          <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+            <div style={{ background: 'var(--surface-soft)', borderRadius: 8, padding: 10, marginBottom: 14, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
               {[
                 [t('reservationLocataire.etape6.labels.logement'), logement && (logement.titre || logement.nom)],
                 [t('reservationLocataire.etape6.labels.loyer'), t('reservationLocataire.etape6.labels.loyerParMois', { montant: GNF(loyer) })],
@@ -676,34 +676,34 @@ export default function ReservationLocataire() {
               })}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
-              <div style={{ padding: 12, border: '0.5px solid #E0E0E0', borderRadius: 10, textAlign: 'center', background: statut === 'bail_signe_proprio' ? '#E8F5E9' : '#FAFAFA' }}>
-                <div style={{ fontSize: 11, color: '#888', marginBottom: 6 }}>{t('reservationLocataire.etape6.signatureProprietaire')}</div>
+              <div style={{ padding: 12, border: '0.5px solid var(--border)', borderRadius: 8, textAlign: 'center', background: statut === 'bail_signe_proprio' ? 'var(--green-light)' : 'var(--surface-soft)' }}>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 6 }}>{t('reservationLocataire.etape6.signatureProprietaire')}</div>
                 {statut === 'bail_signe_proprio' ? (
                   <>
-                    <div style={{ fontStyle: 'italic', color: '#1B6B3A', fontSize: 14, marginBottom: 4 }}>{t('reservationLocataire.etape6.signe')}</div>
-                    <div style={{ display: 'inline-block', padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: '#E8F5E9', color: '#1B5E20' }}>{t('reservationLocataire.etape6.signeBadge')}</div>
+                    <div style={{ fontStyle: 'italic', color: 'var(--green)', fontSize: 14, marginBottom: 4 }}>{t('reservationLocataire.etape6.signe')}</div>
+                    <div style={{ display: 'inline-block', padding: '3px 10px', borderRadius: 16, fontSize: 11, fontWeight: 600, background: 'var(--green-light)', color: 'var(--green)' }}>{t('reservationLocataire.etape6.signeBadge')}</div>
                   </>
                 ) : (
                   <>
                     <div style={{ fontSize: 20, marginBottom: 4 }}>⏳</div>
-                    <div style={{ fontSize: 11, color: '#888' }}>{t('reservationLocataire.etape6.enAttente')}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{t('reservationLocataire.etape6.enAttente')}</div>
                   </>
                 )}
               </div>
               <div onClick={function() { if (!signed && !signProcessing) setShowSignature(true); }}
-                style={{ padding: 12, border: signed ? '1.5px solid #1A4FA0' : '1.5px dashed #1A4FA0', background: signed ? '#E3F2FD' : '#F0F7FF', borderRadius: 10, textAlign: 'center', cursor: signed ? 'default' : 'pointer' }}>
-                <div style={{ fontSize: 11, color: '#888', marginBottom: 6 }}>{t('reservationLocataire.etape6.votreSignature')}</div>
+                style={{ padding: 12, border: signed ? '1.5px solid #1A4FA0' : '1.5px dashed #1A4FA0', background: signed ? 'var(--info-soft)' : '#F0F7FF', borderRadius: 8, textAlign: 'center', cursor: signed ? 'default' : 'pointer' }}>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 6 }}>{t('reservationLocataire.etape6.votreSignature')}</div>
                 {signed ? (
                   <>
-                    <div style={{ fontStyle: 'italic', color: '#1A4FA0', fontSize: 14, marginBottom: 4 }}>{t('reservationLocataire.etape6.signe')}</div>
-                    <div style={{ display: 'inline-block', padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 600, background: '#E3F2FD', color: '#0D47A1' }}>{t('reservationLocataire.etape6.signeBadge')}</div>
+                    <div style={{ fontStyle: 'italic', color: 'var(--green)', fontSize: 14, marginBottom: 4 }}>{t('reservationLocataire.etape6.signe')}</div>
+                    <div style={{ display: 'inline-block', padding: '3px 10px', borderRadius: 16, fontSize: 11, fontWeight: 600, background: 'var(--info-soft)', color: 'var(--info)' }}>{t('reservationLocataire.etape6.signeBadge')}</div>
                   </>
                 ) : signProcessing ? (
-                  <div style={{ fontSize: 13, color: '#1A4FA0' }}>{t('reservationLocataire.etape6.signatureEnCours')}</div>
+                  <div style={{ fontSize: 13, color: 'var(--green)' }}>{t('reservationLocataire.etape6.signatureEnCours')}</div>
                 ) : (
                   <>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}><PenLine size={22} strokeWidth={1.6} color="#1A4FA0" /></div>
-                    <div style={{ fontSize: 11, color: '#1A4FA0', marginTop: 4 }}>{t('reservationLocataire.etape6.appuyerPourSigner')}</div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}><PenLine size={22} strokeWidth={1.6} color="var(--green)" /></div>
+                    <div style={{ fontSize: 11, color: 'var(--green)', marginTop: 4 }}>{t('reservationLocataire.etape6.appuyerPourSigner')}</div>
                   </>
                 )}
               </div>
@@ -729,13 +729,13 @@ export default function ReservationLocataire() {
       {statut === 'confirmee' && (
         <div>
           <div style={{ textAlign: 'center', marginBottom: 20 }}>
-            <div style={{ width: 80, height: 80, background: '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
-              <KeyRound size={40} strokeWidth={1.5} color="#1B6B3A" />
+            <div style={{ width: 80, height: 80, background: 'var(--green-light)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
+              <KeyRound size={40} strokeWidth={1.5} color="var(--green)" />
             </div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: '#1B6B3A', marginBottom: 6 }}>{t('reservationLocataire.etape7.felicitations')}</div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--green)', marginBottom: 6 }}>{t('reservationLocataire.etape7.felicitations')}</div>
             <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6 }}>{t('reservationLocataire.etape7.acces')}</div>
           </div>
-          <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+          <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
             {[
               { icon: CheckCircle2, title: t('reservationLocataire.etape7.items.demandeAcceptee.titre'),   sub: t('reservationLocataire.etape7.items.demandeAcceptee.sub') },
               { icon: CheckCircle2, title: t('reservationLocataire.etape7.items.cautionEnregistree.titre'), sub: t('reservationLocataire.etape7.items.cautionEnregistree.sub', { montant: GNF(loyer) }) },
@@ -744,19 +744,19 @@ export default function ReservationLocataire() {
             ].map(function(item, i) {
               return (
                 <div key={i} style={{ display: 'flex', gap: 12, padding: '10px 0', borderBottom: i < 3 ? '0.5px solid #F5F5F5' : 'none' }}>
-                  <div style={{ width: 34, height: 34, background: item.highlight ? '#1B6B3A' : '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <item.icon size={16} strokeWidth={1.6} color={item.highlight ? '#fff' : '#1B6B3A'} />
+                  <div style={{ width: 34, height: 34, background: item.highlight ? 'var(--green)' : 'var(--green-light)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <item.icon size={16} strokeWidth={1.6} color={item.highlight ? '#fff' : 'var(--green)'} />
                   </div>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: item.highlight ? '#1B6B3A' : '#1B2B22' }}>{item.title}</div>
-                    <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{item.sub}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: item.highlight ? 'var(--green)' : 'var(--text-primary)' }}>{item.title}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{item.sub}</div>
                   </div>
                 </div>
               );
             })}
           </div>
-          <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginBottom: 14 }}>
-            <div style={{ fontSize: 12, color: '#1B5E20' }}>
+          <div style={{ background: 'var(--green-light)', borderRadius: 8, padding: '10px 14px', marginBottom: 14 }}>
+            <div style={{ fontSize: 12, color: 'var(--green)' }}>
               {t('reservationLocataire.etape7.premierLoyerAvant')}<b>{GNF(loyer)}</b>{t('reservationLocataire.etape7.premierLoyerApres')}
             </div>
           </div>
@@ -765,22 +765,22 @@ export default function ReservationLocataire() {
     localStorage.setItem('dashboardOnglet', '/dashboard/documents');
     navigate('/dashboard');
   }}
-    style={{ padding: 14, border: '0.5px solid #E0E0E0', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-    <FileText size={20} strokeWidth={1.6} color="#1B2B22" />
-    <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22' }}>{t('reservationLocataire.etape7.actions.documents')}</div>
+    style={{ padding: 14, border: '0.5px solid var(--border)', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: 'var(--bg-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+    <FileText size={20} strokeWidth={1.6} color="var(--text-primary)" />
+    <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>{t('reservationLocataire.etape7.actions.documents')}</div>
   </button>
   <button onClick={function() {
     localStorage.setItem('dashboardOnglet', '/dashboard/messages');
     navigate('/dashboard');
   }}
-    style={{ padding: 14, border: '0.5px solid #E0E0E0', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-    <MessageCircle size={20} strokeWidth={1.6} color="#1B2B22" />
-    <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22' }}>{t('reservationLocataire.etape7.actions.messages')}</div>
+    style={{ padding: 14, border: '0.5px solid var(--border)', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: 'var(--bg-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+    <MessageCircle size={20} strokeWidth={1.6} color="var(--text-primary)" />
+    <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>{t('reservationLocataire.etape7.actions.messages')}</div>
   </button>
   <button onClick={telechargerBailSigne}
-    style={{ padding: 14, border: '0.5px solid #E0E0E0', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-    <KeyRound size={20} strokeWidth={1.6} color="#1B2B22" />
-    <div style={{ fontSize: 12, fontWeight: 600, color: '#1B2B22' }}>{t('reservationLocataire.etape7.actions.bailPdf')}</div>
+    style={{ padding: 14, border: '0.5px solid var(--border)', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: 'var(--bg-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+    <KeyRound size={20} strokeWidth={1.6} color="var(--text-primary)" />
+    <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>{t('reservationLocataire.etape7.actions.bailPdf')}</div>
   </button>
 </div>
         </div>
@@ -788,8 +788,8 @@ export default function ReservationLocataire() {
 
       {/* Bouton noter le propriétaire */}
 {!noteEnvoyee && (
-  <div style={{ marginTop: 14, background: '#FFF8E1', borderRadius: 12, padding: 14 }}>
-    <div style={{ fontSize: 13, fontWeight: 700, color: '#7B4F00', marginBottom: 10 }}>
+  <div style={{ marginTop: 14, background: 'var(--warn-soft)', borderRadius: 12, padding: 14 }}>
+    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--warn)', marginBottom: 10 }}>
       {t('reservationLocataire.noter.titre')}
     </div>
     <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
@@ -806,9 +806,9 @@ export default function ReservationLocataire() {
       <div>
         <textarea value={commentaireNote} onChange={function(e) { setCommentaireNote(e.target.value); }}
           placeholder={t('reservationLocataire.noter.commentairePlaceholder')}
-          style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 60, fontFamily: 'var(--font-body)', boxSizing: 'border-box', outline: 'none', marginBottom: 8 }} />
+          style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '0.5px solid var(--border)', fontSize: 13, resize: 'none', height: 60, fontFamily: 'var(--font-body)', boxSizing: 'border-box', outline: 'none', marginBottom: 8 }} />
         <button onClick={envoyerNote}
-          style={{ width: '100%', background: '#F5A623', color: '#fff', border: 'none', borderRadius: 10, padding: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+          style={{ width: '100%', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 8, padding: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
           {t('reservationLocataire.noter.envoyerBouton', { note: noteSelectionnee })}
         </button>
       </div>
@@ -816,7 +816,7 @@ export default function ReservationLocataire() {
   </div>
 )}
 {noteEnvoyee && (
-  <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginTop: 14, fontSize: 13, color: '#1B5E20', fontWeight: 600 }}>
+  <div style={{ background: 'var(--green-light)', borderRadius: 8, padding: '10px 14px', marginTop: 14, fontSize: 13, color: 'var(--green)', fontWeight: 600 }}>
     {t('reservationLocataire.noter.merci')}
   </div>
 )}

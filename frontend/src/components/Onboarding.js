@@ -62,19 +62,19 @@ function OnboardingProprioAvance({ onTermine }) {
   if (quitter) {
     return (
       <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-        <div style={{ background: '#fff', borderRadius: 20, padding: '28px 24px', maxWidth: 340, width: '100%', textAlign: 'center' }}>
+        <div style={{ background: 'var(--bg-secondary)', borderRadius: 16, padding: '28px 24px', maxWidth: 340, width: '100%', textAlign: 'center' }}>
           <div style={{ fontSize: 40, marginBottom: 14 }}>🤔</div>
-          <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>{t('onboarding.passerTutoriel.titre')}</h3>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 10px' }}>{t('onboarding.passerTutoriel.titre')}</h3>
           <p style={{ fontSize: 14, color: '#666', margin: '0 0 24px', lineHeight: 1.6 }}>
             {t('onboarding.passerTutoriel.descProprio')}
           </p>
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={function() { setQuitter(false); }}
-              style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#1B2B22', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+              style={{ flex: 1, padding: '12px', borderRadius: 8, border: '1.5px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
               {t('onboarding.passerTutoriel.continuer')}
             </button>
             <button onClick={marquerTermine}
-              style={{ flex: 1, padding: '12px', borderRadius: 10, border: 'none', background: '#F5F5F5', color: '#888', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+              style={{ flex: 1, padding: '12px', borderRadius: 8, border: 'none', background: 'var(--surface-soft)', color: 'var(--text-muted)', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
               {t('onboarding.passerTutoriel.passerQuandMeme')}
             </button>
           </div>
@@ -85,11 +85,11 @@ function OnboardingProprioAvance({ onTermine }) {
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-      <div style={{ background: '#fff', borderRadius: 24, maxWidth: 520, width: '100%', overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
+      <div style={{ background: 'var(--bg-secondary)', borderRadius: 16, maxWidth: 520, width: '100%', overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
 
         {/* Barre de progression */}
-        <div style={{ background: '#F0F0F0', height: 4 }}>
-          <div style={{ background: '#1B6B3A', height: '100%', width: ((etape + 1) / TOTAL * 100) + '%', transition: 'width .4s ease' }} />
+        <div style={{ background: 'var(--bg-tertiary)', height: 4 }}>
+          <div style={{ background: 'var(--green)', height: '100%', width: ((etape + 1) / TOTAL * 100) + '%', transition: 'width .4s ease' }} />
         </div>
 
         {/* Header */}
@@ -112,14 +112,14 @@ function OnboardingProprioAvance({ onTermine }) {
         {/* ═══ ÉTAPE 0 — BIENVENUE ════════════════════════════════ */}
         {etape === 0 && (
           <div style={{ padding: '20px 28px 28px', textAlign: 'center' }}>
-            <div style={{ width: 90, height: 90, background: '#E8F5E9', borderRadius: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-              <Home size={48} strokeWidth={1} color="#1B6B3A" />
+            <div style={{ width: 90, height: 90, background: 'var(--green-light)', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <Home size={48} strokeWidth={1} color="var(--green)" />
             </div>
-            <h2 style={{ fontSize: 24, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px', lineHeight: 1.2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <h2 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 10px', lineHeight: 1.2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               <PartyPopper size={20} strokeWidth={1.5} />
               {t('onboarding.proprio.etape0.bienvenue', { prenom: user && user.prenom })}
             </h2>
-            <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, margin: '0 0 24px', maxWidth: 380, marginLeft: 'auto', marginRight: 'auto' }}>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, margin: '0 0 24px', maxWidth: 380, marginLeft: 'auto', marginRight: 'auto' }}>
               {t('onboarding.proprio.etape0.desc')}
             </p>
 
@@ -132,11 +132,11 @@ function OnboardingProprioAvance({ onTermine }) {
               ].map(function(item, i) {
                 var Icone = item.icon;
                 return (
-                  <div key={i} style={{ background: '#F7F8F7', borderRadius: 12, padding: '12px 14px', textAlign: 'left', display: 'flex', gap: 10, alignItems: 'center' }}>
-                    <Icone size={22} strokeWidth={1.5} color="#1B6B3A" />
+                  <div key={i} style={{ background: 'var(--surface-soft)', borderRadius: 12, padding: '12px 14px', textAlign: 'left', display: 'flex', gap: 10, alignItems: 'center' }}>
+                    <Icone size={22} strokeWidth={1.5} color="var(--green)" />
                     <div>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: '#1B2B22' }}>{item.titre}</div>
-                      <div style={{ fontSize: 11, color: '#888' }}>{item.desc}</div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>{item.titre}</div>
+                      <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{item.desc}</div>
                     </div>
                   </div>
                 );
@@ -144,7 +144,7 @@ function OnboardingProprioAvance({ onTermine }) {
             </div>
 
             <button onClick={suivant}
-              style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: 'var(--green)', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               {t('onboarding.proprio.etape0.commencerConfiguration')} <ChevronRight size={18} strokeWidth={2} />
             </button>
           </div>
@@ -153,8 +153,8 @@ function OnboardingProprioAvance({ onTermine }) {
         {/* ═══ ÉTAPE 1 — CHOISIR LE PLAN ════════════════════════ */}
         {etape === 1 && (
           <div style={{ padding: '20px 28px 28px' }}>
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 6px' }}>{t('onboarding.proprio.etape1.titre')}</h2>
-            <p style={{ fontSize: 13, color: '#888', margin: '0 0 18px' }}>{t('onboarding.proprio.etape1.desc')}</p>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 6px' }}>{t('onboarding.proprio.etape1.titre')}</h2>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: '0 0 18px' }}>{t('onboarding.proprio.etape1.desc')}</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
               {[
@@ -163,8 +163,8 @@ function OnboardingProprioAvance({ onTermine }) {
                   nom:   t('onboarding.proprio.etape1.gratuit.nom'),
                   prix:  t('onboarding.proprio.etape1.gratuit.prix'),
                   desc:  t('onboarding.proprio.etape1.gratuit.desc', limites),
-                  color: '#888',
-                  bg:    '#F5F5F5',
+                  color: 'var(--text-muted)',
+                  bg:    'var(--surface-soft)',
                   features: [t('onboarding.proprio.etape1.gratuit.feature1', limites), t('onboarding.proprio.etape1.gratuit.feature2'), t('onboarding.proprio.etape1.gratuit.feature3')],
                 },
                 {
@@ -172,8 +172,8 @@ function OnboardingProprioAvance({ onTermine }) {
                   nom:   t('onboarding.proprio.etape1.pro.nom'),
                   prix:  t('onboarding.proprio.etape1.pro.prix'),
                   desc:  t('onboarding.proprio.etape1.pro.desc', limites),
-                  color: '#1B6B3A',
-                  bg:    '#E8F5E9',
+                  color: 'var(--green)',
+                  bg:    'var(--green-light)',
                   badge: t('onboarding.proprio.etape1.pro.badge'),
                   features: [t('onboarding.proprio.etape1.pro.feature1', limites), t('onboarding.proprio.etape1.pro.feature2'), t('onboarding.proprio.etape1.pro.feature3'), t('onboarding.proprio.etape1.pro.feature4'), t('onboarding.proprio.etape1.pro.feature5')],
                 },
@@ -182,34 +182,34 @@ function OnboardingProprioAvance({ onTermine }) {
                   nom:   t('onboarding.proprio.etape1.agence.nom'),
                   prix:  t('onboarding.proprio.etape1.agence.prix'),
                   desc:  t('onboarding.proprio.etape1.agence.desc'),
-                  color: '#7B1FA2',
-                  bg:    '#F3E5F5',
+                  color: 'var(--info)',
+                  bg:    'var(--info-soft)',
                   features: [t('onboarding.proprio.etape1.agence.feature1'), t('onboarding.proprio.etape1.agence.feature2'), t('onboarding.proprio.etape1.agence.feature3'), t('onboarding.proprio.etape1.agence.feature4')],
                 },
               ].map(function(plan) {
                 var sel = planChoisi === plan.id;
                 return (
                   <div key={plan.id} onClick={function() { setPlanChoisi(plan.id); }}
-                    style={{ padding: '14px 16px', borderRadius: 14, border: sel ? '2px solid ' + plan.color : '1.5px solid #E0E0E0', background: sel ? plan.bg : '#fff', cursor: 'pointer', transition: 'all .2s', position: 'relative' }}>
+                    style={{ padding: '14px 16px', borderRadius: 12, border: sel ? '2px solid ' + plan.color : '1.5px solid #E0E0E0', background: sel ? plan.bg : 'var(--bg-secondary)', cursor: 'pointer', transition: 'all .2s', position: 'relative' }}>
                     {plan.badge && (
-                      <div style={{ position: 'absolute', top: -10, right: 14, background: plan.color, color: '#fff', borderRadius: 20, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>
+                      <div style={{ position: 'absolute', top: -10, right: 14, background: plan.color, color: '#fff', borderRadius: 16, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>
                         {plan.badge}
                       </div>
                     )}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                       <div>
-                        <span style={{ fontSize: 15, fontWeight: 800, color: '#1B2B22' }}>{plan.nom}</span>
-                        <span style={{ fontSize: 12, color: '#888', marginLeft: 8 }}>{plan.prix}</span>
+                        <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>{plan.nom}</span>
+                        <span style={{ fontSize: 12, color: 'var(--text-muted)', marginLeft: 8 }}>{plan.prix}</span>
                       </div>
                       <div style={{ width: 22, height: 22, borderRadius: '50%', background: sel ? plan.color : '#E0E0E0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all .2s' }}>
                         {sel && <Check size={13} color="#fff" strokeWidth={3} />}
                       </div>
                     </div>
-                    <div style={{ fontSize: 12, color: '#888', marginBottom: 8 }}>{plan.desc}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>{plan.desc}</div>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       {plan.features.map(function(f) {
                         return (
-                          <span key={f} style={{ background: sel ? plan.color + '20' : '#F5F5F5', color: sel ? plan.color : '#888', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 600 }}>
+                          <span key={f} style={{ background: sel ? plan.color + '20' : '#F5F5F5', color: sel ? plan.color : '#888', borderRadius: 16, padding: '2px 8px', fontSize: 11, fontWeight: 600 }}>
                             {f}
                           </span>
                         );
@@ -221,7 +221,7 @@ function OnboardingProprioAvance({ onTermine }) {
             </div>
 
             <button onClick={suivant}
-              style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: 'var(--green)', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               {planChoisi === 'gratuit' ? t('onboarding.proprio.etape1.continuerAvecGratuit') : planChoisi === 'pro' ? t('onboarding.proprio.etape1.continuerAvecPro') : t('onboarding.proprio.etape1.continuerAvecAgence')} <ChevronRight size={16} strokeWidth={2} />
             </button>
           </div>
@@ -230,16 +230,16 @@ function OnboardingProprioAvance({ onTermine }) {
         {/* ═══ ÉTAPE 2 — PREMIER BIEN ════════════════════════════ */}
         {etape === 2 && (
           <div style={{ padding: '20px 28px 28px', textAlign: 'center' }}>
-            <div style={{ width: 90, height: 90, background: '#E3F2FD', borderRadius: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px' }}>
-              <Building2 size={48} strokeWidth={1} color="#1565C0" />
+            <div style={{ width: 90, height: 90, background: 'var(--info-soft)', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 18px' }}>
+              <Building2 size={48} strokeWidth={1} color="var(--info)" />
             </div>
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>{t('onboarding.proprio.etape2.titre')}</h2>
-            <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, margin: '0 0 20px' }}>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 10px' }}>{t('onboarding.proprio.etape2.titre')}</h2>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, margin: '0 0 20px' }}>
               {t('onboarding.proprio.etape2.desc')}
             </p>
 
-            <div style={{ background: '#F7F8F7', borderRadius: 14, padding: '16px 18px', marginBottom: 20, textAlign: 'left' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 12 }}>{t('onboarding.proprio.etape2.ceQueVousDevezPreparer')}</div>
+            <div style={{ background: 'var(--surface-soft)', borderRadius: 12, padding: '16px 18px', marginBottom: 20, textAlign: 'left' }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 12 }}>{t('onboarding.proprio.etape2.ceQueVousDevezPreparer')}</div>
               {[
                 { icon: Camera, label: t('onboarding.proprio.etape2.photos') },
                 { icon: MapPin, label: t('onboarding.proprio.etape2.adresse') },
@@ -248,8 +248,8 @@ function OnboardingProprioAvance({ onTermine }) {
               ].map(function(item, i) {
                 var Icone = item.icon;
                 return (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, fontSize: 13, color: '#555' }}>
-                    <Icone size={18} strokeWidth={1.5} color="#1B6B3A" />
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, fontSize: 13, color: 'var(--text-secondary)' }}>
+                    <Icone size={18} strokeWidth={1.5} color="var(--green)" />
                     {item.label}
                   </div>
                 );
@@ -258,11 +258,11 @@ function OnboardingProprioAvance({ onTermine }) {
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               <button onClick={suivant}
-                style={{ padding: '12px', borderRadius: 12, border: '1.5px solid #E0E0E0', background: '#fff', color: '#555', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                style={{ padding: '12px', borderRadius: 12, border: '1.5px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text-secondary)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                 {t('onboarding.proprio.etape2.plusTard')}
               </button>
               <button onClick={function() { marquerTermine(); navigate('/logements/ajouter'); }}
-                style={{ padding: '12px', borderRadius: 12, border: 'none', background: '#1565C0', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                style={{ padding: '12px', borderRadius: 12, border: 'none', background: 'var(--green)', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                 <Home size={14} strokeWidth={2} /> {t('onboarding.proprio.etape2.ajouterMaintenant')}
               </button>
             </div>
@@ -272,25 +272,25 @@ function OnboardingProprioAvance({ onTermine }) {
         {/* ═══ ÉTAPE 3 — FONCTIONNALITÉS ═════════════════════════ */}
         {etape === 3 && (
           <div style={{ padding: '20px 28px 28px' }}>
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: '#1B2B22', margin: '0 0 6px' }}>{t('onboarding.proprio.etape3.titre')}</h2>
-            <p style={{ fontSize: 13, color: '#888', margin: '0 0 18px' }}>{t('onboarding.proprio.etape3.desc')}</p>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 6px' }}>{t('onboarding.proprio.etape3.titre')}</h2>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: '0 0 18px' }}>{t('onboarding.proprio.etape3.desc')}</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
               {[
-                { icon: <Bell size={20} strokeWidth={1.5} color="#E65100" />, bg: '#FFF3E0', titre: t('onboarding.proprio.etape3.alertesAuto.titre'), desc: t('onboarding.proprio.etape3.alertesAuto.desc') },
-                { icon: <FileText size={20} strokeWidth={1.5} color="#1B6B3A" />, bg: '#E8F5E9', titre: t('onboarding.proprio.etape3.documentsUnClic.titre'), desc: t('onboarding.proprio.etape3.documentsUnClic.desc') },
-                { icon: <TrendingUp size={20} strokeWidth={1.5} color="#1565C0" />, bg: '#E3F2FD', titre: t('onboarding.proprio.etape3.rapportsFinanciers.titre'), desc: t('onboarding.proprio.etape3.rapportsFinanciers.desc') },
-                { icon: <Shield size={20} strokeWidth={1.5} color="#7B1FA2" />, bg: '#F3E5F5', titre: t('onboarding.proprio.etape3.scoreConfiance.titre'), desc: t('onboarding.proprio.etape3.scoreConfiance.desc') },
-                { icon: <MessageCircle size={20} strokeWidth={1.5} color="#37474F" />, bg: '#ECEFF1', titre: t('onboarding.proprio.etape3.messagerieIntegree.titre'), desc: t('onboarding.proprio.etape3.messagerieIntegree.desc') },
+                { icon: <Bell size={20} strokeWidth={1.5} color="var(--warn)" />, bg: 'var(--warn-soft)', titre: t('onboarding.proprio.etape3.alertesAuto.titre'), desc: t('onboarding.proprio.etape3.alertesAuto.desc') },
+                { icon: <FileText size={20} strokeWidth={1.5} color="var(--green)" />, bg: 'var(--green-light)', titre: t('onboarding.proprio.etape3.documentsUnClic.titre'), desc: t('onboarding.proprio.etape3.documentsUnClic.desc') },
+                { icon: <TrendingUp size={20} strokeWidth={1.5} color="var(--info)" />, bg: 'var(--info-soft)', titre: t('onboarding.proprio.etape3.rapportsFinanciers.titre'), desc: t('onboarding.proprio.etape3.rapportsFinanciers.desc') },
+                { icon: <Shield size={20} strokeWidth={1.5} color="var(--info)" />, bg: 'var(--info-soft)', titre: t('onboarding.proprio.etape3.scoreConfiance.titre'), desc: t('onboarding.proprio.etape3.scoreConfiance.desc') },
+                { icon: <MessageCircle size={20} strokeWidth={1.5} color="var(--text-secondary)" />, bg: 'var(--bg-tertiary)', titre: t('onboarding.proprio.etape3.messagerieIntegree.titre'), desc: t('onboarding.proprio.etape3.messagerieIntegree.desc') },
               ].map(function(feat, i) {
                 return (
-                  <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '12px 14px', background: '#F7F8F7', borderRadius: 12 }}>
-                    <div style={{ width: 40, height: 40, background: feat.bg, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '12px 14px', background: 'var(--surface-soft)', borderRadius: 12 }}>
+                    <div style={{ width: 40, height: 40, background: feat.bg, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       {feat.icon}
                     </div>
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{feat.titre}</div>
-                      <div style={{ fontSize: 12, color: '#888', marginTop: 1 }}>{feat.desc}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{feat.titre}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 1 }}>{feat.desc}</div>
                     </div>
                   </div>
                 );
@@ -298,7 +298,7 @@ function OnboardingProprioAvance({ onTermine }) {
             </div>
 
             <button onClick={suivant}
-              style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              style={{ width: '100%', padding: '13px', borderRadius: 12, border: 'none', background: 'var(--green)', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               {t('onboarding.proprio.etape3.suivant')} <ChevronRight size={16} strokeWidth={2} />
             </button>
           </div>
@@ -307,19 +307,19 @@ function OnboardingProprioAvance({ onTermine }) {
         {/* ═══ ÉTAPE 4 — PRÊT ! ══════════════════════════════════ */}
         {etape === 4 && (
           <div style={{ padding: '20px 28px 28px', textAlign: 'center' }}>
-            <div style={{ width: 90, height: 90, background: '#E8F5E9', borderRadius: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-              <Star size={48} strokeWidth={1} color="#F5A623" fill="#F5A623" />
+            <div style={{ width: 90, height: 90, background: 'var(--green-light)', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <Star size={48} strokeWidth={1} color="var(--green)" fill="var(--green)" />
             </div>
-            <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               <Rocket size={20} strokeWidth={1.5} />
               {t('onboarding.proprio.etape4.titre')}
             </h2>
-            <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, margin: '0 0 24px' }}>
+            <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, margin: '0 0 24px' }}>
               {t('onboarding.proprio.etape4.desc')}
             </p>
 
-            <div style={{ background: '#F0FBF0', border: '1px solid #A5D6A7', borderRadius: 12, padding: '14px 18px', marginBottom: 24, textAlign: 'left' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B5E20', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ background: 'var(--green-light)', border: '1px solid var(--green-border)', borderRadius: 12, padding: '14px 18px', marginBottom: 24, textAlign: 'left' }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--green)', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
                 <ListChecks size={15} strokeWidth={2} />
                 {t('onboarding.proprio.etape4.checklist')}
               </div>
@@ -331,8 +331,8 @@ function OnboardingProprioAvance({ onTermine }) {
                 { label: t('onboarding.proprio.etape4.signerBail'),          fait: false },
               ].map(function(item, i) {
                 return (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, fontSize: 13, color: item.fait ? '#1B6B3A' : '#888' }}>
-                    <div style={{ width: 18, height: 18, borderRadius: '50%', background: item.fait ? '#1B6B3A' : '#E0E0E0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, fontSize: 13, color: item.fait ? 'var(--green)' : 'var(--text-muted)' }}>
+                    <div style={{ width: 18, height: 18, borderRadius: '50%', background: item.fait ? 'var(--green)' : 'var(--bg-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       {item.fait && <Check size={11} color="#fff" strokeWidth={3} />}
                     </div>
                     {item.label}
@@ -343,11 +343,11 @@ function OnboardingProprioAvance({ onTermine }) {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <button onClick={terminer}
-                style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 15, fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: 'var(--green)', color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                 <Home size={16} strokeWidth={2} /> {t('onboarding.proprio.etape4.ajouterMonPremierBien')} <ArrowRight size={16} strokeWidth={2.5} />
               </button>
               <button onClick={marquerTermine}
-                style={{ width: '100%', padding: '11px', borderRadius: 12, border: 'none', background: 'transparent', color: '#888', fontSize: 13, cursor: 'pointer' }}>
+                style={{ width: '100%', padding: '11px', borderRadius: 12, border: 'none', background: 'transparent', color: 'var(--text-muted)', fontSize: 13, cursor: 'pointer' }}>
                 {t('onboarding.proprio.etape4.explorerDashboard')}
               </button>
             </div>
@@ -358,7 +358,7 @@ function OnboardingProprioAvance({ onTermine }) {
         <div style={{ display: 'flex', justifyContent: 'center', gap: 6, paddingBottom: 16 }}>
           {Array.from({ length: TOTAL }).map(function(_, i) {
             return (
-              <div key={i} style={{ width: i === etape ? 20 : 7, height: 7, borderRadius: 4, background: i === etape ? '#1B6B3A' : '#E0E0E0', transition: 'all .3s' }} />
+              <div key={i} style={{ width: i === etape ? 20 : 7, height: 7, borderRadius: 4, background: i === etape ? 'var(--green)' : 'var(--bg-tertiary)', transition: 'all .3s' }} />
             );
           })}
         </div>
@@ -390,36 +390,36 @@ export default function Onboarding({ onTermine }) {
   // ─── LOCATAIRE (version simple) ──────────────────────────────
   var ETAPES_LOCATAIRE = [
     {
-      icon:    <Search size={52} strokeWidth={1} color="#1B6B3A" />,
+      icon:    <Search size={52} strokeWidth={1} color="var(--green)" />,
       titre:   t('onboarding.locataire.etape1.titre'),
       desc:    t('onboarding.locataire.etape1.desc'),
       cta:     t('onboarding.locataire.etape1.cta'),
-      couleur: '#1B6B3A',
-      bg:      '#E8F5E9',
+      couleur: 'var(--green)',
+      bg:      'var(--green-light)',
     },
     {
-      icon:    <CalendarCheck size={52} strokeWidth={1} color="#1565C0" />,
+      icon:    <CalendarCheck size={52} strokeWidth={1} color="var(--info)" />,
       titre:   t('onboarding.locataire.etape2.titre'),
       desc:    t('onboarding.locataire.etape2.desc'),
       cta:     t('onboarding.locataire.etape2.cta'),
-      couleur: '#1565C0',
-      bg:      '#E3F2FD',
+      couleur: 'var(--info)',
+      bg:      'var(--info-soft)',
     },
     {
-      icon:    <FileText size={52} strokeWidth={1} color="#7B1FA2" />,
+      icon:    <FileText size={52} strokeWidth={1} color="var(--info)" />,
       titre:   t('onboarding.locataire.etape3.titre'),
       desc:    t('onboarding.locataire.etape3.desc'),
       cta:     t('onboarding.locataire.etape3.cta'),
-      couleur: '#7B1FA2',
-      bg:      '#F3E5F5',
+      couleur: 'var(--info)',
+      bg:      'var(--info-soft)',
     },
     {
-      icon:    <Key size={52} strokeWidth={1} color="#1B6B3A" />,
+      icon:    <Key size={52} strokeWidth={1} color="var(--green)" />,
       titre:   t('onboarding.locataire.etape4.titre'),
       desc:    t('onboarding.locataire.etape4.desc'),
       cta:     t('onboarding.locataire.etape4.cta'),
-      couleur: '#1B6B3A',
-      bg:      '#E8F5E9',
+      couleur: 'var(--green)',
+      bg:      'var(--green-light)',
       dernier: true,
     },
   ];
@@ -439,17 +439,17 @@ export default function Onboarding({ onTermine }) {
   if (quitter) {
     return (
       <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-        <div style={{ background: '#fff', borderRadius: 20, padding: '28px 24px', maxWidth: 340, width: '100%', textAlign: 'center' }}>
+        <div style={{ background: 'var(--bg-secondary)', borderRadius: 16, padding: '28px 24px', maxWidth: 340, width: '100%', textAlign: 'center' }}>
           <div style={{ fontSize: 36, marginBottom: 14 }}>🤔</div>
-          <h3 style={{ fontSize: 18, fontWeight: 800, color: '#1B2B22', margin: '0 0 10px' }}>{t('onboarding.passerTutoriel.titre')}</h3>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 10px' }}>{t('onboarding.passerTutoriel.titre')}</h3>
           <p style={{ fontSize: 14, color: '#666', margin: '0 0 24px', lineHeight: 1.6 }}>{t('onboarding.passerTutoriel.descLocataire')}</p>
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={function() { setQuitter(false); }}
-              style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1.5px solid #E0E0E0', background: '#fff', color: '#1B2B22', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+              style={{ flex: 1, padding: '12px', borderRadius: 8, border: '1.5px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
               {t('onboarding.passerTutoriel.continuer')}
             </button>
             <button onClick={marquerTermine}
-              style={{ flex: 1, padding: '12px', borderRadius: 10, border: 'none', background: '#F5F5F5', color: '#888', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+              style={{ flex: 1, padding: '12px', borderRadius: 8, border: 'none', background: 'var(--surface-soft)', color: 'var(--text-muted)', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
               {t('onboarding.passerTutoriel.passerQuandMeme')}
             </button>
           </div>
@@ -460,8 +460,8 @@ export default function Onboarding({ onTermine }) {
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-      <div style={{ background: '#fff', borderRadius: 24, maxWidth: 440, width: '100%', overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.2)' }}>
-        <div style={{ background: '#F5F5F5', height: 4 }}>
+      <div style={{ background: 'var(--bg-secondary)', borderRadius: 16, maxWidth: 440, width: '100%', overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.2)' }}>
+        <div style={{ background: 'var(--surface-soft)', height: 4 }}>
           <div style={{ background: e.couleur, height: '100%', width: ((etape + 1) / etapes.length * 100) + '%', transition: 'width .4s ease' }} />
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px 0' }}>
@@ -472,14 +472,14 @@ export default function Onboarding({ onTermine }) {
           </button>
         </div>
         <div style={{ padding: '24px 28px 28px', textAlign: 'center' }}>
-          <div style={{ width: 96, height: 96, background: e.bg, borderRadius: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+          <div style={{ width: 96, height: 96, background: e.bg, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
             {e.icon}
           </div>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1B2B22', margin: '0 0 12px', lineHeight: 1.2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 12px', lineHeight: 1.2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
             {etape === 0 && <PartyPopper size={20} strokeWidth={1.5} />}
             {e.titre}
           </h2>
-          <p style={{ fontSize: 15, color: '#555', lineHeight: 1.7, margin: '0 0 28px' }}>{e.desc}</p>
+          <p style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.7, margin: '0 0 28px' }}>{e.desc}</p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginBottom: 20 }}>
             {etapes.map(function(_, i) {
               return <div key={i} style={{ width: i === etape ? 20 : 7, height: 7, borderRadius: 4, background: i === etape ? e.couleur : '#E0E0E0', transition: 'all .3s' }} />;
@@ -493,7 +493,7 @@ export default function Onboarding({ onTermine }) {
           </button>
           {etape === 0 && (
             <button onClick={function() { setQuitter(true); }}
-              style={{ width: '100%', marginTop: 10, padding: '10px', borderRadius: 10, border: 'none', background: 'transparent', color: '#aaa', fontSize: 13, cursor: 'pointer' }}>
+              style={{ width: '100%', marginTop: 10, padding: '10px', borderRadius: 8, border: 'none', background: 'transparent', color: '#aaa', fontSize: 13, cursor: 'pointer' }}>
               {t('onboarding.jeConnaisDejaWerdhe')}
             </button>
           )}

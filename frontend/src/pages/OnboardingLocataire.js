@@ -200,7 +200,7 @@ export default function OnboardingLocataire() {
           </div>
 
           <div style={{marginBottom:'14px'}}>
-            <div style={{fontSize:'12px', color:'#888', fontWeight:'500', marginBottom:'8px'}}>
+            <div style={{fontSize:'12px', color:'var(--text-muted)', fontWeight:'500', marginBottom:'8px'}}>
               {t('onboardingLocataire.etape2.equipementsSouhaites')}
             </div>
             <div className="auth-equip-tags">
@@ -257,18 +257,18 @@ export default function OnboardingLocataire() {
                     <div
                       className="auth-doc-item"
                       style={{
-                        borderColor: uploaded ? '#1B6B3A' : '#e0e0e0',
-                        background: uploaded ? '#f0f4fb' : '#fff',
+                        borderColor: uploaded ? 'var(--green)' : 'var(--border)',
+                        background: uploaded ? '#f0f4fb' : 'var(--bg-secondary)',
                         transition: 'all 0.2s'
                       }}
                     >
-                      <div className="auth-doc-icon" style={{background: uploaded ? '#E8F5E9' : '#f5f5f5'}}>
+                      <div className="auth-doc-icon" style={{background: uploaded ? 'var(--green-light)' : 'var(--surface-soft)'}}>
                         {uploaded ? (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="2.5" aria-hidden="true">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2.5" aria-hidden="true">
                             <polyline points="20 6 9 17 4 12"/>
                           </svg>
                         ) : (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2.5" aria-hidden="true">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2.5" aria-hidden="true">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                             <polyline points="14 2 14 8 20 8"/>
                             <line x1="12" y1="18" x2="12" y2="12"/>
@@ -277,7 +277,7 @@ export default function OnboardingLocataire() {
                         )}
                       </div>
                       <div style={{flex:1}}>
-                        <div className="auth-doc-title" style={{color: uploaded ? '#1B6B3A' : '#111'}}>
+                        <div className="auth-doc-title" style={{color: uploaded ? 'var(--green)' : '#111'}}>
                           {doc.titre}
                         </div>
                         <div className="auth-doc-desc">
@@ -290,10 +290,10 @@ export default function OnboardingLocataire() {
                         )}
                         <span style={{
                           fontSize:'11px',
-                          color: uploaded ? '#1B6B3A' : '#1B6B3A',
+                          color: uploaded ? 'var(--green)' : 'var(--green)',
                           fontWeight:'600',
-                          background: uploaded ? '#E8F5E9' : '#E8F5E9',
-                          borderRadius:'20px',
+                          background: uploaded ? 'var(--green-light)' : 'var(--green-light)',
+                          borderRadius: '16px',
                           padding:'2px 10px'
                         }}>
                           {uploaded ? t('onboardingLocataire.etape3.changer') : t('onboardingLocataire.etape3.cliquerPourAjouter')}
@@ -317,7 +317,7 @@ export default function OnboardingLocataire() {
           </div>
 
           {uploading && (
-            <div style={{textAlign:'center', fontSize:'12px', color:'#1B6B3A', marginBottom:'10px'}}>
+            <div style={{textAlign:'center', fontSize:'12px', color:'var(--green)', marginBottom:'10px'}}>
               {t('onboardingLocataire.etape3.chargement')}
             </div>
           )}
@@ -346,21 +346,21 @@ export default function OnboardingLocataire() {
         <Stepper />
         <div style={{textAlign:'center'}}>
           <div className="auth-success-icon blue" style={{margin:'0 auto 14px'}}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="3" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="3" aria-hidden="true">
               <polyline points="20 6 9 17 4 12"/>
             </svg>
           </div>
           <div style={{fontSize:'17px', fontWeight:'500', color:'#111', marginBottom:'6px'}}>
             {t('onboardingLocataire.etape4.titre')}
           </div>
-          <div style={{fontSize:'12px', color:'#888', marginBottom:'20px', lineHeight:'1.6'}}>
+          <div style={{fontSize:'12px', color:'var(--text-muted)', marginBottom:'20px', lineHeight:'1.6'}}>
             {t('onboardingLocataire.etape4.descConfigure')}
             {villeTexte && t('onboardingLocataire.etape4.descLogementsA', { ville: villeTexte })}
           </div>
           <div className="auth-quick-grid">
             <div className="auth-quick-action" onClick={function() { navigate('/logements'); }}>
               <div className="auth-quick-action-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="2" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2" aria-hidden="true">
                   <circle cx="11" cy="11" r="8"/>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                 </svg>
@@ -369,7 +369,7 @@ export default function OnboardingLocataire() {
             </div>
             <div className="auth-quick-action" onClick={function() { navigate('/dashboard'); }}>
               <div className="auth-quick-action-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B6B3A" strokeWidth="2" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2" aria-hidden="true">
                   <rect x="3" y="3" width="18" height="18" rx="2"/>
                   <path d="M3 9h18M9 21V9"/>
                 </svg>

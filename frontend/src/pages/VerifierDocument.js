@@ -23,7 +23,7 @@ export default function VerifierDocument() {
 
   var doc = etat.doc;
   var valide = doc && doc.integre !== false && !doc.annule;
-  var couleur = valide ? '#1B6B3A' : '#B3261E';
+  var couleur = valide ? 'var(--green)' : 'var(--danger)';
   var Icone = etat.introuvable ? FileX : (valide ? ShieldCheck : ShieldAlert);
 
   function dateFr(d) {
@@ -43,7 +43,7 @@ export default function VerifierDocument() {
     <div style={{ minHeight: '100vh', background: '#F2F6F3', fontFamily: 'var(--font-body)', padding: '32px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <SEO titre={t('verifierDocument.titre')} noIndex={true} />
       <div style={{ marginBottom: 24 }}><Logo size={36} showText={true} /></div>
-      <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 6px 24px rgba(10,30,18,.10)', padding: '28px 24px', width: '100%', maxWidth: 460 }}>
+      <div style={{ background: 'var(--bg-secondary)', borderRadius: 16, boxShadow: '0 6px 24px rgba(10,30,18,.10)', padding: '28px 24px', width: '100%', maxWidth: 460 }}>
         {etat.chargement && <p style={{ textAlign: 'center', color: '#6B766F' }}>{t('verifierDocument.chargement')}</p>}
 
         {etat.introuvable && (
@@ -62,7 +62,7 @@ export default function VerifierDocument() {
                 {doc.annule ? t('verifierDocument.annuleTexte', { date: dateFr(doc.annule_le) }) : (doc.integre === false ? t('verifierDocument.altere') : t('verifierDocument.authentique'))}
               </h1>
               {!doc.annule && (
-                <p style={{ color: '#55655B', fontSize: 14 }}>{doc.integre === false ? t('verifierDocument.alterTexte') : t('verifierDocument.authentiqueTexte')}</p>
+                <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>{doc.integre === false ? t('verifierDocument.alterTexte') : t('verifierDocument.authentiqueTexte')}</p>
               )}
             </div>
             {ligne(t('verifierDocument.numero'), doc.numero, true)}
@@ -72,7 +72,7 @@ export default function VerifierDocument() {
           </div>
         )}
       </div>
-      <Link to="/" style={{ marginTop: 20, color: '#1B6B3A', fontSize: 14, fontWeight: 600 }}>{t('verifierDocument.accueil')}</Link>
+      <Link to="/" style={{ marginTop: 20, color: 'var(--green)', fontSize: 14, fontWeight: 600 }}>{t('verifierDocument.accueil')}</Link>
     </div>
   );
 }

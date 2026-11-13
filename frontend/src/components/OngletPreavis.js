@@ -68,13 +68,13 @@ function PreavisLocataire() {
     toast.success(t('ongletPreavis.locataire.envoye.toastSucces'));
   }
 
-  if (loading) return <div style={{ padding: 40, textAlign: 'center', color: '#888' }}>{t('ongletPreavis.chargement')}</div>;
+  if (loading) return <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-muted)' }}>{t('ongletPreavis.chargement')}</div>;
 
   return (
     <div style={{ maxWidth: 560, margin: '0 auto' }}>
 
       {/* HEADER */}
-      <div style={{ background: '#37474F', borderRadius: 14, padding: '14px 18px', marginBottom: 18 }}>
+      <div style={{ background: '#37474F', borderRadius: 12, padding: '14px 18px', marginBottom: 18 }}>
         <div style={{ color: '#fff', fontWeight: 700, fontSize: 16, display: 'flex', alignItems: 'center', gap: 6 }}><ClipboardList size={16} strokeWidth={1.75} /> {t('ongletPreavis.locataire.header.titre')}</div>
         <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 }}>
           {reservation ? reservation.logement_titre : t('ongletPreavis.locataire.header.monLogement')}
@@ -83,14 +83,14 @@ function PreavisLocataire() {
 
       {step === 'sent' ? (
         /* ── ENVOYÉ ── */
-        <div style={{ background: '#fff', borderRadius: 14, padding: 24, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', textAlign: 'center' }}>
-          <div style={{ width: 72, height: 72, background: '#E8F5E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}><CheckCircle2 size={36} strokeWidth={1.5} color="#1B6B3A" /></div>
-          <div style={{ fontSize: 20, fontWeight: 700, color: '#1B6B3A', marginBottom: 8 }}>{t('ongletPreavis.locataire.envoye.titre')}</div>
+        <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 24, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', textAlign: 'center' }}>
+          <div style={{ width: 72, height: 72, background: 'var(--green-light)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}><CheckCircle2 size={36} strokeWidth={1.5} color="var(--green)" /></div>
+          <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--green)', marginBottom: 8 }}>{t('ongletPreavis.locataire.envoye.titre')}</div>
           <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6, marginBottom: 20 }}>
             {t('ongletPreavis.locataire.envoye.descAvant')}<b>48h</b>{t('ongletPreavis.locataire.envoye.descApres')}
           </div>
-          <div style={{ background: '#FFF8E1', borderRadius: 12, padding: 14, marginBottom: 16, textAlign: 'left' }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#7B4F00', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}><FileCheck size={14} strokeWidth={1.75} /> {t('ongletPreavis.locataire.envoye.recapTitre')}</div>
+          <div style={{ background: 'var(--warn-soft)', borderRadius: 12, padding: 14, marginBottom: 16, textAlign: 'left' }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--warn)', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}><FileCheck size={14} strokeWidth={1.75} /> {t('ongletPreavis.locataire.envoye.recapTitre')}</div>
             {[
               [t('ongletPreavis.locataire.envoye.labels.logement'), reservation ? reservation.logement_titre : t('ongletPreavis.na')],
               [t('ongletPreavis.locataire.envoye.labels.motif'), motif],
@@ -99,33 +99,33 @@ function PreavisLocataire() {
               [t('ongletPreavis.locataire.envoye.labels.statut'), t('ongletPreavis.locataire.envoye.statutEnAttenteConfirmation')],
             ].map(function(row) {
               return (
-                <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '5px 0', borderBottom: '0.5px solid #FFE082', flexWrap: 'wrap', gap: 4 }}>
-                  <span style={{ color: '#888' }}>{row[0]}</span>
-                  <span style={{ fontWeight: 600, color: '#7B4F00', textAlign: 'right', maxWidth: '55%' }}>{row[1]}</span>
+                <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '5px 0', borderBottom: '0.5px solid var(--warn)', flexWrap: 'wrap', gap: 4 }}>
+                  <span style={{ color: 'var(--text-muted)' }}>{row[0]}</span>
+                  <span style={{ fontWeight: 600, color: 'var(--warn)', textAlign: 'right', maxWidth: '55%' }}>{row[1]}</span>
                 </div>
               );
             })}
           </div>
-          <div style={{ background: '#E8F5E9', borderRadius: 10, padding: 12, marginBottom: 16, textAlign: 'left', display: 'flex', gap: 8 }}>
-            <Info size={14} strokeWidth={1.75} color="#1B5E20" style={{ flexShrink: 0, marginTop: 1 }} />
-            <div style={{ fontSize: 12, color: '#1B5E20', lineHeight: 1.6 }}>
+          <div style={{ background: 'var(--green-light)', borderRadius: 8, padding: 12, marginBottom: 16, textAlign: 'left', display: 'flex', gap: 8 }}>
+            <Info size={14} strokeWidth={1.75} color="var(--green)" style={{ flexShrink: 0, marginTop: 1 }} />
+            <div style={{ fontSize: 12, color: 'var(--green)', lineHeight: 1.6 }}>
               {t('ongletPreavis.locataire.envoye.infoContinuerPaiement')}
             </div>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
-            <button style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 11, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><MessageCircle size={13} strokeWidth={1.75} /> {t('ongletPreavis.locataire.envoye.contacterProprio')}</button>
-            <button style={{ flex: 1, background: '#1B6B3A', color: '#fff', border: 'none', borderRadius: 10, padding: 11, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><FileDown size={13} strokeWidth={1.75} /> {t('ongletPreavis.telechargerPdf')}</button>
+            <button style={{ flex: 1, background: 'var(--bg-tertiary)', color: 'var(--text-secondary)', border: 'none', borderRadius: 8, padding: 11, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><MessageCircle size={13} strokeWidth={1.75} /> {t('ongletPreavis.locataire.envoye.contacterProprio')}</button>
+            <button style={{ flex: 1, background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 8, padding: 11, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><FileDown size={13} strokeWidth={1.75} /> {t('ongletPreavis.telechargerPdf')}</button>
           </div>
         </div>
       ) : step === 'confirm' ? (
         /* ── CONFIRMATION AVANT ENVOI ── */
-        <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}><AlertTriangle size={15} strokeWidth={1.75} /> {t('ongletPreavis.confirmerEnvoiTitre')}</div>
-          <div style={{ background: '#FFEBEE', borderRadius: 10, padding: 14, marginBottom: 16 }}>
-            <div style={{ fontSize: 13, color: '#B71C1C', fontWeight: 600, marginBottom: 4 }}>{t('ongletPreavis.locataire.confirm.actionOfficielle')}</div>
-            <div style={{ fontSize: 12, color: '#C62828', lineHeight: 1.6 }}>{t('ongletPreavis.locataire.confirm.description')}</div>
+        <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}><AlertTriangle size={15} strokeWidth={1.75} /> {t('ongletPreavis.confirmerEnvoiTitre')}</div>
+          <div style={{ background: 'var(--danger-soft)', borderRadius: 8, padding: 14, marginBottom: 16 }}>
+            <div style={{ fontSize: 13, color: 'var(--danger)', fontWeight: 600, marginBottom: 4 }}>{t('ongletPreavis.locataire.confirm.actionOfficielle')}</div>
+            <div style={{ fontSize: 12, color: 'var(--danger)', lineHeight: 1.6 }}>{t('ongletPreavis.locataire.confirm.description')}</div>
           </div>
-          <div style={{ background: '#F8F8F8', borderRadius: 10, padding: 14, marginBottom: 16 }}>
+          <div style={{ background: 'var(--surface-soft)', borderRadius: 8, padding: 14, marginBottom: 16 }}>
             {[
               [t('ongletPreavis.locataire.confirm.labels.logement'), reservation ? reservation.logement_titre : t('ongletPreavis.na')],
               [t('ongletPreavis.locataire.confirm.labels.motif'), motif],
@@ -134,46 +134,46 @@ function PreavisLocataire() {
               [t('ongletPreavis.locataire.confirm.labels.note'), note || t('ongletPreavis.aucuneNote')],
             ].map(function(row) {
               return (
-                <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '6px 0', borderBottom: '0.5px solid #EFEFEF', flexWrap: 'wrap', gap: 4 }}>
-                  <span style={{ color: '#888' }}>{row[0]}</span>
-                  <span style={{ fontWeight: 600, color: '#333', maxWidth: '60%', textAlign: 'right' }}>{row[1]}</span>
+                <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '6px 0', borderBottom: '0.5px solid var(--border)', flexWrap: 'wrap', gap: 4 }}>
+                  <span style={{ color: 'var(--text-muted)' }}>{row[0]}</span>
+                  <span style={{ fontWeight: 600, color: 'var(--text-primary)', maxWidth: '60%', textAlign: 'right' }}>{row[1]}</span>
                 </div>
               );
             })}
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={function() { setStep('form'); }}
-              style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer' }}>{t('ongletPreavis.modifier')}</button>
+              style={{ flex: 1, background: 'var(--bg-tertiary)', color: 'var(--text-secondary)', border: 'none', borderRadius: 8, padding: 12, fontSize: 13, cursor: 'pointer' }}>{t('ongletPreavis.modifier')}</button>
             <button onClick={envoyer}
-              style={{ flex: 2, background: '#37474F', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Send size={14} strokeWidth={1.75} /> {t('ongletPreavis.locataire.confirm.envoyerLePreavis')}</button>
+              style={{ flex: 2, background: '#37474F', color: '#fff', border: 'none', borderRadius: 8, padding: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Send size={14} strokeWidth={1.75} /> {t('ongletPreavis.locataire.confirm.envoyerLePreavis')}</button>
           </div>
         </div>
       ) : (
         /* ── FORMULAIRE ── */
         <div>
           {/* Alerte légale */}
-          <div style={{ background: '#FFF8E1', borderRadius: 12, padding: '12px 14px', marginBottom: 16, display: 'flex', gap: 8 }}>
+          <div style={{ background: 'var(--warn-soft)', borderRadius: 12, padding: '12px 14px', marginBottom: 16, display: 'flex', gap: 8 }}>
             <Scale size={16} strokeWidth={1.5} />
-            <span style={{ fontSize: 12, color: '#7B4F00', lineHeight: 1.6 }}>
+            <span style={{ fontSize: 12, color: 'var(--warn)', lineHeight: 1.6 }}>
               {t('ongletPreavis.locataire.form.alerteLegaleAvant')}<b>{t('ongletPreavis.locataire.form.alerteLegaleGras')}</b>{t('ongletPreavis.locataire.form.alerteLegaleApres')}
             </span>
           </div>
 
-          <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+          <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, marginBottom: 14, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
 
             {/* MOTIF */}
             <div style={{ marginBottom: 18 }}>
-              <div style={{ fontSize: 13, color: '#1B2B22', marginBottom: 10, fontWeight: 700 }}>{t('ongletPreavis.locataire.form.motifLabel')}</div>
+              <div style={{ fontSize: 13, color: 'var(--text-primary)', marginBottom: 10, fontWeight: 700 }}>{t('ongletPreavis.locataire.form.motifLabel')}</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {MOTIFS_LOCATAIRE.map(function(opt) {
                   var m = opt.value;
                   return (
                     <div key={m} onClick={function() { setMotif(m); }}
-                      style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', border: motif === m ? '1.5px solid #37474F' : '0.5px solid #E0E0E0', background: motif === m ? '#F5F5F5' : '#FAFAFA', borderRadius: 10, cursor: 'pointer' }}>
+                      style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', border: motif === m ? '1.5px solid #37474F' : '0.5px solid var(--border)', background: motif === m ? 'var(--surface-soft)' : 'var(--surface-soft)', borderRadius: 8, cursor: 'pointer' }}>
                       <div style={{ width: 18, height: 18, borderRadius: '50%', border: motif === m ? 'none' : '1.5px solid #CCC', background: motif === m ? '#37474F' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                         {motif === m && <Check size={12} strokeWidth={2.2} color="#fff" />}
                       </div>
-                      <span style={{ fontSize: 13, color: motif === m ? '#263238' : '#555' }}>{t('ongletPreavis.motifsLocataire.' + opt.key)}</span>
+                      <span style={{ fontSize: 13, color: motif === m ? '#263238' : 'var(--text-secondary)' }}>{t('ongletPreavis.motifsLocataire.' + opt.key)}</span>
                     </div>
                   );
                 })}
@@ -182,31 +182,31 @@ function PreavisLocataire() {
 
             {/* DÉLAI */}
             <div style={{ marginBottom: 18 }}>
-              <div style={{ fontSize: 13, color: '#1B2B22', marginBottom: 10, fontWeight: 700 }}>{t('ongletPreavis.locataire.form.delaiLabel')}</div>
+              <div style={{ fontSize: 13, color: 'var(--text-primary)', marginBottom: 10, fontWeight: 700 }}>{t('ongletPreavis.locataire.form.delaiLabel')}</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                 {['1', '2', '3'].map(function(n) {
                   return (
                     <button key={n} onClick={function() { setDelai(n); }}
-                      style={{ padding: 10, borderRadius: 10, border: delai === n ? '2px solid #37474F' : '0.5px solid #E0E0E0', background: delai === n ? '#ECEFF1' : '#FAFAFA', color: delai === n ? '#263238' : '#555', fontSize: 13, fontWeight: delai === n ? 700 : 400, cursor: 'pointer' }}>
+                      style={{ padding: 10, borderRadius: 8, border: delai === n ? '2px solid #37474F' : '0.5px solid var(--border)', background: delai === n ? 'var(--bg-tertiary)' : 'var(--surface-soft)', color: delai === n ? '#263238' : 'var(--text-secondary)', fontSize: 13, fontWeight: delai === n ? 700 : 400, cursor: 'pointer' }}>
                       {t('ongletPreavis.delaiMois', { n: n })}
                     </button>
                   );
                 })}
               </div>
               {delai && (
-                <div style={{ background: '#ECEFF1', borderRadius: 10, padding: '10px 14px', marginTop: 10, display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ background: 'var(--bg-tertiary)', borderRadius: 8, padding: '10px 14px', marginTop: 10, display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ fontSize: 12, color: '#546E7A', display: 'flex', alignItems: 'center', gap: 4 }}><CalendarDays size={12} strokeWidth={1.75} /> {t('ongletPreavis.locataire.form.dateDepartEstimeeLabel')}</span>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: '#37474F' }}>{addDays(parseInt(delai) * 30)}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)' }}>{addDays(parseInt(delai) * 30)}</span>
                 </div>
               )}
             </div>
 
             {/* NOTE */}
             <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 13, color: '#1B2B22', marginBottom: 8, fontWeight: 700 }}>{t('ongletPreavis.locataire.form.messageLabel')}</div>
+              <div style={{ fontSize: 13, color: 'var(--text-primary)', marginBottom: 8, fontWeight: 700 }}>{t('ongletPreavis.locataire.form.messageLabel')}</div>
               <textarea value={note} onChange={function(e) { setNote(e.target.value); }}
                 placeholder={t('ongletPreavis.locataire.form.messagePlaceholder')}
-                style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 80, fontFamily: 'var(--font-body)', boxSizing: 'border-box', outline: 'none' }} />
+                style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '0.5px solid var(--border)', fontSize: 13, resize: 'none', height: 80, fontFamily: 'var(--font-body)', boxSizing: 'border-box', outline: 'none' }} />
             </div>
 
             <button onClick={function() { if (motif && delai) setStep('confirm'); else toast.error(t('ongletPreavis.locataire.form.erreurSelection')); }}
@@ -214,7 +214,7 @@ function PreavisLocataire() {
               <ClipboardList size={14} strokeWidth={1.75} /> {t('ongletPreavis.locataire.form.preparerBouton')}
             </button>
             {(!motif || !delai) && (
-              <div style={{ fontSize: 11, color: '#B71C1C', textAlign: 'center', marginTop: 6 }}>{t('ongletPreavis.locataire.form.erreurSelectionContinuer')}</div>
+              <div style={{ fontSize: 11, color: 'var(--danger)', textAlign: 'center', marginTop: 6 }}>{t('ongletPreavis.locataire.form.erreurSelectionContinuer')}</div>
             )}
           </div>
         </div>
@@ -281,27 +281,27 @@ function PreavisProprio() {
     toast.success(t('ongletPreavis.proprio.envoye.toastSucces', { locataire: (bien && bien.locataire) }));
   }
 
-  if (loading) return <div style={{ padding: 40, textAlign: 'center', color: '#888' }}>{t('ongletPreavis.chargement')}</div>;
+  if (loading) return <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-muted)' }}>{t('ongletPreavis.chargement')}</div>;
 
   return (
     <div style={{ maxWidth: 560, margin: '0 auto' }}>
 
       {/* HEADER */}
-      <div style={{ background: '#C62828', borderRadius: 14, padding: '14px 18px', marginBottom: 18 }}>
+      <div style={{ background: 'var(--danger)', borderRadius: 12, padding: '14px 18px', marginBottom: 18 }}>
         <div style={{ color: '#fff', fontWeight: 700, fontSize: 16, display: 'flex', alignItems: 'center', gap: 6 }}><ClipboardList size={16} strokeWidth={1.75} /> {t('ongletPreavis.proprio.header.titre')}</div>
         <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 }}>{t('ongletPreavis.proprio.header.sousTitre')}</div>
       </div>
 
       {step === 'sent' ? (
         /* ── ENVOYÉ ── */
-        <div style={{ background: '#fff', borderRadius: 14, padding: 24, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', textAlign: 'center' }}>
-          <div style={{ width: 72, height: 72, background: '#FFF8E1', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}><Send size={32} strokeWidth={1.5} color="#E65100" /></div>
-          <div style={{ fontSize: 20, fontWeight: 700, color: '#C62828', marginBottom: 8 }}>{t('ongletPreavis.proprio.envoye.titre')}</div>
+        <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 24, boxShadow: '0 2px 10px rgba(0,0,0,0.06)', textAlign: 'center' }}>
+          <div style={{ width: 72, height: 72, background: 'var(--warn-soft)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}><Send size={32} strokeWidth={1.5} color="var(--warn)" /></div>
+          <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--danger)', marginBottom: 8 }}>{t('ongletPreavis.proprio.envoye.titre')}</div>
           <div style={{ fontSize: 13, color: '#666', lineHeight: 1.6, marginBottom: 20 }}>
             <b>{bien && bien.locataire}</b> {t('ongletPreavis.proprio.envoye.descMid')}<b>48h</b>{t('ongletPreavis.proprio.envoye.descApres')}
           </div>
-          <div style={{ background: '#FFF8E1', borderRadius: 12, padding: 14, marginBottom: 16, textAlign: 'left' }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#7B4F00', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}><FileCheck size={14} strokeWidth={1.75} /> {t('ongletPreavis.proprio.envoye.recapTitre')}</div>
+          <div style={{ background: 'var(--warn-soft)', borderRadius: 12, padding: 14, marginBottom: 16, textAlign: 'left' }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--warn)', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}><FileCheck size={14} strokeWidth={1.75} /> {t('ongletPreavis.proprio.envoye.recapTitre')}</div>
             {[
               [t('ongletPreavis.proprio.envoye.labels.bien'), bien && bien.nom],
               [t('ongletPreavis.proprio.envoye.labels.locataireNotifie'), bien && bien.locataire],
@@ -312,33 +312,33 @@ function PreavisProprio() {
               [t('ongletPreavis.proprio.envoye.labels.statut'), t('ongletPreavis.proprio.envoye.statutEnAttente')],
             ].map(function(row) {
               return (
-                <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '5px 0', borderBottom: '0.5px solid #FFE082', flexWrap: 'wrap', gap: 4 }}>
-                  <span style={{ color: '#888' }}>{row[0]}</span>
-                  <span style={{ fontWeight: 600, color: '#7B4F00', textAlign: 'right', maxWidth: '55%' }}>{row[1]}</span>
+                <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '5px 0', borderBottom: '0.5px solid var(--warn)', flexWrap: 'wrap', gap: 4 }}>
+                  <span style={{ color: 'var(--text-muted)' }}>{row[0]}</span>
+                  <span style={{ fontWeight: 600, color: 'var(--warn)', textAlign: 'right', maxWidth: '55%' }}>{row[1]}</span>
                 </div>
               );
             })}
           </div>
-          <div style={{ background: '#E8F5E9', borderRadius: 10, padding: 12, marginBottom: 16, textAlign: 'left', display: 'flex', gap: 8 }}>
-            <Info size={14} strokeWidth={1.75} color="#1B5E20" style={{ flexShrink: 0, marginTop: 1 }} />
-            <div style={{ fontSize: 12, color: '#1B5E20', lineHeight: 1.6 }}>
+          <div style={{ background: 'var(--green-light)', borderRadius: 8, padding: 12, marginBottom: 16, textAlign: 'left', display: 'flex', gap: 8 }}>
+            <Info size={14} strokeWidth={1.75} color="var(--green)" style={{ flexShrink: 0, marginTop: 1 }} />
+            <div style={{ fontSize: 12, color: 'var(--green)', lineHeight: 1.6 }}>
               {t('ongletPreavis.proprio.envoye.infoAvant')}<b>{t('ongletPreavis.delaiMois', { n: delai })}</b>.
             </div>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
-            <button style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 11, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><MessageCircle size={13} strokeWidth={1.75} /> {t('ongletPreavis.proprio.envoye.contacterLocataire')}</button>
-            <button style={{ flex: 1, background: '#C62828', color: '#fff', border: 'none', borderRadius: 10, padding: 11, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><FileDown size={13} strokeWidth={1.75} /> {t('ongletPreavis.telechargerPdf')}</button>
+            <button style={{ flex: 1, background: 'var(--bg-tertiary)', color: 'var(--text-secondary)', border: 'none', borderRadius: 8, padding: 11, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><MessageCircle size={13} strokeWidth={1.75} /> {t('ongletPreavis.proprio.envoye.contacterLocataire')}</button>
+            <button style={{ flex: 1, background: 'var(--danger)', color: '#fff', border: 'none', borderRadius: 8, padding: 11, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><FileDown size={13} strokeWidth={1.75} /> {t('ongletPreavis.telechargerPdf')}</button>
           </div>
         </div>
       ) : step === 'confirm' ? (
         /* ── DOUBLE CONFIRMATION ── */
-        <div style={{ background: '#fff', borderRadius: 14, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#1B2B22', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}><AlertTriangle size={15} strokeWidth={1.75} /> {t('ongletPreavis.confirmerEnvoiTitre')}</div>
-          <div style={{ background: '#FFEBEE', borderRadius: 10, padding: 14, marginBottom: 16 }}>
-            <div style={{ fontSize: 13, color: '#B71C1C', fontWeight: 600, marginBottom: 4 }}>{t('ongletPreavis.proprio.confirm.actionOfficielleIrreversible')}</div>
-            <div style={{ fontSize: 12, color: '#C62828', lineHeight: 1.6 }}>{t('ongletPreavis.proprio.confirm.descAvant')}<b>{bien && bien.locataire}</b>{t('ongletPreavis.proprio.confirm.descApres')}</div>
+        <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}><AlertTriangle size={15} strokeWidth={1.75} /> {t('ongletPreavis.confirmerEnvoiTitre')}</div>
+          <div style={{ background: 'var(--danger-soft)', borderRadius: 8, padding: 14, marginBottom: 16 }}>
+            <div style={{ fontSize: 13, color: 'var(--danger)', fontWeight: 600, marginBottom: 4 }}>{t('ongletPreavis.proprio.confirm.actionOfficielleIrreversible')}</div>
+            <div style={{ fontSize: 12, color: 'var(--danger)', lineHeight: 1.6 }}>{t('ongletPreavis.proprio.confirm.descAvant')}<b>{bien && bien.locataire}</b>{t('ongletPreavis.proprio.confirm.descApres')}</div>
           </div>
-          <div style={{ background: '#F8F8F8', borderRadius: 10, padding: 14, marginBottom: 16 }}>
+          <div style={{ background: 'var(--surface-soft)', borderRadius: 8, padding: 14, marginBottom: 16 }}>
             {[
               [t('ongletPreavis.proprio.confirm.labels.bien'), bien && bien.nom],
               [t('ongletPreavis.proprio.confirm.labels.locataire'), bien && bien.locataire],
@@ -348,66 +348,66 @@ function PreavisProprio() {
               [t('ongletPreavis.proprio.confirm.labels.note'), note || t('ongletPreavis.aucuneNote')],
             ].map(function(row) {
               return (
-                <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '6px 0', borderBottom: '0.5px solid #EFEFEF', flexWrap: 'wrap', gap: 4 }}>
-                  <span style={{ color: '#888' }}>{row[0]}</span>
-                  <span style={{ fontWeight: 600, color: '#333', maxWidth: '60%', textAlign: 'right' }}>{row[1]}</span>
+                <div key={row[0]} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '6px 0', borderBottom: '0.5px solid var(--border)', flexWrap: 'wrap', gap: 4 }}>
+                  <span style={{ color: 'var(--text-muted)' }}>{row[0]}</span>
+                  <span style={{ fontWeight: 600, color: 'var(--text-primary)', maxWidth: '60%', textAlign: 'right' }}>{row[1]}</span>
                 </div>
               );
             })}
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={function() { setStep('form'); }}
-              style={{ flex: 1, background: '#F0F0F0', color: '#555', border: 'none', borderRadius: 10, padding: 12, fontSize: 13, cursor: 'pointer' }}>{t('ongletPreavis.modifier')}</button>
+              style={{ flex: 1, background: 'var(--bg-tertiary)', color: 'var(--text-secondary)', border: 'none', borderRadius: 8, padding: 12, fontSize: 13, cursor: 'pointer' }}>{t('ongletPreavis.modifier')}</button>
             <button onClick={envoyer}
-              style={{ flex: 2, background: '#C62828', color: '#fff', border: 'none', borderRadius: 10, padding: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Send size={14} strokeWidth={1.75} /> {t('ongletPreavis.proprio.confirm.envoyerOfficiel')}</button>
+              style={{ flex: 2, background: 'var(--danger)', color: '#fff', border: 'none', borderRadius: 8, padding: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Send size={14} strokeWidth={1.75} /> {t('ongletPreavis.proprio.confirm.envoyerOfficiel')}</button>
           </div>
         </div>
       ) : (
         /* ── FORMULAIRE ── */
         <div>
-          <div style={{ background: '#FFF8E1', borderRadius: 12, padding: '12px 14px', marginBottom: 16, display: 'flex', gap: 8 }}>
+          <div style={{ background: 'var(--warn-soft)', borderRadius: 12, padding: '12px 14px', marginBottom: 16, display: 'flex', gap: 8 }}>
             <Scale size={16} strokeWidth={1.5} />
-            <span style={{ fontSize: 12, color: '#7B4F00', lineHeight: 1.6 }}>{t('ongletPreavis.proprio.form.alerteInfo')}</span>
+            <span style={{ fontSize: 12, color: 'var(--warn)', lineHeight: 1.6 }}>{t('ongletPreavis.proprio.form.alerteInfo')}</span>
           </div>
 
-          <div style={{ background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+          <div style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, marginBottom: 14, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
 
             {/* SÉLECTION BIEN */}
             <div style={{ marginBottom: 18 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>{t('ongletPreavis.proprio.form.bienLabel')}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10 }}>{t('ongletPreavis.proprio.form.bienLabel')}</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {biens.filter(function(b) { return !b.preavis; }).map(function(b) {
                   return (
                     <div key={b.id} onClick={function() { setBien(b); }}
-                      style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 12px', border: bien && bien.id === b.id ? '2px solid #C62828' : '0.5px solid #E0E0E0', background: bien && bien.id === b.id ? '#FFEBEE' : '#FAFAFA', borderRadius: 10, cursor: 'pointer' }}>
-                      <b.icon size={20} strokeWidth={1.6} color="#555" />
+                      style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 12px', border: bien && bien.id === b.id ? '2px solid var(--danger)' : '0.5px solid var(--border)', background: bien && bien.id === b.id ? 'var(--danger-soft)' : 'var(--surface-soft)', borderRadius: 8, cursor: 'pointer' }}>
+                      <b.icon size={20} strokeWidth={1.6} color="var(--text-secondary)" />
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: '#1B2B22' }}>{b.nom}</div>
-                        <div style={{ fontSize: 11, color: '#888' }}>{b.locataire} · {b.tel}</div>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{b.nom}</div>
+                        <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{b.locataire} · {b.tel}</div>
                       </div>
-                      {bien && bien.id === b.id && <Check size={16} strokeWidth={2.2} color="#C62828" />}
+                      {bien && bien.id === b.id && <Check size={16} strokeWidth={2.2} color="var(--danger)" />}
                     </div>
                   );
                 })}
                 {biens.filter(function(b) { return !b.preavis; }).length === 0 && (
-                  <div style={{ textAlign: 'center', padding: 20, color: '#888', fontSize: 13 }}>{t('ongletPreavis.proprio.form.aucunBienDisponible')}</div>
+                  <div style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)', fontSize: 13 }}>{t('ongletPreavis.proprio.form.aucunBienDisponible')}</div>
                 )}
               </div>
             </div>
 
             {/* MOTIF */}
             <div style={{ marginBottom: 18 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>{t('ongletPreavis.proprio.form.motifLabel')}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10 }}>{t('ongletPreavis.proprio.form.motifLabel')}</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {MOTIFS_PROPRIO.map(function(opt) {
                   var m = opt.value;
                   return (
                     <div key={m} onClick={function() { setMotif(m); }}
-                      style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', border: motif === m ? '1.5px solid #C62828' : '0.5px solid #E0E0E0', background: motif === m ? '#FFEBEE' : '#FAFAFA', borderRadius: 10, cursor: 'pointer' }}>
-                      <div style={{ width: 18, height: 18, borderRadius: '50%', border: motif === m ? 'none' : '1.5px solid #CCC', background: motif === m ? '#C62828' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', border: motif === m ? '1.5px solid var(--danger)' : '0.5px solid var(--border)', background: motif === m ? 'var(--danger-soft)' : 'var(--surface-soft)', borderRadius: 8, cursor: 'pointer' }}>
+                      <div style={{ width: 18, height: 18, borderRadius: '50%', border: motif === m ? 'none' : '1.5px solid #CCC', background: motif === m ? 'var(--danger)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                         {motif === m && <Check size={12} strokeWidth={2.2} color="#fff" />}
                       </div>
-                      <span style={{ fontSize: 13, color: motif === m ? '#B71C1C' : '#555' }}>{t('ongletPreavis.motifsProprio.' + opt.key)}</span>
+                      <span style={{ fontSize: 13, color: motif === m ? 'var(--danger)' : 'var(--text-secondary)' }}>{t('ongletPreavis.motifsProprio.' + opt.key)}</span>
                     </div>
                   );
                 })}
@@ -416,39 +416,39 @@ function PreavisProprio() {
 
             {/* DÉLAI */}
             <div style={{ marginBottom: 18 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 10 }}>{t('ongletPreavis.proprio.form.delaiLabel')}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10 }}>{t('ongletPreavis.proprio.form.delaiLabel')}</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                 {['1', '2', '3'].map(function(n) {
                   return (
                     <button key={n} onClick={function() { setDelai(n); }}
-                      style={{ padding: 10, borderRadius: 10, border: delai === n ? '2px solid #C62828' : '0.5px solid #E0E0E0', background: delai === n ? '#FFEBEE' : '#FAFAFA', color: delai === n ? '#B71C1C' : '#555', fontSize: 13, fontWeight: delai === n ? 700 : 400, cursor: 'pointer' }}>
+                      style={{ padding: 10, borderRadius: 8, border: delai === n ? '2px solid var(--danger)' : '0.5px solid var(--border)', background: delai === n ? 'var(--danger-soft)' : 'var(--surface-soft)', color: delai === n ? 'var(--danger)' : 'var(--text-secondary)', fontSize: 13, fontWeight: delai === n ? 700 : 400, cursor: 'pointer' }}>
                       {t('ongletPreavis.delaiMois', { n: n })}
                     </button>
                   );
                 })}
               </div>
               {delai && (
-                <div style={{ background: '#FFEBEE', borderRadius: 10, padding: '10px 14px', marginTop: 10, display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 12, color: '#B71C1C', display: 'flex', alignItems: 'center', gap: 4 }}><CalendarDays size={12} strokeWidth={1.75} /> {t('ongletPreavis.proprio.form.dateSortieEstimeeLabel')}</span>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: '#C62828' }}>{addDays(parseInt(delai) * 30)}</span>
+                <div style={{ background: 'var(--danger-soft)', borderRadius: 8, padding: '10px 14px', marginTop: 10, display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: 12, color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: 4 }}><CalendarDays size={12} strokeWidth={1.75} /> {t('ongletPreavis.proprio.form.dateSortieEstimeeLabel')}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--danger)' }}>{addDays(parseInt(delai) * 30)}</span>
                 </div>
               )}
             </div>
 
             {/* NOTE */}
             <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22', marginBottom: 8 }}>{t('ongletPreavis.proprio.form.messageLabel')}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>{t('ongletPreavis.proprio.form.messageLabel')}</div>
               <textarea value={note} onChange={function(e) { setNote(e.target.value); }}
                 placeholder={t('ongletPreavis.proprio.form.messagePlaceholder')}
-                style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '0.5px solid #E0E0E0', fontSize: 13, resize: 'none', height: 80, fontFamily: 'var(--font-body)', boxSizing: 'border-box', outline: 'none' }} />
+                style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '0.5px solid var(--border)', fontSize: 13, resize: 'none', height: 80, fontFamily: 'var(--font-body)', boxSizing: 'border-box', outline: 'none' }} />
             </div>
 
             <button onClick={function() { if (bien && motif && delai) setStep('confirm'); else toast.error(t('ongletPreavis.proprio.form.erreurChampsObligatoires')); }}
-              style={{ width: '100%', background: bien && motif && delai ? '#C62828' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: bien && motif && delai ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              style={{ width: '100%', background: bien && motif && delai ? 'var(--danger)' : '#CCC', color: '#fff', border: 'none', borderRadius: 12, padding: 13, fontSize: 14, fontWeight: 700, cursor: bien && motif && delai ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
               <ClipboardList size={14} strokeWidth={1.75} /> {t('ongletPreavis.proprio.form.continuerBouton')}
             </button>
             {(!bien || !motif || !delai) && (
-              <div style={{ fontSize: 11, color: '#C62828', textAlign: 'center', marginTop: 6 }}>{t('ongletPreavis.proprio.form.erreurSelectionComplete')}</div>
+              <div style={{ fontSize: 11, color: 'var(--danger)', textAlign: 'center', marginTop: 6 }}>{t('ongletPreavis.proprio.form.erreurSelectionComplete')}</div>
             )}
           </div>
         </div>
@@ -470,8 +470,8 @@ export default function OngletPreavis() {
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: '#1B2B22', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}><ClipboardList size={20} strokeWidth={1.75} /> {t('ongletPreavis.dispatcher.titre')}</h1>
-          <p style={{ fontSize: 13, color: '#888', margin: '4px 0 0' }}>
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}><ClipboardList size={20} strokeWidth={1.75} /> {t('ongletPreavis.dispatcher.titre')}</h1>
+          <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: '4px 0 0' }}>
             {estProprietaire ? t('ongletPreavis.dispatcher.sousTitreProprio') : t('ongletPreavis.dispatcher.sousTitreLocataire')}
           </p>
         </div>

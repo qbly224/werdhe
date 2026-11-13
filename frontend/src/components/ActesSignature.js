@@ -161,11 +161,11 @@ export default function ActesSignature({ reservationId, type, onFermer, onChange
   function ajouterRetenue() { setLocal(function(l) { return Object.assign({}, l, { retenues: l.retenues.concat([{ item_id: null, libelle: '', montant: 0, commentaire: '' }]) }); }); setSale(true); }
   function retirerRetenue(i) { setLocal(function(l) { return Object.assign({}, l, { retenues: l.retenues.filter(function(r, k) { return k !== i; }) }); }); setSale(true); }
 
-  var carte = { background: '#fff', borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' };
-  var champ = { width: '100%', padding: '9px 11px', borderRadius: 8, border: '1px solid #E0E0E0', fontSize: 13, boxSizing: 'border-box' };
+  var carte = { background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, marginBottom: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' };
+  var champ = { width: '100%', padding: '9px 11px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 13, boxSizing: 'border-box' };
   var etiquette = { fontSize: 11, color: '#666', display: 'block' };
 
-  if (charge) return <div style={{ padding: 30, textAlign: 'center', color: '#888' }}>{t('actes.chargement')}</div>;
+  if (charge) return <div style={{ padding: 30, textAlign: 'center', color: 'var(--text-muted)' }}>{t('actes.chargement')}</div>;
 
   // ── Liste ──
   if (!courant) {
@@ -174,25 +174,25 @@ export default function ActesSignature({ reservationId, type, onFermer, onChange
     var aucuneCreation = !(type ? (type === 'avenant' ? sug.avenants.length : type === 'decompte' ? sug.decompte : type === 'bail' ? sug.bail : sug.cautionnement) : (sug.avenants.length || sug.decompte || sug.cautionnement || sug.bail));
     return (
       <div style={{ fontFamily: 'var(--font-body)' }}>
-        <div style={{ background: '#37474F', borderRadius: 14, padding: '14px 18px', marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
+        <div style={{ background: '#37474F', borderRadius: 12, padding: '14px 18px', marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
           <div>
             <div style={{ color: '#fff', fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', gap: 6 }}><FileSignature size={15} strokeWidth={1.75} /> {type ? t('actes.type.' + type) : t('actes.titre')}</div>
             <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12, marginTop: 3 }}>{liste && liste.logement ? liste.logement.titre : ''}</div>
           </div>
           {onFermer && <button onClick={onFermer} style={{ background: 'rgba(255,255,255,0.18)', color: '#fff', border: 'none', borderRadius: 8, padding: '6px 12px', fontSize: 12, cursor: 'pointer' }}>{t('actes.fermer')}</button>}
         </div>
-        <div style={{ background: '#FFF8E1', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 12, color: '#7B4F00' }}>{t('actes.explication')}</div>
+        <div style={{ background: 'var(--warn-soft)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 12, color: 'var(--warn)' }}>{t('actes.explication')}</div>
 
         {actes.map(function(a) {
           var c = COULEURS_STATUT[a.statut] || COULEURS_STATUT.brouillon;
           return (
             <div key={a.id} style={carte}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#1B2B22', marginBottom: 6 }}>{t('actes.type.' + a.type)}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>{t('actes.type.' + a.type)}</div>
               <div style={{ marginBottom: 10 }}>
-                <span style={{ background: c[0], color: c[1], borderRadius: 20, padding: '2px 10px', fontWeight: 700, fontSize: 11 }}>{t('actes.statut.' + a.statut)}</span>
-                {a.droits.signer && <b style={{ color: '#B3261E', fontSize: 12, marginLeft: 8 }}>{t('actes.aVousDeSigner')}</b>}
+                <span style={{ background: c[0], color: c[1], borderRadius: 16, padding: '2px 10px', fontWeight: 700, fontSize: 11 }}>{t('actes.statut.' + a.statut)}</span>
+                {a.droits.signer && <b style={{ color: 'var(--danger)', fontSize: 12, marginLeft: 8 }}>{t('actes.aVousDeSigner')}</b>}
               </div>
-              <button onClick={function() { ouvrir(a.id); }} style={{ padding: '10px 16px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+              <button onClick={function() { ouvrir(a.id); }} style={{ padding: '10px 16px', borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
                 {a.statut === 'genere' ? t('actes.consulter') : t('actes.continuer')}
               </button>
             </div>
@@ -203,29 +203,29 @@ export default function ActesSignature({ reservationId, type, onFermer, onChange
           return (
             <div key={rn.id} style={carte}>
               <div style={{ fontSize: 13, color: '#444', marginBottom: 8 }}>{t('actes.avenantProposition', { n: rn.nouvelle_duree_mois, loyer: rn.nouveau_prix ? gnf(rn.nouveau_prix) : t('actes.loyerInchange') })}</div>
-              <button disabled={action} onClick={function() { creer('avenant', rn.id); }} style={{ padding: '10px 16px', borderRadius: 10, border: 'none', background: '#37474F', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Plus size={14} strokeWidth={2} /> {t('actes.preparer.avenant')}</span></button>
+              <button disabled={action} onClick={function() { creer('avenant', rn.id); }} style={{ padding: '10px 16px', borderRadius: 8, border: 'none', background: '#37474F', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Plus size={14} strokeWidth={2} /> {t('actes.preparer.avenant')}</span></button>
             </div>
           );
         })}
         {(!type || type === 'decompte') && sug.decompte && (
           <div style={carte}>
             <div style={{ fontSize: 13, color: '#444', marginBottom: 8 }}>{t('actes.decompteExplication')}</div>
-            <button disabled={action} onClick={function() { creer('decompte'); }} style={{ padding: '10px 16px', borderRadius: 10, border: 'none', background: '#37474F', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Plus size={14} strokeWidth={2} /> {t('actes.preparer.decompte')}</span></button>
+            <button disabled={action} onClick={function() { creer('decompte'); }} style={{ padding: '10px 16px', borderRadius: 8, border: 'none', background: '#37474F', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Plus size={14} strokeWidth={2} /> {t('actes.preparer.decompte')}</span></button>
           </div>
         )}
         {(!type || type === 'bail') && sug.bail && (
           <div style={carte}>
             <div style={{ fontSize: 13, color: '#444', marginBottom: 8 }}>{t('actes.bailExplication')}</div>
-            <button disabled={action} onClick={function() { creer('bail'); }} style={{ padding: '10px 16px', borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Plus size={14} strokeWidth={2} /> {t('actes.preparer.bail')}</span></button>
+            <button disabled={action} onClick={function() { creer('bail'); }} style={{ padding: '10px 16px', borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Plus size={14} strokeWidth={2} /> {t('actes.preparer.bail')}</span></button>
           </div>
         )}
         {(!type || type === 'cautionnement') && sug.cautionnement && (
           <div style={carte}>
             <div style={{ fontSize: 13, color: '#444', marginBottom: 8 }}>{t('actes.cautionExplication')}</div>
-            <button disabled={action} onClick={function() { creer('cautionnement'); }} style={{ padding: '10px 16px', borderRadius: 10, border: 'none', background: '#37474F', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Plus size={14} strokeWidth={2} /> {t('actes.preparer.cautionnement')}</span></button>
+            <button disabled={action} onClick={function() { creer('cautionnement'); }} style={{ padding: '10px 16px', borderRadius: 8, border: 'none', background: '#37474F', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Plus size={14} strokeWidth={2} /> {t('actes.preparer.cautionnement')}</span></button>
           </div>
         )}
-        {actes.length === 0 && aucuneCreation && <div style={{ ...carte, color: '#888', fontSize: 13 }}>{t(type ? 'actes.rien.' + type : 'actes.rienDuTout')}</div>}
+        {actes.length === 0 && aucuneCreation && <div style={{ ...carte, color: 'var(--text-muted)', fontSize: 13 }}>{t(type ? 'actes.rien.' + type : 'actes.rienDuTout')}</div>}
       </div>
     );
   }
@@ -237,26 +237,26 @@ export default function ActesSignature({ reservationId, type, onFermer, onChange
   var totalLocal = a.type === 'decompte' && edition ? local.retenues.reduce(function(s, r) { return s + (Number(r.montant) || 0); }, 0) : null;
 
   var ligne = function(label, valeur) {
-    return <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 13, padding: '6px 0', borderBottom: '0.5px solid #F0F0F0' }}><span style={{ color: '#888' }}>{label}</span><b style={{ textAlign: 'right' }}>{valeur}</b></div>;
+    return <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 13, padding: '6px 0', borderBottom: '0.5px solid var(--border)' }}><span style={{ color: 'var(--text-muted)' }}>{label}</span><b style={{ textAlign: 'right' }}>{valeur}</b></div>;
   };
 
   return (
     <div style={{ fontFamily: 'var(--font-body)' }}>
-      <div style={{ background: '#37474F', borderRadius: 14, padding: '14px 18px', marginBottom: 14 }}>
+      <div style={{ background: '#37474F', borderRadius: 12, padding: '14px 18px', marginBottom: 14 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, alignItems: 'center' }}>
           <div style={{ color: '#fff', fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', gap: 6 }}><FileSignature size={15} strokeWidth={1.75} /> {t('actes.type.' + a.type)}</div>
           <button onClick={retourListe} style={{ background: 'rgba(255,255,255,0.18)', color: '#fff', border: 'none', borderRadius: 8, padding: '6px 12px', fontSize: 12, cursor: 'pointer' }}>← {t('actes.retour')}</button>
         </div>
         <div style={{ color: 'rgba(255,255,255,0.85)', fontSize: 12, marginTop: 4 }}>{a.logement.titre} · {t('actes.preparePar', { nom: a.redacteur.nom })}</div>
       </div>
-      <div style={{ marginBottom: 12 }}><span style={{ background: c[0], color: c[1], borderRadius: 20, padding: '2px 10px', fontWeight: 700, fontSize: 11 }}>{a.statut === 'genere' ? <Lock size={10} strokeWidth={2.2} style={{ verticalAlign: -1, marginRight: 4 }} /> : null}{t('actes.statut.' + a.statut)}</span></div>
+      <div style={{ marginBottom: 12 }}><span style={{ background: c[0], color: c[1], borderRadius: 16, padding: '2px 10px', fontWeight: 700, fontSize: 11 }}>{a.statut === 'genere' ? <Lock size={10} strokeWidth={2.2} style={{ verticalAlign: -1, marginRight: 4 }} /> : null}{t('actes.statut.' + a.statut)}</span></div>
 
-      {a.statut === 'brouillon' && a.corrections.length > 0 && <div style={{ background: '#FFEBEE', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#B71C1C' }}><b>{t('actes.correctionDemandee')}</b> {a.corrections[a.corrections.length - 1].motif}</div>}
-      {a.statut === 'brouillon' && !d.modifier && <div style={{ background: '#E3F2FD', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#0D47A1' }}>{t('actes.msg.brouillonAutre', { nom: a.redacteur.nom })}</div>}
-      {a.statut === 'a_valider' && d.signer && <div style={{ background: '#FFF8E1', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#7B4F00' }}>{t('actes.msg.aSigner', { nom: a.redacteur.nom })}</div>}
-      {a.statut === 'a_valider' && !d.signer && <div style={{ background: '#E3F2FD', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#0D47A1' }}>{t('actes.msg.attente')}</div>}
-      {a.statut === 'signe' && <div style={{ background: '#E8F5E9', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#1B5E20' }}>{d.generer ? t('actes.msg.pretAGenerer') : t('actes.msg.attenteGeneration', { nom: a.redacteur.nom })}</div>}
-      {a.statut === 'genere' && <div style={{ background: '#ECEFF1', borderRadius: 10, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#37474F' }}>{t('actes.msg.genere')}</div>}
+      {a.statut === 'brouillon' && a.corrections.length > 0 && <div style={{ background: 'var(--danger-soft)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: 'var(--danger)' }}><b>{t('actes.correctionDemandee')}</b> {a.corrections[a.corrections.length - 1].motif}</div>}
+      {a.statut === 'brouillon' && !d.modifier && <div style={{ background: 'var(--info-soft)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: 'var(--info)' }}>{t('actes.msg.brouillonAutre', { nom: a.redacteur.nom })}</div>}
+      {a.statut === 'a_valider' && d.signer && <div style={{ background: 'var(--warn-soft)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: 'var(--warn)' }}>{t('actes.msg.aSigner', { nom: a.redacteur.nom })}</div>}
+      {a.statut === 'a_valider' && !d.signer && <div style={{ background: 'var(--info-soft)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: 'var(--info)' }}>{t('actes.msg.attente')}</div>}
+      {a.statut === 'signe' && <div style={{ background: 'var(--green-light)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: 'var(--green)' }}>{d.generer ? t('actes.msg.pretAGenerer') : t('actes.msg.attenteGeneration', { nom: a.redacteur.nom })}</div>}
+      {a.statut === 'genere' && <div style={{ background: 'var(--bg-tertiary)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: 'var(--text-secondary)' }}>{t('actes.msg.genere')}</div>}
 
       {/* ── Contenu selon le type ── */}
       <div style={carte}>
@@ -285,24 +285,24 @@ export default function ActesSignature({ reservationId, type, onFermer, onChange
             {(x.retenues || []).map(function(r, i) {
               var constat = (a.donnees.constats || []).find(function(cc) { return cc.item_id && cc.item_id === r.item_id; });
               return (
-                <div key={i} style={{ border: '1px solid #EEE', borderRadius: 10, padding: 10, marginBottom: 8 }}>
+                <div key={i} style={{ border: '1px solid #EEE', borderRadius: 8, padding: 10, marginBottom: 8 }}>
                   {edition ? (
                     <div>
                       <div style={{ display: 'flex', gap: 6, marginBottom: 6 }}>
                         <input type="text" maxLength={40} value={r.libelle} onChange={function(e) { majRetenue(i, 'libelle', e.target.value); }} placeholder={t('actes.decompte.libelle')} style={champ} />
                         <input type="number" min={0} value={r.montant} onChange={function(e) { majRetenue(i, 'montant', e.target.value); }} placeholder="GNF" style={Object.assign({}, champ, { width: 130 })} />
-                        <button onClick={function() { retirerRetenue(i); }} style={{ background: 'none', border: 'none', color: '#B3261E', cursor: 'pointer' }}><Trash2 size={14} strokeWidth={1.75} /></button>
+                        <button onClick={function() { retirerRetenue(i); }} style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer' }}><Trash2 size={14} strokeWidth={1.75} /></button>
                       </div>
                       <input type="text" maxLength={60} value={r.commentaire || ''} onChange={function(e) { majRetenue(i, 'commentaire', e.target.value); }} placeholder={t('actes.decompte.commentaire')} style={champ} />
                     </div>
                   ) : (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}><span>{r.libelle}{r.commentaire ? <span style={{ color: '#888' }}> · {r.commentaire}</span> : null}</span><b>{gnf(r.montant)}</b></div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}><span>{r.libelle}{r.commentaire ? <span style={{ color: 'var(--text-muted)' }}> · {r.commentaire}</span> : null}</span><b>{gnf(r.montant)}</b></div>
                   )}
-                  {constat && <div style={{ fontSize: 11, color: '#888', marginTop: 4 }}>{t('actes.decompte.constat', { entree: t('edl.etat.' + constat.entree), sortie: t('edl.etat.' + constat.sortie) })}</div>}
+                  {constat && <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>{t('actes.decompte.constat', { entree: t('edl.etat.' + constat.entree), sortie: t('edl.etat.' + constat.sortie) })}</div>}
                 </div>
               );
             })}
-            {edition && (x.retenues || []).length < 8 && <button onClick={ajouterRetenue} style={{ padding: '7px 12px', borderRadius: 8, border: '1px dashed #B0BEC5', background: '#FAFAFA', color: '#607D8B', fontSize: 12, cursor: 'pointer' }}>+ {t('actes.decompte.ajouter')}</button>}
+            {edition && (x.retenues || []).length < 8 && <button onClick={ajouterRetenue} style={{ padding: '7px 12px', borderRadius: 8, border: '1px dashed #B0BEC5', background: 'var(--surface-soft)', color: '#607D8B', fontSize: 12, cursor: 'pointer' }}>+ {t('actes.decompte.ajouter')}</button>}
             {ligne(t('actes.decompte.total'), gnf(edition ? totalLocal : a.donnees.total_retenues))}
             {ligne(t('actes.decompte.aRestituer'), gnf(edition ? a.donnees.depot - totalLocal : a.donnees.a_restituer))}
             <div style={{ marginTop: 10 }}>
@@ -318,7 +318,7 @@ export default function ActesSignature({ reservationId, type, onFermer, onChange
             {ligne(t('actes.bail.debut'), dateFr(a.donnees.date_debut) + ' → ' + dateFr(a.donnees.date_fin_prevue))}
             {ligne(t('actes.bail.loyer'), gnf(a.donnees.loyer))}
             {ligne(t('actes.bail.depot'), gnf(a.donnees.depot))}
-            <div style={{ fontSize: 11, color: '#888', margin: '6px 0 10px' }}>{t('actes.bail.fixes')}</div>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)', margin: '6px 0 10px' }}>{t('actes.bail.fixes')}</div>
             {edition ? (
               <div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10, marginBottom: 10 }}>
@@ -379,17 +379,17 @@ export default function ActesSignature({ reservationId, type, onFermer, onChange
       {a.type === 'cautionnement' && a.garant_lien && (a.statut === 'a_valider' || a.statut === 'signe') && (
         <div style={carte}>
           <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>{t('actes.caution.lienTitre')}</div>
-          <div style={{ fontSize: 12, color: a.garant_lien.signe ? '#1B5E20' : '#8A4F05', marginBottom: 8 }}>
+          <div style={{ fontSize: 12, color: a.garant_lien.signe ? 'var(--green)' : 'var(--warn)', marginBottom: 8 }}>
             {a.garant_lien.signe ? t('actes.caution.garantAsigne') : t('actes.caution.garantAttendu', { date: dateFr(a.garant_lien.expire_at) })}
           </div>
           {lienGarant && (
-            <div style={{ background: '#F5F5F5', borderRadius: 8, padding: 10, marginBottom: 8 }}>
+            <div style={{ background: 'var(--surface-soft)', borderRadius: 8, padding: 10, marginBottom: 8 }}>
               <div style={{ fontSize: 12, wordBreak: 'break-all', marginBottom: 6 }}>{lienGarant.lien}</div>
               <div style={{ fontSize: 11, color: '#666', marginBottom: 6 }}>{lienGarant.envoye ? t('actes.caution.lienEnvoyeMail') : t('actes.caution.lienNonEnvoye')}</div>
-              <button onClick={function() { copier(lienGarant.lien); }} style={{ padding: '6px 12px', borderRadius: 8, border: '1px solid #CFD8DC', background: '#fff', fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}><Copy size={12} strokeWidth={1.75} /> {t('actes.caution.copier')}</button>
+              <button onClick={function() { copier(lienGarant.lien); }} style={{ padding: '6px 12px', borderRadius: 8, border: '1px solid #CFD8DC', background: 'var(--bg-secondary)', fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}><Copy size={12} strokeWidth={1.75} /> {t('actes.caution.copier')}</button>
             </div>
           )}
-          {d.renvoyer_lien && <button onClick={renvoyerLien} disabled={action} style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #CFD8DC', background: '#fff', color: '#37474F', fontSize: 12, cursor: 'pointer' }}>{t('actes.caution.renvoyer')}</button>}
+          {d.renvoyer_lien && <button onClick={renvoyerLien} disabled={action} style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #CFD8DC', background: 'var(--bg-secondary)', color: 'var(--text-secondary)', fontSize: 12, cursor: 'pointer' }}>{t('actes.caution.renvoyer')}</button>}
         </div>
       )}
 
@@ -400,8 +400,8 @@ export default function ActesSignature({ reservationId, type, onFermer, onChange
           {Object.keys(a.signatures).map(function(role, i) {
             var s = a.signatures[role];
             return (
-              <div key={role} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '8px 0', borderTop: i ? '1px solid #F0F0F0' : 'none' }}>
-                {s.mode === 'dessin' && s.image ? <img src={s.image} alt="" style={{ height: 40, maxWidth: 120, objectFit: 'contain', background: '#FAFAFA', borderRadius: 6 }} /> : <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', color: '#1B3F8F', fontSize: 18 }}>{s.nom_complet}</span>}
+              <div key={role} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '8px 0', borderTop: i ? '1px solid var(--border)' : 'none' }}>
+                {s.mode === 'dessin' && s.image ? <img src={s.image} alt="" style={{ height: 40, maxWidth: 120, objectFit: 'contain', background: 'var(--surface-soft)', borderRadius: 6 }} /> : <span style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', color: '#1B3F8F', fontSize: 18 }}>{s.nom_complet}</span>}
                 <div style={{ fontSize: 11, color: '#666' }}><b>{s.nom_complet}</b> · {t('actes.role.' + role)}<br />{new Date(s.signe_at).toLocaleString('fr-FR', { dateStyle: 'medium', timeStyle: 'short' })}</div>
               </div>
             );
@@ -411,8 +411,8 @@ export default function ActesSignature({ reservationId, type, onFermer, onChange
 
       {apercu && (
         <div style={Object.assign({}, carte, { padding: 8, overflow: 'hidden' })}>
-          <div style={{ width: '100%', maxWidth: 560, height: 1123 * Math.min(1, 560 / 794), margin: '0 auto', overflow: 'hidden', border: '1px solid #E0E0E0', borderRadius: 6 }}>
-            <iframe title={t('actes.apercu')} srcDoc={apercu} sandbox="" style={{ width: 794, height: 1123, border: 0, transformOrigin: '0 0', transform: 'scale(' + Math.min(1, 560 / 794) + ')', background: '#fff' }} />
+          <div style={{ width: '100%', maxWidth: 560, height: 1123 * Math.min(1, 560 / 794), margin: '0 auto', overflow: 'hidden', border: '1px solid var(--border)', borderRadius: 6 }}>
+            <iframe title={t('actes.apercu')} srcDoc={apercu} sandbox="" style={{ width: 794, height: 1123, border: 0, transformOrigin: '0 0', transform: 'scale(' + Math.min(1, 560 / 794) + ')', background: 'var(--bg-secondary)' }} />
           </div>
         </div>
       )}
@@ -437,41 +437,41 @@ export default function ActesSignature({ reservationId, type, onFermer, onChange
           <div style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>{t('actes.correctionExplication')}</div>
           <input type="text" maxLength={300} value={motif} onChange={function(e) { setMotif(e.target.value); }} placeholder={t('edl.correction.placeholder')} style={Object.assign({}, champ, { marginBottom: 10 })} />
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={function() { setModal(null); }} style={{ flex: 1, padding: 10, borderRadius: 8, border: 'none', background: '#F0F0F0', color: '#555', cursor: 'pointer' }}>{t('edl.annuler')}</button>
-            <button onClick={corriger} disabled={action || motif.trim().length < 3} style={{ flex: 2, padding: 10, borderRadius: 8, border: 'none', background: motif.trim().length < 3 ? '#E0B5B1' : '#B3261E', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>{t('edl.correction.envoyer')}</button>
+            <button onClick={function() { setModal(null); }} style={{ flex: 1, padding: 10, borderRadius: 8, border: 'none', background: 'var(--bg-tertiary)', color: 'var(--text-secondary)', cursor: 'pointer' }}>{t('edl.annuler')}</button>
+            <button onClick={corriger} disabled={action || motif.trim().length < 3} style={{ flex: 2, padding: 10, borderRadius: 8, border: 'none', background: motif.trim().length < 3 ? '#E0B5B1' : 'var(--danger)', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>{t('edl.correction.envoyer')}</button>
           </div>
         </div>
       )}
       {modal === 'generer' && (
         <div style={carte}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#B3261E', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}><AlertTriangle size={14} strokeWidth={1.75} /> {t('edl.generer.titre')}</div>
-          <div style={{ fontSize: 12, color: '#55655B', marginBottom: 12 }}>{t('actes.genererAvertissement')}</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--danger)', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}><AlertTriangle size={14} strokeWidth={1.75} /> {t('edl.generer.titre')}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 12 }}>{t('actes.genererAvertissement')}</div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={function() { setModal(null); }} style={{ flex: 1, padding: 10, borderRadius: 8, border: 'none', background: '#F0F0F0', color: '#555', cursor: 'pointer' }}>{t('edl.annuler')}</button>
-            <button onClick={generer} disabled={action} style={{ flex: 2, padding: 10, borderRadius: 8, border: 'none', background: '#1B6B3A', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>{action ? t('edl.enCours') : t('edl.generer.confirmer')}</button>
+            <button onClick={function() { setModal(null); }} style={{ flex: 1, padding: 10, borderRadius: 8, border: 'none', background: 'var(--bg-tertiary)', color: 'var(--text-secondary)', cursor: 'pointer' }}>{t('edl.annuler')}</button>
+            <button onClick={generer} disabled={action} style={{ flex: 2, padding: 10, borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>{action ? t('edl.enCours') : t('edl.generer.confirmer')}</button>
           </div>
         </div>
       )}
 
       {!modal && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <button onClick={voirApercu} style={{ padding: 11, borderRadius: 10, border: '1px solid #CFD8DC', background: '#fff', color: '#37474F', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Eye size={14} strokeWidth={1.75} /> {apercu ? t('actes.masquerApercu') : t('actes.voirApercu')}</button>
+          <button onClick={voirApercu} style={{ padding: 11, borderRadius: 8, border: '1px solid #CFD8DC', background: 'var(--bg-secondary)', color: 'var(--text-secondary)', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Eye size={14} strokeWidth={1.75} /> {apercu ? t('actes.masquerApercu') : t('actes.voirApercu')}</button>
           {d.modifier && (
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={function() { lancer(function() { return enregistrer(false); }); }} disabled={!sale || action} style={{ flex: 1, padding: 12, borderRadius: 10, border: '1px solid #CFD8DC', background: '#fff', color: sale ? '#37474F' : '#AAA', fontSize: 13, fontWeight: 600, cursor: sale ? 'pointer' : 'default' }}>{t('edl.enregistrer')}</button>
-              <button onClick={function() { setModal('envoyer'); }} disabled={action} style={{ flex: 2, padding: 12, borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Send size={14} strokeWidth={1.75} /> {t('actes.signerEtEnvoyer')}</span></button>
+              <button onClick={function() { lancer(function() { return enregistrer(false); }); }} disabled={!sale || action} style={{ flex: 1, padding: 12, borderRadius: 8, border: '1px solid #CFD8DC', background: 'var(--bg-secondary)', color: sale ? 'var(--text-secondary)' : '#AAA', fontSize: 13, fontWeight: 600, cursor: sale ? 'pointer' : 'default' }}>{t('edl.enregistrer')}</button>
+              <button onClick={function() { setModal('envoyer'); }} disabled={action} style={{ flex: 2, padding: 12, borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Send size={14} strokeWidth={1.75} /> {t('actes.signerEtEnvoyer')}</span></button>
             </div>
           )}
           {d.signer && (
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={function() { setModal('corriger'); }} style={{ flex: 1, padding: 12, borderRadius: 10, border: '1px solid #F0C9C5', background: '#fff', color: '#B3261E', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>{t('edl.demanderCorrection')}</button>
-              <button onClick={ouvrirSignature} style={{ flex: 2, padding: 12, borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>{t('actes.relireEtSigner')}</button>
+              <button onClick={function() { setModal('corriger'); }} style={{ flex: 1, padding: 12, borderRadius: 8, border: '1px solid var(--danger)', background: 'var(--bg-secondary)', color: 'var(--danger)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>{t('edl.demanderCorrection')}</button>
+              <button onClick={ouvrirSignature} style={{ flex: 2, padding: 12, borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>{t('actes.relireEtSigner')}</button>
             </div>
           )}
-          {d.retirer && <button onClick={function() { simple('retirer'); }} disabled={action} style={{ padding: 12, borderRadius: 10, border: '1px solid #CFD8DC', background: '#fff', color: '#37474F', fontSize: 13, cursor: 'pointer' }}>{t('edl.retirer')}</button>}
-          {d.generer && <button onClick={function() { setModal('generer'); }} style={{ padding: 13, borderRadius: 10, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Lock size={14} strokeWidth={1.75} /> {t('edl.generer.bouton')}</span></button>}
-          {d.telecharger && <button onClick={telecharger} style={{ padding: 13, borderRadius: 10, border: 'none', background: '#37474F', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Download size={14} strokeWidth={1.75} /> {t('edl.telecharger')}</span></button>}
-          {d.annuler && <button onClick={abandonner} disabled={action} style={{ padding: 8, border: 'none', background: 'none', color: '#B3261E', fontSize: 12, cursor: 'pointer' }}>{t('actes.abandonner')}</button>}
+          {d.retirer && <button onClick={function() { simple('retirer'); }} disabled={action} style={{ padding: 12, borderRadius: 8, border: '1px solid #CFD8DC', background: 'var(--bg-secondary)', color: 'var(--text-secondary)', fontSize: 13, cursor: 'pointer' }}>{t('edl.retirer')}</button>}
+          {d.generer && <button onClick={function() { setModal('generer'); }} style={{ padding: 13, borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Lock size={14} strokeWidth={1.75} /> {t('edl.generer.bouton')}</span></button>}
+          {d.telecharger && <button onClick={telecharger} style={{ padding: 13, borderRadius: 8, border: 'none', background: '#37474F', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}><span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><Download size={14} strokeWidth={1.75} /> {t('edl.telecharger')}</span></button>}
+          {d.annuler && <button onClick={abandonner} disabled={action} style={{ padding: 8, border: 'none', background: 'none', color: 'var(--danger)', fontSize: 12, cursor: 'pointer' }}>{t('actes.abandonner')}</button>}
         </div>
       )}
     </div>

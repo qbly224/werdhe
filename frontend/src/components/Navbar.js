@@ -21,39 +21,39 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="site-navbar" style={{ background: '#fff', borderBottom: '1px solid #EBEBEB', padding: '10px 24px', minHeight: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', rowGap: 8, position: 'sticky', top: 0, zIndex: 100 }}>
+    <nav className="site-navbar" style={{ background: 'var(--bg-secondary)', borderBottom: '1px solid #EBEBEB', padding: '10px 24px', minHeight: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', rowGap: 8, position: 'sticky', top: 0, zIndex: 100 }}>
       <Link to="/" style={{ textDecoration: 'none' }}>
         <Logo size={34} showText={true} darkBg={false} />
       </Link>
 
       <div className="site-navbar-actions" style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', rowGap: 8 }}>
-        <Link to="/logements" className="site-navbar-logements" style={{ fontSize: 13, color: '#555', textDecoration: 'none', fontWeight: 500 }}>
+        <Link to="/logements" className="site-navbar-logements" style={{ fontSize: 13, color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 500 }}>
           {t('nav.logements')}
         </Link>
         {user ? (
           <>
-            <Link to="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#555', textDecoration: 'none', fontWeight: 500 }}>
+            <Link to="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-secondary)', textDecoration: 'none', fontWeight: 500 }}>
               <LayoutDashboard size={15} strokeWidth={1.5} /> {t('nav.monEspace')}
             </Link>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', background: '#F5F6FA', borderRadius: 20, fontSize: 13 }}>
-              <div style={{ width: 26, height: 26, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', background: 'var(--surface-soft)', borderRadius: 16, fontSize: 13 }}>
+              <div style={{ width: 26, height: 26, background: 'var(--green)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700 }}>
                 {((user.prenom || '').charAt(0) + (user.nom || '').charAt(0)).toUpperCase()}
               </div>
-              <span style={{ color: '#1B2B22', fontWeight: 600 }}>{user.prenom}</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{user.prenom}</span>
             </div>
             <LanguageSwitcher />
             <button onClick={handleLogout}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, border: 'none', background: '#FFEBEE', color: '#B71C1C', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, border: 'none', background: 'var(--danger-soft)', color: 'var(--danger)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
               <LogOut size={14} strokeWidth={1.5} /> {t('nav.deconnexion')}
             </button>
           </>
         ) : (
           <>
             <LanguageSwitcher />
-            <Link to="/login" style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid #1B6B3A', color: '#1B6B3A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>
+            <Link to="/login" style={{ padding: '8px 14px', borderRadius: 8, border: '1px solid var(--green)', color: 'var(--green)', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>
               {t('nav.connexion')}
             </Link>
-            <Link to="/inscription" style={{ padding: '8px 14px', borderRadius: 8, background: '#1B6B3A', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>
+            <Link to="/inscription" style={{ padding: '8px 14px', borderRadius: 8, background: 'var(--green)', color: '#fff', textDecoration: 'none', fontSize: 13, fontWeight: 700 }}>
               {t('nav.inscription')}
             </Link>
           </>

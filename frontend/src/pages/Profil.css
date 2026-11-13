@@ -25,13 +25,13 @@
   align-items: center;
   justify-content: center;
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 700;
   flex-shrink: 0;
 }
 
 .profil-header h1 {
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--primary-dark);
   margin-bottom: 4px;
 }
@@ -43,7 +43,7 @@
 }
 
 .profil-role {
-  background: #e8f5e9;
+  background: var(--green-light);
   color: var(--primary);
   padding: 4px 12px;
   border-radius: 20px;
@@ -64,3 +64,31 @@
   color: var(--primary-dark);
   margin-bottom: 20px;
 }
+/* Onglets (Mes informations / Mot de passe) */
+.onglets {
+  display: flex;
+  gap: 4px;
+  margin: 20px 0 12px;
+  border-bottom: 1px solid var(--border);
+}
+.onglet {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.onglet:hover { color: var(--text-primary); }
+.onglet.active {
+  color: var(--green);
+  border-bottom-color: var(--green);
+}
+.onglet:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
