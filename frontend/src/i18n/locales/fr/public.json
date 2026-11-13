@@ -216,10 +216,10 @@
         },
         {
           "titre": "Des rapports clairs",
-          "desc": "Vos revenus mois par mois, avec des graphiques lisibles et un export de vos rapports (selon votre plan).",
+          "desc": "Vos revenus mois par mois, avec des graphiques lisibles et un export PDF ou CSV de vos rapports (plans Pro et Agence).",
           "mini": {
             "titre": "Revenus sur 6 mois",
-            "export": "Export PDF"
+            "export": "PDF · CSV"
           }
         },
         {
@@ -1002,7 +1002,7 @@
         "nom": "Pro",
         "badge": "1 mois gratuit",
         "sousTitre": "Jusqu'à {{pro}} logements",
-        "features": ["Jusqu'à {{pro}} logements", "Candidatures et dossiers en ligne", "Paiement en ligne (Orange Money, MTN MoMo, Kulu, carte)", "Baux et quittances PDF auto", "Alertes loyers J-3 / J+5", "Rapports financiers + export CSV", "Messagerie avec accusé de lecture", "Score de confiance locataires", "Support email prioritaire"],
+        "features": ["Jusqu'à {{pro}} logements", "Candidatures et dossiers en ligne", "Paiement en ligne (Orange Money, MTN MoMo, Kulu, carte)", "Baux et quittances PDF auto", "Alertes loyers J-3 / J+5", "Rapports financiers + export PDF et CSV", "Messagerie avec accusé de lecture", "Score de confiance locataires", "Support email prioritaire"],
         "nonInclus": ["Multi-utilisateurs", "Logements illimités"]
       },
       "agence": {

@@ -216,10 +216,10 @@
         },
         {
           "titre": "Clear reports",
-          "desc": "Your income month by month, with readable charts and an export of your reports (depending on your plan).",
+          "desc": "Your income month by month, with readable charts and a PDF or CSV export of your reports (Pro and Agency plans).",
           "mini": {
             "titre": "Income over 6 months",
-            "export": "PDF export"
+            "export": "PDF · CSV"
           }
         },
         {
@@ -1002,7 +1002,7 @@
         "nom": "Pro",
         "badge": "1 month free",
         "sousTitre": "Up to {{pro}} properties",
-        "features": ["Up to {{pro}} properties", "Online applications and files", "Online payments (Orange Money, MTN MoMo, Kulu, card)", "Automatic leases and PDF receipts", "Rent alerts on day 3 / day 5", "Financial reports + CSV export", "Messaging with read receipts", "Tenant trust score", "Priority email support"],
+        "features": ["Up to {{pro}} properties", "Online applications and files", "Online payments (Orange Money, MTN MoMo, Kulu, card)", "Automatic leases and PDF receipts", "Rent alerts on day 3 / day 5", "Financial reports + PDF and CSV export", "Messaging with read receipts", "Tenant trust score", "Priority email support"],
         "nonInclus": ["Multiple users", "Unlimited properties"]
       },
       "agence": {
