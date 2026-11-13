@@ -395,7 +395,7 @@ useEffect(function() {
         {/* Scroll indicator */}
         <div style={{ position: 'absolute', bottom: 28, right: 28, zIndex: 2 }}>
           <div style={{ width: 40, height: 40, borderRadius: '50%', border: '1.5px solid rgba(255,255,255,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', animation: 'flottement 2s ease-in-out infinite' }}
-            onClick={function() { document.getElementById('comment') && document.getElementById('comment').scrollIntoView({ behavior: 'smooth' }); }}>
+            onClick={function() { document.getElementById('fonctionnalites') && document.getElementById('fonctionnalites').scrollIntoView({ behavior: 'smooth' }); }}>
             <ChevronRight size={18} color="rgba(255,255,255,0.8)" strokeWidth={2} style={{ transform: 'rotate(90deg)' }} />
           </div>
         </div>
@@ -434,16 +434,6 @@ useEffect(function() {
         </div>
       </section>
 
-      {/* ─── COMMENT ÇA MARCHE ───────────────────────────────────── */}
-      <section id="comment" style={{ padding: 'clamp(50px, 8vw, 90px) 24px', maxWidth: 1000, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.howItWorks.overline')}</div>
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 650, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.howItWorks.title')}</h2>
-        </div>
-
-        <CommentCaMarche />
-      </section>
-
       {/* ─── FONCTIONNALITÉS ─────────────────────────────────────── */}
       <section id="fonctionnalites" style={{ background: '#1B2B22', padding: 'clamp(50px, 8vw, 90px) 24px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
@@ -466,6 +456,16 @@ useEffect(function() {
             })}
           </div>
         </div>
+      </section>
+
+      {/* ─── COMMENT ÇA MARCHE ───────────────────────────────────── */}
+      <section id="comment" style={{ padding: 'clamp(50px, 8vw, 90px) 24px', maxWidth: 1000, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+          <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.howItWorks.overline')}</div>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 650, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.howItWorks.title')}</h2>
+        </div>
+
+        <CommentCaMarche />
       </section>
 
       {/* ─── TÉMOIGNAGES / AVIS */}
