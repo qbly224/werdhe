@@ -49,13 +49,13 @@ export default function Sidebar({ ongletActif, setOnglet, open, alertes, monPlan
     }}>
 
       {/* Logo */}
-      <div style={{ height: 62, display: 'flex', alignItems: 'center', padding: '0 14px', borderBottom: '1px solid #F0F0F0', flexShrink: 0, gap: 10 }}>
-        <div style={{ width: 36, height: 36, background: '#1B2B22', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <div style={{ height: 62, display: 'flex', alignItems: 'center', padding: '0 14px', borderBottom: '1px solid var(--border)', flexShrink: 0, gap: 10 }}>
+        <div style={{ width: 36, height: 36, background: '#1B2B22', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
           <Logo size={36} showText={false} variant="gold" />
         </div>
         {open && (
           <div>
-            <div style={{ fontWeight: 800, fontSize: 15, color: '#1B2B22', letterSpacing: -0.3 }}>Werdhe</div>
+            <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-primary)', letterSpacing: -0.3 }}>Werdhe</div>
             <div style={{ fontSize: 10, color: '#aaa', marginTop: 1 }}>
               {user && (user.role === 'proprietaire' || user.role === 'les_deux') ? t('sidebar.espaceProprietaire') : t('sidebar.espaceLocataire')}
             </div>
@@ -81,23 +81,23 @@ export default function Sidebar({ ongletActif, setOnglet, open, alertes, monPlan
                 gap: 10,
                 padding: open ? '10px 12px' : '10px',
                 marginBottom: 2,
-                borderRadius: 10, border: 'none',
+                borderRadius: 8, border: 'none',
                 cursor: 'pointer',
-                background: actif ? '#E8F5E9' : 'transparent',
-                color: actif ? '#1B6B3A' : '#777',
+                background: actif ? 'var(--green-light)' : 'transparent',
+                color: actif ? 'var(--green)' : '#777',
                 transition: 'all .15s',
                 justifyContent: open ? 'flex-start' : 'center',
                 position: 'relative',
                 textAlign: 'left',
               }}
-              onMouseEnter={function(e) { if (!actif) { e.currentTarget.style.background = '#F5F6FA'; e.currentTarget.style.color = '#1B2B22'; }}}
+              onMouseEnter={function(e) { if (!actif) { e.currentTarget.style.background = 'var(--surface-soft)'; e.currentTarget.style.color = 'var(--text-primary)'; }}}
               onMouseLeave={function(e) { if (!actif) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#777'; }}}>
 
               {/* Icône */}
               <div style={{ position: 'relative', flexShrink: 0 }}>
                 <Icon size={19} strokeWidth={actif ? 2 : 1.5} />
                 {badge > 0 && (
-                  <div style={{ position: 'absolute', top: -4, right: -4, width: 14, height: 14, background: '#E53935', borderRadius: '50%', fontSize: 8, fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ position: 'absolute', top: -4, right: -4, width: 14, height: 14, background: 'var(--danger)', borderRadius: '50%', fontSize: 8, fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {badge > 9 ? '9+' : badge}
                   </div>
                 )}
@@ -112,7 +112,7 @@ export default function Sidebar({ ongletActif, setOnglet, open, alertes, monPlan
 
               {/* Point actif */}
               {open && actif && (
-                <div style={{ width: 5, height: 5, background: '#1B6B3A', borderRadius: '50%', flexShrink: 0 }} />
+                <div style={{ width: 5, height: 5, background: 'var(--green)', borderRadius: '50%', flexShrink: 0 }} />
               )}
             </button>
           );
@@ -121,9 +121,9 @@ export default function Sidebar({ ongletActif, setOnglet, open, alertes, monPlan
 
       {/* Badge plan */}
       {open && user && user.plan && user.plan !== 'gratuit' && (
-        <div style={{ margin: '0 8px 8px', background: user.plan === 'agence' ? '#F3E5F5' : '#E8F5E9', borderRadius: 10, padding: '7px 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Zap size={12} strokeWidth={2} color={user.plan === 'agence' ? '#7B1FA2' : '#1B6B3A'} />
-          <span style={{ fontSize: 11, color: user.plan === 'agence' ? '#7B1FA2' : '#1B6B3A', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+        <div style={{ margin: '0 8px 8px', background: user.plan === 'agence' ? 'var(--info-soft)' : 'var(--green-light)', borderRadius: 8, padding: '7px 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Zap size={12} strokeWidth={2} color={user.plan === 'agence' ? 'var(--info)' : 'var(--green)'} />
+          <span style={{ fontSize: 11, color: user.plan === 'agence' ? 'var(--info)' : 'var(--green)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
             {t('sidebar.plan', { plan: user.plan })}
           </span>
         </div>
@@ -131,24 +131,24 @@ export default function Sidebar({ ongletActif, setOnglet, open, alertes, monPlan
 
       {/* Badge essai : jours restants */}
       {open && monPlan && monPlan.abonnement && monPlan.abonnement.statut === 'essai' && monPlan.jours_restants !== null && monPlan.jours_restants >= 0 && (
-        <div style={{ margin: '0 8px 8px', background: monPlan.jours_restants <= 5 ? '#FFF3E0' : '#F5F6FA', borderRadius: 10, padding: '7px 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Hourglass size={12} strokeWidth={2} color={monPlan.jours_restants <= 5 ? '#E65100' : '#888'} />
-          <span style={{ fontSize: 11, color: monPlan.jours_restants <= 5 ? '#E65100' : '#888', fontWeight: 700 }}>
+        <div style={{ margin: '0 8px 8px', background: monPlan.jours_restants <= 5 ? 'var(--warn-soft)' : 'var(--surface-soft)', borderRadius: 8, padding: '7px 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Hourglass size={12} strokeWidth={2} color={monPlan.jours_restants <= 5 ? 'var(--warn)' : 'var(--text-muted)'} />
+          <span style={{ fontSize: 11, color: monPlan.jours_restants <= 5 ? 'var(--warn)' : 'var(--text-muted)', fontWeight: 700 }}>
             {t('sidebar.essaiJoursRestants', { n: monPlan.jours_restants })}
           </span>
         </div>
       )}
 
       {/* Profil en bas */}
-      <div style={{ padding: open ? '12px 12px' : '12px 8px', borderTop: '1px solid #F0F0F0', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-        <div style={{ width: 34, height: 34, background: '#1B6B3A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#fff', fontSize: 12, flexShrink: 0, cursor: 'pointer' }}
+      <div style={{ padding: open ? '12px 12px' : '12px 8px', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+        <div style={{ width: 34, height: 34, background: 'var(--green)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: '#fff', fontSize: 12, flexShrink: 0, cursor: 'pointer' }}
           onClick={function() { setOnglet('/dashboard/parametres'); }}>
           {initiales}
         </div>
         {open && (
           <>
             <div style={{ flex: 1, overflow: 'hidden' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#1B2B22', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {user ? user.prenom + ' ' + user.nom : ''}
               </div>
               <div style={{ fontSize: 10, color: '#aaa' }}>

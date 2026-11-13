@@ -21,7 +21,7 @@ export default function Logo({ size = 32, showText = true, darkBg = false, varia
         <line x1="6" y1="44" x2="42" y2="44" stroke={green} strokeWidth="3" strokeLinecap="round" />
       </svg>
       {showText && (
-        <span style={{ fontWeight: 800, fontSize: Math.round(s * 0.55), color: darkBg ? '#fff' : '#14251A', letterSpacing: -0.5 }}>
+        <span style={{ fontWeight: 700, fontSize: Math.round(s * 0.55), color: darkBg ? '#fff' : 'var(--text-primary)', letterSpacing: -0.5 }}>
           Werdhe
         </span>
       )}
