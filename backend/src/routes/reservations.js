@@ -72,8 +72,8 @@ router.get('/historique', verifierToken, async (req, res) => {
           COUNT(DISTINCT r.id) as nb_locations_total,
           COUNT(DISTINCT r.id) FILTER (WHERE r.statut = 'confirmee') as nb_actives,
           COUNT(DISTINCT r.id) FILTER (WHERE r.statut = 'terminee')  as nb_terminees,
-          COALESCE(SUM(p.montant) FILTER (WHERE p.statut = 'complete'), 0) as total_paye,
-          COUNT(DISTINCT p.id) FILTER (WHERE p.statut = 'complete')  as nb_paiements,
+          COALESCE(SUM(p.montant) FILTER (WHERE p.statut IN ('complete', 'confirme')), 0) as total_paye,
+          COUNT(DISTINCT p.id) FILTER (WHERE p.statut IN ('complete', 'confirme'))  as nb_paiements,
           COALESCE(AVG(n.note) FILTER (WHERE n.cible_id = $1), 0)    as note_moyenne_recue
         FROM reservations r
         LEFT JOIN paiements p ON p.reservation_id = r.id
@@ -112,9 +112,9 @@ router.get('/mes-reservations', verifierToken, async (req, res) => {
      u.telephone   as prop_telephone,
      u.email       as prop_email,
      -- Dernier paiement
-     (SELECT MAX(p.created_at) FROM paiements p WHERE p.reservation_id = r.id AND p.statut = 'complete') as dernier_paiement,
+     (SELECT MAX(p.created_at) FROM paiements p WHERE p.reservation_id = r.id AND p.statut IN ('complete', 'confirme')) as dernier_paiement,
      -- Nombre de paiements effectués
-     (SELECT COUNT(*) FROM paiements p WHERE p.reservation_id = r.id AND p.statut = 'complete') as nb_paiements
+     (SELECT COUNT(*) FROM paiements p WHERE p.reservation_id = r.id AND p.statut IN ('complete', 'confirme')) as nb_paiements
    FROM reservations r
    JOIN logements l ON r.logement_id = l.id
    JOIN users u ON l.proprietaire_id = u.id

@@ -466,6 +466,21 @@ const emailAccesRevoque = async (user, infos) => {
     </div>`, 'Accès offert terminé'));
 };
 
+// ─── PAIEMENT MOBILE DÉCLARÉ : à vérifier par le propriétaire ──────────────
+// Envoyé au propriétaire à chaque nouvelle déclaration du locataire (aucun SMS).
+const emailPaiementDeclare = async (proprio, locataire, d) => {
+  var montant = new Intl.NumberFormat('fr-FR').format(d.montant) + ' GNF';
+  return envoyer(proprio.email, 'Paiement mobile à vérifier : ' + locataire.prenom, templateBase(`
+    ${hdr('#1B6B3A', '', 'Paiement mobile à vérifier', echapperHtml(locataire.prenom + ' ' + locataire.nom) + ' déclare avoir payé')}
+    <div style="padding:24px;">
+      <div style="background:#F7F8F7;border-radius:10px;padding:14px 18px;margin:0 0 16px;">
+        ${ligne('Bien', echapperHtml(d.logement_titre))}${ligne('Montant', montant)}${ligne('Reçu sur', echapperHtml(d.operateur_label))}${ligne('Code de transaction', echapperHtml(d.code_transaction))}${ligne('Période', echapperHtml(d.periode_libelle))}
+      </div>
+      <p style="font-size:14px;color:#555;line-height:1.7;margin:0;">Vérifiez sur votre téléphone que ce montant est bien arrivé avec ce code avant de confirmer. Le loyer ne sera marqué payé qu'après votre confirmation.</p>
+      ${btn('Vérifier le paiement', 'https://www.werdhe.com/dashboard/paiements', '#1B6B3A')}
+    </div>`, 'Paiement mobile à vérifier'));
+};
+
 module.exports = {
   envoyerEmailReset,
   envoyerEmailDocument,
@@ -480,6 +495,7 @@ module.exports = {
   emailBailExpirant,
   emailPreavisRecu,
   emailPaiementEnregistre,
+  emailPaiementDeclare,
   emailInvitationEquipe,
   emailRapportMensuel,
   envoyerEmailSupport,

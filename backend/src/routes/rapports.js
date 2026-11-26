@@ -29,9 +29,9 @@ var intervalDB = {
       // Résumé du mois en cours
       db.query(`
         SELECT
-          COALESCE(SUM(p.montant) FILTER (WHERE p.statut = 'complete'), 0)  as encaisse,
+          COALESCE(SUM(p.montant) FILTER (WHERE p.statut IN ('complete', 'confirme')), 0)  as encaisse,
           COALESCE(SUM(p.montant) FILTER (WHERE p.statut = 'en_attente'), 0) as en_attente,
-          COUNT(p.id) FILTER (WHERE p.statut = 'complete')                   as nb_paiements,
+          COUNT(p.id) FILTER (WHERE p.statut IN ('complete', 'confirme'))                   as nb_paiements,
           COUNT(DISTINCT r.locataire_id)                                      as nb_locataires
         FROM paiements p
         JOIN reservations r ON p.reservation_id = r.id
@@ -45,8 +45,8 @@ var intervalDB = {
         SELECT
           TO_CHAR(DATE_TRUNC('month', p.created_at), 'YYYY-MM') as mois,
           TO_CHAR(DATE_TRUNC('month', p.created_at), 'Mon YY')  as mois_label,
-          COALESCE(SUM(p.montant) FILTER (WHERE p.statut = 'complete'), 0) as revenus,
-          COUNT(p.id) FILTER (WHERE p.statut = 'complete')                  as nb_paiements,
+          COALESCE(SUM(p.montant) FILTER (WHERE p.statut IN ('complete', 'confirme')), 0) as revenus,
+          COUNT(p.id) FILTER (WHERE p.statut IN ('complete', 'confirme'))                  as nb_paiements,
           COALESCE(SUM(p.montant) FILTER (WHERE p.statut = 'en_attente'), 0) as impayes
         FROM paiements p
         JOIN reservations r ON p.reservation_id = r.id
@@ -64,8 +64,8 @@ var intervalDB = {
           l.titre,
           l.prix_mensuel,
           l.statut,
-          COALESCE(SUM(p.montant) FILTER (WHERE p.statut = 'complete'), 0) as total_encaisse,
-          COUNT(p.id) FILTER (WHERE p.statut = 'complete')                  as nb_paiements,
+          COALESCE(SUM(p.montant) FILTER (WHERE p.statut IN ('complete', 'confirme')), 0) as total_encaisse,
+          COUNT(p.id) FILTER (WHERE p.statut IN ('complete', 'confirme'))                  as nb_paiements,
           COUNT(DISTINCT r.locataire_id)                                     as nb_locataires
         FROM logements l
         LEFT JOIN reservations r ON r.logement_id = l.id
@@ -135,7 +135,7 @@ db.query(`
   FROM paiements p
   JOIN reservations r ON p.reservation_id = r.id
   JOIN logements l ON r.logement_id = l.id
-  WHERE l.proprietaire_id = $1 AND p.statut = 'complete'
+  WHERE l.proprietaire_id = $1 AND p.statut IN ('complete', 'confirme')
   GROUP BY DATE_TRUNC('month', p.created_at)
   ORDER BY total DESC
   LIMIT 1
@@ -234,11 +234,11 @@ router.get('/overview', verifierToken, resoudreProprietaireEffectif, async (req,
       db.query(`
         SELECT
           COALESCE(SUM(p.montant) FILTER (
-            WHERE p.statut = 'complete'
+            WHERE p.statut IN ('complete', 'confirme')
             AND DATE_TRUNC('month', p.created_at) = DATE_TRUNC('month', NOW())
           ), 0) as revenus_mois,
           COALESCE(SUM(p.montant) FILTER (
-            WHERE p.statut = 'complete'
+            WHERE p.statut IN ('complete', 'confirme')
             AND DATE_TRUNC('month', p.created_at) = DATE_TRUNC('month', NOW() - INTERVAL '1 month')
           ), 0) as revenus_mois_precedent,
           COUNT(DISTINCT l.id) as total_biens,
@@ -262,7 +262,7 @@ router.get('/overview', verifierToken, resoudreProprietaireEffectif, async (req,
           r.id as reservation_id, r.statut as reservation_statut,
           r.date_fin,
           COALESCE(
-            (SELECT MAX(p.created_at) FROM paiements p WHERE p.reservation_id = r.id AND p.statut = 'complete'),
+            (SELECT MAX(p.created_at) FROM paiements p WHERE p.reservation_id = r.id AND p.statut IN ('complete', 'confirme')),
             NULL
           ) as dernier_paiement
         FROM logements l
@@ -318,7 +318,7 @@ router.get('/overview', verifierToken, resoudreProprietaireEffectif, async (req,
       db.query(`
         SELECT
           TO_CHAR(DATE_TRUNC('month', p.created_at), 'Mon') as mois,
-          COALESCE(SUM(p.montant) FILTER (WHERE p.statut = 'complete'), 0) as revenus
+          COALESCE(SUM(p.montant) FILTER (WHERE p.statut IN ('complete', 'confirme')), 0) as revenus
         FROM paiements p
         JOIN reservations r ON p.reservation_id = r.id
         JOIN logements l ON r.logement_id = l.id
