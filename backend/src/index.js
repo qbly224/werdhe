@@ -205,6 +205,7 @@ app.use('/notations', notationsRoutes);
 app.use('/blog', blogRoutes);
 app.use('/estimation', estimationRoutes);
 app.use('/stats', statsRoutes);
+app.use('/avis', require('./routes/avis'));
 app.use('/equipe', equipeRoutes);
 app.use('/support', supportRoutes);
 app.use('/chatbot', chatbotRoutes);

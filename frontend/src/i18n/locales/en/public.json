@@ -1136,5 +1136,49 @@
     "signer": "Sign the agreement",
     "erreur": "The signature could not be recorded",
     "accueil": "Back to home"
+  },
+  "avisWerdhe": {
+    "donnerAvis": "Leave my review",
+    "epingle": "Pinned",
+    "reponseWerdhe": "Reply from Werdhe",
+    "nbAvis_one": "{{count}} review",
+    "nbAvis_other": "{{count}} reviews",
+    "noteMoyenne": "Average rating: {{note}} out of 5",
+    "etoilesSur5_one": "{{count}} star out of 5",
+    "etoilesSur5_other": "{{count}} stars out of 5",
+    "roles": {
+      "proprietaire": "Owner",
+      "locataire": "Tenant",
+      "les_deux": "Owner and tenant"
+    },
+    "form": {
+      "titre": "Your review of Werdhe",
+      "fermer": "Close",
+      "intro": "Your rating and review help future users. Your first name and the initial of your last name will be shown.",
+      "connexionRequise": "To review Werdhe, sign in or create a free account.",
+      "seConnecter": "Sign in",
+      "creerCompte": "Create an account",
+      "adminNonConcerne": "The administrator account does not post reviews.",
+      "votreNote": "Your rating",
+      "etoiles_one": "{{count}} star",
+      "etoiles_other": "{{count}} stars",
+      "votreAvis": "Your review",
+      "placeholder": "What you liked, what could be better…",
+      "moderation": "Your review will be published after validation by the Werdhe team. If you edit it, it will be validated again.",
+      "publier": "Send my review",
+      "modifier": "Update my review",
+      "retirer": "Remove my review",
+      "statut": {
+        "en_attente": "Your review is awaiting validation.",
+        "approuve": "Your review is published. Editing it will send it back for validation.",
+        "masque": "Your review is not published."
+      },
+      "erreurNote": "Choose a rating from 1 to 5 stars.",
+      "erreurTexte": "Your review must be at least {{min}} characters.",
+      "erreurGenerique": "Something went wrong. Please try again.",
+      "toastEnvoye": "Thank you! Your review will be published after validation.",
+      "toastRetire": "Your review has been removed.",
+      "confirmRetrait": "Permanently remove your review?"
+    }
   }
 }

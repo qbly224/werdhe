@@ -1,0 +1,44 @@
+/* Section « Avis » de l'accueil et fenêtre de dépôt d'avis. Couleurs = variables du système. */
+.avw-section { background: #F0F8F3; padding: clamp(50px, 8vw, 90px) 24px; }
+.avw-wrap { max-width: 1000px; margin: 0 auto; }
+.avw-head { text-align: center; margin-bottom: 36px; display: grid; gap: 10px; justify-items: center; }
+.avw-head h2 { margin: 0; }
+.avw-resume { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 6px 0 4px; }
+.avw-moy { font-family: var(--font-display); font-size: 34px; font-weight: 600; color: var(--text-primary); line-height: 1; }
+.avw-stars { display: inline-flex; gap: 3px; }
+.avw-muted { color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin: 0; }
+
+.avw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.avw-card { position: relative; background: #fff; border: 1px solid var(--green-light); border-radius: var(--radius-lg); padding: 22px 20px; display: flex; flex-direction: column; gap: 14px; }
+.avw-card--pin { border-color: var(--green-border); box-shadow: var(--shadow-md); }
+.avw-pin { position: absolute; top: 12px; right: 12px; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; color: var(--green); background: var(--green-light); border-radius: var(--radius-full); padding: 3px 9px; }
+.avw-texte { margin: 0; font-size: 14px; line-height: 1.7; color: #444; font-style: italic; overflow-wrap: anywhere; }
+.avw-auteur { display: flex; align-items: center; gap: 10px; margin-top: auto; }
+.avw-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--green); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0; }
+.avw-nom { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.avw-meta { font-size: 12px; color: var(--text-muted); }
+.avw-reponse { background: var(--green-light); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 13px; color: var(--text-primary); }
+.avw-reponse b { display: block; font-size: 12px; color: var(--green); margin-bottom: 4px; }
+.avw-reponse p { margin: 0; line-height: 1.6; overflow-wrap: anywhere; }
+
+/* Fenêtre de dépôt */
+.avw-overlay { position: fixed; inset: 0; z-index: 2000; background: rgba(8, 22, 12, .55); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.avw-dialog { position: relative; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; background: #fff; border-radius: var(--radius-lg); padding: 28px 24px 24px; box-shadow: var(--shadow-lg); outline: none; }
+.avw-dialog h3 { margin: 0 0 8px; font-family: var(--font-display); font-size: 22px; font-weight: 600; color: var(--text-primary); padding-right: 28px; }
+.avw-close { position: absolute; top: 14px; right: 14px; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 4px; border-radius: var(--radius-sm); display: inline-flex; }
+.avw-close:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+.avw-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-primary); margin: 16px 0 6px; }
+.avw-picker { display: flex; gap: 4px; }
+.avw-pick { background: none; border: none; cursor: pointer; padding: 4px; border-radius: var(--radius-sm); display: inline-flex; }
+.avw-pick:hover { background: var(--warn-soft); }
+.avw-dialog .ds-input { width: 100%; resize: vertical; font-family: inherit; }
+.avw-count { text-align: right; font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.avw-note { font-size: 12px; margin-top: 8px; }
+.avw-erreur { color: var(--danger); font-size: 13px; margin: 10px 0 0; }
+.avw-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.avw-statut { font-size: 13px; font-weight: 600; border-radius: var(--radius-sm); padding: 8px 12px; margin: 0 0 12px; }
+.avw-statut--en_attente { background: var(--warn-soft); color: var(--warn); }
+.avw-statut--approuve { background: var(--green-light); color: var(--green); }
+.avw-statut--masque { background: var(--bg-tertiary); color: var(--text-secondary); }
+.avw-section button:focus-visible, .avw-dialog button:focus-visible, .avw-dialog textarea:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.avw-head .ds-title { font-size: clamp(24px, 4vw, 38px); }

@@ -9,7 +9,7 @@ import {
   BarChart3, Users, Home, CalendarCheck, CreditCard, Ticket, Newspaper, ScrollText, Bell,
   UserPlus, Wallet, HelpCircle, KeyRound, Building2, CheckCircle2, DoorOpen, Clock,
   ClipboardList, Star, Zap, AlertTriangle, Trash2, RefreshCw, LayoutDashboard, Search,
-  Lock, Ban, Unlock, Pause, Play, FileText, Flag, Download, EyeOff, Eye,
+  Lock, Ban, Unlock, Pause, Play, FileText, Flag, Download, EyeOff, Eye, MessageSquare, Pin, PinOff, Check,
 } from 'lucide-react';
 import Logo from '../components/Logo';
 import PanneauAbonnement, { BadgeSource } from '../components/admin/PanneauAbonnement';
@@ -53,6 +53,10 @@ export default function Admin() {
   var [documents, setDocuments]     = useState([]);
   var [signalements, setSignalements] = useState([]);
   var [filterSignalement, setFilterSignalement] = useState('en_attente');
+  var [avis, setAvis] = useState([]);
+  var [avisCompte, setAvisCompte] = useState({ en_attente: 0, approuve: 0, masque: 0 });
+  var [filterAvis, setFilterAvis] = useState('en_attente');
+  var [reponses, setReponses] = useState({});
 
   useEffect(function() {
     if (user && user.role !== 'admin') {
@@ -109,6 +113,7 @@ export default function Admin() {
       api.get('/blog/admin/tous').catch(function() { return { data: { articles: [] } }; }),
       api.get('/admin/documents').catch(function() { return { data: { documents: [] } }; }),
       api.get('/admin/signalements').catch(function() { return { data: { signalements: [] } }; }),
+      api.get('/avis/admin/liste').catch(function() { return { data: { avis: [], compte: { en_attente: 0, approuve: 0, masque: 0 } } }; }),
     ]).then(function(results) {
       setStats(results[0].data);
       setUsers(results[1].data.users || []);
@@ -122,6 +127,8 @@ export default function Admin() {
       setArticlesBlog(results[9].data.articles || []);
       setDocuments(results[10].data.documents || []);
       setSignalements(results[11].data.signalements || []);
+      setAvis(results[12].data.avis || []);
+      setAvisCompte(results[12].data.compte || { en_attente: 0, approuve: 0, masque: 0 });
     }).catch(function(err) {
       console.error('[Admin] Erreur chargement:', err.message);
     }).finally(function() { setLoading(false); });
@@ -179,6 +186,19 @@ export default function Admin() {
       .then(function() { toast.success(t('admin.signalements.toastMisAJour')); charger(); })
       .catch(function() { toast.error(t('admin.erreurs.generique')); });
   }
+
+  function modererAvis(id, changements, messageOk) {
+    api.patch('/avis/admin/' + id, changements)
+      .then(function() { toast.success(messageOk); charger(); })
+      .catch(function(err) { toast.error((err.response && err.response.data && err.response.data.erreur) || t('admin.avis.erreur')); });
+  }
+  function supprimerAvis(id) {
+    if (!window.confirm(t('admin.avis.confirmSuppression'))) return;
+    api.delete('/avis/admin/' + id)
+      .then(function() { toast.success(t('admin.avis.toastSupprime')); charger(); })
+      .catch(function() { toast.error(t('admin.avis.erreur')); });
+  }
+  var avisFiltres = avis.filter(function(a) { return filterAvis === 'tous' || a.statut === filterAvis; });
 
   var signalementsFiltres = signalements.filter(function(s) {
     return filterSignalement === 'tous' || s.statut === filterSignalement;
@@ -249,6 +269,7 @@ var NAV = [
   { id: 'abonnements',  label: t('admin.nav.abonnements'),  icon: CreditCard },
   { id: 'documents',    label: t('admin.nav.documents'),    icon: FileText },
   { id: 'signalements', label: t('admin.nav.signalements'), icon: Flag },
+  { id: 'avis',         label: t('admin.nav.avis'),         icon: MessageSquare },
   { id: 'promos',       label: t('admin.nav.promos'),       icon: Ticket },
   { id: 'blog',         label: t('admin.nav.blog'),         icon: Newspaper },
   { id: 'logs',         label: t('admin.nav.logs'),         icon: ScrollText },
@@ -301,6 +322,9 @@ var NAV = [
                 style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 8, border: 'none', background: actif ? 'rgba(255,255,255,0.12)' : 'transparent', color: actif ? '#fff' : 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: actif ? 700 : 400, cursor: 'pointer', marginBottom: 4, textAlign: 'left' }}>
                 <n.icon size={16} strokeWidth={1.5} />
                 {n.label}
+                {n.id === 'avis' && avisCompte.en_attente > 0 && (
+                  <span style={{ marginLeft: 'auto', background: '#F5A623', color: '#1B2B22', borderRadius: 999, padding: '1px 8px', fontSize: 11, fontWeight: 700 }}>{avisCompte.en_attente}</span>
+                )}
               </button>
             );
           })}
@@ -328,6 +352,9 @@ var NAV = [
           <button key={n.id} onClick={function() { setOnglet(n.id); }}
             style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, border: 'none', background: onglet === n.id ? 'rgba(255,255,255,0.2)' : 'transparent', color: '#fff', fontSize: 12, cursor: 'pointer', whiteSpace: 'nowrap', fontWeight: onglet === n.id ? 700 : 400 }}>
             <n.icon size={14} strokeWidth={1.5} /> {n.label}
+            {n.id === 'avis' && avisCompte.en_attente > 0 && (
+              <span style={{ background: '#F5A623', color: '#1B2B22', borderRadius: 999, padding: '0 7px', fontSize: 11, fontWeight: 700 }}>{avisCompte.en_attente}</span>
+            )}
           </button>
         );
       })}
@@ -1294,6 +1321,89 @@ var NAV = [
 )}
 
 {/* ═══ SIGNALEMENTS (pannes / réclamations) ════════════════ */}
+{onglet === 'avis' && (
+  <div>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 10 }}>
+      <div>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <MessageSquare size={18} strokeWidth={1.8} /> {t('admin.avis.titre')}
+        </h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '4px 0 0' }}>{t('admin.avis.compteur', { attente: avisCompte.en_attente, publies: avisCompte.approuve, masques: avisCompte.masque })}</p>
+      </div>
+      <select value={filterAvis} onChange={function(e) { setFilterAvis(e.target.value); }}
+        style={{ padding: '9px 14px', borderRadius: 8, border: '0.5px solid var(--border)', fontSize: 13, outline: 'none', background: 'var(--bg-secondary)' }}>
+        <option value="en_attente">{t('admin.avis.filtres.en_attente')}</option>
+        <option value="approuve">{t('admin.avis.filtres.approuve')}</option>
+        <option value="masque">{t('admin.avis.filtres.masque')}</option>
+        <option value="tous">{t('admin.avis.filtres.tous')}</option>
+      </select>
+    </div>
+
+    {avisFiltres.length === 0 && (
+      <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)', background: 'var(--bg-secondary)', borderRadius: 12 }}>
+        {t('admin.avis.aucun')}
+      </div>
+    )}
+
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {avisFiltres.map(function(a) {
+        var cfg = a.statut === 'approuve' ? { c: 'var(--green)', bg: 'var(--green-light)' } : a.statut === 'masque' ? { c: 'var(--text-secondary)', bg: 'var(--bg-tertiary)' } : { c: 'var(--warn)', bg: 'var(--warn-soft)' };
+        var brouillon = reponses[a.id] !== undefined ? reponses[a.id] : (a.reponse || '');
+        return (
+          <div key={a.id} style={{ background: 'var(--bg-secondary)', borderRadius: 12, padding: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderLeft: '4px solid ' + cfg.c }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ display: 'flex', gap: 2 }} role="img" aria-label={t('admin.avis.noteSur5', { note: a.note })}>
+                  {[1, 2, 3, 4, 5].map(function(i) { return <Star key={i} size={15} strokeWidth={1.5} fill={i <= a.note ? '#F5A623' : 'none'} color="#F5A623" />; })}
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginTop: 6 }}>
+                  {a.prenom} {a.nom} <span style={{ fontWeight: 400, color: 'var(--text-muted)' }}>· {a.email} · {a.role}</span>
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{new Date(a.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+              </div>
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                {a.epingle && <span style={{ background: 'var(--green-light)', color: 'var(--green)', borderRadius: 999, padding: '3px 10px', fontSize: 11, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}><Pin size={11} strokeWidth={2} /> {t('admin.avis.epingle')}</span>}
+                <span style={{ background: cfg.bg, color: cfg.c, borderRadius: 999, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>{t('admin.avis.statuts.' + a.statut)}</span>
+              </div>
+            </div>
+
+            <p style={{ fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.65, margin: '12px 0', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{a.texte}</p>
+
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 4 }} htmlFor={'rep-' + a.id}>{t('admin.avis.reponsePublique')}</label>
+            <textarea id={'rep-' + a.id} rows={2} maxLength={1000} value={brouillon} placeholder={t('admin.avis.reponsePlaceholder')}
+              onChange={function(e) { var v = e.target.value; setReponses(function(r0) { var n = Object.assign({}, r0); n[a.id] = v; return n; }); }}
+              style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 13, fontFamily: 'inherit', resize: 'vertical', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }} />
+
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 10 }}>
+              {a.statut !== 'approuve' && (
+                <button onClick={function() { modererAvis(a.id, { statut: 'approuve' }, t('admin.avis.toastApprouve')); }} className="btn-green" style={{ fontSize: 12, padding: '7px 12px', display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                  <Check size={13} strokeWidth={2} /> {t('admin.avis.approuver')}
+                </button>
+              )}
+              {a.statut !== 'masque' && (
+                <button onClick={function() { modererAvis(a.id, { statut: 'masque' }, t('admin.avis.toastMasque')); }} style={{ fontSize: 12, padding: '7px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text-secondary)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 5, fontWeight: 600 }}>
+                  <EyeOff size={13} strokeWidth={1.8} /> {t('admin.avis.masquer')}
+                </button>
+              )}
+              {a.statut === 'approuve' && (
+                <button onClick={function() { modererAvis(a.id, { epingle: !a.epingle }, a.epingle ? t('admin.avis.toastDesepingle') : t('admin.avis.toastEpingle')); }} style={{ fontSize: 12, padding: '7px 12px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text-secondary)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 5, fontWeight: 600 }}>
+                  {a.epingle ? <PinOff size={13} strokeWidth={1.8} /> : <Pin size={13} strokeWidth={1.8} />} {a.epingle ? t('admin.avis.desepingler') : t('admin.avis.epingler')}
+                </button>
+              )}
+              <button onClick={function() { modererAvis(a.id, { reponse: brouillon }, t('admin.avis.toastReponse')); }} disabled={brouillon === (a.reponse || '')} style={{ fontSize: 12, padding: '7px 12px', borderRadius: 8, border: '1px solid var(--green)', background: 'transparent', color: 'var(--green)', cursor: brouillon === (a.reponse || '') ? 'default' : 'pointer', opacity: brouillon === (a.reponse || '') ? 0.5 : 1, fontWeight: 600 }}>
+                {t('admin.avis.enregistrerReponse')}
+              </button>
+              <button onClick={function() { supprimerAvis(a.id); }} style={{ fontSize: 12, padding: '7px 12px', borderRadius: 8, border: '1px solid var(--danger)', background: 'transparent', color: 'var(--danger)', cursor: 'pointer', marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 5, fontWeight: 600 }}>
+                <Trash2 size={13} strokeWidth={1.8} /> {t('admin.avis.supprimer')}
+              </button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)}
+
 {onglet === 'signalements' && (
   <div>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 10 }}>

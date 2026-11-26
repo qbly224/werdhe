@@ -16,7 +16,8 @@
       "promos": "Promo Codes",
       "blog": "Blog",
       "logs": "Audit Logs",
-      "alertes": "Alerts"
+      "alertes": "Alerts",
+      "avis": "Reviews"
     },
     "sidebar": {
       "panneauAdmin": "Admin Panel",
@@ -249,6 +250,40 @@
       "titre": "Audit Logs",
       "compteur": "{{count}} entries",
       "ip": "IP: {{ip}}"
+    },
+    "avis": {
+      "titre": "Werdhe reviews",
+      "compteur": "{{attente}} pending · {{publies}} published · {{masques}} hidden",
+      "filtres": {
+        "en_attente": "Pending",
+        "approuve": "Published",
+        "masque": "Hidden",
+        "tous": "All"
+      },
+      "statuts": {
+        "en_attente": "Pending",
+        "approuve": "Published",
+        "masque": "Hidden"
+      },
+      "aucun": "No reviews in this category.",
+      "noteSur5": "{{note}} out of 5",
+      "epingle": "Pinned",
+      "reponsePublique": "Werdhe's public reply (shown under the review)",
+      "reponsePlaceholder": "Thank you for your feedback…",
+      "approuver": "Approve",
+      "masquer": "Hide",
+      "epingler": "Pin",
+      "desepingler": "Unpin",
+      "enregistrerReponse": "Save reply",
+      "supprimer": "Delete",
+      "confirmSuppression": "Permanently delete this review?",
+      "toastApprouve": "Review published",
+      "toastMasque": "Review hidden",
+      "toastEpingle": "Review pinned",
+      "toastDesepingle": "Review unpinned",
+      "toastReponse": "Reply saved",
+      "toastSupprime": "Review deleted",
+      "erreur": "Action failed, please try again."
     }
   },
   "blogPage": {
