@@ -8,7 +8,7 @@ const db      = require('../database');
 router.get('/public', async (req, res) => {
   try {
     var [logements, users, villes] = await Promise.all([
-      db.query(`SELECT COUNT(*) as total FROM logements`),
+      db.query(`SELECT COUNT(*) as total FROM logements WHERE statut <> 'suspendu'`),
       db.query(`
         SELECT
           COUNT(*) as total,
@@ -17,7 +17,16 @@ router.get('/public', async (req, res) => {
         FROM users
         WHERE role != 'admin' AND (suspendu IS NULL OR suspendu = FALSE)
       `),
-      db.query(`SELECT COUNT(DISTINCT ville) as total FROM logements WHERE ville IS NOT NULL AND ville != ''`),
+      // Villes couvertes : on compte la région (Conakry, Boké, Kindia…) du logement, pas le champ
+      // « ville » qui contient aussi des communes (ex. Matam = Conakry). Pour les anciens logements
+      // sans région, on retombe sur le texte saisi.
+      db.query(`
+        SELECT COUNT(DISTINCT LOWER(TRIM(COALESCE(r.nom, l.ville)))) AS total
+        FROM logements l
+        LEFT JOIN regions r ON r.id = l.region_id
+        WHERE l.statut <> 'suspendu'
+          AND TRIM(COALESCE(r.nom, l.ville, '')) <> ''
+      `),
     ]);
 
     res.json({
