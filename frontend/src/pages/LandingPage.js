@@ -16,6 +16,7 @@ import SiteFooter from '../components/SiteFooter';
 import CommentCaMarche from '../components/CommentCaMarche';
 import Fonctionnalites from '../components/Fonctionnalites';
 import HeroQuittance from '../components/HeroQuittance';
+import AvisWerdhe from '../components/AvisWerdhe';
 
 function getStats(t) {
   return [
@@ -351,37 +352,8 @@ useEffect(function() {
         <CommentCaMarche />
       </section>
 
-      {/* ─── TÉMOIGNAGES / AVIS */}
-      <section id="avis" style={{ background: '#F0F8F3', padding: 'clamp(50px, 8vw, 90px) 24px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <div style={{ fontSize: 12, color: '#1B6B3A', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 }}>{t('landingPage.testimonialsSection.overline')}</div>
-            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 'clamp(24px, 4vw, 38px)', fontWeight: 600, margin: 0, color: '#1B2B22', letterSpacing: -0.5 }}>{t('landingPage.testimonialsSection.title')}</h2>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
-            {TEMOIGNAGES.map(function(t, i) {
-              return (
-                <div key={i} style={{ background: '#fff', borderRadius: 16, padding: '24px 20px', border: '1px solid #E8F5E9' }}>
-                  <div style={{ display: 'flex', gap: 4, marginBottom: 14 }}>
-                    {[1,2,3,4,5].map(function(n) { return <Star key={n} size={14} strokeWidth={1.5} fill="#F5A623" color="#F5A623" />; })}
-                  </div>
-                  <p style={{ fontSize: 14, color: '#444', lineHeight: 1.7, margin: '0 0 18px', fontStyle: 'italic' }}>"{t.texte}"</p>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <div style={{ width: 38, height: 38, borderRadius: '50%', background: t.couleur, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
-                      {t.initiales}
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#1B2B22' }}>{t.nom}</div>
-                      <div style={{ fontSize: 12, color: '#888' }}>{t.role}</div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      {/* ─── AVIS : vrais avis approuvés + témoignages conservés */}
+      <AvisWerdhe temoignages={TEMOIGNAGES} />
       {/* ─── FAQ ───────────────────────────────────────────────── */}
       <section id="faq" style={{ padding: 'clamp(50px, 8vw, 80px) 24px', maxWidth: 700, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 36 }}>

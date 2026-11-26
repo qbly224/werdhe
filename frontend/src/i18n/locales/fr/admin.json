@@ -16,7 +16,8 @@
       "promos": "Codes Promo",
       "blog": "Blog",
       "logs": "Logs Audit",
-      "alertes": "Alertes"
+      "alertes": "Alertes",
+      "avis": "Avis"
     },
     "sidebar": {
       "panneauAdmin": "Panneau Admin",
@@ -249,6 +250,40 @@
       "titre": "Logs d'audit",
       "compteur": "{{count}} entrée(s)",
       "ip": "IP: {{ip}}"
+    },
+    "avis": {
+      "titre": "Avis sur Werdhe",
+      "compteur": "{{attente}} en attente · {{publies}} publiés · {{masques}} masqués",
+      "filtres": {
+        "en_attente": "En attente",
+        "approuve": "Publiés",
+        "masque": "Masqués",
+        "tous": "Tous"
+      },
+      "statuts": {
+        "en_attente": "En attente",
+        "approuve": "Publié",
+        "masque": "Masqué"
+      },
+      "aucun": "Aucun avis dans cette catégorie.",
+      "noteSur5": "{{note}} sur 5",
+      "epingle": "Épinglé",
+      "reponsePublique": "Réponse publique de Werdhe (affichée sous l'avis)",
+      "reponsePlaceholder": "Merci pour votre retour…",
+      "approuver": "Approuver",
+      "masquer": "Masquer",
+      "epingler": "Épingler",
+      "desepingler": "Désépingler",
+      "enregistrerReponse": "Enregistrer la réponse",
+      "supprimer": "Supprimer",
+      "confirmSuppression": "Supprimer définitivement cet avis ?",
+      "toastApprouve": "Avis publié",
+      "toastMasque": "Avis masqué",
+      "toastEpingle": "Avis épinglé",
+      "toastDesepingle": "Avis désépinglé",
+      "toastReponse": "Réponse enregistrée",
+      "toastSupprime": "Avis supprimé",
+      "erreur": "Action impossible, réessayez."
     }
   },
   "blogPage": {
