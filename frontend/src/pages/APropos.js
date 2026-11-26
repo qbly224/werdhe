@@ -108,13 +108,13 @@ export default function APropos() {
       <div style={{ position: 'relative', overflow: 'hidden', background: '#1B2B22' }}>
       <img src="/img/residences/villa-conakry.jpg" alt="" aria-hidden="true"
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 12, 0.74)' }} />
-      <div style={{ position: 'relative', zIndex: 1, padding: 'clamp(48px, 8vw, 80px) 24px', textAlign: 'center' }}>
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 12, 0.5)' }} />
+      <div style={{ position: 'relative', zIndex: 1, padding: 'clamp(64px, 10vw, 110px) 24px clamp(40px, 6vw, 64px)', textAlign: 'center', textShadow: '0 1px 10px rgba(0,0,0,0.55)' }}>
         <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: 700, color: '#fff', margin: '0 0 16px', letterSpacing: -0.5, lineHeight: 1.15 }}>
           {t('apropos.heroTitre1')}<br/>
           {t('apropos.heroTitre2')}
         </h1>
-        <p style={{ fontSize: 'clamp(15px, 2vw, 18px)', color: 'rgba(255,255,255,0.72)', maxWidth: 560, margin: '0 auto 32px', lineHeight: 1.7 }}>
+        <p style={{ fontSize: 'clamp(15px, 2vw, 18px)', color: 'rgba(255,255,255,0.92)', maxWidth: 560, margin: '0 auto 32px', lineHeight: 1.7 }}>
           {t('apropos.heroDesc')}
         </p>
         <Link to="/logements" className="ds-btn ds-btn--primary">
@@ -129,7 +129,7 @@ export default function APropos() {
             return (
               <div key={i} style={{ textAlign: 'center', padding: '16px 8px' }}>
                 <div style={{ fontSize: 'clamp(28px, 5vw, 40px)', fontWeight: 700, color: '#fff' }}>{s.val}</div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 6 }}>{s.label}</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', marginTop: 6 }}>{s.label}</div>
               </div>
             );
           })}
@@ -250,16 +250,18 @@ export default function APropos() {
           </div>
         </section>
 
-        {/* CTA */}
-        <section style={{ position: 'relative', overflow: 'hidden', background: '#1B2B22', borderRadius: 16, padding: 'clamp(32px, 5vw, 48px) 32px', textAlign: 'center' }}>
+      </div>
+
+      {/* CTA pleine largeur, photo de maisons */}
+        <section style={{ position: 'relative', overflow: 'hidden', background: '#1B2B22', padding: 'clamp(64px, 9vw, 110px) 24px', textAlign: 'center', textShadow: '0 1px 10px rgba(0,0,0,0.55)' }}>
           <img src="/img/residences/bungalow-residence.jpg" alt="" aria-hidden="true" loading="lazy"
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 12, 0.78)' }} />
-          <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 12, 0.5)' }} />
+          <div style={{ position: 'relative', zIndex: 1, maxWidth: 640, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 700, color: '#fff', margin: '0 0 14px', letterSpacing: -0.5 }}>
             {t('apropos.cta.titre')}
           </h2>
-          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.7)', margin: '0 0 28px', maxWidth: 440, marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.6 }}>
+          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.92)', margin: '0 0 28px', maxWidth: 440, marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.6 }}>
             {t('apropos.cta.desc')}
           </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -268,13 +270,12 @@ export default function APropos() {
               {t('apropos.cta.creerCompte')} <ArrowRight size={16} strokeWidth={2.5} />
             </Link>
             <Link to="/contact"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: 15 }}>
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, border: '1.5px solid rgba(255,255,255,0.7)', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: 15 }}>
               {t('apropos.cta.contact')}
             </Link>
           </div>
           </div>
         </section>
-      </div>
       <SiteFooter />
     </div>
   );
