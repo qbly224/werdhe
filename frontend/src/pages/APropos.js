@@ -104,8 +104,12 @@ export default function APropos() {
       <SiteHeader />
 
 
-      {/* Hero */}
-      <div style={{ background: '#1B2B22', padding: 'clamp(48px, 8vw, 80px) 24px', textAlign: 'center' }}>
+      {/* Hero + chiffres : photo de maisons voilée d'un aplat vert foncé */}
+      <div style={{ position: 'relative', overflow: 'hidden', background: '#1B2B22' }}>
+      <img src="/img/residences/villa-conakry.jpg" alt="" aria-hidden="true"
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 12, 0.74)' }} />
+      <div style={{ position: 'relative', zIndex: 1, padding: 'clamp(48px, 8vw, 80px) 24px', textAlign: 'center' }}>
         <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: 700, color: '#fff', margin: '0 0 16px', letterSpacing: -0.5, lineHeight: 1.15 }}>
           {t('apropos.heroTitre1')}<br/>
           {t('apropos.heroTitre2')}
@@ -119,7 +123,7 @@ export default function APropos() {
       </div>
 
       {/* Stats */}
-      <div style={{ background: '#1B2B22', padding: 'clamp(24px, 4vw, 40px) 24px' }}>
+      <div style={{ position: 'relative', zIndex: 1, padding: 'clamp(24px, 4vw, 40px) 24px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 8, maxWidth: 700, margin: '0 auto' }}>
           {STATS.map(function(s, i) {
             return (
@@ -130,6 +134,7 @@ export default function APropos() {
             );
           })}
         </div>
+      </div>
       </div>
 
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '40px 16px 60px' }}>
@@ -246,7 +251,11 @@ export default function APropos() {
         </section>
 
         {/* CTA */}
-        <section style={{ background: '#1B2B22', borderRadius: 16, padding: 'clamp(32px, 5vw, 48px) 32px', textAlign: 'center' }}>
+        <section style={{ position: 'relative', overflow: 'hidden', background: '#1B2B22', borderRadius: 16, padding: 'clamp(32px, 5vw, 48px) 32px', textAlign: 'center' }}>
+          <img src="/img/residences/bungalow-residence.jpg" alt="" aria-hidden="true" loading="lazy"
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 12, 0.78)' }} />
+          <div style={{ position: 'relative', zIndex: 1 }}>
           <h2 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 700, color: '#fff', margin: '0 0 14px', letterSpacing: -0.5 }}>
             {t('apropos.cta.titre')}
           </h2>
@@ -262,6 +271,7 @@ export default function APropos() {
               style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 12, border: '1.5px solid rgba(255,255,255,0.3)', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: 15 }}>
               {t('apropos.cta.contact')}
             </Link>
+          </div>
           </div>
         </section>
       </div>
