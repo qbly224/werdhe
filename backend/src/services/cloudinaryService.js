@@ -69,6 +69,28 @@ async function uploaderImageChatbot(buffer, mimeType) {
   return result.secure_url;
 }
 
+// Capture d'écran du SMS de l'opérateur jointe à une déclaration de paiement mobile.
+// En mémoire : on ne téléverse qu'après validation de la déclaration (pas de fichier orphelin).
+// Redimensionnée sans recadrage (le texte du SMS doit rester entier et lisible).
+const uploadCapturePaiement = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024, files: 1 },
+  fileFilter: (req, file, cb) => {
+    const typesAutorises = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (typesAutorises.includes(file.mimetype)) cb(null, true);
+    else cb(new Error('Format non supporté. Utilisez JPG, PNG ou WEBP'), false);
+  }
+});
+
+async function uploaderCapturePaiement(buffer, mimeType) {
+  var dataUri = 'data:' + mimeType + ';base64,' + buffer.toString('base64');
+  var result = await cloudinary.uploader.upload(dataUri, {
+    folder: 'werdhe/captures-paiement',
+    transformation: [{ width: 1600, height: 1600, crop: 'limit', quality: 'auto' }]
+  });
+  return result.secure_url;
+}
+
 // Supprimer une photo de Cloudinary
 const supprimerPhoto = async (publicId) => {
   try {
@@ -80,4 +102,4 @@ const supprimerPhoto = async (publicId) => {
   }
 };
 
-module.exports = { upload, uploadChatbot, uploaderImageChatbot, supprimerPhoto, cloudinary };
+module.exports = { upload, uploadChatbot, uploaderImageChatbot, uploadCapturePaiement, uploaderCapturePaiement, supprimerPhoto, cloudinary };

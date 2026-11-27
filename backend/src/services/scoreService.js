@@ -19,7 +19,7 @@ async function calculerScore(userId) {
       db.query('SELECT * FROM users WHERE id = $1', [userId]),
       db.query('SELECT COUNT(*) as nb FROM reservations WHERE locataire_id = $1', [userId]),
       db.query(`SELECT COUNT(*) as nb FROM reservations WHERE locataire_id = $1 AND statut = 'confirmee'`, [userId]),
-      db.query(`SELECT COUNT(*) as nb, COUNT(*) FILTER (WHERE statut = 'complete') as ok FROM paiements p JOIN reservations r ON p.reservation_id = r.id WHERE r.locataire_id = $1`, [userId]),
+      db.query(`SELECT COUNT(*) as nb, COUNT(*) FILTER (WHERE statut IN ('complete', 'confirme')) as ok FROM paiements p JOIN reservations r ON p.reservation_id = r.id WHERE r.locataire_id = $1`, [userId]),
       db.query('SELECT AVG(note) as moyenne FROM notations WHERE cible_id = $1', [userId]),
     ]);
 

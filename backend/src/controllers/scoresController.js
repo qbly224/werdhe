@@ -44,7 +44,7 @@ const recalculerMonScore = async (req, res) => {
     // Compter les paiements à l'heure vs en retard
     var paiements = await db.query(
       `SELECT
-         COUNT(CASE WHEN statut = 'complete' THEN 1 END) as a_temps,
+         COUNT(CASE WHEN statut IN ('complete', 'confirme') THEN 1 END) as a_temps,
          COUNT(CASE WHEN statut = 'en_retard' THEN 1 END) as en_retard
        FROM paiements
        WHERE locataire_id = $1`,

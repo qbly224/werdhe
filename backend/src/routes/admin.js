@@ -60,9 +60,9 @@ router.get('/stats', verifierToken, verifierAdmin, async (req, res) => {
       // Stats paiements (depuis la table paiements directement)
       db.query(`
         SELECT
-          COALESCE(SUM(montant) FILTER (WHERE statut = 'complete'), 0) as revenus_plateforme,
-          COALESCE(SUM(montant) FILTER (WHERE statut = 'complete'), 0) as revenus_encaisses,
-          COUNT(*) FILTER (WHERE statut = 'complete') as nb_commissions,
+          COALESCE(SUM(montant) FILTER (WHERE statut IN ('complete', 'confirme')), 0) as revenus_plateforme,
+          COALESCE(SUM(montant) FILTER (WHERE statut IN ('complete', 'confirme')), 0) as revenus_encaisses,
+          COUNT(*) FILTER (WHERE statut IN ('complete', 'confirme')) as nb_commissions,
           COALESCE(SUM(montant), 0) as volume_total
         FROM paiements
         WHERE created_at >= NOW() - INTERVAL '30 days'
@@ -264,7 +264,7 @@ router.get('/users/:id', verifierToken, verifierAdmin, async (req, res) => {
        FROM users u
        LEFT JOIN logements l ON l.proprietaire_id = u.id
        LEFT JOIN reservations r ON r.locataire_id = u.id
-       LEFT JOIN paiements p ON (p.locataire_id = u.id OR p.proprietaire_id = u.id) AND p.statut = 'complete'
+       LEFT JOIN paiements p ON (p.locataire_id = u.id OR p.proprietaire_id = u.id) AND p.statut IN ('complete', 'confirme')
        WHERE u.id = $1
        GROUP BY u.id`,
       [req.params.id]
@@ -404,7 +404,7 @@ router.get('/paiements', verifierToken, verifierAdmin, async (req, res) => {
     );
 
     var total = await db.query(
-      `SELECT COUNT(*), COALESCE(SUM(p.montant), 0) as volume
+      `SELECT COUNT(*), COALESCE(SUM(p.montant) FILTER (WHERE p.statut NOT IN ('declare', 'conteste')), 0) as volume
        FROM paiements p
        LEFT JOIN users u_loc ON p.locataire_id = u_loc.id
        LEFT JOIN reservations r ON p.reservation_id = r.id
@@ -586,9 +586,9 @@ router.get('/revenus', verifierToken, verifierAdmin, async (req, res) => {
       // information, ce n'est pas un revenu de Werdhe
       db.query(`
         SELECT
-          COUNT(*) as nb_paiements,
-          COALESCE(SUM(montant), 0) as total_paiements,
-          COALESCE(SUM(CASE WHEN statut = 'complete' THEN montant END), 0) as encaisse,
+          COUNT(*) FILTER (WHERE statut NOT IN ('declare', 'conteste')) as nb_paiements,
+          COALESCE(SUM(montant) FILTER (WHERE statut NOT IN ('declare', 'conteste')), 0) as total_paiements,
+          COALESCE(SUM(CASE WHEN statut IN ('complete', 'confirme') THEN montant END), 0) as encaisse,
           COALESCE(SUM(CASE WHEN statut = 'en_attente' THEN montant END), 0) as en_attente
         FROM paiements
         WHERE created_at >= NOW() - INTERVAL '30 days'
@@ -639,6 +639,7 @@ router.get('/revenus', verifierToken, verifierAdmin, async (req, res) => {
           COUNT(*) as nb_paiements
         FROM paiements
         WHERE created_at >= NOW() - INTERVAL '6 months'
+          AND statut NOT IN ('declare', 'conteste')
         GROUP BY DATE_TRUNC('month', created_at)
         ORDER BY mois ASC
       `),
@@ -746,7 +747,7 @@ router.get('/stats/live', verifierToken, verifierAdmin, async (req, res) => {
         UNION ALL
         SELECT 'logement', titre, created_at FROM logements
         UNION ALL
-        SELECT 'paiement', montant::text || ' GNF', created_at FROM paiements
+        SELECT 'paiement', montant::text || ' GNF', created_at FROM paiements WHERE statut NOT IN ('declare', 'conteste')
         ORDER BY created_at DESC
         LIMIT 5
       `),
@@ -770,7 +771,7 @@ router.get('/stats/live', verifierToken, verifierAdmin, async (req, res) => {
       db.query(`
         SELECT COUNT(*) as nb, COALESCE(SUM(montant), 0) as total
         FROM paiements
-        WHERE DATE(created_at) = CURRENT_DATE AND statut = 'complete'
+        WHERE DATE(created_at) = CURRENT_DATE AND statut IN ('complete', 'confirme')
       `),
 
       // Candidatures aujourd'hui

@@ -33,7 +33,15 @@ cron.schedule('0 8 * * *', async function() {
        WHERE r.statut = 'confirmee'
          AND r.bail_signe = TRUE
          AND EXTRACT(DAY FROM NOW()) = 28
-         AND u_prop.plan IN ('pro', 'agence')`
+         AND u_prop.plan IN ('pro', 'agence')
+         AND NOT EXISTS (
+           SELECT 1 FROM paiements p
+           WHERE p.reservation_id = r.id
+             AND p.mode_paiement = 'mobile_money_declare'
+             AND p.statut IN ('declare', 'confirme')
+             AND DATE_TRUNC('month', NOW() + INTERVAL '1 month') >= DATE_TRUNC('month', p.periode_debut)
+             AND DATE_TRUNC('month', NOW() + INTERVAL '1 month') < DATE_TRUNC('month', p.periode_debut) + (p.nb_mois * INTERVAL '1 month')
+         )`
       // Le 28 de chaque mois = 3 jours avant le 1er du mois suivant
       // Alertes automatiques réservées aux plans Pro/Agence
     );
@@ -323,8 +331,16 @@ cron.schedule('0 7 * * *', async function() {
          AND NOT EXISTS (
            SELECT 1 FROM paiements p
            WHERE p.reservation_id = r.id
-             AND p.statut = 'complete'
-             AND DATE_TRUNC('month', p.created_at) = DATE_TRUNC('month', NOW())
+             AND (
+               (p.mode_paiement <> 'mobile_money_declare'
+                 AND p.statut IN ('complete', 'confirme')
+                 AND DATE_TRUNC('month', p.created_at) = DATE_TRUNC('month', NOW()))
+               -- Déclaration mobile en attente ou confirmée couvrant ce mois : pas de relance
+               OR (p.mode_paiement = 'mobile_money_declare'
+                 AND p.statut IN ('declare', 'confirme')
+                 AND DATE_TRUNC('month', NOW()) >= DATE_TRUNC('month', p.periode_debut)
+                 AND DATE_TRUNC('month', NOW()) < DATE_TRUNC('month', p.periode_debut) + (p.nb_mois * INTERVAL '1 month'))
+             )
          )`
     );
 
@@ -761,3 +777,16 @@ async function rappelsAccusePreavis() {
 cron.schedule('40 * * * *', rappelsAccusePreavis);
 
 module.exports = { rappelsAccusePreavis };
+
+// ═════════════════════════════════════════════════
+// CRON — Paiement mobile déclaré : quittances des confirmations dont l'envoi n'a pas eu lieu
+// (fenêtre d'annulation écoulée, serveur redémarré entre-temps). Chaque minute.
+// ═════════════════════════════════════════════════
+cron.schedule('* * * * *', async function() {
+  try {
+    var n = await require('./paiementMobileService').balayerQuittances();
+    if (n > 0) console.log('[CRON] Quittances mobiles traitées :', n);
+  } catch (err) {
+    console.error('[CRON] Balayage quittances mobiles :', err.message);
+  }
+});

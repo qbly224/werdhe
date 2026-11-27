@@ -12,9 +12,9 @@ async function genererRapportFinancierPDF(userId) {
 
     db.query(`
       SELECT
-        COALESCE(SUM(p.montant) FILTER (WHERE p.statut = 'complete'), 0)   as encaisse,
+        COALESCE(SUM(p.montant) FILTER (WHERE p.statut IN ('complete', 'confirme')), 0)   as encaisse,
         COALESCE(SUM(p.montant) FILTER (WHERE p.statut = 'en_attente'), 0) as en_attente,
-        COUNT(p.id) FILTER (WHERE p.statut = 'complete')                    as nb_paiements,
+        COUNT(p.id) FILTER (WHERE p.statut IN ('complete', 'confirme'))                    as nb_paiements,
         COUNT(DISTINCT r.locataire_id)                                       as nb_locataires
       FROM paiements p
       JOIN reservations r ON p.reservation_id = r.id
@@ -26,8 +26,8 @@ async function genererRapportFinancierPDF(userId) {
     db.query(`
       SELECT
         TO_CHAR(DATE_TRUNC('month', p.created_at), 'Month YYYY') as mois,
-        COALESCE(SUM(p.montant) FILTER (WHERE p.statut = 'complete'), 0) as revenus,
-        COUNT(p.id) FILTER (WHERE p.statut = 'complete') as nb_paiements
+        COALESCE(SUM(p.montant) FILTER (WHERE p.statut IN ('complete', 'confirme')), 0) as revenus,
+        COUNT(p.id) FILTER (WHERE p.statut IN ('complete', 'confirme')) as nb_paiements
       FROM paiements p
       JOIN reservations r ON p.reservation_id = r.id
       JOIN logements l ON r.logement_id = l.id
@@ -39,7 +39,7 @@ async function genererRapportFinancierPDF(userId) {
 
     db.query(`
       SELECT l.titre, l.prix_mensuel,
-        COALESCE(SUM(p.montant) FILTER (WHERE p.statut = 'complete'), 0) as total_encaisse
+        COALESCE(SUM(p.montant) FILTER (WHERE p.statut IN ('complete', 'confirme')), 0) as total_encaisse
       FROM logements l
       LEFT JOIN reservations r ON r.logement_id = l.id
       LEFT JOIN paiements p ON p.reservation_id = r.id
@@ -187,7 +187,7 @@ async function genererRapportFinancierPDF(userId) {
       var bg = i % 2 === 0 ? '#FFFFFF' : '#F9F9F9';
       doc.rect(50, tableY, 495, 20).fill(bg);
 
-      var statutColor = p.statut === 'complete' ? '#1B6B3A' : '#E65100';
+      var statutColor = ['complete', 'confirme'].includes(p.statut) ? '#1B6B3A' : '#E65100';
       doc.fontSize(9).fillColor('#1B2B22').font('Helvetica');
       doc.text((p.loc_prenom + ' ' + p.loc_nom).slice(0, 18),   58,  tableY + 6, { width: 110 });
       doc.text(p.logement_titre.slice(0, 22),                    173, tableY + 6, { width: 130 });

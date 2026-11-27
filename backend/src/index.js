@@ -187,6 +187,7 @@ app.use('/auth',              authRoutes);
 app.use('/logements',         logementRoutes);
 app.use('/logements',         photoRoutes);
 app.use('/reservations',      reservationRoutes);
+app.use('/paiements/mobile',  require('./routes/paiementsMobile'));
 app.use('/paiements',         paiementRoutes);
 app.use('/localisation',      localisationRoutes);
 app.use('/documents',         documentRoutes);
