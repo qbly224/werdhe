@@ -1,0 +1,59 @@
+/* Abonnement par Orange Money (paiement manuel) : feuille depuis le bas sur mobile, fenêtre centrée dès 640 px. */
+.aom { position: fixed; inset: 0; z-index: 10001; background: rgba(20, 37, 26, .55); display: flex; align-items: flex-end; justify-content: center; font-family: var(--font-body); }
+.aom__fenetre { width: 100%; max-width: 560px; max-height: 92vh; max-height: 92dvh; display: flex; flex-direction: column; background: var(--bg-secondary, #fff); border-radius: 20px 20px 0 0; outline: none; }
+.aom__tete { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 20px 12px; border-bottom: 1px solid var(--line, #E5E7EB); }
+.aom__tete h2 { margin: 0; font-family: var(--font-display); font-size: 20px; font-weight: 600; color: var(--ink, #14251A); }
+.aom__fermer { width: 44px; height: 44px; margin-right: -10px; border: none; background: transparent; border-radius: 50%; cursor: pointer; color: var(--text-secondary); display: inline-flex; align-items: center; justify-content: center; }
+.aom__fermer:hover { background: var(--surface-soft); }
+.aom__corps { padding: 16px 20px 24px; overflow-y: auto; -webkit-overflow-scrolling: touch; display: grid; gap: 0; }
+.aom__muted { margin: 0 0 14px; font-size: 14px; line-height: 1.6; color: var(--text-secondary); }
+.aom__h3 { margin: 18px 0 8px; font-size: 15px; font-weight: 600; color: var(--ink, #14251A); }
+
+.aom__durees { border: none; margin: 0 0 14px; padding: 0; min-width: 0; }
+.aom__durees legend { padding: 0; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+.aom__durees-liste { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.aom__duree { position: relative; min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 1px solid var(--line, #E5E7EB); border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; background: #fff; text-align: center; padding: 6px 4px; }
+.aom__duree input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.aom__duree small { font-size: 11px; font-weight: 600; color: var(--green); }
+.aom__duree.on { border: 2px solid var(--green); background: var(--green-light); color: var(--green); }
+.aom__duree:focus-within { outline: 2px solid var(--gold, #C9A24B); outline-offset: 2px; }
+
+.aom__carte { background: #14251A; color: #fff; border-radius: 16px; padding: 16px 18px; }
+.aom__carte-libelle { font-size: 13px; color: rgba(255, 255, 255, .78); }
+.aom__carte-montant { margin-top: 4px; font-family: var(--font-display); font-size: clamp(28px, 8vw, 34px); font-weight: 600; line-height: 1.1; }
+.aom__carte-promo { margin-top: 6px; font-size: 12px; color: rgba(255, 255, 255, .8); }
+
+.aom__etapes { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.aom__etapes li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; line-height: 1.5; color: var(--text-primary); }
+.aom__n { width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; background: var(--green); color: #fff; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; }
+.aom__numero { margin-top: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 14px 16px; border: 2px solid var(--green); border-radius: 14px; background: var(--green-light); }
+.aom__numero-libelle { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+.aom__numero-valeur { font-family: var(--font-mono); font-size: 20px; font-weight: 600; letter-spacing: .5px; color: var(--ink, #14251A); }
+
+.aom__recap { margin: 0; display: grid; gap: 0; border: 1px solid var(--line, #E5E7EB); border-radius: 12px; overflow: hidden; }
+.aom__recap > div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 14px; font-size: 14px; border-bottom: 1px solid var(--line, #E5E7EB); }
+.aom__recap > div:last-child { border-bottom: none; }
+.aom__recap dt { color: var(--text-muted); flex-shrink: 0; }
+.aom__recap dd { margin: 0; font-weight: 600; text-align: right; min-width: 0; overflow-wrap: anywhere; }
+.aom__mono { font-family: var(--font-mono); }
+
+.aom__champ { display: block; margin: 16px 0 6px; font-size: 14px; font-weight: 600; color: var(--ink, #14251A); }
+.aom .ds-input { width: 100%; min-height: 48px; font-size: 16px; }
+.aom__aide { margin: 6px 0 0; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+.aom__erreur { margin: 14px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--danger-soft); color: var(--danger); font-size: 14px; }
+.aom__refus { margin: 0 0 14px; padding: 10px 12px; border-radius: 10px; background: var(--warn-soft); color: var(--warn); font-size: 14px; line-height: 1.5; }
+.aom__envoyer { margin-top: 18px; min-height: 52px; }
+
+.aom__succes, .aom__attente { display: grid; gap: 12px; text-align: center; justify-items: center; }
+.aom__attente { text-align: left; justify-items: stretch; }
+.aom__succes h3, .aom__attente h3 { margin: 0; font-family: var(--font-display); font-size: 22px; font-weight: 600; }
+.aom__succes p, .aom__attente p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--text-secondary); }
+.aom__succes-icone { width: 56px; height: 56px; border-radius: 50%; background: var(--green-light); color: var(--green); display: inline-flex; align-items: center; justify-content: center; }
+.aom__code b { font-family: var(--font-mono); color: var(--ink, #14251A); }
+.aom__succes .ds-btn { width: 100%; }
+
+@media (min-width: 640px) {
+  .aom { align-items: center; padding: 24px; }
+  .aom__fenetre { border-radius: 20px; max-height: 90vh; }
+}
+@media (max-width: 380px) { .aom__durees-liste { grid-template-columns: repeat(2, 1fr); } .aom__numero-valeur { font-size: 18px; } }

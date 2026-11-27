@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import Logo from '../components/Logo';
 import PanneauAbonnement, { BadgeSource } from '../components/admin/PanneauAbonnement';
+import DemandesAbonnement from '../components/admin/DemandesAbonnement';
 
 var GNF = function(n) { return new Intl.NumberFormat('fr-FR').format(n) + ' GNF'; };
 
@@ -1001,6 +1002,7 @@ var NAV = [
         <CreditCard size={18} strokeWidth={1.8} /> {t('admin.abonnements.titre')}
       </h1>
     </div>
+    <DemandesAbonnement onChange={charger} />
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       {users.filter(function(u) { return u.role !== 'admin'; }).map(function(u) {
         return (
