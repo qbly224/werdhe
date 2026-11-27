@@ -1,0 +1,67 @@
+/* Héros de l'accueil : texte + recherche, et photo réelle dans un cadre portrait (3/4).
+   Mobile d'abord : une colonne ; deux colonnes dès 768 px. */
+.hx { background: var(--surface-soft); padding: 28px 20px 40px; }
+.hx__grille { max-width: 1240px; margin: 0 auto; display: grid; gap: 32px; align-items: center; }
+.hx__texte { display: grid; gap: 0; min-width: 0; text-align: center; }
+.hx__titre { margin: 0 0 14px; font-family: var(--font-display); font-weight: 600; font-size: clamp(34px, 9vw, 44px); line-height: 1.08; letter-spacing: -.02em; color: var(--ink); }
+.hx__sous { margin: 0 auto 26px; max-width: 520px; font-size: clamp(16px, 4.2vw, 18px); line-height: 1.6; color: var(--text-secondary); }
+
+.hx__recherche { position: relative; display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-full); padding: 6px 6px 6px 48px; box-shadow: var(--shadow-md); max-width: 560px; width: 100%; margin: 0 auto; }
+.hx__recherche:focus-within { border-color: var(--green); box-shadow: 0 0 0 3px rgba(27, 107, 58, .15), var(--shadow-md); }
+.hx__loupe { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+.hx__recherche input { flex: 1; min-width: 0; min-height: 48px; border: none; outline: none; background: transparent; font: inherit; font-size: 16px; color: var(--ink); }
+.hx__recherche input::placeholder { color: var(--text-muted); font-style: italic; }
+.hx__recherche button { flex-shrink: 0; min-height: 48px; padding: 0 22px; border: none; border-radius: var(--radius-full); background: var(--green); color: #fff; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; }
+.hx__recherche button:hover { background: var(--green-dark); }
+.hx__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.hx__exemple { margin: 12px 0 18px; font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); }
+.hx__badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.hx__badge { display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: var(--radius-full); background: #fff; color: var(--ink); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.hx__badge:hover { border-color: var(--green); color: var(--green); }
+
+/* Cadre photo : proportion de la photo (portrait 3/4), jamais agrandie à la taille de l'écran. */
+.hx__visuel { position: relative; width: 100%; max-width: 480px; margin: 0 auto; }
+.hx__cadre { position: relative; aspect-ratio: 3 / 4; border-radius: 24px; overflow: hidden; background: var(--ink); box-shadow: var(--shadow-lg); }
+.hx__photo { position: absolute; inset: 0; opacity: 0; transition: opacity .9s ease; }
+.hx__photo.on { opacity: 1; }
+.hx__photo picture { display: block; width: 100%; height: 100%; }
+.hx__photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
+.hx__legende { position: absolute; left: 14px; top: 14px; max-width: calc(100% - 28px); padding: 7px 12px; border-radius: var(--radius-full); background: rgba(20, 37, 26, .72); color: #fff; font-size: 12px; font-weight: 600; line-height: 1.3; }
+.hx__points { position: absolute; right: 12px; bottom: 12px; display: flex; gap: 2px; }
+.hx__point { width: 28px; height: 44px; padding: 0; border: none; background: transparent; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+.hx__point::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, .55); transition: width .2s ease, background .2s ease; }
+.hx__point.on::before { width: 22px; border-radius: 4px; background: #fff; }
+.hx button:focus-visible, .hx input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.hx__recherche input:focus-visible { outline: none; }
+
+/* Petit téléphone : le bouton passe sous le champ pour que la recherche reste lisible */
+@media (max-width: 479px) {
+  .hx__recherche { flex-wrap: wrap; border-radius: 28px; padding: 6px; }
+  .hx__recherche input { flex: 1 1 100%; padding-left: 42px; }
+  .hx__loupe { top: 30px; transform: translateY(-50%); left: 20px; }
+  .hx__recherche button { flex: 1 1 100%; }
+}
+@media (min-width: 520px) { .hx { padding: 36px 28px 48px; } }
+
+/* Tablette et ordinateur : deux colonnes */
+@media (min-width: 768px) {
+  .hx { padding: 48px 32px 64px; }
+  .hx__grille { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 40px; }
+  .hx__texte { text-align: left; }
+  .hx__sous { margin-left: 0; margin-right: 0; }
+  .hx__recherche { margin-left: 0; margin-right: 0; }
+  .hx__badges { justify-content: flex-start; }
+  .hx__visuel { max-width: 560px; margin: 0 0 0 auto; }
+}
+@media (min-width: 1100px) {
+  .hx { padding: 64px 40px 80px; }
+  .hx__grille { gap: 72px; }
+  .hx__titre { font-size: clamp(48px, 4.6vw, 64px); }
+  .hx__sous { font-size: 19px; }
+  /* La carte « quittance » flotte sur le coin de la photo */
+  .hx .hq { display: block; right: auto; left: -56px; bottom: 56px; }
+}
+/* Écran bas : la photo ne dépasse pas la hauteur de l'écran */
+@media (max-height: 760px) and (min-width: 768px) { .hx__visuel { max-width: min(560px, calc((100vh - 140px) * .75)); } }
+
+@media (prefers-reduced-motion: reduce) { .hx__photo { transition: none; } .hx__point::before { transition: none; } }

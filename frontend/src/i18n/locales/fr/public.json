@@ -80,9 +80,20 @@
       "sansFrais": "Sans frais cachés"
     },
     "trust": {
-      "label": "Paiements acceptés",
+      "label": "Paiement du loyer",
       "especes": "Espèces",
-      "virement": "Virement"
+      "disponible": "Disponible",
+      "bientot": "Bientôt"
+    },
+    "hero": {
+      "rechercheLabel": "Rechercher un logement",
+      "carrouselLabel": "Photos de logements en Guinée",
+      "photoN": "Photo {{n}} sur {{total}}",
+      "alt": {
+        "villa": "Villa moderne blanche avec balcons vitrés, porte en bois et jardin",
+        "aerienne": "Vue aérienne de Conakry au coucher du soleil",
+        "bungalow": "Maison de plain-pied avec jardin et allée en pavés"
+      }
     },
     "stats": {
       "logementsDisponibles": "Logements disponibles",
@@ -344,7 +355,7 @@
     "faq": [
       { "q": "Werdhe est-il gratuit pour les locataires ?", "r": "Oui, 100% gratuit pour toujours. Aucun frais d'agence, aucune commission." },
       { "q": "Comment fonctionne l'essai Pro / Agence ?", "r": "1 mois complet d'accès au plan choisi, sans paiement requis. À la fin, vous choisissez de continuer ou non." },
-      { "q": "Quels modes de paiement sont acceptés ?", "r": "Orange Money, MTN MoMo, espèces et virement bancaire (BICIGUI, Ecobank)." },
+      { "q": "Quels modes de paiement sont acceptés ?", "r": "Aujourd'hui, le loyer se règle en espèces : le propriétaire enregistre le paiement sur Werdhe et le locataire reçoit sa quittance par e-mail. Le paiement mobile (Orange Money, MTN MoMo) arrive bientôt. En attendant, le locataire peut payer son propriétaire par Mobile Money sur le numéro que celui-ci indique, puis le déclarer sur Werdhe : le propriétaire confirme et la quittance part par e-mail." },
       { "q": "Mes données sont-elles sécurisées ?", "r": "Oui. HTTPS, mots de passe hachés, 2FA admin, aucune donnée bancaire stockée." },
       { "q": "Puis-je gérer plusieurs logements ?", "r": "Oui. Le plan Pro permet jusqu'à {{pro}} biens, le plan Agence est illimité." }
     ],

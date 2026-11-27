@@ -15,7 +15,8 @@ import SiteHeader from '../components/SiteHeader';
 import SiteFooter from '../components/SiteFooter';
 import CommentCaMarche from '../components/CommentCaMarche';
 import Fonctionnalites from '../components/Fonctionnalites';
-import HeroQuittance from '../components/HeroQuittance';
+import HeroAccueil from '../components/HeroAccueil';
+import BandePaiements from '../components/BandePaiements';
 import AvisWerdhe from '../components/AvisWerdhe';
 
 function getStats(t) {
@@ -93,44 +94,11 @@ function FaqLanding() {
     </div>
   );
 }
-function getSlides(t) {
-  return [
-    {
-      img:    '/img/residences/vue-aerienne-conakry.jpg',
-      titre:  t('landingPage.slides.0.titre'),
-      sous:   t('landingPage.slides.0.sous'),
-      tag:    t('landingPage.slides.0.tag'),
-    },
-    {
-      img:    '/img/residences/villa-conakry.jpg',
-      titre:  t('landingPage.slides.1.titre'),
-      sous:   t('landingPage.slides.1.sous'),
-      tag:    t('landingPage.slides.1.tag'),
-    },
-    {
-      img:    '/img/residences/immeuble-moderne.jpg',
-      titre:  t('landingPage.slides.2.titre'),
-      sous:   t('landingPage.slides.2.sous'),
-      tag:    t('landingPage.slides.2.tag'),
-    },
-    {
-      img:    '/img/residences/bungalow-residence.jpg',
-      titre:  t('landingPage.slides.3.titre'),
-      sous:   t('landingPage.slides.3.sous'),
-      tag:    t('landingPage.slides.3.tag'),
-    },
-  ];
-}
 export default function LandingPage() {
   var t                   = useTranslation('public').t;
   var navigate            = useNavigate();
   var { user }             = useAuth();
-  var heroRef             = useRef(null);
   var [compteurs, setCompteurs] = useState({ logements: 0, utilisateurs: 0 });
-  var [slideActif, setSlideActif] = useState(0);
-  var [souris, setSouris] = useState({ x: 0, y: 0 });
-  var [recherche, setRecherche] = useState('');
-  var SLIDES              = getSlides(t);
   var STATS                = getStats(t);
   var TEMOIGNAGES          = getTemoignages(t);
   var limitesPlans         = useLimitesPlans();
@@ -142,23 +110,7 @@ useEffect(function() {
   }
 }, []);
 
-useEffect(function() {
-  function handleMouse(e) {
-    setSouris({
-      x: (e.clientX / window.innerWidth  - 0.5) * 20,
-      y: (e.clientY / window.innerHeight - 0.5) * 20,
-    });
-  }
-  window.addEventListener('mousemove', handleMouse);
-  return function() { window.removeEventListener('mousemove', handleMouse); };
-}, []);
 
-useEffect(function() {
-  var interval = setInterval(function() {
-    setSlideActif(function(i) { return (i + 1) % SLIDES.length; });
-  }, 5000);
-  return function() { clearInterval(interval); };
-}, []);
 
   useEffect(function() {
     var annule = false;
@@ -205,114 +157,10 @@ useEffect(function() {
       />
       <SiteHeader />
 
-      {/* ─── HERO PLEIN ÉCRAN ────────────────────────────────── */}
-      <section ref={heroRef} style={{ position: 'relative', height: '100vh', minHeight: 600, maxHeight: 900, overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-
-        {/* Photos slides */}
-        {SLIDES.map(function(slide, i) {
-          return (
-            <div key={i} style={{ position: 'absolute', inset: 0, opacity: slideActif === i ? 1 : 0, transition: 'opacity 1.4s ease', zIndex: 0 }}>
-            <img src={slide.img} alt="" style={{ width: '105%', height: '105%', objectFit: 'cover', objectPosition: 'center', transform: 'translate(' + (souris.x * -0.5) + 'px, ' + (souris.y * -0.5) + 'px)', transition: 'transform 0.15s ease-out', marginLeft: '-2.5%', marginTop: '-2.5%' }} />
-            </div>
-          );
-        })}
-
-        {/* Voile uni pour la lisibilité du texte */}
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(8, 22, 12, 0.55)', zIndex: 1 }} />
-
-        {/* Contenu hero */}
-        <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 960, margin: '0 auto', padding: '0 24px', textAlign: 'center', transform: 'translate(' + (souris.x * 0.3) + 'px, ' + (souris.y * 0.3) + 'px)', transition: 'transform 0.1s ease-out' }}>
-
-          {/* Titre */}
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 6vw, 64px)', fontWeight: 700, color: '#fff', margin: '0 0 14px', letterSpacing: -1, lineHeight: 1.1 }}>
-            {SLIDES[slideActif].titre}
-          </h1>
-          <p style={{ fontSize: 'clamp(15px, 2vw, 19px)', color: 'rgba(255,255,255,0.85)', margin: '0 auto 36px', lineHeight: 1.6, maxWidth: 580 }}>
-            {SLIDES[slideActif].sous}
-          </p>
-
-          {/* Barre de recherche unique */}
-          <form onSubmit={function(e) {
-              e.preventDefault();
-              navigate(recherche.trim() ? '/logements?search=' + encodeURIComponent(recherche.trim()) : '/logements');
-            }}
-            style={{ maxWidth: 560, margin: '0 auto 10px' }}>
-            <div style={{ background: '#fff', borderRadius: 30, padding: '6px 6px 6px 22px', display: 'flex', alignItems: 'center', gap: 10, boxShadow: '0 8px 40px rgba(0,0,0,0.25)' }}>
-              <Search size={17} strokeWidth={1.5} color="#8A8370" style={{ flexShrink: 0 }} />
-              <input
-                type="text"
-                value={recherche}
-                onChange={function(e) { setRecherche(e.target.value); }}
-                placeholder={t('landingPage.search.placeholderUnique')}
-                style={{ flex: 1, minWidth: 0, border: 'none', background: 'transparent', outline: 'none', fontFamily: "'Fraunces', serif", fontStyle: 'italic', fontSize: 15, color: '#1B2B22' }} />
-              <button type="submit"
-                style={{ flexShrink: 0, padding: '12px 22px', borderRadius: 16, border: 'none', background: '#1B6B3A', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}>
-                {t('landingPage.search.rechercher')}
-              </button>
-            </div>
-          </form>
-          <div style={{ textAlign: 'center', marginBottom: 28 }}>
-            <span style={{ display: 'inline-block', fontFamily: 'var(--font-mono)', fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>
-              {t('landingPage.search.exemple')}
-            </span>
-          </div>
-
-          {/* Badges rapides */}
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-            {[
-              { icon: <Building2 size={13} strokeWidth={1.5} />, label: t('landingPage.quickBadges.appartements') },
-              { icon: <Home size={13} strokeWidth={1.5} />,      label: t('landingPage.quickBadges.villas')       },
-              { icon: <Key size={13} strokeWidth={1.5} />,       label: t('landingPage.quickBadges.studios')      },
-              { icon: <Users size={13} strokeWidth={1.5} />,     label: t('landingPage.quickBadges.colocations')  },
-            ].map(function(b, i) {
-              return (
-                <button key={i} onClick={function() { navigate('/logements'); }}
-                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 16, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.1)', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                  {b.icon} {b.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <HeroQuittance />
-
-        {/* Slides nav points */}
-        <div style={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 10, zIndex: 2 }}>
-          {SLIDES.map(function(_, i) {
-            var actif = slideActif === i;
-            return (
-              <button key={i} onClick={function() { setSlideActif(i); }} aria-label={'Slide ' + (i + 1)}
-                style={{ width: actif ? 12 : 9, height: actif ? 12 : 9, borderRadius: '50%', border: actif ? 'none' : '1.5px solid rgba(255,255,255,0.7)', background: actif ? '#fff' : 'rgba(255,255,255,0.35)', boxShadow: 'none', cursor: 'pointer', transition: 'all .3s', padding: 0 }} />
-            );
-          })}
-        </div>
-
-        {/* Scroll indicator */}
-        <div style={{ position: 'absolute', bottom: 28, right: 28, zIndex: 2 }}>
-          <div style={{ width: 40, height: 40, borderRadius: '50%', border: '1.5px solid rgba(255,255,255,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', animation: 'flottement 2s ease-in-out infinite' }}
-            onClick={function() { document.getElementById('fonctionnalites') && document.getElementById('fonctionnalites').scrollIntoView({ behavior: 'smooth' }); }}>
-            <ChevronRight size={18} color="rgba(255,255,255,0.8)" strokeWidth={2} style={{ transform: 'rotate(90deg)' }} />
-          </div>
-        </div>
-      </section>
-      {/* ─── CONFIANCE ─────────────────────────────────────────── */}
-      <div style={{ background: '#fff', borderTop: '0.5px solid #F0F0F0', borderBottom: '0.5px solid #F0F0F0', padding: '14px 24px' }}>
-        <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'clamp(16px, 4vw, 40px)', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 12, color: '#aaa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>{t('landingPage.trust.label')}</span>
-          {[
-            { nom: 'Orange Money', couleur: '#FF6600' },
-            { nom: 'MTN MoMo',    couleur: '#FFCB00' },
-            { nom: t('landingPage.trust.especes'),      couleur: '#1B6B3A' },
-            { nom: t('landingPage.trust.virement'),     couleur: '#1565C0' },
-          ].map(function(p, i) {
-            return (
-              <span key={i} style={{ fontSize: 13, fontWeight: 700, color: '#555', display: 'flex', alignItems: 'center', gap: 4 }}>{p.nom}</span>
-            );
-          })}
-        </div>
-      </div>
-
+      {/* ─── HÉROS : texte, recherche et photo réelle (cadre portrait, sans zoom) */}
+      <HeroAccueil />
+      {/* ─── PAIEMENT DU LOYER : espèces disponible, paiement mobile « Bientôt » */}
+      <BandePaiements />
       {/* ─── STATS ─────────────────────────────────────────────── */}
       <section style={{ background: '#1B2B22', padding: 'clamp(32px, 5vw, 56px) 24px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 8, maxWidth: 900, margin: '0 auto' }}>
