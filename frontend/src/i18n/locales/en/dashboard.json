@@ -1953,6 +1953,40 @@
     }
   },
   "paiementMobile": {
+    "proprio": {
+      "verifier": {
+        "titre": "To verify",
+        "compteur_one": "{{count}} to verify",
+        "compteur_other": "{{count}} to verify",
+        "toutVerifie": "Everything is verified",
+        "recuSur": "Received on",
+        "code": "Transaction code",
+        "periode": "Period",
+        "voirCapture": "View the SMS screenshot",
+        "consigne": "Check on your phone that this amount has arrived with this code before confirming.",
+        "confirmer": "Confirm receipt",
+        "rien": "I received nothing",
+        "annuler": "Undo",
+        "confirme": "Confirmed. The rent is marked as paid and the receipt has been sent by e-mail to {{prenom}}.",
+        "conteste": "Disputed. {{prenom}} has been notified and can reply to you in messages.",
+        "erreur": "Action not possible. Please try again."
+      },
+      "parametres": {
+        "titre": "Receive rent by mobile payment",
+        "directBientot": "Direct payment coming soon",
+        "intro": "One operator or both. Your tenants will only see your choices.",
+        "numero": "Receiving number",
+        "numeroPlaceholder": "6XX XX XX XX",
+        "erreurNumero": "Invalid number: 9 digits starting with 6.",
+        "apercuTitre": "What your tenants will see",
+        "apercuAucun": "No operator: your tenants will not see the mobile payment section.",
+        "apercuNumero": "Number: {{numero}}",
+        "mention": "A declared payment only counts as paid after you confirm it.",
+        "enregistrer": "Save",
+        "enregistre": "Settings saved",
+        "erreurGenerique": "Saving failed. Please try again."
+      }
+    },
     "titre": "Pay my rent",
     "chargement": "Loading…",
     "erreurChargement": "Unable to load this screen. Please try again.",
