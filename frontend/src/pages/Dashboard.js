@@ -11,7 +11,7 @@ import OngletPreavisComponent from '../components/OngletPreavis';
 import EtatDesLieux from '../components/EtatDesLieux';
 import ActesSignature from '../components/ActesSignature';
 import OngletPaiementsComponent from '../components/OngletPaiements';
-import ModalPaiementMobile from '../components/ModalPaiementMobile';
+import AbonnementOrangeMoney from '../components/AbonnementOrangeMoney';
 import PayerLoyer from '../components/paiement-mobile/PayerLoyer';
 import AVerifier from '../components/paiement-mobile/AVerifier';
 import ParametresPaiementMobile from '../components/paiement-mobile/ParametresPaiementMobile';
@@ -4639,7 +4639,6 @@ function OngletParametres(props) {
   var [formSupport, setFormSupport] = useState({ sujet: '', message: '' });
   var [envoiSupportLoading, setEnvoiSupportLoading] = useState(false);
 
-  var PRIX_ABONNEMENT = { pro: 120000, agence: 300000 };
   var CYCLES_ABONNEMENT = {
     mensuel:    { label: t('ongletParametres.cycles.mensuel'), mois: 1,  reduction: 0    },
     semestriel: { label: t('ongletParametres.cycles.semestriel'),  mois: 6,  reduction: 0.10 },
@@ -4861,11 +4860,9 @@ function OngletParametres(props) {
 </div>
 
 {showPaiementAbo && (
-  <ModalPaiementMobile
-    montant={Math.round(PRIX_ABONNEMENT[showPaiementAbo] * CYCLES_ABONNEMENT[cycleChoisi].mois * (1 - CYCLES_ABONNEMENT[cycleChoisi].reduction))}
-    titre={t('ongletParametres.abonnementTitre', { plan: showPaiementAbo === 'pro' ? 'Pro' : 'Agence', cycle: CYCLES_ABONNEMENT[cycleChoisi].label })}
-    payload={{ plan: showPaiementAbo, cycle: cycleChoisi }}
-    endpoint="/abonnements/souscrire"
+  <AbonnementOrangeMoney
+    plan={showPaiementAbo}
+    dureeInitiale={CYCLES_ABONNEMENT[cycleChoisi] ? CYCLES_ABONNEMENT[cycleChoisi].mois : 1}
     onClose={function() { setShowPaiementAbo(null); }}
   />
 )}

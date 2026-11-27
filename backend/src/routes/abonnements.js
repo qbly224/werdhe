@@ -1,4 +1,5 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const router  = express.Router();
 const db      = require('../database');
 const verifierToken = require('../middleware/auth');
@@ -6,6 +7,7 @@ const resoudreProprietaireEffectif = require('../middleware/equipe');
 const { getPlan } = require('../middleware/verifierPlan');
 const { PLANS, PRIX_MENSUEL, limitesPubliques } = require('../config/plans');
 const djomyService = require('../services/djomyService');
+const demandes = require('../services/demandeAbonnementService');
 const { remettreEnLigneBiens, activerAbonnementPaye, marquerFactureEchouee } = require('../services/abonnementService');
 
 // Cycles de facturation disponibles
@@ -288,5 +290,41 @@ router.get('/djomy/statut/:facture_id', verifierToken, async (req, res) => {
     res.status(500).json({ erreur: 'Erreur serveur' });
   }
 });
+
+// ─── PAIEMENT PAR ORANGE MONEY (manuel) ───────────────────────────────
+// Le paiement en ligne de l'abonnement n'est pas disponible : le propriétaire paie sur le numéro
+// Orange Money de Werdhe puis envoie une demande ; un administrateur la vérifie et active l'abonnement.
+var limiteurDemande = rateLimit({
+  windowMs: 60 * 60 * 1000, max: 10, standardHeaders: true, legacyHeaders: false,
+  keyGenerator: function(req) { return 'abo:' + (req.user && req.user.id); },   // par compte (la route est authentifiée)
+  validate: { keyGeneratorIpFallback: false },
+  message: { erreur: 'Trop de tentatives. Réessayez plus tard.' },
+});
+function repondre(action) {
+  return async function(req, res) {
+    try { await action(req, res); }
+    catch (err) {
+      if (err.statutHttp) return res.status(err.statutHttp).json(Object.assign({ erreur: err.message }, err.extra || {}));
+      console.error('[Demande abonnement]', req.method, req.originalUrl, err.message);
+      res.status(500).json({ erreur: 'Erreur serveur' });
+    }
+  };
+}
+
+router.get('/demandes/infos', verifierToken, repondre(async function(req, res) {
+  res.json(await demandes.infos(req.user.id));
+}));
+
+router.post('/demandes', verifierToken, limiteurDemande, repondre(async function(req, res) {
+  var b = req.body || {};
+  res.status(201).json(await demandes.creer({
+    userId: req.user.id, plan: b.plan, duree: b.duree, reference: b.reference,
+    numero_expediteur: b.numero_expediteur, code_promo: b.code_promo,
+  }));
+}));
+
+router.patch('/demandes/:id/annuler', verifierToken, repondre(async function(req, res) {
+  res.json(await demandes.annuler(req.user.id, req.params.id));
+}));
 
 module.exports = router;

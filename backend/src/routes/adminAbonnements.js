@@ -3,6 +3,7 @@ const router  = express.Router();
 const db      = require('../database');
 const verifierToken = require('../middleware/auth');
 const adminAbonnements = require('../services/adminAbonnementService');
+const demandes = require('../services/demandeAbonnementService');
 
 // Le rôle est relu en base : un JWT d'admin encore valide ne suffit pas si le
 // compte a perdu son rôle ou a été suspendu depuis son émission.
@@ -67,6 +68,19 @@ router.post('/proprietaires/:id/paiement-manuel', garde, gerer(async function(re
     plan: req.body.plan, duree: req.body.duree, montant: req.body.montant,
     moyen: req.body.moyen, reference: req.body.reference,
   }));
+}));
+
+// ─── Demandes d'abonnement payées par Orange Money ──────────────────
+router.get('/demandes-abonnement', garde, gerer(async function(req, res) {
+  res.json(await demandes.lister(req.query.statut));
+}));
+
+router.post('/demandes-abonnement/:id/confirmer', garde, gerer(async function(req, res) {
+  res.json(await demandes.confirmer({ adminId: req.user.id, id: req.params.id }));
+}));
+
+router.post('/demandes-abonnement/:id/refuser', garde, gerer(async function(req, res) {
+  res.json(await demandes.refuser({ adminId: req.user.id, id: req.params.id, motif: req.body && req.body.motif }));
 }));
 
 module.exports = router;

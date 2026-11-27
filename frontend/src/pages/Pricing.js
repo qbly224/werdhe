@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-import ModalPaiementMobile from '../components/ModalPaiementMobile';
+import AbonnementOrangeMoney from '../components/AbonnementOrangeMoney';
 import { useAuth } from '../context/AuthContext';
 import { Check, X, ChevronDown, ChevronUp, Zap, Building2, Users, ArrowRight, Info } from 'lucide-react';
 import SiteHeader from '../components/SiteHeader';
@@ -152,7 +152,7 @@ export default function Pricing() {
         // Essai déjà utilisé ou abonnement déjà actif → payer directement
         var msg = err.response && err.response.data ? err.response.data.erreur : '';
         toast(msg || t('pricing.essaiDejaUtilise'), { icon: <Info size={16} strokeWidth={1.5} /> });
-        toast(t('pricing.paiementBientot'), { icon: <Info size={16} strokeWidth={1.5} /> });
+        setShowPaiement(planId);
       })
       .finally(function() { setEssaiEnCours(null); });
   }
@@ -204,13 +204,13 @@ export default function Pricing() {
         </div>
       </div>
 
-      {/* Modal paiement Mobile Money (abonnement) */}
+      {/* Paiement de l'abonnement par Orange Money (manuel : demande vérifiée par un administrateur) */}
       {showPaiement && (
-        <ModalPaiementMobile
-          montant={montantCycle(PLANS.find(function(p) { return p.id === showPaiement; }).prix_mois)}
-          titre={t('pricing.modalTitre', { plan: showPaiement === 'pro' ? t('pricing.plans.pro.nom') : t('pricing.plans.agence.nom'), cycle: CYCLES[cycle].label })}
-          payload={{ plan: showPaiement, cycle: cycle, code_promo: codeOk && codeOk.valide ? code : undefined }}
-          endpoint="/abonnements/souscrire"
+        <AbonnementOrangeMoney
+          plan={showPaiement}
+          dureeInitiale={cycle === 'annuel' ? 12 : cycle === 'semestriel' ? 6 : 1}
+          codePromo={codeOk && codeOk.valide ? code.trim() : undefined}
+          reductionPromo={codeOk && codeOk.valide ? codeOk.reduction_pct : 0}
           onClose={function() { setShowPaiement(null); }}
         />
       )}

@@ -481,6 +481,50 @@ const emailPaiementDeclare = async (proprio, locataire, d) => {
     </div>`, 'Paiement mobile à vérifier'));
 };
 
+// ─── DEMANDES D'ABONNEMENT (paiement Orange Money manuel) ───────────────
+const FRONT_URL = process.env.FRONTEND_URL || 'https://www.werdhe.com';
+function gnf(n) { return new Intl.NumberFormat('fr-FR').format(Number(n)) + ' GNF'; }
+
+// Vers l'administrateur : une demande à vérifier.
+const emailDemandeAbonnementAdmin = async (user, d) => {
+  var cfgAbo = require('../config/paiementAbonnement');
+  return envoyer(cfgAbo.emailAdmin(), 'Abonnement à vérifier : ' + echapperHtml(user.prenom + ' ' + user.nom) + ' (' + d.code + ')', templateBase(`
+    ${hdr('#1B6B3A', '', 'Nouvelle demande d’abonnement', 'Paiement Orange Money à vérifier')}
+    <div style="padding:24px;">
+      <div style="background:#F7F8F7;border-radius:10px;padding:14px 18px;margin:0 0 16px;">
+        ${ligne('Demande', echapperHtml(d.code))}${ligne('Propriétaire', echapperHtml(user.prenom + ' ' + user.nom))}${ligne('E-mail', echapperHtml(user.email))}${ligne('Téléphone', echapperHtml(user.telephone || '-'))}
+        ${ligne('Plan', nomPlan(d.plan))}${ligne('Durée', d.duree_mois + ' mois')}${ligne('Montant attendu', gnf(d.montant))}${d.code_promo ? ligne('Code promo', echapperHtml(d.code_promo)) : ''}
+        ${ligne('Référence du paiement', echapperHtml(d.reference_paiement))}${d.numero_expediteur ? ligne('Payé depuis', echapperHtml(d.numero_expediteur)) : ''}
+      </div>
+      <p style="font-size:14px;color:#555;line-height:1.7;margin:0;">Vérifiez sur Orange Money que ce montant est bien arrivé avec cette référence, puis confirmez la demande dans l’espace admin : l’abonnement sera activé automatiquement.</p>
+      ${btn('Ouvrir les demandes', FRONT_URL + '/admin', '#1B6B3A')}
+    </div>`, 'Demande d’abonnement'));
+};
+
+// Vers le propriétaire : demande bien reçue (aucun délai promis).
+const emailDemandeAbonnementRecue = async (user, d) => {
+  return envoyer(user.email, 'Demande d’abonnement reçue (' + d.code + ')', templateBase(`
+    ${hdr('#1B6B3A', '', 'Demande reçue', 'Nous vérifions votre paiement')}
+    <div style="padding:24px;">
+      <p style="font-size:14px;color:#555;line-height:1.7;margin:0 0 16px;">Bonjour ${echapperHtml(user.prenom)}, nous avons bien reçu votre demande d’abonnement. Votre accès sera activé dès que nous aurons vérifié la réception de votre paiement Orange Money. Vous recevrez alors votre facture par e-mail.</p>
+      <div style="background:#F7F8F7;border-radius:10px;padding:14px 18px;margin:0 0 16px;">
+        ${ligne('Demande', echapperHtml(d.code))}${ligne('Plan', nomPlan(d.plan))}${ligne('Durée', d.duree_mois + ' mois')}${ligne('Montant', gnf(d.montant))}${ligne('Référence du paiement', echapperHtml(d.reference_paiement))}
+      </div>
+    </div>`, 'Demande d’abonnement reçue'));
+};
+
+// Vers le propriétaire : demande refusée, avec le motif.
+const emailDemandeAbonnementRefusee = async (user, d) => {
+  return envoyer(user.email, 'Votre demande d’abonnement n’a pas pu être validée (' + d.code + ')', templateBase(`
+    ${hdr('#B3261E', '', 'Demande non validée', echapperHtml(d.code))}
+    <div style="padding:24px;">
+      <p style="font-size:14px;color:#555;line-height:1.7;margin:0 0 12px;">Bonjour ${echapperHtml(user.prenom)}, nous n’avons pas pu valider votre demande d’abonnement.</p>
+      <div style="background:#FDECEA;border-radius:10px;padding:14px 18px;margin:0 0 16px;"><p style="font-size:13px;color:#7A1A14;margin:0;white-space:pre-wrap;"><b>Motif :</b> ${echapperHtml(d.motif_refus || '')}</p></div>
+      <p style="font-size:14px;color:#555;line-height:1.7;margin:0;">Vous pouvez refaire une demande depuis la page Tarifs, ou nous écrire à contact@werdhe.com.</p>
+      ${btn('Voir les tarifs', FRONT_URL + '/pricing', '#1B6B3A')}
+    </div>`, 'Demande non validée'));
+};
+
 module.exports = {
   envoyerEmailReset,
   envoyerEmailDocument,
@@ -502,4 +546,7 @@ module.exports = {
   emailAccesOffert,
   emailAccesOffertBientotTermine,
   emailAccesRevoque,
+  emailDemandeAbonnementAdmin,
+  emailDemandeAbonnementRecue,
+  emailDemandeAbonnementRefusee,
 };
