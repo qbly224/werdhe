@@ -22,7 +22,7 @@ router.post('/', verifierToken, effectuerPaiement);
 router.get('/mes-paiements', verifierToken, async (req, res) => {
   try {
     var result = await db.query(
-      `SELECT p.*,
+      `SELECT p.*, to_char(p.periode_debut, 'YYYY-MM-DD') AS periode_debut_txt,
          l.titre as logement_titre,
          l.adresse as logement_adresse
        FROM paiements p

@@ -557,7 +557,9 @@
       "apparaitront": "Vos paiements apparaîtront ici",
       "paye": "Payé",
       "enAttente": "En attente",
-      "totalPaye": "Total payé"
+      "totalPaye": "Total payé",
+      "declare": "En attente de confirmation",
+      "conteste": "Contesté"
     },
     "notations": {
       "aucun": "Aucun avis",
@@ -1948,6 +1950,82 @@
         "continuerBouton": "Continuer : préparer le préavis officiel",
         "erreurSelectionComplete": "Sélectionnez un bien, un motif et un délai"
       }
+    }
+  },
+  "paiementMobile": {
+    "titre": "Payer mon loyer",
+    "chargement": "Chargement…",
+    "erreurChargement": "Impossible de charger cet écran. Réessayez.",
+    "toutPaye": "Aucun loyer à payer pour le moment.",
+    "carteAria": "Loyer de {{mois}}",
+    "loyerDe": "Loyer de {{mois}}",
+    "proprietaire": "Propriétaire : {{nom}}",
+    "avantLe": "Avant le {{date}}",
+    "commentPayer": "Comment payer ?",
+    "especes": {
+      "titre": "Espèces",
+      "dispo": "Disponible maintenant",
+      "etape1": "Remettez l'argent à votre propriétaire.",
+      "etape2": "Il enregistre le paiement sur Werdhè.",
+      "etape3": "Vous recevez votre quittance par e-mail.",
+      "signaler": "Signaler un paiement en espèces"
+    },
+    "paiementMobile": "Paiement mobile",
+    "bientotDispo": "Bientôt disponible",
+    "bientot": "Bientôt",
+    "toucherPourEnSavoir": "Touchez pour en savoir plus",
+    "dejaPaye": "J'ai déjà payé par paiement mobile",
+    "dejaPayeAide": "Déclarez-le pour recevoir votre quittance",
+    "nomCourt": {
+      "orange_money": "Orange Money",
+      "mtn_momo": "MTN MoMo"
+    },
+    "feuille": {
+      "titre": "Bientôt disponible sur Werdhè",
+      "texte": "Bientôt, vous paierez votre loyer depuis Werdhè en quelques secondes. Le paiement sera confirmé automatiquement et votre quittance envoyée par e-mail.",
+      "enAttendant": "En attendant, payez votre propriétaire sur ce numéro",
+      "operateur": "Opérateur",
+      "proprietaire": "Propriétaire",
+      "numero": "Numéro",
+      "copier": "Copier",
+      "copie": "Copié",
+      "jaiPaye": "J'ai payé, je le déclare",
+      "prevenir": "Me prévenir quand c'est disponible",
+      "noteOk": "C'est noté, vous serez prévenu",
+      "fermer": "Fermer"
+    },
+    "declarer": {
+      "titre": "Déclarer un paiement",
+      "sousTitre": "Votre propriétaire devra le confirmer",
+      "retour": "Retour",
+      "avecQuoi": "Avec quoi avez-vous payé ?",
+      "payeAvec": "Payé avec {{operateur}} au {{numero}}",
+      "auNumero": "Au numéro {{numero}}",
+      "combienMois": "Pour combien de mois ?",
+      "mois_one": "{{count}} mois",
+      "mois_other": "{{count}} mois",
+      "montant": "Montant :",
+      "code": "Code de la transaction",
+      "codeAide1": "Il figure dans le SMS de l'opérateur.",
+      "codeAide2": "Il permet à votre propriétaire de retrouver votre paiement.",
+      "ajouterCapture": "Ajouter une capture du SMS (facultatif)",
+      "retirerCapture": "Retirer la capture",
+      "saisirCode": "Saisissez le code pour continuer",
+      "envoyer": "Envoyer à mon propriétaire",
+      "erreurFormat": "La capture doit être une image JPG, PNG ou WEBP.",
+      "erreurTaille": "La capture est trop lourde (5 Mo maximum).",
+      "erreurGenerique": "L'envoi a échoué. Réessayez.",
+      "envoyeeTitre": "Déclaration envoyée",
+      "friseAria": "Suivi de votre déclaration",
+      "frise": {
+        "declare": "Paiement déclaré",
+        "declareQuand": "à l'instant",
+        "confirmation": "Confirmation du propriétaire",
+        "confirmationQuand": "en attente",
+        "quittance": "Quittance envoyée par e-mail",
+        "quittanceQuand": "dès la confirmation"
+      },
+      "retourAccueil": "Retour à l'accueil"
     }
   }
 }

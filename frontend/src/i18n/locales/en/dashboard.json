@@ -557,7 +557,9 @@
       "apparaitront": "Your payments will appear here",
       "paye": "Paid",
       "enAttente": "Pending",
-      "totalPaye": "Total paid"
+      "totalPaye": "Total paid",
+      "declare": "Awaiting confirmation",
+      "conteste": "Disputed"
     },
     "notations": {
       "aucun": "No review",
@@ -1948,6 +1950,82 @@
         "continuerBouton": "Continue: prepare the official notice",
         "erreurSelectionComplete": "Select a property, a reason and a notice period"
       }
+    }
+  },
+  "paiementMobile": {
+    "titre": "Pay my rent",
+    "chargement": "Loading…",
+    "erreurChargement": "Unable to load this screen. Please try again.",
+    "toutPaye": "No rent to pay right now.",
+    "carteAria": "Rent for {{mois}}",
+    "loyerDe": "Rent for {{mois}}",
+    "proprietaire": "Owner: {{nom}}",
+    "avantLe": "Before {{date}}",
+    "commentPayer": "How to pay?",
+    "especes": {
+      "titre": "Cash",
+      "dispo": "Available now",
+      "etape1": "Hand the money to your owner.",
+      "etape2": "They record the payment on Werdhè.",
+      "etape3": "You receive your receipt by e-mail.",
+      "signaler": "Report a cash payment"
+    },
+    "paiementMobile": "Mobile payment",
+    "bientotDispo": "Coming soon",
+    "bientot": "Soon",
+    "toucherPourEnSavoir": "Tap to learn more",
+    "dejaPaye": "I already paid by mobile payment",
+    "dejaPayeAide": "Declare it to receive your receipt",
+    "nomCourt": {
+      "orange_money": "Orange Money",
+      "mtn_momo": "MTN MoMo"
+    },
+    "feuille": {
+      "titre": "Coming soon on Werdhè",
+      "texte": "Soon, you will pay your rent from Werdhè in a few seconds. The payment will be confirmed automatically and your receipt sent by e-mail.",
+      "enAttendant": "In the meantime, pay your owner on this number",
+      "operateur": "Operator",
+      "proprietaire": "Owner",
+      "numero": "Number",
+      "copier": "Copy",
+      "copie": "Copied",
+      "jaiPaye": "I paid, declare it",
+      "prevenir": "Notify me when it's available",
+      "noteOk": "Noted, you will be notified",
+      "fermer": "Close"
+    },
+    "declarer": {
+      "titre": "Declare a payment",
+      "sousTitre": "Your owner will have to confirm it",
+      "retour": "Back",
+      "avecQuoi": "What did you pay with?",
+      "payeAvec": "Paid with {{operateur}} to {{numero}}",
+      "auNumero": "To number {{numero}}",
+      "combienMois": "For how many months?",
+      "mois_one": "{{count}} month",
+      "mois_other": "{{count}} months",
+      "montant": "Amount:",
+      "code": "Transaction code",
+      "codeAide1": "It appears in the operator's SMS.",
+      "codeAide2": "It lets your owner find your payment.",
+      "ajouterCapture": "Add a screenshot of the SMS (optional)",
+      "retirerCapture": "Remove the screenshot",
+      "saisirCode": "Enter the code to continue",
+      "envoyer": "Send to my owner",
+      "erreurFormat": "The screenshot must be a JPG, PNG or WEBP image.",
+      "erreurTaille": "The screenshot is too large (5 MB maximum).",
+      "erreurGenerique": "Sending failed. Please try again.",
+      "envoyeeTitre": "Declaration sent",
+      "friseAria": "Progress of your declaration",
+      "frise": {
+        "declare": "Payment declared",
+        "declareQuand": "just now",
+        "confirmation": "Owner's confirmation",
+        "confirmationQuand": "pending",
+        "quittance": "Receipt sent by e-mail",
+        "quittanceQuand": "as soon as confirmed"
+      },
+      "retourAccueil": "Back to home"
     }
   }
 }

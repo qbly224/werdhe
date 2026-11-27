@@ -147,7 +147,10 @@ export default function AvisWerdhe(props) {
   var [ouvert, setOuvert] = useState(false);
 
   var charger = useCallback(function() {
-    api.get('/avis/public').then(function(res) { setDonnees(res.data); }).catch(function() { /* section statique seule */ });
+    api.get('/avis/public').then(function(res) {
+      var d = res.data || {};
+      setDonnees({ total: Number(d.total) || 0, moyenne: d.moyenne || null, avis: Array.isArray(d.avis) ? d.avis : [] });
+    }).catch(function() { /* section statique seule */ });
   }, []);
   useEffect(function() { charger(); }, [charger]);
 

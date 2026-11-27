@@ -46,7 +46,7 @@ router.get('/historique', verifierToken, async (req, res) => {
       `, [req.user.id]),
 
       db.query(`
-        SELECT p.*,
+        SELECT p.*, to_char(p.periode_debut, 'YYYY-MM-DD') AS periode_debut_txt,
           l.titre as logement_titre
         FROM paiements p
         JOIN reservations r ON p.reservation_id = r.id

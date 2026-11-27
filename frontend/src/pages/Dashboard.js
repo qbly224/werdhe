@@ -12,6 +12,7 @@ import EtatDesLieux from '../components/EtatDesLieux';
 import ActesSignature from '../components/ActesSignature';
 import OngletPaiementsComponent from '../components/OngletPaiements';
 import ModalPaiementMobile from '../components/ModalPaiementMobile';
+import PayerLoyer from '../components/paiement-mobile/PayerLoyer';
 import ModalSignatureBail from '../components/ModalSignatureBail';
 import useDarkMode from '../hooks/useDarkMode';
 import RechercheGlobale from '../components/dashboard/RechercheGlobale';
@@ -207,7 +208,7 @@ function OngletOverviewLocataire(props) {
 
   var locationsActives  = (stats.reservations || []).filter(function(r) { return r.statut === 'confirmee'; });
   var candidatures      = (stats.reservations || []).filter(function(r) { return r.statut !== 'confirmee' && r.statut !== 'terminee'; });
-  var paiementsOk       = (stats.paiements   || []).filter(function(p) { return p.statut === 'complete'; });
+  var paiementsOk       = (stats.paiements   || []).filter(function(p) { return p.statut === 'complete' || p.statut === 'confirme'; });
   var totalPaye         = paiementsOk.reduce(function(s, p) { return s + Number(p.montant); }, 0);
 
   return (
@@ -2081,12 +2082,25 @@ function OngletPaiements(props) {
 // complet ce mois-ci, en retard si un paiement est en attente, impayé sinon.
 function statutLoyerDuMois(paiements, reservationId) {
   var maintenant = new Date();
-  var duMois = (paiements || []).filter(function(p) {
-    if (!reservationId || String(p.reservation_id) !== String(reservationId)) return false;
+  var moisCourant = maintenant.getFullYear() * 12 + maintenant.getMonth();
+  var duBail = (paiements || []).filter(function(p) {
+    return reservationId && String(p.reservation_id) === String(reservationId);
+  });
+  // Un paiement mobile CONFIRMÉ couvre [periode_debut, periode_debut + nb_mois[. Une déclaration
+  // non confirmée (« declare ») ou contestée ne compte jamais comme payée.
+  var couvertParMobile = duBail.some(function(p) {
+    if (p.mode_paiement !== 'mobile_money_declare' || p.statut !== 'confirme') return false;
+    var debut = String(p.periode_debut_txt || p.periode_debut || '').slice(0, 7);
+    if (!/^\d{4}-\d{2}$/.test(debut)) return false;
+    var n = parseInt(debut.slice(0, 4), 10) * 12 + parseInt(debut.slice(5, 7), 10) - 1;
+    return moisCourant >= n && moisCourant < n + (p.nb_mois || 1);
+  });
+  var duMois = duBail.filter(function(p) {
+    if (p.mode_paiement === 'mobile_money_declare') return false;
     var d = new Date(p.date_paiement || p.created_at);
     return d.getFullYear() === maintenant.getFullYear() && d.getMonth() === maintenant.getMonth();
   });
-  if (duMois.some(function(p) { return p.statut === 'complete'; })) return { statut: 'paye', jours: 0 };
+  if (couvertParMobile || duMois.some(function(p) { return p.statut === 'complete'; })) return { statut: 'paye', jours: 0 };
   var attente = duMois.filter(function(p) { return p.statut === 'en_attente'; })[0];
   if (attente) {
     return { statut: 'en_retard', jours: Math.max(0, Math.floor((maintenant - new Date(attente.created_at)) / 86400000)) };
@@ -2241,7 +2255,6 @@ function PaiementsLocataire(props) {
   var stats = props.stats;
   var [logement, setLogement] = useState(null);
   var [reservationReelle, setReservationReelle] = useState(null);
-  var [showPaiementDjomy, setShowPaiementDjomy] = useState(false);
   var [enregistrementEspeces, setEnregistrementEspeces] = useState(false);
   useEffect(function() {
     var r = (stats.reservations||[]).find(function(r){return r.statut==='confirmee';});
@@ -2256,9 +2269,9 @@ function PaiementsLocataire(props) {
   if (!logement) return null;
   var moisActuel = new Date().toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
   var paiementsResa = reservationReelle ? (stats.paiements||[]).filter(function(p){return p.reservation_id===reservationReelle.id;}) : [];
-  var paiementComplet = paiementsResa.find(function(p){return p.statut==='complete';});
-  var paiementEnAttente = paiementsResa.find(function(p){return p.statut==='en_attente';});
-  var historique = (stats.paiements||[]).slice(0,3).map(function(p){return{mois:new Date(p.created_at).toLocaleDateString('fr-FR',{month:'long',year:'numeric'}),montant:Number(p.montant),mode:p.mode_paiement==='especes'?t('ongletPaiementsDash.locataireLegacy.especes'):p.mode_paiement};});
+  var paiementComplet = paiementsResa.find(function(p){return p.statut==='complete'||p.statut==='confirme';});
+  var paiementEnAttente = paiementsResa.find(function(p){return p.statut==='en_attente'||p.statut==='declare';});
+  var historique = (stats.paiements||[]).slice(0,3).map(function(p){return{mois:new Date(p.created_at).toLocaleDateString('fr-FR',{month:'long',year:'numeric'}),montant:Number(p.montant),mode:p.mode_paiement==='especes'?t('ongletPaiementsDash.locataireLegacy.especes'):(p.mode_paiement==='mobile_money_declare'?t('paiementMobile.nomCourt.'+p.operateur):p.mode_paiement)};});
   if(historique.length===0){historique=[{mois:t('ongletPaiementsDash.locataireLegacy.moisPrecedent'),montant:logement.loyer,mode:'Orange Money'},{mois:t('ongletPaiementsDash.locataireLegacy.ilYA2Mois'),montant:logement.loyer,mode:t('ongletPaiementsDash.locataireLegacy.especes')},{mois:t('ongletPaiementsDash.locataireLegacy.ilYA3Mois'),montant:logement.loyer,mode:'MTN MoMo'}];}
 
   function signalerEspeces() {
@@ -2279,6 +2292,32 @@ function PaiementsLocataire(props) {
 
   return (
     <div style={{fontFamily: 'var(--font-body)'}}>
+      {reservationReelle ? (
+        <>
+          <PayerLoyer reservationId={reservationReelle.id} onSignalerEspeces={signalerEspeces} signalementEnCours={enregistrementEspeces}
+            apres={(
+              <>
+      <div style={{background:'var(--bg-secondary)',borderRadius: '12px',padding:'16px',marginBottom:'14px',boxShadow: 'var(--shadow-md)'}}>
+        <div style={{display:'flex',gap:'12px',alignItems:'flex-start',marginBottom:'14px'}}>
+          <div style={{width:'52px',height:'52px',background:'var(--info-soft)',borderRadius:'12px',display:'flex',alignItems:'center',justifyContent:'center'}}><Building2 size={26} strokeWidth={1.5} color="var(--info)" /></div>
+          <div style={{flex:1}}><div style={{fontWeight:'700',fontSize:'14px',color:'var(--text-primary)'}}>{logement.nom}</div><div style={{fontSize:'12px',color:'var(--text-muted)',marginTop:'2px',display:'flex',alignItems:'center',gap:4}}><MapPin size={11} strokeWidth={1.5} /> {logement.quartier}</div><div style={{display:'flex',alignItems:'center',gap:'8px',marginTop:'6px'}}><div style={{width:'26px',height:'26px',background:'var(--green)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:'10px',fontWeight:'700'}}>{logement.propIni}</div><span style={{fontSize:'12px',color:'var(--text-secondary)'}}>{logement.proprio}</span></div></div>
+          <div style={{textAlign:'right'}}><div style={{fontSize:'16px',fontWeight:'700',color:'var(--green)'}}>{GNF(logement.loyer)}</div><div style={{fontSize:'10px',color:'var(--text-muted)'}}>/ mois</div></div>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'8px',marginBottom:'14px'}}>
+          {[[t('ongletPaiementsDash.locataireLegacy.debut'),logement.debut],[t('ongletPaiementsDash.locataireLegacy.fin'),logement.fin],[t('ongletPaiementsDash.locataireLegacy.caution'),GNF(logement.loyer)]].map(function(row){return <div key={row[0]} style={{background:'var(--surface-soft)',borderRadius:'8px',padding:'8px 10px'}}><div style={{fontSize:'10px',color:'var(--text-muted)'}}>{row[0]}</div><div style={{fontSize:'11px',fontWeight:'600',color:'var(--text-primary)',marginTop:'2px'}}>{row[1]}</div></div>;})}
+        </div>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'10px 14px',background:statutPaye?'var(--green-light)':(paiementEnAttente?'var(--warn-soft)':'var(--danger-soft)'),borderRadius: '8px',marginBottom:'14px',border:'0.5px solid '+(statutPaye?'var(--green-border)':(paiementEnAttente?'var(--warn)':'var(--danger)'))}}>
+          <div><div style={{fontSize:'13px',fontWeight:'700',color:statutPaye?'var(--green)':(paiementEnAttente?'var(--warn)':'var(--danger)')}}>{statutPaye?t('ongletPaiementsDash.locataireLegacy.loyerPaye', { mois: moisActuel }):(paiementEnAttente?t('ongletPaiementsDash.modal.enAttenteConfirmation'):t('ongletPaiementsDash.locataireLegacy.loyerImpaye', { mois: moisActuel }))}</div><div style={{fontSize:'11px',color:'var(--text-muted)',marginTop:'2px'}}>{statutPaye?t('ongletPaiementsDash.locataireLegacy.quittanceEnvoyee'):(paiementEnAttente?t('ongletPaiementsDash.modal.confirmationProprietaire'):t('ongletPaiementsDash.locataireLegacy.duDepuis3Jours'))}</div></div>
+          <div style={{fontSize:'16px',fontWeight:'700',color:statutPaye?'var(--green)':(paiementEnAttente?'var(--warn)':'var(--danger)')}}>{GNF(logement.montantDu)}</div>
+        </div>
+        <div style={{fontSize:'13px',fontWeight:'600',marginBottom:'8px'}}>{t('ongletPaiementsDash.locataireLegacy.historiqueRecent')}</div>
+        {historique.map(function(h,i){return(<div key={i} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'8px 10px',background:'var(--surface-soft)',borderRadius:'8px',marginBottom:'6px'}}><div><div style={{fontSize:'12px',fontWeight:'600'}}>{h.mois}</div><div style={{fontSize:'11px',color:'var(--text-muted)'}}>{h.mode}</div></div><div style={{display:'flex',alignItems:'center',gap:'8px'}}><span style={{fontSize:'12px',fontWeight:'700',color:'var(--green)'}}>{GNF(h.montant)}</span><span style={{background:'var(--green-light)',color:'var(--green)',padding:'2px 8px',borderRadius: '16px',fontSize:'10px',fontWeight:'700'}}>{t('ongletPaiementsDash.locataireLegacy.paye')}</span></div></div>);})}
+      </div>
+              </>
+            )} />
+        </>
+      ) : (
+        <>
       <div style={{background:'#1B6B3A',borderRadius: '12px',padding:'16px 18px',marginBottom:'18px'}}><div style={{color:'#fff',fontWeight:'700',fontSize:'16px'}}>{t('ongletPaiementsDash.locataireLegacy.mesPaiements')}</div><div style={{color:'rgba(255,255,255,.75)',fontSize:'12px',marginTop:'2px'}}>{moisActuel}</div></div>
       <div style={{background:'var(--bg-secondary)',borderRadius: '12px',padding:'16px',marginBottom:'14px',boxShadow: 'var(--shadow-md)'}}>
         <div style={{display:'flex',gap:'12px',alignItems:'flex-start',marginBottom:'14px'}}>
@@ -2296,35 +2335,8 @@ function PaiementsLocataire(props) {
         <div style={{fontSize:'13px',fontWeight:'600',marginBottom:'8px'}}>{t('ongletPaiementsDash.locataireLegacy.historiqueRecent')}</div>
         {historique.map(function(h,i){return(<div key={i} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'8px 10px',background:'var(--surface-soft)',borderRadius:'8px',marginBottom:'6px'}}><div><div style={{fontSize:'12px',fontWeight:'600'}}>{h.mois}</div><div style={{fontSize:'11px',color:'var(--text-muted)'}}>{h.mode}</div></div><div style={{display:'flex',alignItems:'center',gap:'8px'}}><span style={{fontSize:'12px',fontWeight:'700',color:'var(--green)'}}>{GNF(h.montant)}</span><span style={{background:'var(--green-light)',color:'var(--green)',padding:'2px 8px',borderRadius: '16px',fontSize:'10px',fontWeight:'700'}}>{t('ongletPaiementsDash.locataireLegacy.paye')}</span></div></div>);})}
       </div>
-      {!reservationReelle ? (
         <div style={{background:'var(--surface-soft)',borderRadius: '12px',padding:'20px',textAlign:'center',color:'var(--text-muted)',fontSize:'13px'}}>{t('ongletPaiementsDash.modal.aucuneReservationActive')}</div>
-      ) : statutPaye ? (
-        <div style={{background:'var(--green-light)',borderRadius: '12px',padding:'20px',textAlign:'center',boxShadow: 'var(--shadow-md)'}}><div style={{fontSize:'40px',marginBottom:'10px'}}>🎉</div><div style={{fontSize:'16px',fontWeight:'700',color:'var(--green)',marginBottom:'6px'}}>{t('ongletPaiementsDash.locataireLegacy.paiementEffectue')}</div></div>
-      ) : (
-        <div style={{background:'var(--bg-secondary)',borderRadius: '12px',padding:'16px',marginBottom:'14px',boxShadow: 'var(--shadow-md)'}}>
-          <div style={{fontSize:'14px',fontWeight:'700',marginBottom:'14px'}}>{t('ongletPaiementsDash.locataireLegacy.effectuerPaiement')}</div>
-          <div style={{background:'var(--surface-soft)',borderRadius: '8px',padding:'12px 14px',marginBottom:'14px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-            <span style={{fontSize:'12px',color:'var(--text-muted)'}}>{t('ongletPaiementsDash.locataireLegacy.total')}</span>
-            <span style={{fontSize:'18px',fontWeight:'700',color:'var(--green)'}}>{GNF(logement.montantDu)}</span>
-          </div>
-          {paiementEnAttente ? (
-            <div style={{textAlign:'center',fontSize:'12px',color:'var(--warn)',padding:'10px'}}>{t('ongletPaiementsDash.modal.enAttenteConfirmation')}</div>
-          ) : (
-            <div style={{display:'flex',flexDirection:'column',gap:'10px'}}>
-              <button type="button" onClick={function(){setShowPaiementDjomy(true);}} style={{width:'100%',background:'var(--green)',color:'#fff',border:'none',borderRadius:'12px',padding:'14px',fontSize:'15px',fontWeight:'700',cursor:'pointer'}}>{t('ongletPaiementsDash.modal.payerEnLigne', { montant: GNF(logement.montantDu) })}</button>
-              <button type="button" onClick={signalerEspeces} disabled={enregistrementEspeces} style={{width:'100%',background:'var(--surface-soft)',color:'var(--green)',border:'0.5px solid var(--green-border)',borderRadius:'12px',padding:'12px',fontSize:'13px',fontWeight:'600',cursor:enregistrementEspeces?'not-allowed':'pointer'}}>{enregistrementEspeces?t('ongletPaiementsDash.modal.traitementEnCours'):t('ongletPaiementsDash.modal.signalerEspeces')}</button>
-            </div>
-          )}
-        </div>
-      )}
-      {showPaiementDjomy && reservationReelle && (
-        <ModalPaiementMobile
-          montant={logement.montantDu}
-          titre={logement.nom}
-          payload={{ reservation_id: reservationReelle.id }}
-          endpoint="/paiements/djomy/initier"
-          onClose={function(){setShowPaiementDjomy(false);}}
-        />
+        </>
       )}
     </div>
   );
@@ -4080,8 +4092,12 @@ function OngletHistorique(props) {
             </div>
           )}
           {data.paiements.map(function(p, i) {
-            var cfg = p.statut === 'complete'
+            var cfg = (p.statut === 'complete' || p.statut === 'confirme')
               ? { label: t('ongletHistorique.paiements.paye'), color: 'var(--green)', bg: 'var(--green-light)' }
+              : p.statut === 'conteste'
+              ? { label: t('ongletHistorique.paiements.conteste'), color: 'var(--danger)', bg: 'var(--danger-soft)' }
+              : p.statut === 'declare'
+              ? { label: t('ongletHistorique.paiements.declare'), color: 'var(--warn)', bg: 'var(--warn-soft)' }
               : { label: t('ongletHistorique.paiements.enAttente'), color: 'var(--warn)', bg: 'var(--warn-soft)' };
             return (
               <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 18px', borderBottom: i < data.paiements.length - 1 ? '0.5px solid #F5F5F5' : 'none', background: i % 2 === 0 ? 'var(--bg-secondary)' : 'var(--surface-soft)' }}>
@@ -4438,8 +4454,12 @@ function OngletRapports(props) {
         )}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {data.paiements.map(function(p, i) {
-            var cfg = p.statut === 'complete'
+            var cfg = (p.statut === 'complete' || p.statut === 'confirme')
               ? { label: t('ongletHistorique.paiements.paye'), color: 'var(--green)', bg: 'var(--green-light)' }
+              : p.statut === 'conteste'
+              ? { label: t('ongletHistorique.paiements.conteste'), color: 'var(--danger)', bg: 'var(--danger-soft)' }
+              : p.statut === 'declare'
+              ? { label: t('ongletHistorique.paiements.declare'), color: 'var(--warn)', bg: 'var(--warn-soft)' }
               : p.statut === 'en_attente'
               ? { label: t('ongletHistorique.paiements.enAttente'), color: 'var(--warn)', bg: 'var(--warn-soft)' }
               : { label: p.statut, color: 'var(--text-muted)', bg: 'var(--surface-soft)' };
