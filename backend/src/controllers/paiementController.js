@@ -428,7 +428,7 @@ async function confirmerPaiementDjomy(transactionId, statutDjomyBrut) {
 const getMesPaiements = async (req, res) => {
   try {
     const result = await db.query(
-      `SELECT p.*,
+      `SELECT p.*, to_char(p.periode_debut, 'YYYY-MM-DD') AS periode_debut_txt,
         l.titre as logement_titre,
         l.ville as logement_ville,
         r.date_debut, r.date_fin
@@ -455,7 +455,7 @@ const getMesPaiements = async (req, res) => {
 const getPaiementsProprietaire = async (req, res) => {
   try {
     const result = await db.query(
-      `SELECT p.*,
+      `SELECT p.*, to_char(p.periode_debut, 'YYYY-MM-DD') AS periode_debut_txt,
         l.titre as logement_titre,
         l.ville as logement_ville,
         u.nom as locataire_nom,
@@ -488,7 +488,7 @@ const getFacture = async (req, res) => {
     const { numero } = req.params;
 
     const result = await db.query(
-      `SELECT p.*,
+      `SELECT p.*, to_char(p.periode_debut, 'YYYY-MM-DD') AS periode_debut_txt,
         u_loc.nom as locataire_nom,
         u_loc.prenom as locataire_prenom,
         u_loc.email as locataire_email,
