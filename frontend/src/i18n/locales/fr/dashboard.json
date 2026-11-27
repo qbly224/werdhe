@@ -1953,6 +1953,40 @@
     }
   },
   "paiementMobile": {
+    "proprio": {
+      "verifier": {
+        "titre": "À vérifier",
+        "compteur_one": "{{count}} à vérifier",
+        "compteur_other": "{{count}} à vérifier",
+        "toutVerifie": "Tout est vérifié",
+        "recuSur": "Reçu sur",
+        "code": "Code de transaction",
+        "periode": "Période",
+        "voirCapture": "Voir la capture du SMS",
+        "consigne": "Vérifiez sur votre téléphone que ce montant est bien arrivé avec ce code avant de confirmer.",
+        "confirmer": "Confirmer la réception",
+        "rien": "Je n'ai rien reçu",
+        "annuler": "Annuler",
+        "confirme": "Confirmé. Le loyer est marqué payé et la quittance a été envoyée par e-mail à {{prenom}}.",
+        "conteste": "Contesté. {{prenom}} a été prévenu(e) et peut vous répondre dans la messagerie.",
+        "erreur": "Action impossible. Réessayez."
+      },
+      "parametres": {
+        "titre": "Recevoir les loyers par paiement mobile",
+        "directBientot": "Paiement direct bientôt",
+        "intro": "Un seul opérateur ou les deux. Vos locataires ne verront que vos choix.",
+        "numero": "Numéro de réception",
+        "numeroPlaceholder": "6XX XX XX XX",
+        "erreurNumero": "Numéro invalide : 9 chiffres commençant par 6.",
+        "apercuTitre": "Ce que verront vos locataires",
+        "apercuAucun": "Aucun opérateur : vos locataires ne verront pas la section de paiement mobile.",
+        "apercuNumero": "Numéro : {{numero}}",
+        "mention": "Un paiement déclaré ne compte comme payé qu'après votre confirmation.",
+        "enregistrer": "Enregistrer",
+        "enregistre": "Réglages enregistrés",
+        "erreurGenerique": "L'enregistrement a échoué. Réessayez."
+      }
+    },
     "titre": "Payer mon loyer",
     "chargement": "Chargement…",
     "erreurChargement": "Impossible de charger cet écran. Réessayez.",

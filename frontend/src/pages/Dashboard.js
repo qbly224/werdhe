@@ -13,6 +13,8 @@ import ActesSignature from '../components/ActesSignature';
 import OngletPaiementsComponent from '../components/OngletPaiements';
 import ModalPaiementMobile from '../components/ModalPaiementMobile';
 import PayerLoyer from '../components/paiement-mobile/PayerLoyer';
+import AVerifier from '../components/paiement-mobile/AVerifier';
+import ParametresPaiementMobile from '../components/paiement-mobile/ParametresPaiementMobile';
 import ModalSignatureBail from '../components/ModalSignatureBail';
 import useDarkMode from '../hooks/useDarkMode';
 import RechercheGlobale from '../components/dashboard/RechercheGlobale';
@@ -2206,6 +2208,7 @@ function PaiementsProprietaire(props) {
         <div style={{color:'#fff',fontWeight:'700',fontSize:'16px'}}>{t('ongletPaiementsDash.proprio.titre')}</div>
         <div style={{color:'rgba(255,255,255,.7)',fontSize:'12px',marginTop:'2px'}}>{t('ongletPaiementsDash.proprio.sousTitre', { mois: moisActuel, count: biensList.length })}</div>
       </div>
+      <AVerifier />
       <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'10px',marginBottom:'18px'}}>
         {[{label:t('ongletPaiementsDash.proprio.kpi.encaisse'),val:GNF(totalPercu),sub:t('ongletPaiementsDash.proprio.kpi.taux', { taux: tauxRecouv }),bg:'var(--green-light)',border:'var(--green)',color:'var(--green)'},{label:t('ongletPaiementsDash.proprio.kpi.impayes'),val:GNF(totalImpaye),sub:t('ongletPaiementsDash.proprio.kpi.locataires', { count: biensList.filter(function(b){return b.statut!=='paye';}).length }),bg:'var(--danger-soft)',border:'var(--danger)',color:'var(--danger)'},{label:t('ongletPaiementsDash.proprio.kpi.attendu'),val:GNF(totalAttendu),sub:t('ongletPaiementsDash.proprio.kpi.totalDuMois'),bg:'var(--surface-soft)',border:'#888',color:'var(--text-primary)'}].map(function(k){return(<div key={k.label} style={{background:k.bg,borderRadius:'12px',padding:'12px 14px',borderLeft:'3px solid '+k.border}}><div style={{fontSize:'11px',color:k.color,marginBottom:'4px'}}>{k.label}</div><div style={{fontSize:'15px',fontWeight:'700',color:k.color}}>{k.val}</div><div style={{fontSize:'10px',color:k.color,marginTop:'2px',opacity:0.7}}>{k.sub}</div></div>);})}
       </div>
@@ -2230,6 +2233,7 @@ function PaiementsProprietaire(props) {
           {b.statut==='paye'?(<div style={{display:'flex',gap:'8px'}}><button type="button" style={{flex:1,background:'var(--surface-soft)',color:'var(--green)',border:'0.5px solid var(--green-border)',borderRadius: '8px',padding:'9px',fontSize:'13px',cursor:'pointer',fontWeight:'600'}}>{t('ongletPaiementsDash.proprio.voirQuittance')}</button><button type="button" style={{flex:1,background:'var(--surface-soft)',color:'var(--text-secondary)',border:'0.5px solid var(--border)',borderRadius: '8px',padding:'9px',fontSize:'13px',cursor:'pointer'}}>{t('ongletPaiementsDash.proprio.contacter')}</button></div>):(<div style={{display:'flex',gap:'8px'}}><button type="button" onClick={function(){ouvrirModal(b);}} style={{flex:2,background:'var(--green)',color:'#fff',border:'none',borderRadius: '8px',padding:'10px',fontSize:'13px',fontWeight:'700',cursor:'pointer'}}>{t('ongletPaiementsDash.proprio.enregistrerPaiement')}</button><button type="button" style={{flex:1,background:'var(--danger-soft)',color:'var(--danger)',border:'0.5px solid var(--danger)',borderRadius: '8px',padding:'10px',fontSize:'13px',cursor:'pointer',fontWeight:'600'}}>{t('ongletPaiementsDash.proprio.relancer')}</button></div>)}
         </div>);})}
       </div>
+      <ParametresPaiementMobile />
       {modal&&(<div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.5)',display:'flex',alignItems:'flex-end',zIndex:1000}} onClick={function(e){if(e.target===e.currentTarget)fermerModal();}}>
         <div style={{background:'var(--bg-secondary)',borderRadius:'20px 20px 0 0',padding:'24px 20px 32px',width:'100%',maxWidth:'600px',margin:'0 auto',maxHeight:'90vh',overflowY:'auto'}}>
           {!done?(<div>

@@ -120,3 +120,45 @@
 .pm-frise__etape small { font-size: 13px; color: var(--text-muted); }
 
 .pm-ecran button:focus-visible, .pm-ecran input:focus-visible, .pm-sheet button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ── Propriétaire : À vérifier et choix des opérateurs ── */
+.pm-bloc { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 18px; display: grid; gap: 14px; font-family: var(--font-body); color: var(--text-primary); box-shadow: var(--shadow-md); }
+.pm-bloc__tete { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.pm-bloc__tete .pm-h3 { margin: 0; }
+.pm-decl { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; display: grid; gap: 12px; background: var(--surface-soft); }
+.pm-decl__haut { display: flex; align-items: center; gap: 12px; }
+.pm-decl__qui { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.pm-decl__qui b { font-size: 15px; }
+.pm-decl__qui small { font-size: 13px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pm-decl__montant { font-family: var(--font-display); font-size: 18px; font-weight: 600; white-space: nowrap; }
+.pm-decl__infos { margin: 0; display: grid; gap: 6px; }
+.pm-decl__infos > div { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.pm-decl__infos dt { color: var(--text-muted); }
+.pm-decl__infos dd { margin: 0; font-weight: 600; text-align: right; overflow-wrap: anywhere; }
+.pm-capture-lien { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 14px; font-weight: 600; color: var(--info); text-decoration: underline; }
+.pm-decl__actions { display: grid; gap: 8px; grid-template-columns: 1fr; }
+@media (min-width: 520px) { .pm-decl__actions { grid-template-columns: 1fr 1fr; } }
+.pm-btn--danger { background: transparent; color: var(--danger); border-color: var(--danger); }
+.pm-btn--danger:hover:not(:disabled) { background: var(--danger-soft); }
+.pm-decision { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; line-height: 1.5; }
+.pm-decision--confirme { background: var(--green-light); color: var(--green); }
+.pm-decision--conteste { background: var(--warn-soft); color: var(--warn); }
+.pm-decision__texte { display: inline-flex; align-items: flex-start; gap: 8px; flex: 1; min-width: 200px; }
+.pm-decision__texte svg { margin-top: 3px; flex-shrink: 0; }
+.pm-lien { min-height: 44px; padding: 0 8px; background: none; border: none; font: inherit; font-weight: 700; color: inherit; text-decoration: underline; cursor: pointer; border-radius: var(--radius-sm); }
+.pm-lien:disabled { opacity: .55; cursor: not-allowed; }
+
+.pm-param-liste { display: grid; gap: 10px; }
+.pm-param { border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; display: grid; gap: 12px; background: var(--bg-secondary); }
+.pm-param.on { border-color: var(--green); background: var(--green-light); }
+.pm-param__entete { display: flex; align-items: center; gap: 12px; min-height: 44px; cursor: pointer; font-size: 15px; }
+.pm-param__case { width: 22px; height: 22px; accent-color: var(--green); flex-shrink: 0; cursor: pointer; }
+.pm-param__numero { display: grid; gap: 6px; }
+.pm-param__numero label { font-size: 14px; font-weight: 600; }
+.pm-param__numero .ds-input { min-height: 48px; font-size: 16px; width: 100%; background: var(--bg-secondary); }
+.pm-apercu { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.pm-apercu li { display: flex; align-items: center; gap: 12px; }
+.pm-apercu li > span:nth-child(2) { flex: 1; display: grid; gap: 2px; }
+.pm-apercu small { color: var(--text-muted); font-size: 13px; font-family: var(--font-mono); }
+.pm-bloc button:focus-visible, .pm-bloc input:focus-visible, .pm-bloc a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.pm-decl__infos .pm-numero { font-size: 14px; letter-spacing: 0; }
