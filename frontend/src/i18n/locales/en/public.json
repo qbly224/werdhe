@@ -80,9 +80,20 @@
       "sansFrais": "No hidden fees"
     },
     "trust": {
-      "label": "Accepted payments",
+      "label": "Rent payment",
       "especes": "Cash",
-      "virement": "Bank transfer"
+      "disponible": "Available",
+      "bientot": "Coming soon"
+    },
+    "hero": {
+      "rechercheLabel": "Search for a home",
+      "carrouselLabel": "Photos of homes in Guinea",
+      "photoN": "Photo {{n}} of {{total}}",
+      "alt": {
+        "villa": "Modern white villa with glass balconies, a wooden door and a garden",
+        "aerienne": "Aerial view of Conakry at sunset",
+        "bungalow": "Single-storey house with a garden and a paved path"
+      }
     },
     "stats": {
       "logementsDisponibles": "Available listings",
@@ -344,7 +355,7 @@
     "faq": [
       { "q": "Is Werdhe free for tenants?", "r": "Yes, 100% free forever. No agency fees, no commission." },
       { "q": "How does the Pro / Agency trial work?", "r": "1 full month of access to the plan you choose, no payment required. At the end, you decide whether to continue." },
-      { "q": "Which payment methods are accepted?", "r": "Orange Money, MTN MoMo, cash and bank transfer (BICIGUI, Ecobank)." },
+      { "q": "Which payment methods are accepted?", "r": "Today, rent is paid in cash: the owner records the payment on Werdhe and the tenant receives a receipt by e-mail. Mobile payment (Orange Money, MTN MoMo) is coming soon. In the meantime, the tenant can pay the owner by Mobile Money to the number the owner provides, then declare it on Werdhe: the owner confirms and the receipt is sent by e-mail." },
       { "q": "Is my data secure?", "r": "Yes. HTTPS, hashed passwords, admin 2FA, no banking data stored." },
       { "q": "Can I manage several properties?", "r": "Yes. The Pro plan allows up to {{pro}} properties, the Agency plan is unlimited." }
     ],
