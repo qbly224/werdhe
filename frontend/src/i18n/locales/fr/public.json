@@ -294,7 +294,7 @@
       { "titre": "Dossiers sécurisés", "desc": "CNI, bulletins de paie, contrats stockés et accessibles en toute sécurité." },
       { "titre": "Documents automatiques", "desc": "Baux, quittances et mises en demeure générés en un clic." },
       { "titre": "Alertes intelligentes", "desc": "Rappels loyers, baux expirants, préavis : tout est automatisé." },
-      { "titre": "Paiements multiples", "desc": "Orange Money, MTN MoMo, espèces ou virement acceptés." },
+      { "titre": "Paiements multiples", "desc": "Espèces aujourd'hui ; paiement par Orange Money et MTN MoMo bientôt disponible." },
       { "titre": "Messagerie intégrée", "desc": "Communiquez directement avec locataires et propriétaires." },
       { "titre": "Rapports financiers", "desc": "Suivez vos revenus mois par mois avec des graphiques clairs." },
       { "titre": "Notations mutuelles", "desc": "Locataires et propriétaires se notent après chaque location." },
@@ -320,7 +320,7 @@
         "nom": "Pro",
         "sousTitre": "Jusqu'à {{pro}} biens",
         "cta": "Essai gratuit 1 mois",
-        "features": ["Orange Money + MTN MoMo", "Baux et quittances PDF", "Alertes automatiques", "Rapports financiers", "Essai 1 mois"]
+        "features": ["Paiements en espèces (Mobile Money bientôt)", "Baux et quittances PDF", "Alertes automatiques", "Rapports financiers", "Essai 1 mois"]
       },
       "agency": {
         "nom": "Agence",
@@ -415,7 +415,7 @@
       "proprietaires": "proprietaires",
       "et": "et",
       "locataires": "locataires",
-      "desc": "Gerez vos biens ou trouvez votre logement ideal. Paiement en especes, Orange Money ou MTN MoMo.",
+      "desc": "Gerez vos biens ou trouvez votre logement ideal. Paiement en especes ; Orange Money et MTN MoMo bientot.",
       "jeSuisProprietaire": "Je suis proprietaire",
       "descProprietaire": "Gerez biens, loyers, locataires et documents en toute simplicite.",
       "gererMesBiens": "Gerer mes biens",
@@ -424,7 +424,7 @@
       "trouverUnLogement": "Trouver un logement",
       "checkGratuit": "Gratuit sans CB",
       "checkMobile": "Mobile-first",
-      "checkPaiements": "Especes, Orange Money, MTN MoMo"
+      "checkPaiements": "Especes (Mobile Money bientot)"
     },
     "stats": {
       "proprietaires": "Proprietaires",
@@ -441,7 +441,7 @@
       "demarrerGratuitement": "Demarrer gratuitement",
       "proprietaire": {
         "gestion": { "titre": "Gestion des biens", "desc": "Publiez et gerez tous vos logements depuis un tableau de bord unique" },
-        "paiements": { "titre": "Suivi des paiements", "desc": "Orange Money, MTN MoMo ou especes avec factures automatiques" },
+        "paiements": { "titre": "Suivi des paiements", "desc": "Paiements en especes avec quittances automatiques ; Mobile Money bientot" },
         "documents": { "titre": "Documents officiels", "desc": "Baux, quittances, factures et mises en demeure generes en un clic" },
         "alertes": { "titre": "Alertes automatiques", "desc": "Loyers en retard, baux expirants et signalements de pannes" }
       },
@@ -476,7 +476,7 @@
       "pro": {
         "type": "Pro",
         "sousTitre": "Jusqu'à {{pro}} biens",
-        "features": ["Orange Money + MTN MoMo", "Baux et quittances PDF", "Annuaire logements", "Rapports financiers"]
+        "features": ["Paiements en especes (Mobile Money bientot)", "Baux et quittances PDF", "Annuaire logements", "Rapports financiers"]
       },
       "agence": {
         "type": "Agence",
@@ -822,7 +822,7 @@
       {
         "categorie": "Paiements",
         "questions": [
-          { "q": "Quels modes de paiement sont acceptés ?", "r": "Orange Money, MTN MoMo, Kulu, carte bancaire, espèces ou virement bancaire (BICIGUI, Ecobank)." },
+          { "q": "Quels modes de paiement sont acceptés ?", "r": "Aujourd'hui, le paiement se fait en espèces. Le paiement par Orange Money et MTN MoMo n'est pas encore disponible : il arrive bientôt." },
           { "q": "Comment la caution est-elle gérée ?", "r": "La caution représente 1 mois de loyer. Elle est versée directement au propriétaire lors de la confirmation de la location. Werdhe ne détient pas les fonds en séquestre (en cours d'implémentation)." },
           { "q": "Puis-je annuler mon abonnement ?", "r": "Oui, à tout moment depuis vos paramètres. L'annulation prend effet à la fin de la période en cours. Aucun remboursement prorata n'est effectué." }
         ]
@@ -899,7 +899,7 @@
       },
       "7": {
         "titre": "7. Paiements et abonnements",
-        "contenu": "Werdhe ne prélève aucune commission ni aucun supplément sur les loyers encaissés par les propriétaires : seul l'abonnement choisi est facturé.\n\nLes plans d'abonnement (Pro : 120 000 GNF/mois, Agence : 300 000 GNF/mois) sont facturés mensuellement. Le défaut de paiement entraîne la suspension des fonctionnalités premium.\n\nWerdhe utilise des prestataires de paiement tiers (Orange Money, MTN MoMo) et ne stocke aucune information bancaire sur ses serveurs."
+        "contenu": "Werdhe ne prélève aucune commission ni aucun supplément sur les loyers encaissés par les propriétaires : seul l'abonnement choisi est facturé.\n\nLes plans d'abonnement (Pro : 120 000 GNF/mois, Agence : 300 000 GNF/mois) sont facturés mensuellement. Le défaut de paiement entraîne la suspension des fonctionnalités premium.\n\nLe paiement en ligne via des prestataires tiers (Orange Money, MTN MoMo) n'est pas encore disponible ; lorsqu'il le sera, Werdhe ne stockera aucune information bancaire sur ses serveurs."
       },
       "8": {
         "titre": "8. Documents et signatures électroniques",
@@ -995,7 +995,8 @@
     "badgeOverline": "Tarification immobilière",
     "titre": "Des tarifs transparents",
     "sousTitre": "100% gratuit pour les locataires · Pro et Agence pour les propriétaires",
-    "paiementMobileMoney": "Paiement en ligne sécurisé : Orange Money, MTN MoMo, Kulu, carte",
+    "paiementMobileMoney": "Paiement par Mobile Money (Orange Money, MTN MoMo) : bientôt disponible",
+    "paiementBientot": "Le paiement en ligne de l'abonnement n'est pas encore disponible : il arrive bientôt.",
     "reductionPastille": "{{pct}} % de réduction",
     "cycles": {
       "mensuel": "Mensuel",
@@ -1013,7 +1014,7 @@
         "nom": "Pro",
         "badge": "1 mois gratuit",
         "sousTitre": "Jusqu'à {{pro}} logements",
-        "features": ["Jusqu'à {{pro}} logements", "Candidatures et dossiers en ligne", "Paiement en ligne (Orange Money, MTN MoMo, Kulu, carte)", "Baux et quittances PDF auto", "Alertes loyers J-3 / J+5", "Rapports financiers + export PDF et CSV", "Messagerie avec accusé de lecture", "Score de confiance locataires", "Support email prioritaire"],
+        "features": ["Jusqu'à {{pro}} logements", "Candidatures et dossiers en ligne", "Paiement par Mobile Money (bientôt disponible)", "Baux et quittances PDF auto", "Alertes loyers J-3 / J+5", "Rapports financiers + export PDF et CSV", "Messagerie avec accusé de lecture", "Score de confiance locataires", "Support email prioritaire"],
         "nonInclus": ["Multi-utilisateurs", "Logements illimités"]
       },
       "agence": {
@@ -1024,7 +1025,7 @@
       }
     },
     "faq": [
-      { "q": "Comment payer mon abonnement ?", "r": "Le paiement se fait en ligne via Orange Money, MTN MoMo, Kulu ou carte bancaire. Aucun paiement en espèces n'est accepté." },
+      { "q": "Comment payer mon abonnement ?", "r": "Le paiement en ligne de l'abonnement (Orange Money, MTN MoMo) n'est pas encore disponible : il arrive bientôt. Pendant l'essai gratuit, aucun paiement n'est demandé." },
       { "q": "L'essai est-il vraiment gratuit ?", "r": "Oui, 1 mois complet sur Pro ou Agence, sans paiement requis. Accès à toutes les fonctionnalités du plan choisi. À la fin, choisissez de continuer ou non." },
       { "q": "Quels rythmes de paiement sont proposés ?", "r": "Mensuel, tous les 6 mois (-10%) ou annuel (-20%). Vous choisissez ce qui vous convient." },
       { "q": "Que se passe-t-il si je ne paie pas à temps ?", "r": "Vous recevez une relance 3 jours après l'échéance, puis une dernière relance à 5 jours. Sans règlement, l'accès est bloqué jusqu'à régularisation." },

@@ -372,7 +372,7 @@
       "gratuitTitre": "Free - 0 GNF/month",
       "gratuitDesc": "Up to {{gratuit}} properties · Basic management",
       "proTitre": "Pro - 120,000 GNF/month",
-      "proDesc": "Mobile Money + Cash + Documents + Reports",
+      "proDesc": "Cash + Documents + Reports (Mobile Money coming soon)",
       "agenceTitre": "Agency - 300,000 GNF/month",
       "agenceDesc": "Unlimited properties · Multiple users · API",
       "recommande": "Recommended"
@@ -380,6 +380,7 @@
     "paiements": {
       "orangeMoneyTitre": "Orange Money",
       "paiementInstantane": "Instant payment + notification",
+      "bientot": "Coming soon",
       "mtnMomoTitre": "MTN MoMo",
       "especesTitre": "Cash",
       "especesDesc": "You record the payment · automatic PDF receipt",
@@ -488,7 +489,7 @@
           "desc": "Up to {{pro}} properties · 1 month free",
           "badge": "Recommended",
           "feature1": "{{pro}} properties",
-          "feature2": "Orange Money + MTN",
+          "feature2": "Cash (Mobile Money coming soon)",
           "feature3": "PDF documents",
           "feature4": "Automatic alerts",
           "feature5": "Reports"

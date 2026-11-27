@@ -294,7 +294,7 @@
       { "titre": "Secure files", "desc": "ID cards, pay stubs and contracts stored and accessed securely." },
       { "titre": "Automatic documents", "desc": "Leases, receipts and formal notices generated in one click." },
       { "titre": "Smart alerts", "desc": "Rent reminders, expiring leases, notice periods: all automated." },
-      { "titre": "Multiple payment methods", "desc": "Orange Money, MTN MoMo, cash or bank transfer accepted." },
+      { "titre": "Multiple payment methods", "desc": "Cash today; Orange Money and MTN MoMo payments coming soon." },
       { "titre": "Built-in messaging", "desc": "Communicate directly with tenants and landlords." },
       { "titre": "Financial reports", "desc": "Track your income month by month with clear charts." },
       { "titre": "Mutual ratings", "desc": "Tenants and landlords rate each other after every rental." },
@@ -320,7 +320,7 @@
         "nom": "Pro",
         "sousTitre": "Up to {{pro}} properties",
         "cta": "1-month free trial",
-        "features": ["Orange Money + MTN MoMo", "Leases and PDF receipts", "Automatic alerts", "Financial reports", "1-month trial"]
+        "features": ["Cash payments (Mobile Money coming soon)", "Leases and PDF receipts", "Automatic alerts", "Financial reports", "1-month trial"]
       },
       "agency": {
         "nom": "Agency",
@@ -415,7 +415,7 @@
       "proprietaires": "landlords",
       "et": "and",
       "locataires": "tenants",
-      "desc": "Manage your properties or find your ideal home. Pay by cash, Orange Money or MTN MoMo.",
+      "desc": "Manage your properties or find your ideal home. Pay by cash; Orange Money and MTN MoMo coming soon.",
       "jeSuisProprietaire": "I'm a landlord",
       "descProprietaire": "Manage properties, rent, tenants and documents with ease.",
       "gererMesBiens": "Manage my properties",
@@ -424,7 +424,7 @@
       "trouverUnLogement": "Find a home",
       "checkGratuit": "Free, no card required",
       "checkMobile": "Mobile-first",
-      "checkPaiements": "Cash, Orange Money, MTN MoMo"
+      "checkPaiements": "Cash (Mobile Money coming soon)"
     },
     "stats": {
       "proprietaires": "Landlords",
@@ -441,7 +441,7 @@
       "demarrerGratuitement": "Get started for free",
       "proprietaire": {
         "gestion": { "titre": "Property management", "desc": "Publish and manage all your properties from a single dashboard" },
-        "paiements": { "titre": "Payment tracking", "desc": "Orange Money, MTN MoMo or cash with automatic invoices" },
+        "paiements": { "titre": "Payment tracking", "desc": "Cash payments with automatic receipts; Mobile Money coming soon" },
         "documents": { "titre": "Official documents", "desc": "Leases, receipts, invoices and formal notices generated in one click" },
         "alertes": { "titre": "Automatic alerts", "desc": "Late rent, expiring leases and maintenance reports" }
       },
@@ -476,7 +476,7 @@
       "pro": {
         "type": "Pro",
         "sousTitre": "Up to {{pro}} properties",
-        "features": ["Orange Money + MTN MoMo", "Leases and PDF receipts", "Listings directory", "Financial reports"]
+        "features": ["Cash payments (Mobile Money coming soon)", "Leases and PDF receipts", "Listings directory", "Financial reports"]
       },
       "agence": {
         "type": "Agency",
@@ -822,7 +822,7 @@
       {
         "categorie": "Payments",
         "questions": [
-          { "q": "Which payment methods are accepted?", "r": "Orange Money, MTN MoMo, Kulu, card, cash or bank transfer (BICIGUI, Ecobank)." },
+          { "q": "Which payment methods are accepted?", "r": "Today, payment is made in cash. Orange Money and MTN MoMo payments are not available yet: they are coming soon." },
           { "q": "How is the deposit handled?", "r": "The deposit equals 1 month's rent. It's paid directly to the landlord once the rental is confirmed. Werdhe does not hold funds in escrow (in progress)." },
           { "q": "Can I cancel my subscription?", "r": "Yes, at any time from your settings. The cancellation takes effect at the end of the current billing period. No prorated refund is issued." }
         ]
@@ -899,7 +899,7 @@
       },
       "7": {
         "titre": "7. Payments and subscriptions",
-        "contenu": "Werdhe takes no commission or extra charge on the rent collected by landlords: only the chosen subscription is billed.\n\nSubscription plans (Pro: 120,000 GNF/month, Agency: 300,000 GNF/month) are billed monthly. Failure to pay results in the suspension of premium features.\n\nWerdhe uses third-party payment providers (Orange Money, MTN MoMo) and does not store any banking information on its servers."
+        "contenu": "Werdhe takes no commission or extra charge on the rent collected by landlords: only the chosen subscription is billed.\n\nSubscription plans (Pro: 120,000 GNF/month, Agency: 300,000 GNF/month) are billed monthly. Failure to pay results in the suspension of premium features.\n\nOnline payment through third-party providers (Orange Money, MTN MoMo) is not available yet; once it is, Werdhe will not store any banking information on its servers."
       },
       "8": {
         "titre": "8. Documents and electronic signatures",
@@ -995,7 +995,8 @@
     "badgeOverline": "Real estate pricing",
     "titre": "Transparent pricing",
     "sousTitre": "100% free for tenants · Pro and Agency for landlords",
-    "paiementMobileMoney": "Secure online payment: Orange Money, MTN MoMo, Kulu, card",
+    "paiementMobileMoney": "Mobile Money payment (Orange Money, MTN MoMo): coming soon",
+    "paiementBientot": "Online subscription payment is not available yet: it is coming soon.",
     "reductionPastille": "{{pct}}% off",
     "cycles": {
       "mensuel": "Monthly",
@@ -1013,7 +1014,7 @@
         "nom": "Pro",
         "badge": "1 month free",
         "sousTitre": "Up to {{pro}} properties",
-        "features": ["Up to {{pro}} properties", "Online applications and files", "Online payments (Orange Money, MTN MoMo, Kulu, card)", "Automatic leases and PDF receipts", "Rent alerts on day 3 / day 5", "Financial reports + PDF and CSV export", "Messaging with read receipts", "Tenant trust score", "Priority email support"],
+        "features": ["Up to {{pro}} properties", "Online applications and files", "Mobile Money payment (coming soon)", "Automatic leases and PDF receipts", "Rent alerts on day 3 / day 5", "Financial reports + PDF and CSV export", "Messaging with read receipts", "Tenant trust score", "Priority email support"],
         "nonInclus": ["Multiple users", "Unlimited properties"]
       },
       "agence": {
@@ -1024,7 +1025,7 @@
       }
     },
     "faq": [
-      { "q": "How do I pay for my subscription?", "r": "Payment is made online via Orange Money, MTN MoMo, Kulu or card. No cash payments are accepted." },
+      { "q": "How do I pay for my subscription?", "r": "Online subscription payment (Orange Money, MTN MoMo) is not available yet: it is coming soon. No payment is requested during the free trial." },
       { "q": "Is the trial really free?", "r": "Yes, 1 full month on Pro or Agency, no payment required. Access to all the features of the plan you chose. At the end, you decide whether to continue." },
       { "q": "What billing cycles are available?", "r": "Monthly, every 6 months (-10%) or yearly (-20%). Choose whatever suits you best." },
       { "q": "What happens if I don't pay on time?", "r": "You receive a reminder 3 days after the due date, then a final reminder at 5 days. Without payment, access is blocked until the balance is settled." },

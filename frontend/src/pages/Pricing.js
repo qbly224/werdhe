@@ -152,7 +152,7 @@ export default function Pricing() {
         // Essai déjà utilisé ou abonnement déjà actif → payer directement
         var msg = err.response && err.response.data ? err.response.data.erreur : '';
         toast(msg || t('pricing.essaiDejaUtilise'), { icon: <Info size={16} strokeWidth={1.5} /> });
-        setShowPaiement(planId);
+        toast(t('pricing.paiementBientot'), { icon: <Info size={16} strokeWidth={1.5} /> });
       })
       .finally(function() { setEssaiEnCours(null); });
   }

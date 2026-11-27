@@ -17,8 +17,8 @@ import {
 const GNF = (n) => new Intl.NumberFormat('fr-FR').format(n) + ' GNF';
 
 var PAY_OPTS = [
-  { id: 'om',   labelKey: 'om',   color: '#FF6600', textColor: '#fff', abbr: 'OM' },
-  { id: 'mtn',  labelKey: 'mtn',  color: '#FFCC00', textColor: 'var(--text-primary)', abbr: 'MM' },
+  { id: 'om',   labelKey: 'om',   color: '#FF6600', textColor: '#fff', abbr: 'OM', bientot: true },
+  { id: 'mtn',  labelKey: 'mtn',  color: '#FFCC00', textColor: 'var(--text-primary)', abbr: 'MM', bientot: true },
   { id: 'cash', labelKey: 'cash', icon: Banknote },
   { id: 'bank', labelKey: 'bank', icon: Landmark },
 ];
@@ -124,7 +124,7 @@ export default function ReservationLocataire() {
   var [newMsg, setNewMsg]           = useState('');
   var [fichierMsg, setFichierMsg]   = useState(null);
   var [docs, setDocs]               = useState({ cni: null, emploi: null, paie: null, garant: null });
-  var [payMode, setPayMode]         = useState('om');
+  var [payMode, setPayMode]         = useState('cash');
   var [payProcessing, setPayProcessing] = useState(false);
   var [signed, setSigned]           = useState(false);
   var [acteBail, setActeBail]       = useState(null); // null = inconnu, true = bail signé via l'acte, false = ancien parcours
@@ -604,14 +604,14 @@ export default function ReservationLocataire() {
             <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 12 }}>{t('reservationLocataire.etape5.modePaiement')}</div>
             {PAY_OPTS.map(function(p) {
               return (
-                <div key={p.id} onClick={function() { setPayMode(p.id); }}
-                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', border: payMode === p.id ? '2px solid var(--green)' : '0.5px solid var(--border)', background: payMode === p.id ? 'var(--green-light)' : 'var(--bg-secondary)', borderRadius: 12, marginBottom: 8, cursor: 'pointer', transition: 'all .2s' }}>
+                <div key={p.id} onClick={function() { if (!p.bientot) setPayMode(p.id); }} role="radio" aria-checked={payMode === p.id} aria-disabled={p.bientot ? 'true' : undefined}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', border: payMode === p.id ? '2px solid var(--green)' : '0.5px solid var(--border)', background: payMode === p.id ? 'var(--green-light)' : 'var(--bg-secondary)', borderRadius: 12, marginBottom: 8, cursor: p.bientot ? 'not-allowed' : 'pointer', opacity: p.bientot ? 0.6 : 1, transition: 'all .2s' }}>
                   <div style={{ width: 40, height: 40, background: p.color || 'var(--green-light)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: p.icon ? 20 : 13, fontWeight: 700, color: p.textColor || 'var(--green)', flexShrink: 0 }}>
                     {p.icon ? <p.icon size={20} strokeWidth={1.6} color={p.textColor || 'var(--green)'} /> : p.abbr}
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>{t('reservationLocataire.payOpts.' + p.labelKey + '.label')}</div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{t('reservationLocataire.payOpts.' + p.labelKey + '.sub')}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{p.bientot ? t('paiementMobile.bientotDispo') : t('reservationLocataire.payOpts.' + p.labelKey + '.sub')}</div>
                   </div>
                   <div style={{ width: 22, height: 22, borderRadius: '50%', border: payMode === p.id ? 'none' : '1.5px solid var(--border)', background: payMode === p.id ? 'var(--green)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {payMode === p.id && <Check size={13} strokeWidth={2.2} color="#fff" />}

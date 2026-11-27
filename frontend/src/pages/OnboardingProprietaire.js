@@ -49,8 +49,8 @@ export default function OnboardingProprietaire() {
   ];
 
   var PAIEMENTS = [
-    { id: 'om', logo: 'OM', logoBg: '#FF6600', logoColor: '#fff', titre: t('onboardingProprietaire.paiements.orangeMoneyTitre'), desc: t('onboardingProprietaire.paiements.paiementInstantane'), selected: true },
-    { id: 'mtn', logo: 'MM', logoBg: '#FFCC00', logoColor: '#1B2B22', titre: t('onboardingProprietaire.paiements.mtnMomoTitre'), desc: t('onboardingProprietaire.paiements.paiementInstantane'), selected: true },
+    { id: 'om', logo: 'OM', logoBg: '#FF6600', logoColor: '#fff', titre: t('onboardingProprietaire.paiements.orangeMoneyTitre'), desc: t('onboardingProprietaire.paiements.bientot'), bientot: true, selected: false },
+    { id: 'mtn', logo: 'MM', logoBg: '#FFCC00', logoColor: '#1B2B22', titre: t('onboardingProprietaire.paiements.mtnMomoTitre'), desc: t('onboardingProprietaire.paiements.bientot'), bientot: true, selected: false },
     { id: 'cash', logo: null, titre: t('onboardingProprietaire.paiements.especesTitre'), desc: t('onboardingProprietaire.paiements.especesDesc'), selected: true },
     { id: 'bank', logo: null, titre: t('onboardingProprietaire.paiements.virementTitre'), desc: t('onboardingProprietaire.paiements.virementDesc'), selected: false }
   ];
@@ -60,7 +60,7 @@ export default function OnboardingProprietaire() {
   var [nomComplet, setNomComplet] = useState('');
   var [ville, setVille] = useState('Conakry');
   var [nbBiens, setNbBiens] = useState(t('onboardingProprietaire.etape2.nbBiensOptions.troisACinq'));
-  var [paiements, setPaiements] = useState({ om: true, mtn: true, cash: true, bank: false });
+  var [paiements, setPaiements] = useState({ om: false, mtn: false, cash: true, bank: false });
 
   function togglePaiement(id) {
     var next = Object.assign({}, paiements);
@@ -214,12 +214,14 @@ export default function OnboardingProprietaire() {
           <div className="auth-step-desc">{t('onboardingProprietaire.etape3.desc')}</div>
 
           {PAIEMENTS.map(function(p) {
-            var isSelected = paiements[p.id];
+            var isSelected = paiements[p.id] && !p.bientot;
             return (
               <div
                 key={p.id}
                 className={'auth-pay-opt ' + (isSelected ? 'selected' : '')}
-                onClick={function() { togglePaiement(p.id); }}
+                aria-disabled={p.bientot ? 'true' : undefined}
+                style={p.bientot ? { opacity: 0.6, cursor: 'not-allowed' } : undefined}
+                onClick={function() { if (!p.bientot) togglePaiement(p.id); }}
               >
                 {p.logo ? (
                   <div className="auth-pay-icon" style={{background: p.logoBg, color: p.logoColor, fontWeight:'700', fontSize:'11px'}}>

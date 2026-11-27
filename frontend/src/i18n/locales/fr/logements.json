@@ -372,7 +372,7 @@
       "gratuitTitre": "Gratuit - 0 GNF/mois",
       "gratuitDesc": "Jusqu'à {{gratuit}} biens · Gestion basique",
       "proTitre": "Pro - 120 000 GNF/mois",
-      "proDesc": "Mobile Money + Especes + Documents + Rapports",
+      "proDesc": "Especes + Documents + Rapports (Mobile Money bientot)",
       "agenceTitre": "Agence - 300 000 GNF/mois",
       "agenceDesc": "Biens illimites · Multi-utilisateurs · API",
       "recommande": "Recommande"
@@ -380,6 +380,7 @@
     "paiements": {
       "orangeMoneyTitre": "Orange Money",
       "paiementInstantane": "Paiement instantane + notification",
+      "bientot": "Bientôt disponible",
       "mtnMomoTitre": "MTN MoMo",
       "especesTitre": "Especes",
       "especesDesc": "Vous enregistrez le paiement · quittance PDF auto",
@@ -488,7 +489,7 @@
           "desc": "Jusqu'à {{pro}} logements · 1 mois gratuit",
           "badge": "Recommandé",
           "feature1": "{{pro}} logements",
-          "feature2": "Orange Money + MTN",
+          "feature2": "Especes (Mobile Money bientôt)",
           "feature3": "Documents PDF",
           "feature4": "Alertes auto",
           "feature5": "Rapports"

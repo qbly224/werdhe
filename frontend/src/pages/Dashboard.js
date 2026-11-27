@@ -2115,13 +2115,13 @@ function PaiementsProprietaire(props) {
   var stats = props.stats;
   var [filterStatut, setFilterStatut] = useState('tous');
   var [modal, setModal] = useState(null);
-  var [selectedMode, setSelectedMode] = useState('om');
+  var [selectedMode, setSelectedMode] = useState('cash');
   var [processing, setProcessing] = useState(false);
   var [done, setDone] = useState(false);
   var [biensList, setBiensList] = useState(null);
   var PAY_MODES = [
-    { id: 'om', label: t('ongletPaiementsDash.payModes.om.label'), sub: t('ongletPaiementsDash.payModes.om.sub'), color: '#FF6600', text: '#fff', abbr: 'OM' },
-    { id: 'mtn', label: t('ongletPaiementsDash.payModes.mtn.label'), sub: t('ongletPaiementsDash.payModes.mtn.sub'), color: '#FFCC00', text: 'var(--text-primary)', abbr: 'MM' },
+    { id: 'om', label: t('ongletPaiementsDash.payModes.om.label'), sub: t('ongletPaiementsDash.payModes.om.sub'), color: '#FF6600', text: '#fff', abbr: 'OM', bientot: true },
+    { id: 'mtn', label: t('ongletPaiementsDash.payModes.mtn.label'), sub: t('ongletPaiementsDash.payModes.mtn.sub'), color: '#FFCC00', text: 'var(--text-primary)', abbr: 'MM', bientot: true },
     { id: 'cash', label: t('ongletPaiementsDash.payModes.cash.label'), sub: t('ongletPaiementsDash.payModes.cash.sub'), abbr: 'ESP' },
     { id: 'bank', label: t('ongletPaiementsDash.payModes.bank.label'), sub: t('ongletPaiementsDash.payModes.bank.sub'), abbr: 'VIR' }
   ];
@@ -2148,7 +2148,7 @@ function PaiementsProprietaire(props) {
     setBiensList(bl);
   }, [stats]);
   if (!biensList) return null;
-  function ouvrirModal(b) { setModal(b); setSelectedMode('om'); setProcessing(false); setDone(false); }
+  function ouvrirModal(b) { setModal(b); setSelectedMode('cash'); setProcessing(false); setDone(false); }
   function fermerModal() { setModal(null); setDone(false); }
   function confirmerPaiement() {
   if (!modal) return;
@@ -2240,7 +2240,7 @@ function PaiementsProprietaire(props) {
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}}><div><div style={{fontSize:'16px',fontWeight:'700'}}>{t('ongletPaiementsDash.modal.titre')}</div><div style={{fontSize:'12px',color:'var(--text-muted)'}}>{modal.nom} · {modal.locataire}</div></div><button type="button" onClick={fermerModal} style={{width:'32px',height:'32px',borderRadius:'50%',border:'none',background:'var(--surface-soft)',cursor:'pointer'}}>x</button></div>
             <div style={{background:'var(--surface-soft)',borderRadius:'12px',padding:'14px',marginBottom:'18px',display:'flex',justifyContent:'space-between',alignItems:'center'}}><div><div style={{fontSize:'12px',color:'var(--text-secondary)'}}>{t('ongletPaiementsDash.proprio.loyerMensuel')}</div></div><div style={{fontSize:'22px',fontWeight:'700',color:'var(--green)'}}>{GNF(modal.loyer)}</div></div>
             <div style={{fontSize:'13px',fontWeight:'700',marginBottom:'12px'}}>{t('ongletPaiementsDash.modal.modePaiement')}</div>
-            {PAY_MODES.map(function(p){return(<div key={p.id} onClick={function(){setSelectedMode(p.id);}} style={{display:'flex',alignItems:'center',gap:'12px',padding:'12px 14px',border:selectedMode===p.id?'2px solid var(--green)':'0.5px solid var(--border)',background:selectedMode===p.id?'var(--green-light)':'var(--bg-secondary)',borderRadius:'12px',marginBottom:'8px',cursor:'pointer'}}><div style={{width:'40px',height:'40px',background:p.color||'var(--green-light)',borderRadius: '8px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:p.icon?'20px':'13px',fontWeight:'700',color:p.text||'var(--green)'}}>{p.icon||p.abbr}</div><div style={{flex:1}}><div style={{fontSize:'14px',fontWeight:'600'}}>{p.label}</div><div style={{fontSize:'11px',color:'var(--text-muted)'}}>{p.sub}</div></div><div style={{width:'22px',height:'22px',borderRadius:'50%',border:selectedMode===p.id?'none':'1.5px solid var(--border)',background:selectedMode===p.id?'var(--green)':'transparent',display:'flex',alignItems:'center',justifyContent:'center'}}>{selectedMode===p.id&&<Check size={12} strokeWidth={2} color="#fff" />}</div></div>);})}
+            {PAY_MODES.map(function(p){return(<div key={p.id} onClick={function(){if(!p.bientot)setSelectedMode(p.id);}} role="radio" aria-checked={selectedMode===p.id} aria-disabled={p.bientot?'true':undefined} style={{display:'flex',alignItems:'center',gap:'12px',padding:'12px 14px',border:selectedMode===p.id?'2px solid var(--green)':'0.5px solid var(--border)',background:selectedMode===p.id?'var(--green-light)':'var(--bg-secondary)',borderRadius:'12px',marginBottom:'8px',cursor:p.bientot?'not-allowed':'pointer',opacity:p.bientot?0.6:1}}><div style={{width:'40px',height:'40px',background:p.color||'var(--green-light)',borderRadius: '8px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:p.icon?'20px':'13px',fontWeight:'700',color:p.text||'var(--green)'}}>{p.icon||p.abbr}</div><div style={{flex:1}}><div style={{fontSize:'14px',fontWeight:'600'}}>{p.label}</div><div style={{fontSize:'11px',color:'var(--text-muted)'}}>{p.bientot?t('paiementMobile.bientotDispo'):p.sub}</div></div><div style={{width:'22px',height:'22px',borderRadius:'50%',border:selectedMode===p.id?'none':'1.5px solid var(--border)',background:selectedMode===p.id?'var(--green)':'transparent',display:'flex',alignItems:'center',justifyContent:'center'}}>{selectedMode===p.id&&<Check size={12} strokeWidth={2} color="#fff" />}</div></div>);})}
             <button type="button" onClick={confirmerPaiement} disabled={processing} style={{width:'100%',background:processing?'#999':'var(--green)',color:'#fff',border:'none',borderRadius:'12px',padding:'14px',fontSize:'15px',fontWeight:'700',cursor:processing?'not-allowed':'pointer',marginTop:'6px'}}>{processing?t('ongletPaiementsDash.modal.traitementEnCours'):t('ongletPaiementsDash.modal.confirmer', { montant: GNF(modal.loyer) })}</button>
           </div>):(<div style={{textAlign:'center',padding:'20px 0'}}>
             <div style={{width:'70px',height:'70px',background:'var(--green-light)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px',fontSize:'36px'}}><CheckCircle size={36} strokeWidth={1.5} color="var(--green)"/></div>

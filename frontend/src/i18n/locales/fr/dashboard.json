@@ -1765,7 +1765,7 @@
     "titre": "Paiement",
     "montantAPayer": "Montant à payer",
     "numeroTelephone": "Numero de telephone",
-    "methodesAcceptees": "Orange Money, MTN MoMo, Kulu ou carte bancaire : vous choisirez votre moyen de paiement sur la page suivante.",
+    "methodesAcceptees": "Le paiement par Orange Money et MTN MoMo n'est pas encore disponible : il arrive bientôt.",
     "payer": "Payer",
     "redirectionEnCours": "Redirection vers le paiement...",
     "fermer": "Annuler"
